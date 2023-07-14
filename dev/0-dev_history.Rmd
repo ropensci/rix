@@ -16,15 +16,16 @@ All commands that you use to use when developing packages...
 fusen::fill_description(
   pkg = here::here(),
   fields = list(
-    Title = "Build A Package From Rmarkdown File",
-    Description = "Use Rmarkdown First method to build your package. Start your package with documentation. Everything can be set from a Rmarkdown file in your project.",
+    Title = "Rix: Reproducible Environments with Nix",
+    Description = "Provides helper functions to create reproducible development environments using the Nix package manager.",
     `Authors@R` = c(
-      person("John", "Doe", email = "john@email.me", role = c("aut", "cre"), comment = c(ORCID = "0000-0000-0000-0000"))
+      person("Bruno", "Rodrigues", email = "brodriguesco@protonmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-3211-3689"))
     )
   )
 )
 # Define License with use_*_license()
-usethis::use_mit_license("John Doe")
+usethis::use_gpl3_license()
+
 ```
 
 # All-in-one function to deploy publicly on GitHub
@@ -34,7 +35,7 @@ See `vignette("share-on-a-github-website", package = "fusen")` for more informat
 
 ```{r, eval=FALSE}
 # _All-in-one share of your package and its documentation on GitHub
-fusen::init_share_on_github()
+#fusen::init_share_on_github()
 ```
 
 
@@ -43,26 +44,49 @@ fusen::init_share_on_github()
 ```{r, eval=FALSE}
 usethis::use_git()
 # Deal with classical files to ignore
-usethis::git_vaccinate()
+#usethis::git_vaccinate()
 # Use main for primary branch
-usethis::git_default_branch_rename()
+#usethis::git_default_branch_rename()
 ```
 
 # Set extra sources of documentation
 
 ```{r, eval=FALSE}
 # Install a first time
-remotes::install_local()
+#remotes::install_local()
 # README
-usethis::use_readme_rmd()
+#usethis::use_readme_rmd()
 # Code of Conduct
-usethis::use_code_of_conduct("contact@fake.com")
+#usethis::use_code_of_conduct("contact@fake.com")
 # NEWS
-usethis::use_news_md()
+#usethis::use_news_md()
 ```
 
 **From now, you will need to "inflate" your package at least once to be able to use the following commands. Let's go to your flat template, and come back here later if/when needed.**
 
+```{r development-inflate, eval=FALSE}
+# Run but keep eval=FALSE to avoid infinite loop
+# Execute in the console directly
+fusen::inflate(flat_file = "dev/save_r_nix_revs.Rmd",
+               vignette_name = "dev-save_r_nix_revs",
+               overwrite = TRUE)
+```
+
+```{r}
+local({
+  knitr::knit("vignettes/dev-save_r_nix_revs.Rmd",
+              output = tempfile())
+  usethis::use_data(r_nix_revs,
+                    overwrite = TRUE)
+})
+
+```
+
+```{r}
+fusen::inflate(flat_file = "dev/data_doc.Rmd",
+               vignette_name = NA,
+               overwrite = TRUE)
+```
 
 # Package development tools
 ## Use once

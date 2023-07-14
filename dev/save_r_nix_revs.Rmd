@@ -1,0 +1,26 @@
+---
+title: "Get the Nix revisions for old releases of R"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+To install old versions of R, specific Nix revisions must be used. This tool
+[Nix Package Versions](https://lazamar.co.uk/nix-versions/) provides a simple
+web-interface to look for packages and get their revisions.
+
+It is possible to scrape the table and get the data:
+
+```{r}
+library(rvest)
+library(dplyr)
+library(janitor)
+
+r_nix_revs <- read_html("https://lazamar.co.uk/nix-versions/?channel=nixpkgs-unstable&package=r") |>
+  html_element("table") |>
+  html_table() |>
+  clean_names() |>
+  filter(!grepl("wrapper", version)) |>
+  select(-package)
+
+```

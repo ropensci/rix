@@ -1,13 +1,27 @@
 Package: rix
-Version: 0.0.0.9000
 Title: Rix: Reproducible Environments With Nix
-Description: Provides helper functions to create reproducible development environments using the Nix package manager.
-Authors@R: person(given = "Bruno",
-       family = "Rodrigues",
-       role = c("aut", "cre"),
-       email = "brodriguesco@protonmail.com",
-       comment = c(ORCID = "0000-0002-3211-3689"))
+Version: 0.0.0.9000
+Authors@R: 
+    person("Bruno", "Rodrigues", , "brodriguesco@protonmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-3211-3689"))
+Description: Provides helper functions to create reproducible development
+    environments using the Nix package manager.
 License: GPL (>= 3)
+Depends: 
+    R (>= 2.10)
+Imports: 
+    magrittr
+Suggests: 
+    dplyr,
+    janitor,
+    knitr,
+    rmarkdown,
+    rvest,
+    testthat
+VignetteBuilder: 
+    knitr
+Config/fusen/version: 0.5.1
 Encoding: UTF-8
+LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
