@@ -1,5 +1,5 @@
 ---
-title: "Get the Nix revisions for old releases of R"
+title: "Save the Nix Package Versions data"
 output: html_document
 editor_options: 
   chunk_output_type: console

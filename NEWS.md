@@ -1,3 +1,3 @@
 # rix (development version)
 
-* Initial CRAN submission.
+* Basic functionality added.

@@ -1,0 +1,16 @@
+---
+title: "ZZZ"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+## zzz
+
+```{r function-zzz, eval = F}
+#' zzz
+#'
+#' Global imports
+#' @importFrom utils data
+utils::globalVariables(c("r_nix_revs"))
+```

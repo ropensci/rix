@@ -24,19 +24,6 @@ data_doc.Rmd:
     check: true
     document: true
     overwrite: 'yes'
-flat_minimal_package.Rmd:
-  path: dev/flat_minimal_package.Rmd
-  state: active
-  R: R/my_fun.R
-  tests: tests/testthat/test-my_fun.R
-  vignettes: vignettes/minimal.Rmd
-  inflate:
-    flat_file: dev/flat_minimal_package.Rmd
-    vignette_name: Minimal
-    open_vignette: true
-    check: true
-    document: true
-    overwrite: ask
 save_r_nix_revs.Rmd:
   path: dev/save_r_nix_revs.Rmd
   state: active
@@ -46,6 +33,19 @@ save_r_nix_revs.Rmd:
   inflate:
     flat_file: dev/save_r_nix_revs.Rmd
     vignette_name: dev-save_r_nix_revs
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: 'yes'
+zzz.Rmd:
+  path: dev/zzz.Rmd
+  state: active
+  R: R/zzz.R
+  tests: []
+  vignettes: []
+  inflate:
+    flat_file: dev/zzz.Rmd
+    vignette_name: .na
     open_vignette: true
     check: true
     document: true
