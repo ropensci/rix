@@ -16,9 +16,6 @@
     <loc>/articles/index.html</loc>
   </url>
   <url>
-    <loc>/articles/minimal.html</loc>
-  </url>
-  <url>
     <loc>/authors.html</loc>
   </url>
   <url>
@@ -37,16 +34,7 @@
     <loc>/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/my_fun.html</loc>
-  </url>
-  <url>
-    <loc>/reference/pipe.html</loc>
-  </url>
-  <url>
     <loc>/reference/r_nix_revs.html</loc>
-  </url>
-  <url>
-    <loc>/reference/rix-package.html</loc>
   </url>
   <url>
     <loc>/reference/rix.html</loc>

@@ -45,7 +45,6 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="articles/dev-build_envs.html">dev-build_envs</a>
     <a class="dropdown-item" href="articles/dev-save_r_nix_revs.html">dev-save_r_nix_revs</a>
-    <a class="dropdown-item" href="articles/minimal.html">Minimal</a>
   </div>
 </li>
 <li class="nav-item">
@@ -63,9 +62,85 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9">
-Provides helper functions to create reproducible development
-    environments using the Nix package manager.
+  <main id="main" class="col-md-9"><div class="section level1">
+<div class="page-header"><h1 id="rix-reproducible-environments-with-nix">Rix: Reproducible Environments with Nix<a class="anchor" aria-label="anchor" href="#rix-reproducible-environments-with-nix"></a>
+</h1></div>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<!-- badges: start -->
+
+<p><strong>WARNING: This package is in very early development. I’ve literally have only worked 4 hours on it. DO NOT USE IT!</strong></p>
+<p><code>{rix}</code> is an R package that provides helper functions to help you setup development environments that contain all the required packages that you need for your project. This is achieved by using the Nix package manager that you must install separately. The Nix package manager is extremely powerful: with it, it is possible to work on totally reproducible development environments, and even install old releases of R and R packages. With Nix, it is essentially possible to replace <a href="https://rstudio.github.io/renv/" class="external-link">renv</a> and Docker combined. Nix is available for Linux, macOS and Windows.</p>
+</div>
+<div class="section level2">
+<h2 id="the-nix-package-manager">The Nix package manager<a class="anchor" aria-label="anchor" href="#the-nix-package-manager"></a>
+</h2>
+<p>Nix is a piece of software that can be installed on your computer (regardless of OS) and can be used to install software like with any other package manager. If you’re familiar with the Ubuntu Linux distribution, you likely have used <code>apt-get</code> to install software. On macOS, you may have used <code>homebrew</code> for similar purposes. Nix functions in a similar way, but has many advantages over classic package managers. The main advantage of Nix, at least for our purposes, is that its repository of software is huge. As of writing, it contains more than 80’000 packages, and the entirety of CRAN is available through Nix’s repositories. This means that using Nix, it is possible to install not only R, but also all the packages required for your project. The obvious question is why use Nix instead of simply installing R and R packages as usual. The answer is that Nix makes sure to install every dependency of any package, up to required system libraries. For example, the <a href="https://github.com/colearendt/xlsx" class="external-link">xlsx</a> package requires the Java programming language to be installed on your computer to successfully install. This can be difficult to achieve, and <a href="https://github.com/colearendt/xlsx" class="external-link">xlsx</a> bullied many R developers throughout the years (especially those using a Linux distribution, <code>sudo R CMD javareconf</code> still plagues my nightmares). But with Nix, it suffices to declare that we want the <a href="https://github.com/colearendt/xlsx" class="external-link">xlsx</a> package for our project, and Nix figures out automatically that Java is required and installs and configures it. It all just happens without any required intervention from the user. The second advantage of Nix is that it is possible to <em>pin</em> a certain <em>revision</em> for our project. Pinning a revision ensures that every package that Nix installs will always be at exactly the same versions, regardless of when in the future the packages get installed.</p>
+</div>
+<div class="section level2">
+<h2 id="rix-workflow">Rix workflow<a class="anchor" aria-label="anchor" href="#rix-workflow"></a>
+</h2>
+<p>The idea of <code>{rix}</code> is for you to declare the environment you need, and then continue working on that isolated environment. It is possible to have as many environments as projects. Each environment is isolated (or not, it’s up to you).</p>
+<p>The main function of <code>{rix}</code> is called <code><a href="reference/rix.html">rix()</a></code>. <code><a href="reference/rix.html">rix()</a></code> has 4 arguments:</p>
+<ul>
+<li>the R version you need for your project</li>
+<li>a list of R packages that your project needs</li>
+<li>whether you want to use RStudio as an IDE for your project</li>
+<li>a path to save a file called <code>default.nix</code>.</li>
+</ul>
+<div class="section level3">
+<h3 id="defaultnix">default.nix<a class="anchor" aria-label="anchor" href="#defaultnix"></a>
+</h3>
+<p>The Nix package manager can be used to build reproducible development environments according to the specifications found in a file called <code>default.nix</code>. To make it easier for R programmers to use Nix, <code>{rix}</code> can be used to write this file for you. Once this file has been written, go to where you chose to write it (ideally in a new, empty folder that will be the root folder of your project) and use the Nix package manager to build the environment. Call the following function in a terminal:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>build</span></code></pre></div>
+<p>Once Nix done building the environment, you can start working on it interactively by using the following command:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>shell</span></code></pre></div>
+<p>You will <em>drop</em> in a Nix shell. You can now call the IDE of your choice. For RStudio, simply call:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>rstudio</span></code></pre></div>
+<p>This will start RStudio. RStudio will use the version of R and library of packages from that environment.</p>
+</div>
+<div class="section level3">
+<h3 id="running-programs-from-an-environment">Running programs from an environment<a class="anchor" aria-label="anchor" href="#running-programs-from-an-environment"></a>
+</h3>
+<p>You could create a bash script that you put in the path to make this process more streamlined. For example, if your project is called <code>housing</code>, you could create this script and execute it to start your project:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="sc">!</span><span class="co">#/bin/bash</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>shell <span class="sc">/</span>absolute<span class="sc">/</span>path<span class="sc">/</span>to<span class="sc">/</span>housing<span class="sc">/</span>default.nix <span class="sc">--</span>run rstudio</span></code></pre></div>
+<p>This will execute RStudio in the environment for the <code>housing</code> project. If you use <a href="https://docs.ropensci.org/targets/" class="external-link">targets</a> you could execute the pipeline in the environment by running:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>shell <span class="sc">/</span>absolute<span class="sc">/</span>path<span class="sc">/</span>to<span class="sc">/</span>housing<span class="sc">/</span>default.nix <span class="sc">--</span>run Rscript <span class="sc">-</span>e <span class="st">'targets::tar_make()'</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>You can install the development version of rix from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"b-rodrigues/rix"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
+<p>This is a basic example which shows you how to solve a common problem:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">rix</span><span class="op">)</span></span>
+<span><span class="co">## basic example code</span></span></code></pre></div>
+<p>What is special about using <code>README.Rmd</code> instead of just <code>README.md</code>? You can include R chunks like so:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cars</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      speed           dist       </span></span>
+<span><span class="co">#&gt;  Min.   : 4.0   Min.   :  2.00  </span></span>
+<span><span class="co">#&gt;  1st Qu.:12.0   1st Qu.: 26.00  </span></span>
+<span><span class="co">#&gt;  Median :15.0   Median : 36.00  </span></span>
+<span><span class="co">#&gt;  Mean   :15.4   Mean   : 42.98  </span></span>
+<span><span class="co">#&gt;  3rd Qu.:19.0   3rd Qu.: 56.00  </span></span>
+<span><span class="co">#&gt;  Max.   :25.0   Max.   :120.00</span></span></code></pre></div>
+<p>You’ll still need to render <code>README.Rmd</code> regularly, to keep <code>README.md</code> up-to-date. <code>devtools::build_readme()</code> is handy for this.</p>
+<p>You can also embed plots, for example:</p>
+<p><img src="reference/figures/README-pressure-1.png" width="100%"></p>
+<p>In that case, don’t forget to commit and push the resulting figure files, so they display on GitHub and CRAN.</p>
+</div>
+</div>
   </main><aside class="col-md-3"><div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
@@ -89,7 +164,12 @@ Provides helper functions to create reproducible development
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/b-rodrigues/rix/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/b-rodrigues/rix/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>
