@@ -7,6 +7,9 @@
     <loc>/LICENSE.html</loc>
   </url>
   <url>
+    <loc>/articles/dev-build_envs.html</loc>
+  </url>
+  <url>
     <loc>/articles/dev-save_r_nix_revs.html</loc>
   </url>
   <url>
@@ -25,6 +28,12 @@
     <loc>/news/index.html</loc>
   </url>
   <url>
+    <loc>/reference/available_r.html</loc>
+  </url>
+  <url>
+    <loc>/reference/find_rev.html</loc>
+  </url>
+  <url>
     <loc>/reference/index.html</loc>
   </url>
   <url>
@@ -38,5 +47,8 @@
   </url>
   <url>
     <loc>/reference/rix-package.html</loc>
+  </url>
+  <url>
+    <loc>/reference/rix.html</loc>
   </url>
 </urlset>
