@@ -1,3 +1,16 @@
+build_envs.Rmd:
+  path: dev/build_envs.Rmd
+  state: active
+  R: R/find_rev.R
+  tests: tests/testthat/test-find_rev.R
+  vignettes: vignettes/dev-build_envs.Rmd
+  inflate:
+    flat_file: dev/build_envs.Rmd
+    vignette_name: dev-build_envs
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: 'yes'
 data_doc.Rmd:
   path: dev/data_doc.Rmd
   state: active
