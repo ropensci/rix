@@ -30,6 +30,10 @@ This function takes an R version as an input and returns the Nix revision that p
 #' find_rev("4.2.0")
 find_rev <- function(r_version){
 
+  output <- if(r_version == "curent"){
+    get_current()
+  } else {
+
   temp <- new.env(parent = emptyenv())
 
   data(list = "r_nix_revs",
@@ -41,6 +45,7 @@ find_rev <- function(r_version){
   output <- r_nix_revs$revision[r_nix_revs$version == r_version]
 
   stopifnot("Error: the provided R version is likely wrong. Please check that you provided a correct R version. You can list available versions using `available_r()`" = !identical(character(0), output))
+}
 
   output
 }
@@ -73,10 +78,38 @@ available_r <- function(){
 
   get("r_nix_revs", envir = temp)
 
-  r_nix_revs$version
+  c("current", r_nix_revs$version)
 
 }
 
+```
+
+The function below will return the very latest commit from the unstable
+branch of `NixOS/nixpkgs`. This will make sure that users that want to 
+use the most up-to-date version of R and R packages can do so:
+
+```{r function-get_current}
+#' get_current Get the current R version and packages
+#' @return A character. The commit hash of the latest nixpkgs-unstable revision
+#' @importFrom httr GET
+#' @importFrom jsonlite fromJSON
+#' @export
+#'
+#' @examples
+get_current <- function() {
+  api_url <- "https://api.github.com/repos/NixOS/nixpkgs/commits?sha=nixpkgs-unstable"
+  
+  tryCatch({
+    response <- httr::GET(url = api_url)
+    stop_for_status(response)
+    commit_data <- jsonlite::fromJSON(content(response, "text"))
+    latest_commit <- commit_data[[1]]$sha
+    return(latest_commit)
+  }, error = function(e) {
+    cat("Error:", e$message, "\n")
+    return(NULL)
+  })
+}
 ```
 
 This next function returns a `default.nix` file that can be used to build a
@@ -91,16 +124,17 @@ you use another IDE, you can leave the "ide" argument blank:
 #'   called "default.nix" in the working directory. This file contains the
 #'   instructions to build a reproducible environment using the Nix package
 #'   manager.
-#' @param r_ver Character. The required R version. Leave this argument empty if
-#'   you want to use the latest R version available. You can check which R
-#'   versions are available using `available_r`
+#' @param r_ver Character, defaults to "current". The required R version. To use the current version
+#'   of R, use "current". You can check which R versions are available using `available_r`.
 #' @param pkgs Vector of characters. List the required packages for your
 #'   analysis here.
-#' @param ide Character. Defaults to "other". If you wish to use RStudio to work
+#' @param ide Character, defaults to "other". If you wish to use RStudio to work
 #'   interactively use "rstudio", "code" for Visual Studio Code. For other editors,
 #'   use "other". This has been tested with RStudio, VS Code and Emacs. If other
 #'   editors don't work, please open an issue.
-#' @param path Character. Where to write `default.nix`.
+#' @param path Character, defaults to the current working directory. Where to write 
+#'   `default.nix`, for example "/home/path/to/project".
+#'   The file will thus be written to "/home/path/to/project/default.nix".     
 #' @details This function will write a `default.nix` in the chosen path. Using
 #'   the Nix package manager, it is then possible to build a reproducible
 #'   development environment using the `nix-build` command in the path. This
@@ -117,9 +151,15 @@ you use another IDE, you can leave the "ide" argument blank:
 #'   the environment using `nix-build`, you can drop into an interactive session
 #'   using `nix-shell`. See the "How-to Nix" vignette for more details.
 #' @export
-rix <- function(r_ver, pkgs, ide = "other", path = "default.nix"){
+rix <- function(r_ver = "current", pkgs, ide = "other", path = "."){
 
   stopifnot("'ide' has to be one of 'other', 'rstudio' or 'code'" = (ide %in% c("other", "rstudio", "code")))
+
+  path <- if(path == "."){
+     "default.nix"
+  } else {
+    paste0(path, "/default.nix")
+  }
 
   pkgs <- if(ide == "code"){
             c(pkgs, "languageserver")
