@@ -4,22 +4,23 @@
 \alias{rix}
 \title{rix Build a reproducible development environment definition}
 \usage{
-rix(r_ver, pkgs, ide = "other", path = "default.nix")
+rix(r_ver = "current", pkgs, ide = "other", path = ".")
 }
 \arguments{
-\item{r_ver}{Character. The required R version. Leave this argument empty if
-you want to use the latest R version available. You can check which R
-versions are available using \code{available_r}}
+\item{r_ver}{Character, defaults to "current". The required R version. To use the current version
+of R, use "current". You can check which R versions are available using \code{available_r}.}
 
 \item{pkgs}{Vector of characters. List the required packages for your
 analysis here.}
 
-\item{ide}{Character. Defaults to "other". If you wish to use RStudio to work
+\item{ide}{Character, defaults to "other". If you wish to use RStudio to work
 interactively use "rstudio", "code" for Visual Studio Code. For other editors,
 use "other". This has been tested with RStudio, VS Code and Emacs. If other
 editors don't work, please open an issue.}
 
-\item{path}{Character. Where to write \code{default.nix}.}
+\item{path}{Character, defaults to the current working directory. Where to write
+\code{default.nix}, for example "/home/path/to/project".
+The file will thus be written to "/home/path/to/project/default.nix".}
 }
 \value{
 Nothing, this function only has the side-effect of writing a file

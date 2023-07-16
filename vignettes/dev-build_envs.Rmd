@@ -31,6 +31,11 @@ This function takes an R version as an input and returns the Nix revision that p
 This function return available R versions:
 
 
+The function below will return the very latest commit from the unstable
+branch of `NixOS/nixpkgs`. This will make sure that users that want to 
+use the most up-to-date version of R and R packages can do so:
+
+
 This next function returns a `default.nix` file that can be used to build a
 reproducible environment. This function takes an R version as an input (the
 correct Nix revision is found using `find_rev()`), a list of R packages, and

@@ -2,5 +2,10 @@
 
 export(available_r)
 export(find_rev)
+export(get_current)
 export(rix)
+importFrom(httr,GET)
+importFrom(httr,content)
+importFrom(httr,stop_for_status)
+importFrom(jsonlite,fromJSON)
 importFrom(utils,data)

@@ -9,6 +9,10 @@
 #' find_rev("4.2.0")
 find_rev <- function(r_version){
 
+  if(r_version == "current"){
+    return(get_current())
+  } else {
+
   temp <- new.env(parent = emptyenv())
 
   data(list = "r_nix_revs",
@@ -21,7 +25,9 @@ find_rev <- function(r_version){
 
   stopifnot("Error: the provided R version is likely wrong. Please check that you provided a correct R version. You can list available versions using `available_r()`" = !identical(character(0), output))
 
-  output
+    output
+}
+
 }
 
 
@@ -41,26 +47,48 @@ available_r <- function(){
 
   get("r_nix_revs", envir = temp)
 
-  r_nix_revs$version
+  c("current", r_nix_revs$version)
 
 }
 
+
+#' get_current Get the current R version and packages
+#' @return A character. The commit hash of the latest nixpkgs-unstable revision
+#' @importFrom httr content GET stop_for_status 
+#' @importFrom jsonlite fromJSON
+#' @export
+#'
+get_current <- function() {
+  api_url <- "https://api.github.com/repos/NixOS/nixpkgs/commits?sha=nixpkgs-unstable"
+ 
+  tryCatch({
+    response <- httr::GET(url = api_url)
+    httr::stop_for_status(response)
+    commit_data <- jsonlite::fromJSON(httr::content(response, "text"))
+    latest_commit <- commit_data$sha[1]
+    return(latest_commit)
+  }, error = function(e) {
+    cat("Error:", e$message, "\n")
+    return(NULL)
+  })
+}
 
 #' rix Build a reproducible development environment definition
 #' @return Nothing, this function only has the side-effect of writing a file
 #'   called "default.nix" in the working directory. This file contains the
 #'   instructions to build a reproducible environment using the Nix package
 #'   manager.
-#' @param r_ver Character. The required R version. Leave this argument empty if
-#'   you want to use the latest R version available. You can check which R
-#'   versions are available using `available_r`
+#' @param r_ver Character, defaults to "current". The required R version. To use the current version
+#'   of R, use "current". You can check which R versions are available using `available_r`.
 #' @param pkgs Vector of characters. List the required packages for your
 #'   analysis here.
-#' @param ide Character. Defaults to "other". If you wish to use RStudio to work
+#' @param ide Character, defaults to "other". If you wish to use RStudio to work
 #'   interactively use "rstudio", "code" for Visual Studio Code. For other editors,
 #'   use "other". This has been tested with RStudio, VS Code and Emacs. If other
 #'   editors don't work, please open an issue.
-#' @param path Character. Where to write `default.nix`.
+#' @param path Character, defaults to the current working directory. Where to write 
+#'   `default.nix`, for example "/home/path/to/project".
+#'   The file will thus be written to "/home/path/to/project/default.nix".     
 #' @details This function will write a `default.nix` in the chosen path. Using
 #'   the Nix package manager, it is then possible to build a reproducible
 #'   development environment using the `nix-build` command in the path. This
@@ -77,9 +105,15 @@ available_r <- function(){
 #'   the environment using `nix-build`, you can drop into an interactive session
 #'   using `nix-shell`. See the "How-to Nix" vignette for more details.
 #' @export
-rix <- function(r_ver, pkgs, ide = "other", path = "default.nix"){
+rix <- function(r_ver = "current", pkgs, ide = "other", path = "."){
 
   stopifnot("'ide' has to be one of 'other', 'rstudio' or 'code'" = (ide %in% c("other", "rstudio", "code")))
+
+  path <- if(path == "."){
+     "default.nix"
+  } else {
+    paste0(path, "/default.nix")
+  }
 
   pkgs <- if(ide == "code"){
             c(pkgs, "languageserver")
