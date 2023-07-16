@@ -4,7 +4,7 @@
 \alias{rix}
 \title{rix Build a reproducible development environment definition}
 \usage{
-rix(r_ver, pkgs, rstudio = FALSE, path = ".")
+rix(r_ver, pkgs, ide = "other", path = "default.nix")
 }
 \arguments{
 \item{r_ver}{Character. The required R version. Leave this argument empty if
@@ -14,8 +14,10 @@ versions are available using \code{available_r}}
 \item{pkgs}{Vector of characters. List the required packages for your
 analysis here.}
 
-\item{rstudio}{Logical, defaults to FALSE. If TRUE, RStudio gets installed in
-this environment to enable interactive work.}
+\item{ide}{Character. Defaults to "other". If you wish to use RStudio to work
+interactively use "rstudio", "code" for Visual Studio Code. For other editors,
+use "other". This has been tested with RStudio, VS Code and Emacs. If other
+editors don't work, please open an issue.}
 
 \item{path}{Character. Where to write \code{default.nix}.}
 }

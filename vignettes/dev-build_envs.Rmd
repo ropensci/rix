@@ -35,6 +35,6 @@ This next function returns a `default.nix` file that can be used to build a
 reproducible environment. This function takes an R version as an input (the
 correct Nix revision is found using `find_rev()`), a list of R packages, and
 whether the user wants to work with RStudio or not in that environment. If
-you use another IDE, you can leave the "rstudio" argument blank:
+you use another IDE, you can leave the "ide" argument blank:
 
 

@@ -56,8 +56,10 @@ available_r <- function(){
 #'   versions are available using `available_r`
 #' @param pkgs Vector of characters. List the required packages for your
 #'   analysis here.
-#' @param rstudio Logical, defaults to FALSE. If TRUE, RStudio gets installed in
-#'   this environment to enable interactive work.
+#' @param ide Character. Defaults to "other". If you wish to use RStudio to work
+#'   interactively use "rstudio", "code" for Visual Studio Code. For other editors,
+#'   use "other". This has been tested with RStudio, VS Code and Emacs. If other
+#'   editors don't work, please open an issue.
 #' @param path Character. Where to write `default.nix`.
 #' @details This function will write a `default.nix` in the chosen path. Using
 #'   the Nix package manager, it is then possible to build a reproducible
@@ -75,7 +77,18 @@ available_r <- function(){
 #'   the environment using `nix-build`, you can drop into an interactive session
 #'   using `nix-shell`. See the "How-to Nix" vignette for more details.
 #' @export
-rix <- function(r_ver, pkgs, rstudio = FALSE, path = "."){
+rix <- function(r_ver, pkgs, ide = "other", path = "default.nix"){
+
+  stopifnot("'ide' has to be one of 'other', 'rstudio' or 'code'" = (ide %in% c("other", "rstudio", "code")))
+
+  pkgs <- if(ide == "code"){
+            c(pkgs, "languageserver")
+          } else {
+            pkgs
+          }
+
+  packages <- paste(pkgs, collapse = ' ')
+
   nixTemplate <- "
     { pkgs ? import (fetchTarball 'https://github.com/NixOS/nixpkgs/archive/RE_VERSION.tar.gz') {} }:
 
@@ -97,10 +110,9 @@ USE_RSTUDIO};
       }"
 
   nixFile <- gsub('RE_VERSION', find_rev(r_ver) , nixTemplate)
-  packages <- paste(pkgs, collapse = ' ')
   nixFile <- gsub('PACKAGE_LIST', packages, nixFile)
-  nixFile <- gsub('USE_RSTUDIO', ifelse(rstudio, '', '#'), nixFile)
+  nixFile <- gsub('USE_RSTUDIO', ifelse(!is.null(ide) & ide == "rstudio", '', '#'), nixFile)
 
- writeLines(nixFile, normalizePath(paste0(path, "/default.nix")))
+ writeLines(nixFile, normalizePath(path))
 }
 
