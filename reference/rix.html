@@ -52,7 +52,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rix</span><span class="op">(</span><span class="va">r_ver</span>, <span class="va">pkgs</span>, rstudio <span class="op">=</span> <span class="cn">FALSE</span>, path <span class="op">=</span> <span class="st">"."</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rix</span><span class="op">(</span><span class="va">r_ver</span>, <span class="va">pkgs</span>, ide <span class="op">=</span> <span class="st">"other"</span>, path <span class="op">=</span> <span class="st">"default.nix"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -68,9 +68,11 @@ versions are available using <code>available_r</code></p></dd>
 analysis here.</p></dd>
 
 
-<dt>rstudio</dt>
-<dd><p>Logical, defaults to FALSE. If TRUE, RStudio gets installed in
-this environment to enable interactive work.</p></dd>
+<dt>ide</dt>
+<dd><p>Character. Defaults to "other". If you wish to use RStudio to work
+interactively use "rstudio", "code" for Visual Studio Code. For other editors,
+use "other". This has been tested with RStudio, VS Code and Emacs. If other
+editors don't work, please open an issue.</p></dd>
 
 
 <dt>path</dt>
