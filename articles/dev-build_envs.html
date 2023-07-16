@@ -83,6 +83,10 @@ You need to run the 'description' chunk in the '0-dev_history.Rmd' file before c
 <p>This function takes an R version as an input and returns the Nix
 revision that provides it:</p>
 <p>This function return available R versions:</p>
+<p>The function below will return the very latest commit from the
+unstable branch of <code>NixOS/nixpkgs</code>. This will make sure that
+users that want to use the most up-to-date version of R and R packages
+can do so:</p>
 <p>This next function returns a <code>default.nix</code> file that can
 be used to build a reproducible environment. This function takes an R
 version as an input (the correct Nix revision is found using
