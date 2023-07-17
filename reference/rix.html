@@ -24,7 +24,6 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/dev-build_envs.html">dev-build_envs</a>
     <a class="dropdown-item" href="../articles/dev-save_r_nix_revs.html">dev-save_r_nix_revs</a>
   </div>
 </li>
@@ -69,6 +68,16 @@
 of R, use "current". You can check which R versions are available using <code>available_r</code>.</p></dd>
 
 
+<dt>r_pkgs</dt>
+<dd><p>Vector of characters. List the required R packages for your
+analysis here.</p></dd>
+
+
+<dt>other_pkgs</dt>
+<dd><p>Vector of characters. List further software you wish to install that
+are not R packages.</p></dd>
+
+
 <dt>ide</dt>
 <dd><p>Character, defaults to "other". If you wish to use RStudio to work
 interactively use "rstudio", "code" for Visual Studio Code. For other editors,
@@ -85,11 +94,6 @@ The file will thus be written to "/home/path/to/project/default.nix".</p></dd>
 <dt>overwrite</dt>
 <dd><p>Logical, defaults to FALSE. If TRUE, overwrite the <code>default.nix</code>
 file in the specified path.</p></dd>
-
-
-<dt>pkgs</dt>
-<dd><p>Vector of characters. List the required packages for your
-analysis here.</p></dd>
 
 </dl></div>
     <div class="section level2">
