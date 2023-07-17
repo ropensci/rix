@@ -4,14 +4,18 @@
 \alias{rix}
 \title{rix Build a reproducible development environment definition}
 \usage{
-rix(r_ver = "current", pkgs, ide = "other", path = ".")
+rix(
+  r_ver = "current",
+  r_pkgs,
+  other_pkgs = NULL,
+  ide = "other",
+  path = ".",
+  overwrite = FALSE
+)
 }
 \arguments{
 \item{r_ver}{Character, defaults to "current". The required R version. To use the current version
 of R, use "current". You can check which R versions are available using \code{available_r}.}
-
-\item{pkgs}{Vector of characters. List the required packages for your
-analysis here.}
 
 \item{ide}{Character, defaults to "other". If you wish to use RStudio to work
 interactively use "rstudio", "code" for Visual Studio Code. For other editors,
@@ -21,6 +25,12 @@ editors don't work, please open an issue.}
 \item{path}{Character, defaults to the current working directory. Where to write
 \code{default.nix}, for example "/home/path/to/project".
 The file will thus be written to "/home/path/to/project/default.nix".}
+
+\item{overwrite}{Logical, defaults to FALSE. If TRUE, overwrite the \code{default.nix}
+file in the specified path.}
+
+\item{pkgs}{Vector of characters. List the required packages for your
+analysis here.}
 }
 \value{
 Nothing, this function only has the side-effect of writing a file

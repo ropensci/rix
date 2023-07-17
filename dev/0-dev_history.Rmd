@@ -66,7 +66,7 @@ usethis::use_git()
 
 ```{r}
 fusen::inflate(flat_file = "dev/build_envs.Rmd",
-               vignette_name = "dev-build_envs",
+               vignette_name = NA,
                overwrite = TRUE)
 ```
 
@@ -74,7 +74,7 @@ fusen::inflate(flat_file = "dev/build_envs.Rmd",
 # Run but keep eval=FALSE to avoid infinite loop
 # Execute in the console directly
 fusen::inflate(flat_file = "dev/save_r_nix_revs.Rmd",
-               vignette_name = "dev-save_r_nix_revs",
+               vignette_name = NA,
                overwrite = TRUE)
 ```
 

@@ -3,10 +3,10 @@ build_envs.Rmd:
   state: active
   R: R/find_rev.R
   tests: tests/testthat/test-find_rev.R
-  vignettes: vignettes/dev-build_envs.Rmd
+  vignettes: []
   inflate:
     flat_file: dev/build_envs.Rmd
-    vignette_name: dev-build_envs
+    vignette_name: .na
     open_vignette: true
     check: true
     document: true
