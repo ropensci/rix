@@ -10,17 +10,18 @@
 [![R-CMD-check](https://github.com/b-rodrigues/rix/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/b-rodrigues/rix/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-**WARNING: This package is in very early development. I’ve literally
-have only worked 4 hours on it. DO NOT USE IT\!**
+**WARNING: This package is in very early development\!**
 
-`{rix}` is an R package that provides helper functions to help you setup
-development environments that contain all the required packages that you
-need for your project. This is achieved by using the Nix package manager
-that you must install separately. The Nix package manager is extremely
-powerful: with it, it is possible to work on totally reproducible
-development environments, and even install old releases of R and R
-packages. With Nix, it is essentially possible to replace `{renv}` and
-Docker combined. Nix is available for Linux, macOS and Windows.
+`{rix}` is an R package that provides functions to help you setup
+reproducible development environments that contain all the required
+packages that you need for your project. This is achieved by using the
+Nix package manager that you must install separately. The Nix package
+manager is extremely powerful: with it, it is possible to work on
+totally reproducible development environments, and even install old
+releases of R and R packages. With Nix, it is essentially possible to
+replace `{renv}` and Docker combined. If you need other tools or
+languages like Python or Julia, this can also be done easily. Nix is
+available for Linux, macOS and Windows.
 
 ## The Nix package manager
 
@@ -53,17 +54,48 @@ future the packages get installed.
 
 ## Rix workflow
 
-The idea of `{rix}` is for you to declare the environment you need, and
-then continue working on that isolated environment. It is possible to
-have as many environments as projects. Each environment is isolated (or
-not, it’s up to you).
+The idea of `{rix}` is for you to declare the environment you need,
+using the provided `rix()` function, which in turn generates the
+required file for Nix to actually generate that environment. You can
+then use this environment to either work interactively, or run R
+scripts. It is possible to have as many environments as projects. Each
+environment is isolated (or not, it’s up to you).
 
 The main function of `{rix}` is called `rix()`. `rix()` has 4 arguments:
 
   - the R version you need for your project
   - a list of R packages that your project needs
-  - whether you want to use RStudio as an IDE for your project
+  - whether you want to use RStudio as an IDE for your project (or VS
+    Code, or another environment)
   - a path to save a file called `default.nix`.
+
+For example:
+
+``` r
+rix(r_ver = "current", pkgs = c("dplyr", "chronicler"), ide = "rstudio")
+```
+
+The call above write a `default.nix` file in the current working
+directory. This `default.nix` can in turn be used by Nix to build an
+environment containing RStudio, the current (or latest) version of R,
+and the latest versions of the `{dplyr}` and `{chronicler}` packages. In
+th case of RStudio, it actually needs to be installed for each
+environment. This is because RStudio changes some default environment
+variables and a globally installed RStudio (the one you install
+normally) would not recognize the R installed in the Nix environment.
+This is not the case for other IDEs such as VS code or Emacs. Another
+example:
+
+``` r
+rix(r_ver = "4.1.0", pkgs = c("dplyr", "chronicler"), ide = "code")
+```
+
+This call will generate a `default.nix` that installs R version 4.1.0,
+with the `{dplyr}` and `{chronicler}` packages. Because the user wishes
+to use VS Code, the `ide` argument was set to “code”. This installs the
+required `{languageserver}` package as well, but unlike `ide =
+"rstudio"` does not install VS Code in that environment. Users should
+instead use the globally installed VS Code.
 
 ### default.nix
 
@@ -115,36 +147,3 @@ You can install the development version of rix from
 # install.packages("devtools")
 devtools::install_github("b-rodrigues/rix")
 ```
-
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-``` r
-library(rix)
-## basic example code
-```
-
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
-
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
-```
-
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.

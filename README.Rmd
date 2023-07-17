@@ -21,8 +21,7 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/b-rodrigues/rix/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/b-rodrigues/rix/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-**WARNING: This package is in very early development. I've literally have only
-worked 8 hours on it. DO NOT USE IT!**
+**WARNING: This package is in very early development!**
 
 `{rix}` is an R package that provides functions to help you setup reproducible
 development environments that contain all the required packages that you need
@@ -31,7 +30,7 @@ must install separately. The Nix package manager is extremely powerful: with it,
 it is possible to work on totally reproducible development environments, and
 even install old releases of R and R packages. With Nix, it is essentially
 possible to replace `{renv}` and Docker combined. If you need other tools or
-languages like Python or Julia, this can also be done easily. Nix is available 
+languages like Python or Julia, this can also be done easily. Nix is available
 for Linux, macOS and Windows.
 
 ## The Nix package manager
@@ -82,14 +81,14 @@ For example:
 rix(r_ver = "current", pkgs = c("dplyr", "chronicler"), ide = "rstudio")
 ```
 
-The call above write a `default.nix` file in the current working directory. This 
-`default.nix` can in turn be used by Nix to build an environment containing RStudio,
-the current (or latest) version of R, and the latest versions of the `{dplyr}` and 
-`{chronicler}` packages. In th case of RStudio, it actually needs to be installed 
-for each environment. This is because RStudio changes some default environment 
-variables and a globally installed RStudio (the one you install normally) would not
-recognize the R installed in the Nix environment. This is not the case for other IDEs
-such as VS code or Emacs. Another example:
+The call above write a `default.nix` file in the current working directory. This
+`default.nix` can in turn be used by Nix to build an environment containing
+RStudio, the current (or latest) version of R, and the latest versions of the
+`{dplyr}` and `{chronicler}` packages. In th case of RStudio, it actually needs
+to be installed for each environment. This is because RStudio changes some
+default environment variables and a globally installed RStudio (the one you
+install normally) would not recognize the R installed in the Nix environment.
+This is not the case for other IDEs such as VS code or Emacs. Another example:
 
 ```{r, eval = FALSE}
 rix(r_ver = "4.1.0", pkgs = c("dplyr", "chronicler"), ide = "code")
@@ -158,28 +157,3 @@ You can install the development version of rix from [GitHub](https://github.com/
 # install.packages("devtools")
 devtools::install_github("b-rodrigues/rix")
 ```
-
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-```{r example}
-library(rix)
-## basic example code
-```
-
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
-
-```{r cars}
-summary(cars)
-```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.

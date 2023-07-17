@@ -24,3 +24,5 @@ r_nix_revs <- read_html("https://lazamar.co.uk/nix-versions/?channel=nixpkgs-uns
   select(-package)
 
 ```
+
+This saves the data into the package.

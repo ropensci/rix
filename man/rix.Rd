@@ -17,6 +17,12 @@ rix(
 \item{r_ver}{Character, defaults to "current". The required R version. To use the current version
 of R, use "current". You can check which R versions are available using \code{available_r}.}
 
+\item{r_pkgs}{Vector of characters. List the required R packages for your
+analysis here.}
+
+\item{other_pkgs}{Vector of characters. List further software you wish to install that
+are not R packages.}
+
 \item{ide}{Character, defaults to "other". If you wish to use RStudio to work
 interactively use "rstudio", "code" for Visual Studio Code. For other editors,
 use "other". This has been tested with RStudio, VS Code and Emacs. If other
@@ -28,9 +34,6 @@ The file will thus be written to "/home/path/to/project/default.nix".}
 
 \item{overwrite}{Logical, defaults to FALSE. If TRUE, overwrite the \code{default.nix}
 file in the specified path.}
-
-\item{pkgs}{Vector of characters. List the required packages for your
-analysis here.}
 }
 \value{
 Nothing, this function only has the side-effect of writing a file

@@ -80,8 +80,10 @@ get_current <- function() {
 #'   manager.
 #' @param r_ver Character, defaults to "current". The required R version. To use the current version
 #'   of R, use "current". You can check which R versions are available using `available_r`.
-#' @param pkgs Vector of characters. List the required packages for your
+#' @param r_pkgs Vector of characters. List the required R packages for your
 #'   analysis here.
+#' @param other_pkgs Vector of characters. List further software you wish to install that
+#'   are not R packages.
 #' @param ide Character, defaults to "other". If you wish to use RStudio to work
 #'   interactively use "rstudio", "code" for Visual Studio Code. For other editors,
 #'   use "other". This has been tested with RStudio, VS Code and Emacs. If other
@@ -159,6 +161,7 @@ USE_RSTUDIO};
       }"
 
   nixFile <- gsub('RE_VERSION', find_rev(r_ver) , nixTemplate)
+  r_packages <- gsub('\\.', '_', r_packages)
   nixFile <- gsub('PACKAGE_LIST', r_packages, nixFile)
   nixFile <- gsub('OTHER_PKGS', other_packages, nixFile)
   nixFile <- gsub('OTHER_PACKAGES', ifelse(!is.null(other_pkgs), '', '#'), nixFile)
