@@ -52,7 +52,14 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rix</span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"current"</span>, <span class="va">pkgs</span>, ide <span class="op">=</span> <span class="st">"other"</span>, path <span class="op">=</span> <span class="st">"."</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rix</span><span class="op">(</span></span>
+<span>  r_ver <span class="op">=</span> <span class="st">"current"</span>,</span>
+<span>  <span class="va">r_pkgs</span>,</span>
+<span>  other_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ide <span class="op">=</span> <span class="st">"other"</span>,</span>
+<span>  path <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -60,11 +67,6 @@
     <dl><dt>r_ver</dt>
 <dd><p>Character, defaults to "current". The required R version. To use the current version
 of R, use "current". You can check which R versions are available using <code>available_r</code>.</p></dd>
-
-
-<dt>pkgs</dt>
-<dd><p>Vector of characters. List the required packages for your
-analysis here.</p></dd>
 
 
 <dt>ide</dt>
@@ -78,6 +80,16 @@ editors don't work, please open an issue.</p></dd>
 <dd><p>Character, defaults to the current working directory. Where to write
 <code>default.nix</code>, for example "/home/path/to/project".
 The file will thus be written to "/home/path/to/project/default.nix".</p></dd>
+
+
+<dt>overwrite</dt>
+<dd><p>Logical, defaults to FALSE. If TRUE, overwrite the <code>default.nix</code>
+file in the specified path.</p></dd>
+
+
+<dt>pkgs</dt>
+<dd><p>Vector of characters. List the required packages for your
+analysis here.</p></dd>
 
 </dl></div>
     <div class="section level2">
