@@ -73,6 +73,69 @@ get_current <- function() {
   })
 }
 
+#' @noRd
+get_imports <- function(repo_url, rev){
+
+  add_trailing_slash <- function(repo_url) {
+    if (substr(repo_url, nchar(repo_url), nchar(repo_url)) != "/") {
+      repo_url <- paste0(repo_url, "/")
+    }
+    repo_url
+  }
+
+  remove_parentheses <- function(input_list) {
+    output_list <- gsub("\\s*\\(.*?\\)", "", input_list)
+    output_list
+  }
+
+  repo_url <- add_trailing_slash(repo_url)
+
+  repo_url <- paste0(
+    gsub("github.com", "raw.githubusercontent.com", repo_url),
+    rev,
+    "/DESCRIPTION"
+  )
+
+  contents <- readLines(repo_url)
+
+  contents <- remove_parentheses(contents)
+
+  imports_line <- grep("^Imports:", contents)
+
+
+  input_string <- paste(trimws(contents[(imports_line+1):length(contents)]),
+                        collapse = " ")
+
+
+  output <- regmatches(input_string,
+                       regexpr(".*?(?<!,)\\s", input_string, perl = TRUE))
+
+  gsub(",", "", trimws(output))
+
+}
+
+
+#' @noRd
+fetchgit <- function(name, url, branchName, rev){
+
+  imports <- get_imports(url, rev)
+
+  instructions <- '(buildRPackage {
+    name = "housing";
+    src = fetchgit {
+      url = "https://github.com/rap4all/housing/";
+      branchName = "fusen";
+      rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";
+      sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";
+    };
+    propagatedBuildInputs = [
+      PUT_IMPORTS_HERE
+      ];
+  })'
+
+}
+
+
 #' rix Build a reproducible development environment definition
 #' @return Nothing, this function only has the side-effect of writing a file
 #'   called "default.nix" in the working directory. This file contains the

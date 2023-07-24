@@ -1,7 +1,7 @@
 ---
 title: "Build envs"
 output: html_document
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -111,6 +111,95 @@ get_current <- function() {
     return(NULL)
   })
 }
+```
+
+This function formats a `DESCRIPTION`'s file `imports` to return them
+for the `propagatedBuildInputs` of a Nix `buildRPackage()` statement:
+
+```{r function-get_imports}
+get_imports <- function(repo_url, rev){
+
+  add_trailing_slash <- function(repo_url) {
+    if (substr(repo_url, nchar(repo_url), nchar(repo_url)) != "/") {
+      repo_url <- paste0(repo_url, "/")
+    }
+    repo_url
+  }
+
+  remove_parentheses <- function(input_list) {
+    output_list <- gsub("\\s*\\(.*?\\)", "", input_list)
+    output_list
+  }
+
+  repo_url <- add_trailing_slash(repo_url)
+
+  repo_url <- paste0(
+    gsub("github.com", "raw.githubusercontent.com", repo_url),
+    rev,
+    "/DESCRIPTION"
+  )
+
+  contents <- readLines(repo_url)
+
+  contents <- remove_parentheses(contents)
+
+  imports_line <- grep("^Imports:", contents)
+
+
+  input_string <- paste(trimws(contents[(imports_line+1):length(contents)]),
+                        collapse = " ")
+
+
+  output <- regmatches(input_string,
+                       regexpr(".*?(?<!,)\\s", input_string, perl = TRUE))
+
+  gsub(",", "", trimws(output))
+
+}
+
+```
+
+```{r, tests-get_imports}
+
+testthat::expect_equal(
+            get_imports("https://github.com/tidyverse/dplyr",
+                        "1832ffbbdf3a85145b1545b84ee7b55a99fbae98"),
+            "cli generics glue lifecycle magrittr methods pillar R6 rlang tibble tidyselect utils vctrs"
+          )
+
+testthat::expect_equal(
+            get_imports("https://github.com/rap4all/housing/",
+                        "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
+            "dplyr ggplot2 janitor purrr readxl rlang rvest stringr tidyr utils"
+          )
+
+
+```
+
+Function `fetchgit()` takes a git repository as an input and returns a
+string using the Nix `fetchgit()` function to install the package. It
+automatically finds the right `sha256` as well:
+
+```{r function-make_fetchgit}
+fetchgit <- function(name, url, branchName, rev){
+
+  imports <- get_imports(url, rev)
+
+  instructions <- '(buildRPackage {
+    name = "housing";
+    src = fetchgit {
+      url = "https://github.com/rap4all/housing/";
+      branchName = "fusen";
+      rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";
+      sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";
+    };
+    propagatedBuildInputs = [
+      PUT_IMPORTS_HERE
+      ];
+  })'
+
+}
+
 ```
 
 This next function returns a `default.nix` file that can be used to build a
