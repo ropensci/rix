@@ -176,6 +176,31 @@ testthat::expect_equal(
 
 ```
 
+
+```{r function-get_hash}
+library(openssl)
+
+get_sri_hash <- function(tarball_path) {
+  if (!file.exists(tarball_path)) {
+    stop("The specified tarball file does not exist.")
+  }
+
+  # does the same thing as nix hash file --sri filepath,
+  # but doesn't work on a directory as it must be "nar"ed first
+  # Read the content of the tarball file
+  tarball_content <- readBin(tarball_path, "raw", n = file.info(tarball_path)$size)
+
+  # Calculate the SHA256 hash
+  sha256_hash <- openssl::sha256(tarball_content)
+
+  # Convert the raw SHA256 hash to Base64
+  base64_hash <- base64enc::base64encode(sha256_hash)
+
+  # "SRI hashes" notation requires the "sha256-" prefix
+  paste0("sha256-", base64_hash)
+}
+```
+
 Function `fetchgit()` takes a git repository as an input and returns a
 string using the Nix `fetchgit()` function to install the package. It
 automatically finds the right `sha256` as well:
