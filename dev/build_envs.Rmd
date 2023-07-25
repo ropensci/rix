@@ -99,7 +99,7 @@ up-to-date version of R and R packages can do so:
 #' @examples
 get_current <- function() {
   api_url <- "https://api.github.com/repos/NixOS/nixpkgs/commits?sha=nixpkgs-unstable"
-  
+
   tryCatch({
     response <- httr::GET(url = api_url)
     httr::stop_for_status(response)
@@ -156,12 +156,10 @@ get_imports <- function(repo_url, commit){
   input_string <- paste(trimws(contents[(imports_line+1):length(contents)]),
                         collapse = " ")
 
-
   output <- regmatches(input_string,
                        regexpr(".*?(?<!,)\\s", input_string, perl = TRUE))
 
   gsub(",", "", trimws(output))
-
 }
 
 ```
@@ -182,37 +180,53 @@ testthat::expect_equal(
 
 ```
 
+`get_sri_hash()` returns the SRI hash of a NAR serialized path to a cloned
+Github repository. These hashes are used by Nix for security purposes. In
+order to get the hash, a GET to a service I've made gets made. This request
+gets handled by a server with Nix installed, and so the SRI hash can get computed`
+by `nix hash path --sri path_to_repo`.
 
-```{r function-get_hash}
-library(openssl)
+```{r function-get_sri_hash}
+#' get_sri_hish Get the SRI hash of the NAR serialization of a Github repo
+#' @param repo_url A character. The URL to the package's Github repository
+#' @param branchName A character. The branch of interest
+#' @param commit A character. The commit hash of interest, for reproducibility's sake
+#' @return The SRI hash as a character
+get_sri_hash <- function(repo_url, branchName, commit){
+  result <- httr::GET(paste0("http://git2nixsha.dev:1506/hash?repo_url=",
+                             repo_url,
+                             "&branchName=",
+                             branchName,
+                             "&commit=",
+                             commit))
 
-get_sri_hash <- function(tarball_path) {
-  if (!file.exists(tarball_path)) {
-    stop("The specified tarball file does not exist.")
-  }
-
-  # does the same thing as nix hash file --sri filepath,
-  # but doesn't work on a directory as it must be "nar"ed first
-  # Read the content of the tarball file
-  tarball_content <- readBin(tarball_path, "raw", n = file.info(tarball_path)$size)
-
-  # Calculate the SHA256 hash
-  sha256_hash <- openssl::sha256(tarball_content)
-
-  # Convert the raw SHA256 hash to Base64
-  base64_hash <- base64enc::base64encode(sha256_hash)
-
-  # "SRI hashes" notation requires the "sha256-" prefix
-  paste0("sha256-", base64_hash)
+  unlist(httr::content(result))
 }
 ```
+
+```{r, tests-get_sri_hash}
+testthat::expect_equal(
+            get_sri_hash("https://github.com/rap4all/housing/",
+                         "fusen",
+                        "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
+            "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4="
+          )
+
+```
+
 
 Function `fetchgit()` takes a git repository as an input and returns a
 string using the Nix `fetchgit()` function to install the package. It
 automatically finds the right `sha256` as well:
 
-```{r function-make_fetchgit}
-fetchgit <- function(package_name, repo_url, branchName, commit, sri_hash = NULL){
+```{r function-fetchgit}
+fetchgit <- function(git_pkg){
+
+  package_name <- git_pkg$package_name
+  repo_url <- git_pkg$repo_url
+  branchName <- git_pkg$branchName
+  commit <- git_pkg$commit
+  sri_hash <- git_pkg$sri_hash
 
   imports <- get_imports(repo_url, commit)
 
@@ -246,6 +260,34 @@ fetchgit <- function(package_name, repo_url, branchName, commit, sri_hash = NULL
 
 ```
 
+```{r function-fetchgits}
+fetchgits <- function(lists){
+
+}
+```
+
+```
+testthat::expect_equal(
+            fetchgit(list(package_name = "housing",
+                          repo_url = "https://github.com/rap4all/housing/",
+                          branchName = "fusen",
+                          commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e")),
+            'buildRPackage {
+                 name = housing;
+                 src = fetchgit {
+                   url = "https://github.com/rap4all/housing/";
+                   branchName = "fusen";
+                   rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";
+                   sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";
+                 };
+                 propagatedBuildInputs = [
+                   dplyr ggplot2 janitor purrr readxl rlang rvest stringr tidyr utils
+                   ];
+               })'
+          )
+
+```
+
 This next function returns a `default.nix` file that can be used to build a
 reproducible environment. This function takes an R version as an input (the
 correct Nix revision is found using `find_rev()`), a list of R packages, and
@@ -263,6 +305,7 @@ you use another IDE, you can leave the "ide" argument blank:
 #' @param r_pkgs Vector of characters. List the required R packages for your
 #'   analysis here.
 #' @param other_pkgs Vector of characters. List further software you wish to install that
+#' @param git_pkgs List. A list of packages to install from Git. See details for more information.
 #'   are not R packages.
 #' @param ide Character, defaults to "other". If you wish to use RStudio to work
 #'   interactively use "rstudio", "code" for Visual Studio Code. For other editors,
@@ -270,7 +313,7 @@ you use another IDE, you can leave the "ide" argument blank:
 #'   editors don't work, please open an issue.
 #' @param path Character, defaults to the current working directory. Where to write 
 #'   `default.nix`, for example "/home/path/to/project".
-#'   The file will thus be written to "/home/path/to/project/default.nix".     
+#'   The file will thus be written to "/home/path/to/project/default.nix".
 #' @param overwrite Logical, defaults to FALSE. If TRUE, overwrite the `default.nix`
 #'   file in the specified path.
 #' @details This function will write a `default.nix` in the chosen path. Using
@@ -287,11 +330,16 @@ you use another IDE, you can leave the "ide" argument blank:
 #'   Visual Studio Code however, you need to install the `{languageserver}`
 #'   package, so don't forget to add it to the list of packages. Once you built
 #'   the environment using `nix-build`, you can drop into an interactive session
-#'   using `nix-shell`. See the "How-to Nix" vignette for more details.
+#'   using `nix-shell`. See the "How-to Nix" vignette for detailled instructions.
+#'   Packages to install from Github must be provided in a list of 4 elements:
+#'   "package_name", "repo_url", "branchName" and "commit". A fifth, optional
+#'   element, "sri_hash" can be provided as well.
+#'   See the "Installing packages from Github" for detailled instructions.
 #' @export
 rix <- function(r_ver = "current",
                 r_pkgs,
                 other_pkgs = NULL,
+                git_pkgs,
                 ide = "other",
                 path = ".",
                 overwrite = FALSE){
@@ -325,11 +373,17 @@ rix <- function(r_ver = "current",
 
       let
       my-r = rWrapper.override {
-        packages = with rPackages; [PACKAGE_LIST];
+        packages = with rPackages; [
+          PACKAGE_LIST
+#          GIT_PACKAGE
+        ];
       };
 OTHER_PACKAGES other-pkgs = [OTHER_PKGS];
 USE_RSTUDIO  my-rstudio = rstudioWrapper.override {
-USE_RSTUDIO    packages = with rPackages; [PACKAGE_LIST];
+USE_RSTUDIO    packages = with rPackages; [
+USE_RSTUDIO                      PACKAGE_LIST
+#USE_RSTUDIO                      GIT_PACKAGE
+USE_RSTUDIO        ];
 USE_RSTUDIO};
       in
       mkShell {
