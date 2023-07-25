@@ -99,7 +99,7 @@ up-to-date version of R and R packages can do so:
 #' @examples
 get_current <- function() {
   api_url <- "https://api.github.com/repos/NixOS/nixpkgs/commits?sha=nixpkgs-unstable"
-
+  
   tryCatch({
     response <- httr::GET(url = api_url)
     httr::stop_for_status(response)
@@ -117,7 +117,14 @@ This function formats a `DESCRIPTION`'s file `imports` to return them
 for the `propagatedBuildInputs` of a Nix `buildRPackage()` statement:
 
 ```{r function-get_imports}
-get_imports <- function(repo_url, rev){
+#' get_imports Get a package's dependencies
+#' @param repo_url A character. The URL to the package's Github repository
+#' @param commit. The commit hash of interest, for reproducibility's sake
+#' @return A character. The packages listed under DESCRIPTION
+#'
+#' @examples
+
+get_imports <- function(repo_url, commit){
 
   add_trailing_slash <- function(repo_url) {
     if (substr(repo_url, nchar(repo_url), nchar(repo_url)) != "/") {
@@ -135,7 +142,7 @@ get_imports <- function(repo_url, rev){
 
   repo_url <- paste0(
     gsub("github.com", "raw.githubusercontent.com", repo_url),
-    rev,
+    commit,
     "/DESCRIPTION"
   )
 
@@ -160,7 +167,6 @@ get_imports <- function(repo_url, rev){
 ```
 
 ```{r, tests-get_imports}
-
 testthat::expect_equal(
             get_imports("https://github.com/tidyverse/dplyr",
                         "1832ffbbdf3a85145b1545b84ee7b55a99fbae98"),
@@ -206,22 +212,35 @@ string using the Nix `fetchgit()` function to install the package. It
 automatically finds the right `sha256` as well:
 
 ```{r function-make_fetchgit}
-fetchgit <- function(name, url, branchName, rev){
+fetchgit <- function(package_name, repo_url, branchName, commit, sri_hash = NULL){
 
-  imports <- get_imports(url, rev)
+  imports <- get_imports(repo_url, commit)
 
-  instructions <- '(buildRPackage {
-    name = "housing";
+  if(is.null(sri_hash)){
+    sri_hash <- get_sri_hash(repo_url, branchName, commit)
+  } else {
+    sri_hash <- sri_hash
+  }
+
+  sprintf('buildRPackage {
+    name = %s;
     src = fetchgit {
-      url = "https://github.com/rap4all/housing/";
-      branchName = "fusen";
-      rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";
-      sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";
+      url = \"%s\";
+      branchName = \"%s\";
+      rev = \"%s\";
+      sha256 = \"%s\";
     };
     propagatedBuildInputs = [
-      PUT_IMPORTS_HERE
+        %s
       ];
-  })'
+  })',
+  package_name,
+  repo_url,
+  branchName,
+  commit,
+  sri_hash,
+  imports
+)
 
 }
 
