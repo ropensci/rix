@@ -5,6 +5,8 @@ editor_options:
   chunk_output_type: console
 ---
 
+Basic usage:
+
 ```{r}
 
 path_default_nix <- tempdir()
@@ -20,5 +22,25 @@ rix(r_ver = "current",
 ```
 
 ```{r}
-cat(readLines(paste0(path_default_nix, "/default.nix")))
+cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
+```
+
+Specifying a package on Github:
+
+```{r}
+rix(r_ver = "current",
+    r_pkgs = c("dplyr", "janitor"),
+    other_pkgs = c("quarto"),
+    git_pkgs = list(package_name = "housing",
+                    repo_url = "https://github.com/rap4all/housing/",
+                    branch_name = "fusen",
+                    commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
+    ide = "other",
+    path = path_default_nix,
+    overwrite = TRUE)
+
+```
+
+```{r}
+cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```

@@ -11,7 +11,7 @@ web-interface to look for packages and get their revisions.
 
 It is possible to scrape the table and get the data:
 
-```{r}
+```{r, eval = F}
 library(rvest)
 library(dplyr)
 library(janitor)

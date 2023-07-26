@@ -74,7 +74,7 @@ fusen::inflate(flat_file = "dev/build_envs.Rmd",
 # Run but keep eval=FALSE to avoid infinite loop
 # Execute in the console directly
 fusen::inflate(flat_file = "dev/save_r_nix_revs.Rmd",
-               vignette_name = "dev-save_r_nix_revs.Rmd",
+               vignette_name = "[Dev]-Saving historical revisions",
                overwrite = TRUE)
 ```
 
@@ -104,7 +104,7 @@ fusen::inflate(flat_file = "dev/zzz.Rmd",
 
 ```{r}
 fusen::inflate(flat_file = "dev/building_envs_with_rix.Rmd",
-               vignette_name = "building_envs_with_rix",
+               vignette_name = "Building reproducible development environments with {rix}",
                overwrite = TRUE)
 ```
 

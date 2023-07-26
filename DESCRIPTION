@@ -14,11 +14,8 @@ Imports:
     jsonlite,
     utils
 Suggests: 
-    dplyr,
-    janitor,
     knitr,
     rmarkdown,
-    rvest,
     testthat
 VignetteBuilder: 
     knitr
