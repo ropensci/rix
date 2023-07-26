@@ -8,6 +8,7 @@ rix(
   r_ver = "current",
   r_pkgs,
   other_pkgs = NULL,
+  git_pkgs = NULL,
   ide = "other",
   path = ".",
   overwrite = FALSE
@@ -20,7 +21,9 @@ of R, use "current". You can check which R versions are available using \code{av
 \item{r_pkgs}{Vector of characters. List the required R packages for your
 analysis here.}
 
-\item{other_pkgs}{Vector of characters. List further software you wish to install that
+\item{other_pkgs}{Vector of characters. List further software you wish to install that}
+
+\item{git_pkgs}{List. A list of packages to install from Git. See details for more information.
 are not R packages.}
 
 \item{ide}{Character, defaults to "other". If you wish to use RStudio to work
@@ -59,5 +62,10 @@ you can simply use the version that is installed on your computer. To use
 Visual Studio Code however, you need to install the \code{{languageserver}}
 package, so don't forget to add it to the list of packages. Once you built
 the environment using \code{nix-build}, you can drop into an interactive session
-using \code{nix-shell}. See the "How-to Nix" vignette for more details.
+using \code{nix-shell}. See the "How-to Nix" vignette for detailled instructions.
+Packages to install from Github must be provided in a list of 4 elements:
+"package_name", "repo_url", "branch_name" and "commit". A fifth, optional
+element, "sri_hash" can be provided as well. This argument can also be a list
+of lists of these 4 elements.
+See the "Installing packages from Github" for detailled instructions.
 }

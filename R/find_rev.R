@@ -73,8 +73,14 @@ get_current <- function() {
   })
 }
 
+#' get_imports Get a package's dependencies
+#' @param repo_url A character. The URL to the package's Github repository
+#' @param commit. The commit hash of interest, for reproducibility's sake
+#' @return A character. The packages listed under DESCRIPTION
+#'
 #' @noRd
-get_imports <- function(repo_url, rev){
+
+get_imports <- function(repo_url, commit){
 
   add_trailing_slash <- function(repo_url) {
     if (substr(repo_url, nchar(repo_url), nchar(repo_url)) != "/") {
@@ -92,7 +98,7 @@ get_imports <- function(repo_url, rev){
 
   repo_url <- paste0(
     gsub("github.com", "raw.githubusercontent.com", repo_url),
-    rev,
+    commit,
     "/DESCRIPTION"
   )
 
@@ -106,35 +112,88 @@ get_imports <- function(repo_url, rev){
   input_string <- paste(trimws(contents[(imports_line+1):length(contents)]),
                         collapse = " ")
 
-
   output <- regmatches(input_string,
                        regexpr(".*?(?<!,)\\s", input_string, perl = TRUE))
 
   gsub(",", "", trimws(output))
-
 }
 
 
+#' get_sri_hish Get the SRI hash of the NAR serialization of a Github repo
+#' @param repo_url A character. The URL to the package's Github repository
+#' @param branch_name A character. The branch of interest
+#' @param commit A character. The commit hash of interest, for reproducibility's sake
+#' @return The SRI hash as a character
 #' @noRd
-fetchgit <- function(name, url, branchName, rev){
+get_sri_hash <- function(repo_url, branch_name, commit){
+  result <- httr::GET(paste0("http://git2nixsha.dev:1506/hash?repo_url=",
+                             repo_url,
+                             "&branchName=",
+                             branch_name,
+                             "&commit=",
+                             commit))
 
-  imports <- get_imports(url, rev)
+  unlist(httr::content(result))
+}
 
-  instructions <- '(buildRPackage {
-    name = "housing";
+#' fetchgit Downloads and installs a package hosted of Git
+#' @param git_pkg A list of at least four elements: "package_name", the name of the package, "repo_url", the repository's url, "branch_name", the name of the branch containing the code to download and "commit", the commit hash of interest. A fifth, optional argument called "sri_hash" can be provided, if available. If not, "sri_hash" will be obtained using `get_sri_hash()`
+#' @return A character. The Nix definition to download and build the R package from Github.
+#' @noRd
+fetchgit <- function(git_pkg){
+
+  package_name <- git_pkg$package_name
+  repo_url <- git_pkg$repo_url
+  branch_name <- git_pkg$branch_name
+  commit <- git_pkg$commit
+  sri_hash <- git_pkg$sri_hash
+
+  imports <- get_imports(repo_url, commit)
+
+  if(is.null(sri_hash)){
+    sri_hash <- get_sri_hash(repo_url, branch_name, commit)
+  } else {
+    sri_hash <- sri_hash
+  }
+
+  sprintf('buildRPackage {
+    name = %s;
     src = fetchgit {
-      url = "https://github.com/rap4all/housing/";
-      branchName = "fusen";
-      rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";
-      sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";
+      url = \"%s\";
+      branchName = \"%s\";
+      rev = \"%s\";
+      sha256 = \"%s\";
     };
     propagatedBuildInputs = [
-      PUT_IMPORTS_HERE
+        %s
       ];
-  })'
+  })',
+  package_name,
+  repo_url,
+  branch_name,
+  commit,
+  sri_hash,
+  imports
+)
 
 }
 
+
+#' fetchgits Downloads and installs a packages hosted of Git. Wrapper around `fetchgit()` to handle multiple packages
+#' @param git_pkg A list of at least four elements: "package_name", the name of the package, "repo_url", the repository's url, "branch_name", the name of the branch containing the code to download and "commit", the commit hash of interest. A fifth, optional argument called "sri_hash" can be provided, if available. If not, "sri_hash" will be obtained using `get_sri_hash()`. This argument can also be a list of lists of these four elements.
+#' @return A character. The Nix definition to download and build the R package from Github.
+#' @noRd
+fetchgits <- function(git_pkgs){
+
+  if(!all(lapply(git_pkgs, is.list))){
+    fetchgit(git_pkgs)
+  } else if(all(lapply(git_pkgs, is.list))){
+    lapply(git_pkgs, fetchgit)
+  } else {
+    stop("There is something wrong with the input. Make sure it is either a list of four elements 'package_name', 'repo_url', 'branch_name' and 'commit' or a list of lists with these four elements")
+  }
+
+}
 
 #' rix Build a reproducible development environment definition
 #' @return Nothing, this function only has the side-effect of writing a file
@@ -146,14 +205,15 @@ fetchgit <- function(name, url, branchName, rev){
 #' @param r_pkgs Vector of characters. List the required R packages for your
 #'   analysis here.
 #' @param other_pkgs Vector of characters. List further software you wish to install that
+#' @param git_pkgs List. A list of packages to install from Git. See details for more information.
 #'   are not R packages.
 #' @param ide Character, defaults to "other". If you wish to use RStudio to work
 #'   interactively use "rstudio", "code" for Visual Studio Code. For other editors,
 #'   use "other". This has been tested with RStudio, VS Code and Emacs. If other
 #'   editors don't work, please open an issue.
-#' @param path Character, defaults to the current working directory. Where to write 
+#' @param path Character, defaults to the current working directory. Where to write
 #'   `default.nix`, for example "/home/path/to/project".
-#'   The file will thus be written to "/home/path/to/project/default.nix".     
+#'   The file will thus be written to "/home/path/to/project/default.nix".
 #' @param overwrite Logical, defaults to FALSE. If TRUE, overwrite the `default.nix`
 #'   file in the specified path.
 #' @details This function will write a `default.nix` in the chosen path. Using
@@ -170,11 +230,17 @@ fetchgit <- function(name, url, branchName, rev){
 #'   Visual Studio Code however, you need to install the `{languageserver}`
 #'   package, so don't forget to add it to the list of packages. Once you built
 #'   the environment using `nix-build`, you can drop into an interactive session
-#'   using `nix-shell`. See the "How-to Nix" vignette for more details.
+#'   using `nix-shell`. See the "How-to Nix" vignette for detailled instructions.
+#'   Packages to install from Github must be provided in a list of 4 elements:
+#'   "package_name", "repo_url", "branch_name" and "commit". A fifth, optional
+#'   element, "sri_hash" can be provided as well. This argument can also be a list
+#'   of lists of these 4 elements.
+#'   See the "Installing packages from Github" for detailled instructions.
 #' @export
 rix <- function(r_ver = "current",
                 r_pkgs,
                 other_pkgs = NULL,
+                git_pkgs = NULL,
                 ide = "other",
                 path = ".",
                 overwrite = FALSE){
@@ -208,11 +274,17 @@ rix <- function(r_ver = "current",
 
       let
       my-r = rWrapper.override {
-        packages = with rPackages; [PACKAGE_LIST];
+        packages = with rPackages; [
+          PACKAGE_LIST
+          GIT_PACKAGES
+        ];
       };
 OTHER_PACKAGES other-pkgs = [OTHER_PKGS];
 USE_RSTUDIO  my-rstudio = rstudioWrapper.override {
-USE_RSTUDIO    packages = with rPackages; [PACKAGE_LIST];
+USE_RSTUDIO    packages = with rPackages; [
+USE_RSTUDIO                      PACKAGE_LIST
+USE_RSTUDIO                      GIT_PACKAGES
+USE_RSTUDIO        ];
 USE_RSTUDIO};
       in
       mkShell {
@@ -228,6 +300,9 @@ USE_RSTUDIO};
   nixFile <- gsub('PACKAGE_LIST', r_packages, nixFile)
   nixFile <- gsub('OTHER_PKGS', other_packages, nixFile)
   nixFile <- gsub('OTHER_PACKAGES', ifelse(!is.null(other_pkgs), '', '#'), nixFile)
+  nixFile <- gsub('GIT_PACKAGES', ifelse(!is.null(git_pkgs),
+                                         fetchgits(git_pkgs),
+                                         '#'), nixFile)
   nixFile <- gsub('DATE', date(), nixFile)
   nixFile <- gsub('USE_RSTUDIO', ifelse(!is.null(ide) & ide == "rstudio", '', '#'), nixFile)
 

@@ -5,7 +5,6 @@ testthat::expect_equal(
             "8ad5e8132c5dcf977e308e7bf5517cc6cc0bf7d8"
           )
 
-
 testthat::expect_equal(
             get_imports("https://github.com/tidyverse/dplyr",
                         "1832ffbbdf3a85145b1545b84ee7b55a99fbae98"),
@@ -18,4 +17,12 @@ testthat::expect_equal(
             "dplyr ggplot2 janitor purrr readxl rlang rvest stringr tidyr utils"
           )
 
+
+
+testthat::expect_equal(
+            get_sri_hash("https://github.com/rap4all/housing/",
+                         "fusen",
+                        "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
+            "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4="
+          )
 

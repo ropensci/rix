@@ -1,0 +1,24 @@
+---
+title: "Building reproducible development environments with {rix}"
+output: html_document
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+
+path_default_nix <- tempdir()
+
+rix(r_ver = "current",
+    r_pkgs = c("dplyr", "janitor"),
+    other_pkgs = c("quarto"),
+    git_pkgs = NULL,
+    ide = "other",
+    path = path_default_nix,
+    overwrite = FALSE)
+
+```
+
+```{r}
+cat(readLines(paste0(path_default_nix, "/default.nix")))
+```
