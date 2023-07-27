@@ -156,7 +156,7 @@ fetchgit <- function(git_pkg){
     sri_hash <- sri_hash
   }
 
-  sprintf('buildRPackage {
+  sprintf('(buildRPackage {
     name = %s;
     src = fetchgit {
       url = \"%s\";
@@ -283,7 +283,7 @@ OTHER_PACKAGES other-pkgs = [OTHER_PKGS];
 USE_RSTUDIO  my-rstudio = rstudioWrapper.override {
 USE_RSTUDIO    packages = with rPackages; [
 USE_RSTUDIO                      PACKAGE_LIST
-USE_RSTUDIO                      GIT_PACKAGES
+USE_RSTUDIO                      RSTUDIO_GITPKGS
 USE_RSTUDIO        ];
 USE_RSTUDIO};
       in
@@ -296,15 +296,31 @@ USE_RSTUDIO};
       }"
 
   nixFile <- gsub('RE_VERSION', find_rev(r_ver) , nixTemplate)
+  nixFile <- gsub('DATE', date(), nixFile)
+
+  nixFile <- gsub('USE_RSTUDIO',
+                  ifelse(!is.null(ide) & ide == "rstudio", '', 'TO_DELETE'),
+                  nixFile)
+
+  nixFile <- gsub('RSTUDIO_GITPKGS',
+                  ifelse(!is.null(ide) & ide == "rstudio", 'GIT_PACKAGES', 'RSTUDIO_GITPKGS'),
+                  nixFile)
+
   r_packages <- gsub('\\.', '_', r_packages)
   nixFile <- gsub('PACKAGE_LIST', r_packages, nixFile)
+
   nixFile <- gsub('OTHER_PKGS', other_packages, nixFile)
-  nixFile <- gsub('OTHER_PACKAGES', ifelse(!is.null(other_pkgs), '', '#'), nixFile)
+  nixFile <- gsub('OTHER_PACKAGES',
+                  ifelse(!is.null(other_pkgs), '', 'TO_DELETE'),
+                  nixFile)
+
   nixFile <- gsub('GIT_PACKAGES', ifelse(!is.null(git_pkgs),
                                          fetchgits(git_pkgs),
-                                         '#'), nixFile)
-  nixFile <- gsub('DATE', date(), nixFile)
-  nixFile <- gsub('USE_RSTUDIO', ifelse(!is.null(ide) & ide == "rstudio", '', '#'), nixFile)
+                                         'TO_DELETE'), nixFile)
+
+  nixFile <- readLines(textConnection(nixFile))
+
+  nixFile <- grep('TO_DELETE', nixFile, invert = TRUE, value = TRUE)
 
   if(!file.exists(path) | overwrite){
     writeLines(nixFile, path)

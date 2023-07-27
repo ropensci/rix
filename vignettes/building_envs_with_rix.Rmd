@@ -27,7 +27,7 @@ Basic usage:
 
 path_default_nix <- tempdir()
 
-rix(r_ver = "current",
+rix(r_ver = "4.2.1",
     r_pkgs = c("dplyr", "janitor"),
     other_pkgs = c("quarto"),
     git_pkgs = NULL,
@@ -45,7 +45,7 @@ Specifying a package on Github:
 
 
 ```{r}
-rix(r_ver = "current",
+rix(r_ver = "4.2.1",
     r_pkgs = c("dplyr", "janitor"),
     other_pkgs = c("quarto"),
     git_pkgs = list(package_name = "housing",
