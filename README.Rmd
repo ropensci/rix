@@ -68,10 +68,12 @@ to actually generate that environment. You can then use this environment to
 either work interactively, or run R scripts. It is possible to have as many
 environments as projects. Each environment is isolated (or not, it's up to you).
 
-The main function of `{rix}` is called `rix()`. `rix()` has 4 arguments:
+The main function of `{rix}` is called `rix()`. `rix()` has several arguments:
 
 - the R version you need for your project
 - a list of R packages that your project needs
+- an optional list of additional software (for example, a Python interpreter, or Quarto)
+- an optional list with packages to install from Github
 - whether you want to use RStudio as an IDE for your project (or VS Code, or another environment)
 - a path to save a file called `default.nix`.
 
@@ -81,7 +83,7 @@ For example:
 rix(r_ver = "current", pkgs = c("dplyr", "chronicler"), ide = "rstudio")
 ```
 
-The call above write a `default.nix` file in the current working directory. This
+The call above writes a `default.nix` file in the current working directory. This
 `default.nix` can in turn be used by Nix to build an environment containing
 RStudio, the current (or latest) version of R, and the latest versions of the
 `{dplyr}` and `{chronicler}` packages. In th case of RStudio, it actually needs
@@ -148,6 +150,10 @@ use `{targets}` you could execute the pipeline in the environment by running:
 ```
 nix-shell /absolute/path/to/housing/default.nix --run Rscript -e 'targets::tar_make()'
 ```
+
+It's possible to execute the pipeline automatically 
+using a so-called "shell hook". See the 
+"How-to Nix" vignette for more details.
 
 ## Installation
 
