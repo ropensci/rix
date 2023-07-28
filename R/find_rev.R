@@ -322,7 +322,7 @@ USE_RSTUDIO};
 
   nixFile <- grep('TO_DELETE', nixFile, invert = TRUE, value = TRUE)
 
-  if(!file.exists(path) | overwrite){
+  if(!file.exists(path) || overwrite){
     writeLines(nixFile, path)
   } else {
     stop(paste0("File exists at the specified path. Set `overwrite == TRUE` to overwrite."))
