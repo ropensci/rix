@@ -279,10 +279,10 @@ packages:
 #' @return A character. The Nix definition to download and build the R package from Github.
 fetchgits <- function(git_pkgs){
 
-  if(!all(lapply(git_pkgs, is.list))){
+  if(!all(sapply(git_pkgs, is.list))){
     fetchgit(git_pkgs)
-  } else if(all(lapply(git_pkgs, is.list))){
-    lapply(git_pkgs, fetchgit)
+  } else if(all(sapply(git_pkgs, is.list))){
+    paste(lapply(git_pkgs, fetchgit), collapse = "\n")
   } else {
     stop("There is something wrong with the input. Make sure it is either a list of four elements 'package_name', 'repo_url', 'branch_name' and 'commit' or a list of lists with these four elements")
   }
