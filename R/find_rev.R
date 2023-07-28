@@ -276,7 +276,7 @@ rix <- function(r_ver = "current",
 
   path <- file.path(path)
 
-  pkgs <- if(ide == "code"){
+  r_pkgs <- if(ide == "code"){
             c(r_pkgs, "languageserver")
           } else {
             r_pkgs
