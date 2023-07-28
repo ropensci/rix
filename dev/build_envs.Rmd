@@ -133,6 +133,7 @@ get_imports <- function(repo_url, commit){
     repo_url
   }
 
+  # remove string like ( >= 1.0.0) from listed packages
   remove_parentheses <- function(input_list) {
     output_list <- gsub("\\s*\\(.*?\\)", "", input_list)
     output_list
@@ -159,22 +160,28 @@ get_imports <- function(repo_url, commit){
   output <- regmatches(input_string,
                        regexpr(".*?(?<!,)\\s", input_string, perl = TRUE))
 
-  gsub(",", "", trimws(output))
+  # put the output in vector format to allow removing of base packages
+  output <- gsub(",", "\n", output) |>
+    textConnection() |>
+    readLines() |>
+    trimws()
+
+  remove_base(output)
 }
 
 ```
 
-```{r, tests-get_imports}
+```{r tests-get_imports}
 testthat::expect_equal(
             get_imports("https://github.com/tidyverse/dplyr",
                         "1832ffbbdf3a85145b1545b84ee7b55a99fbae98"),
-            "cli generics glue lifecycle magrittr methods pillar R6 rlang tibble tidyselect utils vctrs"
+            "cli generics glue lifecycle magrittr pillar R6 rlang tibble tidyselect vctrs"
           )
 
 testthat::expect_equal(
             get_imports("https://github.com/rap4all/housing/",
                         "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
-            "dplyr ggplot2 janitor purrr readxl rlang rvest stringr tidyr utils"
+            "dplyr ggplot2 janitor purrr readxl rlang rvest stringr tidyr"
           )
 
 
@@ -204,7 +211,7 @@ get_sri_hash <- function(repo_url, branch_name, commit){
 }
 ```
 
-```{r, tests-get_sri_hash}
+```{r tests-get_sri_hash}
 testthat::expect_equal(
             get_sri_hash("https://github.com/rap4all/housing/",
                          "fusen",
@@ -282,6 +289,38 @@ fetchgits <- function(git_pkgs){
 
 }
 ```
+
+Base packages are not available in `nixpkgs` and are installed with R
+automatically. So if a package lists a base package in its `IMPORTS`, this base
+package needs to be removed, or else there will be an error message when trying
+to build a package from Github that will list its `IMPORTS` under
+`propagatedBuildInputs`. The function below removes base packages:
+
+```{r function-remove_base}
+#' remove_base Remove base packages from `propagatedBuildInputs`
+#' @param list_imports A list. A vector of R package names.
+#' @return A list. A vector of R package names without base R packages.
+remove_base <- function(list_imports){
+
+  gsub("(base)|(compiler)|(datasets)|(grDevices)|(graphics)|(grid)|(methods)|(parallel)|(profile)|(splines)|(stats)|(stats4)|(tcltk)|(tools)|(translations)|(utils)",
+       NA_character_,
+       list_imports) |>
+       na.omit()  |>
+       paste(collapse = " ")
+
+}
+```
+
+```{r tests-remove_base}
+testthat::expect_equal(
+  remove_base(
+    c("base","compiler","datasets","grDevices","graphics","grid","methods","parallel","profile","splines","stats","stats4","tcltk","tools","translations","utils", "dplyr", "fusen")
+  ),
+  "dplyr fusen"
+)
+
+```
+
 
 
 This next function returns a `default.nix` file that can be used to build a

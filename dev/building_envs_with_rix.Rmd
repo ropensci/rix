@@ -7,7 +7,7 @@ editor_options:
 
 Basic usage:
 
-```{r}
+```{r, eval = F}
 
 path_default_nix <- tempdir()
 
@@ -21,13 +21,13 @@ rix(r_ver = "4.2.1",
 
 ```
 
-```{r}
+```{r, eval = F}
 cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```
 
 Specifying a package on Github:
 
-```{r}
+```{r, eval = F}
 rix(r_ver = "4.2.1",
     r_pkgs = c("dplyr", "janitor"),
     other_pkgs = c("quarto"),
@@ -41,6 +41,6 @@ rix(r_ver = "4.2.1",
 
 ```
 
-```{r}
+```{r, eval = F}
 cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```

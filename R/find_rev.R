@@ -89,6 +89,7 @@ get_imports <- function(repo_url, commit){
     repo_url
   }
 
+  # remove string like ( >= 1.0.0) from listed packages
   remove_parentheses <- function(input_list) {
     output_list <- gsub("\\s*\\(.*?\\)", "", input_list)
     output_list
@@ -115,7 +116,13 @@ get_imports <- function(repo_url, commit){
   output <- regmatches(input_string,
                        regexpr(".*?(?<!,)\\s", input_string, perl = TRUE))
 
-  gsub(",", "", trimws(output))
+  # put the output in vector format to allow removing of base packages
+  output <- gsub(",", "\n", output) |>
+    textConnection() |>
+    readLines() |>
+    trimws()
+
+  remove_base(output)
 }
 
 
@@ -192,6 +199,20 @@ fetchgits <- function(git_pkgs){
   } else {
     stop("There is something wrong with the input. Make sure it is either a list of four elements 'package_name', 'repo_url', 'branch_name' and 'commit' or a list of lists with these four elements")
   }
+
+}
+
+#' remove_base Remove base packages from `propagatedBuildInputs`
+#' @param list_imports A list. A vector of R package names.
+#' @return A list. A vector of R package names without base R packages.
+#' @noRd
+remove_base <- function(list_imports){
+
+  gsub("(base)|(compiler)|(datasets)|(grDevices)|(graphics)|(grid)|(methods)|(parallel)|(profile)|(splines)|(stats)|(stats4)|(tcltk)|(tools)|(translations)|(utils)",
+       NA_character_,
+       list_imports) |>
+       na.omit()  |>
+       paste(collapse = " ")
 
 }
 
@@ -325,7 +346,7 @@ USE_RSTUDIO};
   if(!file.exists(path) || overwrite){
     writeLines(nixFile, path)
   } else {
-    stop(paste0("File exists at the specified path. Set `overwrite == TRUE` to overwrite."))
+    stop(paste0("File exists at ", path, ". Set `overwrite == TRUE` to overwrite."))
   }
 
 }

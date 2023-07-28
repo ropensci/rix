@@ -8,13 +8,13 @@ testthat::expect_equal(
 testthat::expect_equal(
             get_imports("https://github.com/tidyverse/dplyr",
                         "1832ffbbdf3a85145b1545b84ee7b55a99fbae98"),
-            "cli generics glue lifecycle magrittr methods pillar R6 rlang tibble tidyselect utils vctrs"
+            "cli generics glue lifecycle magrittr pillar R6 rlang tibble tidyselect vctrs"
           )
 
 testthat::expect_equal(
             get_imports("https://github.com/rap4all/housing/",
                         "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
-            "dplyr ggplot2 janitor purrr readxl rlang rvest stringr tidyr utils"
+            "dplyr ggplot2 janitor purrr readxl rlang rvest stringr tidyr"
           )
 
 
@@ -25,4 +25,12 @@ testthat::expect_equal(
                         "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
             "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4="
           )
+
+
+testthat::expect_equal(
+  remove_base(
+    c("base","compiler","datasets","grDevices","graphics","grid","methods","parallel","profile","splines","stats","stats4","tcltk","tools","translations","utils", "dplyr", "fusen")
+  ),
+  "dplyr fusen"
+)
 
