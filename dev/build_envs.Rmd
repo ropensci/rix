@@ -240,7 +240,7 @@ fetchgit <- function(git_pkg){
   }
 
   sprintf('(buildRPackage {
-    name = %s;
+    name = \"%s\";
     src = fetchgit {
       url = \"%s\";
       branchName = \"%s\";
@@ -418,7 +418,7 @@ USE_RSTUDIO};
 
   nixFile <- grep('TO_DELETE', nixFile, invert = TRUE, value = TRUE)
 
-  if(!file.exists(path) | overwrite){
+  if(!file.exists(path) || overwrite){
     writeLines(nixFile, path)
   } else {
     stop(paste0("File exists at ", path, ". Set `overwrite == TRUE` to overwrite."))
