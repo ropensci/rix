@@ -5,10 +5,24 @@ editor_options:
   chunk_output_type: console
 ---
 
-Basic usage:
+The goal of `{rix}` is to provide an easy way to generate `default.nix` files.
+These files used by the Nix package manager to build an environment according to
+the instructions found in the `default.nix` file. Users can specify which
+version of R, R packages, other needed software, IDE etc should be available
+within that environment. Writing such files can be daunting for newcomers, as so
+`{rix}` provides a function called `rix()`, which generates such a file.
 
-```{r, eval = F}
+Users need to provide the following inputs to `rix()`:
 
+- `r_ver`: the version of R required. Use "current" for the latest version;
+- `r_pkgs`: the required R packages. For example "dplyr";
+- `other_pkgs`: the required system packages, if needed. For example "quarto", or a Python interpreter;
+- `git_pkgs`: list of git packages to add. See the example below;
+- `ide`: the integrated development editor to use. For example "rstudio" if you want to use RStudio. Refer to the "Interactive work with {rix}" for more details;
+- `path`: the path where to save the `default.nix` file.
+- `overwrite`: whether to overwrite the `default.nix` file or not.
+
+```{r}
 path_default_nix <- tempdir()
 
 rix(r_ver = "4.2.1",
@@ -21,13 +35,13 @@ rix(r_ver = "4.2.1",
 
 ```
 
-```{r, eval = F}
+```{r}
 cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```
 
 Specifying a package on Github:
 
-```{r, eval = F}
+```{r}
 rix(r_ver = "4.2.1",
     r_pkgs = c("dplyr", "janitor"),
     other_pkgs = c("quarto"),
@@ -41,6 +55,6 @@ rix(r_ver = "4.2.1",
 
 ```
 
-```{r, eval = F}
+```{r}
 cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```
