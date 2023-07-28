@@ -325,7 +325,7 @@ USE_RSTUDIO};
   if(!file.exists(path) | overwrite){
     writeLines(nixFile, path)
   } else {
-    stop(paste0("File exists at ", path, ". Set `overwrite == TRUE` to overwrite."))
+    stop(paste0("File exists at the specified path. Set `overwrite == TRUE` to overwrite."))
   }
 
 }
