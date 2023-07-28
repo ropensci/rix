@@ -70,7 +70,6 @@
 </h2>
 <!-- badges: start -->
 
-<p><strong>WARNING: This package is in very early development!</strong></p>
 <p><code>{rix}</code> is an R package that provides functions to help you setup reproducible development environments that contain all the required packages that you need for your project. This is achieved by using the Nix package manager that you must install separately. The Nix package manager is extremely powerful: with it, it is possible to work on totally reproducible development environments, and even install old releases of R and R packages. With Nix, it is essentially possible to replace <a href="https://rstudio.github.io/renv/" class="external-link">renv</a> and Docker combined. If you need other tools or languages like Python or Julia, this can also be done easily. Nix is available for Linux, macOS and Windows.</p>
 </div>
 <div class="section level2">
@@ -82,17 +81,19 @@
 <h2 id="rix-workflow">Rix workflow<a class="anchor" aria-label="anchor" href="#rix-workflow"></a>
 </h2>
 <p>The idea of <code>{rix}</code> is for you to declare the environment you need, using the provided <code><a href="reference/rix.html">rix()</a></code> function, which in turn generates the required file for Nix to actually generate that environment. You can then use this environment to either work interactively, or run R scripts. It is possible to have as many environments as projects. Each environment is isolated (or not, it’s up to you).</p>
-<p>The main function of <code>{rix}</code> is called <code><a href="reference/rix.html">rix()</a></code>. <code><a href="reference/rix.html">rix()</a></code> has 4 arguments:</p>
+<p>The main function of <code>{rix}</code> is called <code><a href="reference/rix.html">rix()</a></code>. <code><a href="reference/rix.html">rix()</a></code> has several arguments:</p>
 <ul>
 <li>the R version you need for your project</li>
 <li>a list of R packages that your project needs</li>
+<li>an optional list of additional software (for example, a Python interpreter, or Quarto)</li>
+<li>an optional list with packages to install from Github</li>
 <li>whether you want to use RStudio as an IDE for your project (or VS Code, or another environment)</li>
 <li>a path to save a file called <code>default.nix</code>.</li>
 </ul>
 <p>For example:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"current"</span>, pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"chronicler"</span><span class="op">)</span>, ide <span class="op">=</span> <span class="st">"rstudio"</span><span class="op">)</span></span></code></pre></div>
-<p>The call above write a <code>default.nix</code> file in the current working directory. This <code>default.nix</code> can in turn be used by Nix to build an environment containing RStudio, the current (or latest) version of R, and the latest versions of the <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> and <code>{chronicler}</code> packages. In th case of RStudio, it actually needs to be installed for each environment. This is because RStudio changes some default environment variables and a globally installed RStudio (the one you install normally) would not recognize the R installed in the Nix environment. This is not the case for other IDEs such as VS code or Emacs. Another example:</p>
+<p>The call above writes a <code>default.nix</code> file in the current working directory. This <code>default.nix</code> can in turn be used by Nix to build an environment containing RStudio, the current (or latest) version of R, and the latest versions of the <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> and <code>{chronicler}</code> packages. In th case of RStudio, it actually needs to be installed for each environment. This is because RStudio changes some default environment variables and a globally installed RStudio (the one you install normally) would not recognize the R installed in the Nix environment. This is not the case for other IDEs such as VS code or Emacs. Another example:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"4.1.0"</span>, pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"chronicler"</span><span class="op">)</span>, ide <span class="op">=</span> <span class="st">"code"</span><span class="op">)</span></span></code></pre></div>
 <p>This call will generate a <code>default.nix</code> that installs R version 4.1.0, with the <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> and <code>{chronicler}</code> packages. Because the user wishes to use VS Code, the <code>ide</code> argument was set to “code”. This installs the required <a href="https://github.com/REditorSupport/languageserver/" class="external-link">languageserver</a> package as well, but unlike <code>ide = "rstudio"</code> does not install VS Code in that environment. Users should instead use the globally installed VS Code.</p>
@@ -115,6 +116,7 @@
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>shell <span class="sc">/</span>absolute<span class="sc">/</span>path<span class="sc">/</span>to<span class="sc">/</span>housing<span class="sc">/</span>default.nix <span class="sc">--</span>run rstudio</span></code></pre></div>
 <p>This will execute RStudio in the environment for the <code>housing</code> project. If you use <a href="https://docs.ropensci.org/targets/" class="external-link">targets</a> you could execute the pipeline in the environment by running:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>shell <span class="sc">/</span>absolute<span class="sc">/</span>path<span class="sc">/</span>to<span class="sc">/</span>housing<span class="sc">/</span>default.nix <span class="sc">--</span>run Rscript <span class="sc">-</span>e <span class="st">'targets::tar_make()'</span></span></code></pre></div>
+<p>It’s possible to execute the pipeline automatically using a so-called “shell hook”. See the “How-to Nix” vignette for more details.</p>
 </div>
 </div>
 <div class="section level2">
@@ -124,6 +126,11 @@
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"b-rodrigues/rix"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
+</h2>
+<p>This package is developed using the <a href="https://thinkr-open.github.io/fusen/" class="external-link">fusen</a> package. If you want to contribute, please edit the <code>.Rmd</code> files found in the <code>dev/</code> folder. Then, inflate the package using <code>fusen::inflate_all()</code>. If no errors are found (warning and notes are ok), then commit and open a PR. To learn how to use <a href="https://thinkr-open.github.io/fusen/" class="external-link">fusen</a> (don’t worry, it’s super easy), refer to this <a href="https://thinkr-open.github.io/fusen/articles/How-to-use-fusen.html" class="external-link">vignette</a>.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
