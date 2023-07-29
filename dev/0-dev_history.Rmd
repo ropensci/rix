@@ -18,6 +18,7 @@ fusen::fill_description(
   fields = list(
     Title = "Rix: Reproducible Environments with Nix",
     Description = "Provides helper functions to create reproducible development environments using the Nix package manager.",
+    Version = "0.0.9",
     `Authors@R` = c(
       person("Bruno", "Rodrigues", email = "bruno@brodrigues.co", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-3211-3689"))
     )
