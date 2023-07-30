@@ -151,7 +151,7 @@ by running:
     nix-shell /absolute/path/to/housing/default.nix --run Rscript -e 'targets::tar_make()'
 
 It’s possible to execute the pipeline automatically using a so-called
-“shell hook”. See the “How-to Nix” vignette for more details.
+“shell hook”. See the “Non-interactive use” vignette for more details.
 
 ## Contributing
 
