@@ -5,6 +5,8 @@ editor_options:
   chunk_output_type: console
 ---
 
+## Introduction and installation
+
 The goal of `{rix}` is to provide an easy way to generate `default.nix` files.
 These files are used by the Nix package manager to build an environment
 according to the instructions defined in the file. Users can specify which
@@ -12,7 +14,47 @@ version of R, R packages, other needed software, IDE etc should be available
 within that environment. Writing such files can be daunting for newcomers, and
 so `{rix}` provides a function called `rix()`, which generates such a file.
 
-Users need to provide the following inputs to `rix()`:
+`{rix}` does not require Nix to be installed to generate `default.nix` files, so 
+you could generate the file on one machine, and then build and use the environment
+on another machine that has Nix installed on it (or on a CI/CD service like Github
+Actions for example). If you wish to fully take advantage of Nix, I suggest you use
+[Determinate System's installer](https://zero-to-nix.com/start/install). Nix can be 
+installed on Linux, macOS and Windows (but on Windows WSL2 must be enabled). 
+
+On Linux, once Nix is instaled, all the software that will be installed will be saved
+to the `/nix` directory on the root partition. Complete development environments built
+with Nix can take up much space, so if the available space on your root parttion is limited,
+I advise you to mount the `/nix` folder on another partition with more space 
+(for example, a secondary hard drive). For this, edit `/etc/fstab` and add the following line
+at the end:
+
+```
+
+```
+
+If you have enough space on your root partition, you can ignore the above instructions.
+
+## Nix environments
+
+An environment bulit by Nix is not totally isolated from the rest of the system. Suppose
+that you the program `sl` installed on your system, and suppose you build a Nix 
+environment that also comes with `sl`. If you activate that environment, the version of `sl`
+that will run when called is the one included in the Nix environment. If, however, you start
+`sl` in a Nix environment that does not come with it, then your system's `sl` will get 
+used instead. This can be useful when working interactively with a Nix environment, because
+you can use your usual IDE to work with it. The only exception is RStudio: RStudio looks
+for R in predefined paths and cannot "see" the R from a Nix environment, it will instead
+use the version installed on your machine. This means that if you use RStudio to work
+interactively with R, you will need to install RStudio inside that environment. 
+`rix::rix()` does that for you.
+
+## Day-to-day use of {rix}
+
+The ideal workflow when using `{rix}` is to create a new, separate environment
+at the start of a project. Let's say that you wish to analyse some data set, and
+need `{dplyr}` and `{ggplot2}`. Let's also suppose that you use RStudio as your IDE.
+With the `rix::rix()` function, you can easily generate the right `default.nix` file.
+You need to provide the following inputs to `rix()`:
 
 - `r_ver`: the version of R required. Use "current" for the latest version;
 - `r_pkgs`: the required R packages. For example "dplyr";
@@ -22,8 +64,79 @@ Users need to provide the following inputs to `rix()`:
 - `path`: the path where to save the `default.nix` file.
 - `overwrite`: whether to overwrite the `default.nix` file or not.
 
-## Day-to-day use of {rix}
+In such a situation, you could create an environment with the following call to `rix()`:
 
+```{r}
+path_default_nix <- tempdir()
+
+rix(r_ver = "current",
+    r_pkgs = c("dplyr", "ggplot2"),
+    other_pkgs = NULL,
+    git_pkgs = NULL,
+    ide = "rstudio",
+    path = path_default_nix,
+    overwrite = TRUE)
+```
+
+This generates the following `default.nix` file:
+
+```{r, echo = F}
+cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
+```
+
+To start using this environment, open a console in the folder containing `default.nix`
+and use the following Nix command:
+
+```
+nix-build
+```
+
+`nix-build` is a Nix command that builds an environment according to the specifications found
+in a `default.nix` file. Once the environment is done building, you should find a new file
+called `result` next to the `default.nix` file. This file is a symlink to the software
+installed by Nix. To now use the environment, type:
+
+```
+nix-shell
+```
+
+You can now start RStudio by typing RStudio. This will start a version of RStudio specific 
+to this environment. If you already had RStudio installed by using your operating system's 
+installer, that version of RStudio will not be able to interact with Nix environments. This is
+because RStudio looks for R in certain specific paths that don't include any Nix environments.
+
+This is not the case with other editors like Visual Studio Code or Emacs. If you use Visual Studio
+Code, you can use following call to `rix()`:
+
+```{r}
+path_default_nix <- tempdir()
+
+rix(r_ver = "current",
+    r_pkgs = c("dplyr", "ggplot2"),
+    other_pkgs = NULL,
+    git_pkgs = NULL,
+    ide = "code",
+    path = path_default_nix,
+    overwrite = TRUE)
+```
+
+(note the value provided to the `ide` argument).
+
+This generates the following `default.nix` file:
+
+```{r, echo = F}
+cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
+```
+
+As you can see, specifying `ide = "code"` adds the `{languageserver}` package
+to the list of packages that must be installed for this environment. This is because
+Visual Studio Code requires this package to interact with R. This will
+not install a Nix environment-specific version of Visual Studio Code.  Now, instead of typing
+`rstudio` in the Nix shell of your environment, type `code` and this will start the
+Visual Studio Code you usually use. 
+
+If you use another editor, like Emacs, then use `ide = "other"`, and start that editor inside
+an activated Nix environment.
 
 ## Running old projects with {rix}
 
@@ -57,19 +170,24 @@ of `nixpkgs` is the one that shipped version 4.2.1 of R, so the `{dplyr}` and
 `{janitor}` packages that will get installed will be the versions available
 in that revision as well.
 
+## Installing packages from Github
 
-
-
-Specifying a package on Github:
+It is also possible to insall packages from Github:
 
 ```{r}
 rix(r_ver = "4.2.1",
     r_pkgs = c("dplyr", "janitor"),
     other_pkgs = c("quarto"),
-    git_pkgs = list(package_name = "housing",
-                    repo_url = "https://github.com/rap4all/housing/",
-                    branch_name = "fusen",
-                    commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
+    git_pkgs = list(
+                 list(package_name = "housing",
+                   repo_url = "https://github.com/rap4all/housing/",
+                   branch_name = "fusen",
+                   commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
+                 list(package_name = "fusen",
+                   repo_url = "https://github.com/ThinkR-open/fusen",
+                   branch_name = "main",
+                   commit = "d617172447d2947efb20ad6a4463742b8a5d79dc")
+    ),
     ide = "other",
     path = path_default_nix,
     overwrite = TRUE)
@@ -79,3 +197,8 @@ rix(r_ver = "4.2.1",
 ```{r}
 cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```
+
+This will install two packages from Github: the `{housing}` package, from the `fusen` branch. The 
+commit is also provided, to pin the exact version of the package needed. The `{fusen}` package
+is also installed.
+
