@@ -66,6 +66,14 @@
 <div class="page-header"><h1 id="rix-reproducible-environments-with-nix">Rix: Reproducible Environments with Nix<a class="anchor" aria-label="anchor" href="#rix-reproducible-environments-with-nix"></a>
 </h1></div>
 <div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>You can install the development version of rix from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"b-rodrigues/rix"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <!-- badges: start -->
@@ -91,41 +99,33 @@
 <li>a path to save a file called <code>default.nix</code>.</li>
 </ul>
 <p>For example:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"current"</span>, pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"chronicler"</span><span class="op">)</span>, ide <span class="op">=</span> <span class="st">"rstudio"</span><span class="op">)</span></span></code></pre></div>
 <p>The call above writes a <code>default.nix</code> file in the current working directory. This <code>default.nix</code> can in turn be used by Nix to build an environment containing RStudio, the current (or latest) version of R, and the latest versions of the <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> and <code>{chronicler}</code> packages. In th case of RStudio, it actually needs to be installed for each environment. This is because RStudio changes some default environment variables and a globally installed RStudio (the one you install normally) would not recognize the R installed in the Nix environment. This is not the case for other IDEs such as VS code or Emacs. Another example:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"4.1.0"</span>, pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"chronicler"</span><span class="op">)</span>, ide <span class="op">=</span> <span class="st">"code"</span><span class="op">)</span></span></code></pre></div>
 <p>This call will generate a <code>default.nix</code> that installs R version 4.1.0, with the <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> and <code>{chronicler}</code> packages. Because the user wishes to use VS Code, the <code>ide</code> argument was set to “code”. This installs the required <a href="https://github.com/REditorSupport/languageserver/" class="external-link">languageserver</a> package as well, but unlike <code>ide = "rstudio"</code> does not install VS Code in that environment. Users should instead use the globally installed VS Code.</p>
 <div class="section level3">
 <h3 id="defaultnix">default.nix<a class="anchor" aria-label="anchor" href="#defaultnix"></a>
 </h3>
 <p>The Nix package manager can be used to build reproducible development environments according to the specifications found in a file called <code>default.nix</code>. To make it easier for R programmers to use Nix, <code>{rix}</code> can be used to write this file for you. Once this file has been written, go to where you chose to write it (ideally in a new, empty folder that will be the root folder of your project) and use the Nix package manager to build the environment. Call the following function in a terminal:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>build</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>build</span></code></pre></div>
 <p>Once Nix done building the environment, you can start working on it interactively by using the following command:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>shell</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>shell</span></code></pre></div>
 <p>You will <em>drop</em> in a Nix shell. You can now call the IDE of your choice. For RStudio, simply call:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>rstudio</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rstudio</span></code></pre></div>
 <p>This will start RStudio. RStudio will use the version of R and library of packages from that environment.</p>
 </div>
 <div class="section level3">
 <h3 id="running-programs-from-an-environment">Running programs from an environment<a class="anchor" aria-label="anchor" href="#running-programs-from-an-environment"></a>
 </h3>
 <p>You could create a bash script that you put in the path to make this process more streamlined. For example, if your project is called <code>housing</code>, you could create this script and execute it to start your project:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="sc">!</span><span class="co">#/bin/bash</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>shell <span class="sc">/</span>absolute<span class="sc">/</span>path<span class="sc">/</span>to<span class="sc">/</span>housing<span class="sc">/</span>default.nix <span class="sc">--</span>run rstudio</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="sc">!</span><span class="co">#/bin/bash</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>shell <span class="sc">/</span>absolute<span class="sc">/</span>path<span class="sc">/</span>to<span class="sc">/</span>housing<span class="sc">/</span>default.nix <span class="sc">--</span>run rstudio</span></code></pre></div>
 <p>This will execute RStudio in the environment for the <code>housing</code> project. If you use <a href="https://docs.ropensci.org/targets/" class="external-link">targets</a> you could execute the pipeline in the environment by running:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>shell <span class="sc">/</span>absolute<span class="sc">/</span>path<span class="sc">/</span>to<span class="sc">/</span>housing<span class="sc">/</span>default.nix <span class="sc">--</span>run Rscript <span class="sc">-</span>e <span class="st">'targets::tar_make()'</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>shell <span class="sc">/</span>absolute<span class="sc">/</span>path<span class="sc">/</span>to<span class="sc">/</span>housing<span class="sc">/</span>default.nix <span class="sc">--</span>run Rscript <span class="sc">-</span>e <span class="st">'targets::tar_make()'</span></span></code></pre></div>
 <p>It’s possible to execute the pipeline automatically using a so-called “shell hook”. See the “How-to Nix” vignette for more details.</p>
 </div>
-</div>
-<div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
-</h2>
-<p>You can install the development version of rix from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"b-rodrigues/rix"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
