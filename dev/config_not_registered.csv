@@ -1,2 +1,3 @@
 "type","path","origin"
-"vignette","vignettes/dev-build_envs.Rmd","Possibly deprecated file. Please check its link with detected flat source: dev/build_envs.Rmd"
+"vignette","vignettes/building-reproducible-development-environments-with-rix.Rmd","Possibly deprecated file. Please check its link with detected flat source: dev/building_envs_with_rix.Rmd"
+"vignette","vignettes/save-the-nix-package-versions-data.Rmd","Possibly deprecated file. Please check its link with detected flat source: dev/save_r_nix_revs.Rmd"

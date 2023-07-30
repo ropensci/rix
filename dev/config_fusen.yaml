@@ -16,10 +16,10 @@ building_envs_with_rix.Rmd:
   state: active
   R: []
   tests: []
-  vignettes: vignettes/building_envs_with_rix.Rmd
+  vignettes: vignettes/building-reproducible-development-environments-with-rix.Rmd
   inflate:
     flat_file: dev/building_envs_with_rix.Rmd
-    vignette_name: building_envs_with_rix
+    vignette_name: Building reproducible development environments with rix
     open_vignette: true
     check: true
     document: true
@@ -42,10 +42,10 @@ save_r_nix_revs.Rmd:
   state: active
   R: []
   tests: []
-  vignettes: vignettes/dev-save_r_nix_revs.Rmd
+  vignettes: vignettes/save-the-nix-package-versions-data.Rmd
   inflate:
     flat_file: dev/save_r_nix_revs.Rmd
-    vignette_name: dev-save_r_nix_revs
+    vignette_name: Save the Nix Package Versions data
     open_vignette: true
     check: true
     document: true

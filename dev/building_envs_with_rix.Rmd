@@ -1,16 +1,16 @@
 ---
-title: "Building reproducible development environments with {rix}"
+title: "Building reproducible development environments with rix"
 output: html_document
 editor_options:
   chunk_output_type: console
 ---
 
 The goal of `{rix}` is to provide an easy way to generate `default.nix` files.
-These files used by the Nix package manager to build an environment according to
-the instructions found in the `default.nix` file. Users can specify which
+These files are used by the Nix package manager to build an environment
+according to the instructions defined in the file. Users can specify which
 version of R, R packages, other needed software, IDE etc should be available
-within that environment. Writing such files can be daunting for newcomers, as so
-`{rix}` provides a function called `rix()`, which generates such a file.
+within that environment. Writing such files can be daunting for newcomers, and
+so `{rix}` provides a function called `rix()`, which generates such a file.
 
 Users need to provide the following inputs to `rix()`:
 
@@ -22,6 +22,15 @@ Users need to provide the following inputs to `rix()`:
 - `path`: the path where to save the `default.nix` file.
 - `overwrite`: whether to overwrite the `default.nix` file or not.
 
+## Day-to-day use of {rix}
+
+
+## Running old projects with {rix}
+
+The example below shows how to create a `default.nix` with instructions to build
+an environment with R version 4.2.1, the `{dplyr}` and `{janitor}` packages
+and no specific IDE:
+
 ```{r}
 path_default_nix <- tempdir()
 
@@ -31,13 +40,25 @@ rix(r_ver = "4.2.1",
     git_pkgs = NULL,
     ide = "other",
     path = path_default_nix,
-    overwrite = FALSE)
+    overwrite = TRUE)
 
 ```
 
-```{r}
+The file looks like this:
+
+```{r, echo = F}
 cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```
+
+The first following line is quite important, as it shows which *revision* of
+`nixpkgs` is being used for this environment. The *revision* is the commit
+hash of that particular release of `nixpkgs`, here: `79b3d4bcae8`. This revision
+of `nixpkgs` is the one that shipped version 4.2.1 of R, so the `{dplyr}` and
+`{janitor}` packages that will get installed will be the versions available
+in that revision as well.
+
+
+
 
 Specifying a package on Github:
 

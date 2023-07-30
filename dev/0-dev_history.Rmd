@@ -75,13 +75,13 @@ fusen::inflate(flat_file = "dev/build_envs.Rmd",
 # Run but keep eval=FALSE to avoid infinite loop
 # Execute in the console directly
 fusen::inflate(flat_file = "dev/save_r_nix_revs.Rmd",
-               vignette_name = "[Dev]-Saving historical revisions",
+               vignette_name = "Save the Nix Package Versions data",
                overwrite = TRUE)
 ```
 
 ```{r}
 local({
-  knitr::knit("vignettes/dev-save_r_nix_revs.Rmd",
+  knitr::knit("vignettes/save-the-nix-package-versions-data.Rmd",
               output = tempfile())
   usethis::use_data(r_nix_revs,
                     overwrite = TRUE)
