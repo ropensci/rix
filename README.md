@@ -3,6 +3,16 @@
 
 # Rix: Reproducible Environments with Nix
 
+## Installation
+
+You can install the development version of rix from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("b-rodrigues/rix")
+```
+
 ## Introduction
 
 <!-- badges: start -->
@@ -142,16 +152,6 @@ by running:
 
 It’s possible to execute the pipeline automatically using a so-called
 “shell hook”. See the “How-to Nix” vignette for more details.
-
-## Installation
-
-You can install the development version of rix from
-[GitHub](https://github.com/) with:
-
-``` r
-# install.packages("devtools")
-devtools::install_github("b-rodrigues/rix")
-```
 
 ## Contributing
 
