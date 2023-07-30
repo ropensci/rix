@@ -13,6 +13,9 @@
     <loc>/articles/index.html</loc>
   </url>
   <url>
+    <loc>/articles/non-interactive-use.html</loc>
+  </url>
+  <url>
     <loc>/articles/save-the-nix-package-versions-data.html</loc>
   </url>
   <url>

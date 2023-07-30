@@ -44,6 +44,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="articles/building-reproducible-development-environments-with-rix.html">Building reproducible development environments with rix</a>
+    <a class="dropdown-item" href="articles/non-interactive-use.html">Non-interactive use</a>
     <a class="dropdown-item" href="articles/save-the-nix-package-versions-data.html">Save the Nix Package Versions data</a>
   </div>
 </li>
@@ -124,7 +125,7 @@
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>shell <span class="sc">/</span>absolute<span class="sc">/</span>path<span class="sc">/</span>to<span class="sc">/</span>housing<span class="sc">/</span>default.nix <span class="sc">--</span>run rstudio</span></code></pre></div>
 <p>This will execute RStudio in the environment for the <code>housing</code> project. If you use <a href="https://docs.ropensci.org/targets/" class="external-link">targets</a> you could execute the pipeline in the environment by running:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>shell <span class="sc">/</span>absolute<span class="sc">/</span>path<span class="sc">/</span>to<span class="sc">/</span>housing<span class="sc">/</span>default.nix <span class="sc">--</span>run Rscript <span class="sc">-</span>e <span class="st">'targets::tar_make()'</span></span></code></pre></div>
-<p>It’s possible to execute the pipeline automatically using a so-called “shell hook”. See the “How-to Nix” vignette for more details.</p>
+<p>It’s possible to execute the pipeline automatically using a so-called “shell hook”. See the “Non-interactive use” vignette for more details.</p>
 </div>
 </div>
 <div class="section level2">
