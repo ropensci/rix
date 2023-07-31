@@ -115,6 +115,12 @@ fusen::inflate(flat_file = "dev/non_interactive_use.Rmd",
                overwrite = TRUE)
 ```
 
+```{r}
+fusen::inflate(flat_file = "dev/interactive_use.Rmd",
+               vignette_name = "Interactive use",
+               overwrite = TRUE)
+```
+
 
 # Package development tools
 ## Use once

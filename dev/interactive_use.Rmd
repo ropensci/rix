@@ -1,0 +1,26 @@
+---
+title: "Interactive use"
+output: html_document
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+This vignette describes interactive use of environments built with `{rix}` using
+a GUI editor like RStudio. I will discuss two scenarios: one in which you
+already have R and RStudio installed on your operating system using the usual
+installation method for your operating system, and another in which you used
+Nix to install R and RStudio (or any other IDE).
+
+## Scenario 1: you installed R and RStudio as usual
+
+Let's suppose that you are already running R and RStudio and that you wish to
+start using `{rix}` to define reproducible environments for your new projects
+henceforth. These environments will get built using the Nix package manager and
+will not only include the required R packages for your project but also a
+specific version of R.
+
+## Scenario 2: you install R and RStudio using Nix
+
+## Other IDEs

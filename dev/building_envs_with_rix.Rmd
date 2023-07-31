@@ -144,6 +144,8 @@ and this will start the Visual Studio Code you usually use.
 If you use another editor, like Emacs, then use `ide = "other"`, and start that
 editor inside an activated Nix environment.
 
+For more details on interactive use, read the "Interactive use" vignette.
+
 ## Running old projects with {rix}
 
 The example below shows how to create a `default.nix` with instructions to build
