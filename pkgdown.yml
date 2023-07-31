@@ -3,7 +3,8 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   building-reproducible-development-environments-with-rix: building-reproducible-development-environments-with-rix.html
+  interactive-use: interactive-use.html
   non-interactive-use: non-interactive-use.html
   save-the-nix-package-versions-data: save-the-nix-package-versions-data.html
-last_built: 2023-07-30T20:18Z
+last_built: 2023-07-31T14:28Z
 
