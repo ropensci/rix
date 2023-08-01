@@ -240,4 +240,6 @@ specifically the code as it is in the `fusen` branch. The commit is also
 provided, to pin the exact version of the package needed. The `{fusen}` package
 is also installed, from the main branch at commit `d617172447d`.
 
+To learn more about using `{rix}` on a daily basis, read the [Interactive
+use](https://b-rodrigues.github.io/rix/articles/interactive-use.html) vignette.
 

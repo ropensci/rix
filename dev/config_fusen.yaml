@@ -37,6 +37,19 @@ data_doc.Rmd:
     check: true
     document: true
     overwrite: 'yes'
+interactive_use.Rmd:
+  path: dev/interactive_use.Rmd
+  state: active
+  R: []
+  tests: []
+  vignettes: vignettes/interactive-use.Rmd
+  inflate:
+    flat_file: dev/interactive_use.Rmd
+    vignette_name: Interactive use
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: 'yes'
 non_interactive_use.Rmd:
   path: dev/non_interactive_use.Rmd
   state: active
