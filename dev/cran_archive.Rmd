@@ -19,6 +19,9 @@ pkgload::load_all(export_all = FALSE)
 ```
 
 ```{r function-detect_versions}
+#' detect_versions Detects if CRAN packages need to be downloaded from the archive.
+#' @param r_pkgs A list of packages, to get from CRAN (either current packages or archived packages).
+#' @return A list of two elements, "cran_packages" and "archive_packages"
 detect_versions <- function(r_pkgs){
   if(any(grepl("@", r_pkgs))){
 
@@ -41,6 +44,7 @@ detect_versions <- function(r_pkgs){
     )
   }
 
+  output
 }
 ```
 
