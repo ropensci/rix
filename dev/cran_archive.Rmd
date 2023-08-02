@@ -1,0 +1,57 @@
+---
+title: "Functions to handle packages on CRAN archives"
+output: html_document
+editor_options:
+  chunk_output_type: console
+---
+
+```{r development, include=FALSE}
+library(testthat)
+```
+
+<!--
+You need to run the 'description' chunk in the '0-dev_history.Rmd' file before continuing your code there.
+-->
+
+```{r development-load}
+# Load already included functions if relevant
+pkgload::load_all(export_all = FALSE)
+```
+
+```{r function-detect_versions}
+detect_versions <- function(r_pkgs){
+  if(any(grepl("@", r_pkgs))){
+
+    cran_packages <- Filter(\(x)(!grepl("@", x)), r_pkgs)
+    archive_packages <- Filter(\(x)(grepl("@", x)), r_pkgs)
+
+    output <- list(
+      "cran_packages" = cran_packages,
+      "archive_packages" = archive_packages
+    )
+
+  } else {
+    output <- list(
+      "cran_packages" = r_pkgs,
+      "archive_packages" = NULL
+    )
+  }
+
+}
+```
+
+```{r tests-detect_versions}
+testthat::expect_equal(
+            detect_versions(c("dplyr", "tidyr")),
+            list(
+              "cran_packages" = c("dplyr", "tidyr"),
+              "archive_packages" = NULL)
+          )
+
+testthat::expect_equal(
+            detect_versions(c("dplyr@0.80", "tidyr")),
+            list(
+              "cran_packages" = "tidyr",
+              "archive_packages" = "dplyr@0.80")
+          )
+```

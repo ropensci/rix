@@ -24,6 +24,19 @@ building_envs_with_rix.Rmd:
     check: true
     document: true
     overwrite: 'yes'
+cran_archive.Rmd:
+  path: dev/cran_archive.Rmd
+  state: active
+  R: R/detect_versions.R
+  tests: tests/testthat/test-detect_versions.R
+  vignettes: vignettes/installing-old-packages-from-the-cran-archives.Rmd
+  inflate:
+    flat_file: dev/cran_archive.Rmd
+    vignette_name: Installing old packages from the CRAN archives
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: 'yes'
 data_doc.Rmd:
   path: dev/data_doc.Rmd
   state: active

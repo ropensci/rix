@@ -73,66 +73,13 @@ get_current <- function() {
   })
 }
 
-#' get_imports Get a package's dependencies
-#' @param repo_url A character. The URL to the package's Github repository
-#' @param commit. The commit hash of interest, for reproducibility's sake
-#' @return A character. The packages listed under DESCRIPTION
-#'
-#' @noRd
-
-get_imports <- function(repo_url, commit){
-
-  add_trailing_slash <- function(repo_url) {
-    if (substr(repo_url, nchar(repo_url), nchar(repo_url)) != "/") {
-      repo_url <- paste0(repo_url, "/")
-    }
-    repo_url
-  }
-
-  # remove string like ( >= 1.0.0) from listed packages
-  remove_parentheses <- function(input_list) {
-    output_list <- gsub("\\s*\\(.*?\\)", "", input_list)
-    output_list
-  }
-
-  repo_url <- add_trailing_slash(repo_url)
-
-  repo_url <- paste0(
-    gsub("github.com", "raw.githubusercontent.com", repo_url),
-    commit,
-    "/DESCRIPTION"
-  )
-
-  contents <- readLines(repo_url)
-
-  contents <- remove_parentheses(contents)
-
-  imports_line <- grep("^Imports:", contents)
-
-
-  input_string <- paste(trimws(contents[(imports_line+1):length(contents)]),
-                        collapse = " ")
-
-  output <- regmatches(input_string,
-                       regexpr(".*?(?<!,)\\s", input_string, perl = TRUE))
-
-  # put the output in vector format to allow removing of base packages
-  output <- gsub(",", "\n", output) |>
-    textConnection() |>
-    readLines() |>
-    trimws()
-
-  remove_base(output)
-}
-
-
 #' get_sri_hish Get the SRI hash of the NAR serialization of a Github repo
 #' @param repo_url A character. The URL to the package's Github repository
 #' @param branch_name A character. The branch of interest
 #' @param commit A character. The commit hash of interest, for reproducibility's sake
 #' @return The SRI hash as a character
 #' @noRd
-get_sri_hash <- function(repo_url, branch_name, commit){
+get_sri_hash_deps <- function(repo_url, branch_name, commit){
   result <- httr::GET(paste0("http://git2nixsha.dev:1506/hash?repo_url=",
                              repo_url,
                              "&branchName=",
@@ -140,11 +87,12 @@ get_sri_hash <- function(repo_url, branch_name, commit){
                              "&commit=",
                              commit))
 
-  unlist(httr::content(result))
+  lapply(httr::content(result), unlist)
+
 }
 
 #' fetchgit Downloads and installs a package hosted of Git
-#' @param git_pkg A list of at least four elements: "package_name", the name of the package, "repo_url", the repository's url, "branch_name", the name of the branch containing the code to download and "commit", the commit hash of interest. A fifth, optional argument called "sri_hash" can be provided, if available. If not, "sri_hash" will be obtained using `get_sri_hash()`
+#' @param git_pkg A list of at least four elements: "package_name", the name of the package, "repo_url", the repository's url, "branch_name", the name of the branch containing the code to download and "commit", the commit hash of interest. A fifth, optional argument called "sri_hash" can be provided, if available. If not, "sri_hash" will be obtained using `get_sri_hash_deps()`
 #' @return A character. The Nix definition to download and build the R package from Github.
 #' @noRd
 fetchgit <- function(git_pkg){
@@ -155,12 +103,13 @@ fetchgit <- function(git_pkg){
   commit <- git_pkg$commit
   sri_hash <- git_pkg$sri_hash
 
-  imports <- get_imports(repo_url, commit)
-
   if(is.null(sri_hash)){
-    sri_hash <- get_sri_hash(repo_url, branch_name, commit)
+    output <- get_sri_hash_deps(repo_url, branch_name, commit)
+    sri_hash <- output$sri_hash
+    imports <- output$deps
   } else {
     sri_hash <- sri_hash
+    imports <- NULL
   }
 
   sprintf('(buildRPackage {
@@ -187,7 +136,7 @@ fetchgit <- function(git_pkg){
 
 
 #' fetchgits Downloads and installs a packages hosted of Git. Wrapper around `fetchgit()` to handle multiple packages
-#' @param git_pkg A list of at least four elements: "package_name", the name of the package, "repo_url", the repository's url, "branch_name", the name of the branch containing the code to download and "commit", the commit hash of interest. A fifth, optional argument called "sri_hash" can be provided, if available. If not, "sri_hash" will be obtained using `get_sri_hash()`. This argument can also be a list of lists of these four elements.
+#' @param git_pkg A list of at least four elements: "package_name", the name of the package, "repo_url", the repository's url, "branch_name", the name of the branch containing the code to download and "commit", the commit hash of interest. A fifth, optional argument called "sri_hash" can be provided, if available. If not, "sri_hash" will be obtained using `get_sri_hash_deps()`. This argument can also be a list of lists of these four elements.
 #' @return A character. The Nix definition to download and build the R package from Github.
 #' @noRd
 fetchgits <- function(git_pkgs){
@@ -199,21 +148,6 @@ fetchgits <- function(git_pkgs){
   } else {
     stop("There is something wrong with the input. Make sure it is either a list of four elements 'package_name', 'repo_url', 'branch_name' and 'commit' or a list of lists with these four elements")
   }
-
-}
-
-#' remove_base Remove base packages from `propagatedBuildInputs`
-#' @param list_imports A list. A vector of R package names.
-#' @return A list. A vector of R package names without base R packages.
-#' @importFrom stats na.omit
-#' @noRd
-remove_base <- function(list_imports){
-
-  gsub("(base)|(compiler)|(datasets)|(grDevices)|(graphics)|(grid)|(methods)|(parallel)|(profile)|(splines)|(stats)|(stats4)|(tcltk)|(tools)|(translations)|(utils)",
-       NA_character_,
-       list_imports) |>
-       na.omit()  |>
-       paste(collapse = " ")
 
 }
 

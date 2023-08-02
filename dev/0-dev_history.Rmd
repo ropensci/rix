@@ -121,6 +121,13 @@ fusen::inflate(flat_file = "dev/interactive_use.Rmd",
                overwrite = TRUE)
 ```
 
+```{r}
+fusen::inflate(flat_file = "dev/cran_archive.Rmd",
+               vignette_name = "Installing old packages from the CRAN archives",
+               overwrite = TRUE)
+```
+
+
 
 # Package development tools
 ## Use once

@@ -12,7 +12,6 @@ Depends:
 Imports: 
     httr,
     jsonlite,
-    stats,
     utils
 Suggests: 
     knitr,
