@@ -1,8 +1,8 @@
 ---
-title: "dev-save_r_nix_revs"
+title: "Save the Nix Package Versions data"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{dev-save_r_nix_revs}
+  %\VignetteIndexEntry{save-the-nix-package-versions-data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -3,14 +3,22 @@
 
 # Rix: Reproducible Environments with Nix
 
+## Installation
+
+You can install the development version of rix from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("b-rodrigues/rix")
+```
+
 ## Introduction
 
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/b-rodrigues/rix/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/b-rodrigues/rix/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
-
-**WARNING: This package is in very early development\!**
 
 `{rix}` is an R package that provides functions to help you setup
 reproducible development environments that contain all the required
@@ -61,10 +69,14 @@ then use this environment to either work interactively, or run R
 scripts. It is possible to have as many environments as projects. Each
 environment is isolated (or not, it’s up to you).
 
-The main function of `{rix}` is called `rix()`. `rix()` has 4 arguments:
+The main function of `{rix}` is called `rix()`. `rix()` has several
+arguments:
 
   - the R version you need for your project
   - a list of R packages that your project needs
+  - an optional list of additional software (for example, a Python
+    interpreter, or Quarto)
+  - an optional list with packages to install from Github
   - whether you want to use RStudio as an IDE for your project (or VS
     Code, or another environment)
   - a path to save a file called `default.nix`.
@@ -75,7 +87,7 @@ For example:
 rix(r_ver = "current", pkgs = c("dplyr", "chronicler"), ide = "rstudio")
 ```
 
-The call above write a `default.nix` file in the current working
+The call above writes a `default.nix` file in the current working
 directory. This `default.nix` can in turn be used by Nix to build an
 environment containing RStudio, the current (or latest) version of R,
 and the latest versions of the `{dplyr}` and `{chronicler}` packages. In
@@ -138,12 +150,14 @@ by running:
 
     nix-shell /absolute/path/to/housing/default.nix --run Rscript -e 'targets::tar_make()'
 
-## Installation
+It’s possible to execute the pipeline automatically using a so-called
+“shell hook”. See the “Non-interactive use” vignette for more details.
 
-You can install the development version of rix from
-[GitHub](https://github.com/) with:
+## Contributing
 
-``` r
-# install.packages("devtools")
-devtools::install_github("b-rodrigues/rix")
-```
+This package is developed using the `{fusen}` package. If you want to
+contribute, please edit the `.Rmd` files found in the `dev/` folder.
+Then, inflate the package using `fusen::inflate_all()`. If no errors are
+found (warning and notes are ok), then commit and open a PR. To learn
+how to use `{fusen}` (don’t worry, it’s super easy), refer to this
+[vignette](https://thinkr-open.github.io/fusen/articles/How-to-use-fusen.html).

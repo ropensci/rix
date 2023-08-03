@@ -1,0 +1,21 @@
+---
+title: "Non-interactive use"
+output: html_document
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+## Running a {targets} pipeline
+
+
+If you use `{targets}` you could execute the pipeline in the environment by
+running:
+
+```
+nix-shell /absolute/path/to/housing/default.nix --run Rscript -e 'targets::tar_make()'
+```
+
+It's possible to execute the pipeline automatically using a so-called "shell
+hook". See the "Non-interactive use" vignette for more details.

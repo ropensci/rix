@@ -18,6 +18,7 @@ fusen::fill_description(
   fields = list(
     Title = "Rix: Reproducible Environments with Nix",
     Description = "Provides helper functions to create reproducible development environments using the Nix package manager.",
+    Version = "0.0.9",
     `Authors@R` = c(
       person("Bruno", "Rodrigues", email = "bruno@brodrigues.co", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-3211-3689"))
     )
@@ -74,13 +75,13 @@ fusen::inflate(flat_file = "dev/build_envs.Rmd",
 # Run but keep eval=FALSE to avoid infinite loop
 # Execute in the console directly
 fusen::inflate(flat_file = "dev/save_r_nix_revs.Rmd",
-               vignette_name = "[Dev]-Saving historical revisions",
+               vignette_name = "Save the Nix Package Versions data",
                overwrite = TRUE)
 ```
 
 ```{r}
 local({
-  knitr::knit("vignettes/dev-save_r_nix_revs.Rmd",
+  knitr::knit("vignettes/save-the-nix-package-versions-data.Rmd",
               output = tempfile())
   usethis::use_data(r_nix_revs,
                     overwrite = TRUE)
@@ -107,6 +108,26 @@ fusen::inflate(flat_file = "dev/building_envs_with_rix.Rmd",
                vignette_name = "Building reproducible development environments with {rix}",
                overwrite = TRUE)
 ```
+
+```{r}
+fusen::inflate(flat_file = "dev/non_interactive_use.Rmd",
+               vignette_name = "Non-interactive use",
+               overwrite = TRUE)
+```
+
+```{r}
+fusen::inflate(flat_file = "dev/interactive_use.Rmd",
+               vignette_name = "Interactive use",
+               overwrite = TRUE)
+```
+
+```{r}
+fusen::inflate(flat_file = "dev/cran_archive.Rmd",
+               vignette_name = "Installing old packages from the CRAN archives",
+               overwrite = TRUE)
+```
+
+
 
 # Package development tools
 ## Use once

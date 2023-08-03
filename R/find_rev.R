@@ -73,59 +73,13 @@ get_current <- function() {
   })
 }
 
-#' get_imports Get a package's dependencies
-#' @param repo_url A character. The URL to the package's Github repository
-#' @param commit. The commit hash of interest, for reproducibility's sake
-#' @return A character. The packages listed under DESCRIPTION
-#'
-#' @noRd
-
-get_imports <- function(repo_url, commit){
-
-  add_trailing_slash <- function(repo_url) {
-    if (substr(repo_url, nchar(repo_url), nchar(repo_url)) != "/") {
-      repo_url <- paste0(repo_url, "/")
-    }
-    repo_url
-  }
-
-  remove_parentheses <- function(input_list) {
-    output_list <- gsub("\\s*\\(.*?\\)", "", input_list)
-    output_list
-  }
-
-  repo_url <- add_trailing_slash(repo_url)
-
-  repo_url <- paste0(
-    gsub("github.com", "raw.githubusercontent.com", repo_url),
-    commit,
-    "/DESCRIPTION"
-  )
-
-  contents <- readLines(repo_url)
-
-  contents <- remove_parentheses(contents)
-
-  imports_line <- grep("^Imports:", contents)
-
-
-  input_string <- paste(trimws(contents[(imports_line+1):length(contents)]),
-                        collapse = " ")
-
-  output <- regmatches(input_string,
-                       regexpr(".*?(?<!,)\\s", input_string, perl = TRUE))
-
-  gsub(",", "", trimws(output))
-}
-
-
 #' get_sri_hish Get the SRI hash of the NAR serialization of a Github repo
 #' @param repo_url A character. The URL to the package's Github repository
 #' @param branch_name A character. The branch of interest
 #' @param commit A character. The commit hash of interest, for reproducibility's sake
 #' @return The SRI hash as a character
 #' @noRd
-get_sri_hash <- function(repo_url, branch_name, commit){
+get_sri_hash_deps <- function(repo_url, branch_name, commit){
   result <- httr::GET(paste0("http://git2nixsha.dev:1506/hash?repo_url=",
                              repo_url,
                              "&branchName=",
@@ -133,11 +87,12 @@ get_sri_hash <- function(repo_url, branch_name, commit){
                              "&commit=",
                              commit))
 
-  unlist(httr::content(result))
+  lapply(httr::content(result), unlist)
+
 }
 
 #' fetchgit Downloads and installs a package hosted of Git
-#' @param git_pkg A list of at least four elements: "package_name", the name of the package, "repo_url", the repository's url, "branch_name", the name of the branch containing the code to download and "commit", the commit hash of interest. A fifth, optional argument called "sri_hash" can be provided, if available. If not, "sri_hash" will be obtained using `get_sri_hash()`
+#' @param git_pkg A list of at least four elements: "package_name", the name of the package, "repo_url", the repository's url, "branch_name", the name of the branch containing the code to download and "commit", the commit hash of interest. A fifth, optional argument called "sri_hash" can be provided, if available. If not, "sri_hash" will be obtained using `get_sri_hash_deps()`
 #' @return A character. The Nix definition to download and build the R package from Github.
 #' @noRd
 fetchgit <- function(git_pkg){
@@ -148,16 +103,17 @@ fetchgit <- function(git_pkg){
   commit <- git_pkg$commit
   sri_hash <- git_pkg$sri_hash
 
-  imports <- get_imports(repo_url, commit)
-
   if(is.null(sri_hash)){
-    sri_hash <- get_sri_hash(repo_url, branch_name, commit)
+    output <- get_sri_hash_deps(repo_url, branch_name, commit)
+    sri_hash <- output$sri_hash
+    imports <- output$deps
   } else {
     sri_hash <- sri_hash
+    imports <- NULL
   }
 
   sprintf('(buildRPackage {
-    name = %s;
+    name = \"%s\";
     src = fetchgit {
       url = \"%s\";
       branchName = \"%s\";
@@ -180,15 +136,15 @@ fetchgit <- function(git_pkg){
 
 
 #' fetchgits Downloads and installs a packages hosted of Git. Wrapper around `fetchgit()` to handle multiple packages
-#' @param git_pkg A list of at least four elements: "package_name", the name of the package, "repo_url", the repository's url, "branch_name", the name of the branch containing the code to download and "commit", the commit hash of interest. A fifth, optional argument called "sri_hash" can be provided, if available. If not, "sri_hash" will be obtained using `get_sri_hash()`. This argument can also be a list of lists of these four elements.
+#' @param git_pkg A list of at least four elements: "package_name", the name of the package, "repo_url", the repository's url, "branch_name", the name of the branch containing the code to download and "commit", the commit hash of interest. A fifth, optional argument called "sri_hash" can be provided, if available. If not, "sri_hash" will be obtained using `get_sri_hash_deps()`. This argument can also be a list of lists of these four elements.
 #' @return A character. The Nix definition to download and build the R package from Github.
 #' @noRd
 fetchgits <- function(git_pkgs){
 
-  if(!all(lapply(git_pkgs, is.list))){
+  if(!all(sapply(git_pkgs, is.list))){
     fetchgit(git_pkgs)
-  } else if(all(lapply(git_pkgs, is.list))){
-    lapply(git_pkgs, fetchgit)
+  } else if(all(sapply(git_pkgs, is.list))){
+    paste(lapply(git_pkgs, fetchgit), collapse = "\n")
   } else {
     stop("There is something wrong with the input. Make sure it is either a list of four elements 'package_name', 'repo_url', 'branch_name' and 'commit' or a list of lists with these four elements")
   }
@@ -255,7 +211,7 @@ rix <- function(r_ver = "current",
 
   path <- file.path(path)
 
-  pkgs <- if(ide == "code"){
+  r_pkgs <- if(ide == "code"){
             c(r_pkgs, "languageserver")
           } else {
             r_pkgs
@@ -264,11 +220,12 @@ rix <- function(r_ver = "current",
   r_packages <- paste(r_pkgs, collapse = ' ')
   other_packages <- paste(other_pkgs, collapse = ' ')
 
-  nixTemplate <- "
+  nixFile <- "
 # This file was generated by the {rix} R package on DATE
-# It uses nixpkgs' revision RE_VERSION for reproducibility purposes
+# It uses nixpkgs' revision NIX_REV for reproducibility purposes
+# which will install R version RE_VERSION
 # Report any issues to https://github.com/b-rodrigues/rix
-    { pkgs ? import (fetchTarball \"https://github.com/NixOS/nixpkgs/archive/RE_VERSION.tar.gz\") {} }:
+    { pkgs ? import (fetchTarball \"https://github.com/NixOS/nixpkgs/archive/NIX_REV.tar.gz\") {} }:
 
       with pkgs;
 
@@ -295,7 +252,8 @@ USE_RSTUDIO};
           ];
       }"
 
-  nixFile <- gsub('RE_VERSION', find_rev(r_ver) , nixTemplate)
+  nixFile <- gsub('NIX_REV', find_rev(r_ver) , nixFile)
+  nixFile <- gsub('RE_VERSION', r_ver , nixFile)
   nixFile <- gsub('DATE', date(), nixFile)
 
   nixFile <- gsub('USE_RSTUDIO',
@@ -325,7 +283,7 @@ USE_RSTUDIO};
   if(!file.exists(path) || overwrite){
     writeLines(nixFile, path)
   } else {
-    stop(paste0("File exists at the specified path. Set `overwrite == TRUE` to overwrite."))
+    stop(paste0("File exists at ", path, ". Set `overwrite == TRUE` to overwrite."))
   }
 
 }
