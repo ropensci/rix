@@ -158,6 +158,20 @@ by running:
 It’s possible to execute the pipeline automatically using a so-called
 “shell hook”. See the “Non-interactive use” vignette for more details.
 
+## Windows how-to
+
+Since Nixpkgs needs a UNIX environment, the Windows Subsystem for Linux
+2 (WSL2) is required to build and run the nix shell under Windows. If
+you are on a recent version of Windows 10 or 11, you can simply run this
+as an administrator in the PowerShell.
+
+``` ps
+wsl --install
+```
+
+Further installation notes you can find at [this official MS
+documentation](https://learn.microsoft.com/en-us/windows/wsl/install).
+
 ## Contributing
 
 This package is developed using the `{fusen}` package. If you want to
