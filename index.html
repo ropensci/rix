@@ -132,6 +132,13 @@
 </div>
 </div>
 <div class="section level2">
+<h2 id="windows-how-to">Windows how-to<a class="anchor" aria-label="anchor" href="#windows-how-to"></a>
+</h2>
+<p>Since Nixpkgs needs a UNIX environment, the Windows Subsystem for Linux 2 (WSL2) is required to build and run the nix shell under Windows. If you are on a recent version of Windows 10 or 11, you can simply run this as an administrator in the PowerShell.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode ps"><code class="sourceCode postscript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>wsl --install</span></code></pre></div>
+<p>Further installation notes you can find at <a href="https://learn.microsoft.com/en-us/windows/wsl/install" class="external-link">this official MS documentation</a>.</p>
+</div>
+<div class="section level2">
 <h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
 </h2>
 <p>This package is developed using the <a href="https://thinkr-open.github.io/fusen/" class="external-link">fusen</a> package. If you want to contribute, please edit the <code>.Rmd</code> files found in the <code>dev/</code> folder. Then, inflate the package using <code>fusen::inflate_all()</code>. If no errors are found (warning and notes are ok), then commit and open a PR. To learn how to use <a href="https://thinkr-open.github.io/fusen/" class="external-link">fusen</a> (don’t worry, it’s super easy), refer to this <a href="https://thinkr-open.github.io/fusen/articles/How-to-use-fusen.html" class="external-link">vignette</a>.</p>
