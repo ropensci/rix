@@ -137,6 +137,9 @@
 <p>Since Nixpkgs needs a UNIX environment, the Windows Subsystem for Linux 2 (WSL2) is required to build and run the nix shell under Windows. If you are on a recent version of Windows 10 or 11, you can simply run this as an administrator in the PowerShell.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode ps"><code class="sourceCode postscript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>wsl --install</span></code></pre></div>
 <p>Further installation notes you can find at <a href="https://learn.microsoft.com/en-us/windows/wsl/install" class="external-link">this official MS documentation</a>.</p>
+<p>The only difference is that</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-L</span> https://nixos.org/nix/install <span class="kw">|</span> <span class="fu">sh</span> <span class="at">-s</span> <span class="at">--</span> <span class="at">--no-daemon</span></span></code></pre></div>
+<p>will be for single-user installations if you have <code>systemd</code> disabled (default).</p>
 </div>
 <div class="section level2">
 <h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
