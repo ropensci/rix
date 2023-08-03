@@ -181,6 +181,16 @@ curl -L https://nixos.org/nix/install | sh -s -- --no-daemon
 will be for single-user installations if you have `systemd` disabled
 (default).
 
+To make life easy, we recommend that you install {rix} using nix, which
+also equips you with the current R version available from Nixpkgs and
+RStudio. Please note that we currently manually update `default.nix` on
+GitHub. If you want the latest development version of {rix}, we
+recommend to use {remotes} to install it from GitHub.
+
+``` sh
+nix-shell https://github.com/b-rodrigues/rix/master/inst/extdata/default.nix
+```
+
 ## Contributing
 
 This package is developed using the `{fusen}` package. If you want to
