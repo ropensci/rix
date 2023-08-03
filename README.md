@@ -13,6 +13,9 @@ You can install the development version of rix from
 remotes::install_github("b-rodrigues/rix")
 ```
 
+If you are on Windows, you need the windows subsystem for linux 2 (WSL2)
+to run Nixpkgs.
+
 ## Introduction
 
 <!-- badges: start -->
@@ -72,14 +75,14 @@ environment is isolated (or not, it’s up to you).
 The main function of `{rix}` is called `rix()`. `rix()` has several
 arguments:
 
-  - the R version you need for your project
-  - a list of R packages that your project needs
-  - an optional list of additional software (for example, a Python
-    interpreter, or Quarto)
-  - an optional list with packages to install from Github
-  - whether you want to use RStudio as an IDE for your project (or VS
-    Code, or another environment)
-  - a path to save a file called `default.nix`.
+- the R version you need for your project
+- a list of R packages that your project needs
+- an optional list of additional software (for example, a Python
+  interpreter, or Quarto)
+- an optional list with packages to install from Github
+- whether you want to use RStudio as an IDE for your project (or VS
+  Code, or another environment)
+- a path to save a file called `default.nix`.
 
 For example:
 
@@ -105,9 +108,9 @@ rix(r_ver = "4.1.0", pkgs = c("dplyr", "chronicler"), ide = "code")
 This call will generate a `default.nix` that installs R version 4.1.0,
 with the `{dplyr}` and `{chronicler}` packages. Because the user wishes
 to use VS Code, the `ide` argument was set to “code”. This installs the
-required `{languageserver}` package as well, but unlike `ide =
-"rstudio"` does not install VS Code in that environment. Users should
-instead use the globally installed VS Code.
+required `{languageserver}` package as well, but unlike
+`ide = "rstudio"` does not install VS Code in that environment. Users
+should instead use the globally installed VS Code.
 
 ### default.nix
 
