@@ -2,7 +2,7 @@
 % Please edit documentation in R/find_rev.R
 \name{rix}
 \alias{rix}
-\title{rix Build a reproducible development environment definition}
+\title{rix Generates a Nix expression that builds a reproducible development environment}
 \usage{
 rix(
   r_ver = "current",
@@ -21,10 +21,10 @@ of R, use "current". You can check which R versions are available using \code{av
 \item{r_pkgs}{Vector of characters. List the required R packages for your
 analysis here.}
 
-\item{other_pkgs}{Vector of characters. List further software you wish to install that}
+\item{other_pkgs}{Vector of characters. List further software you wish to install that
+are not R packages such as command line applications for example.}
 
-\item{git_pkgs}{List. A list of packages to install from Git. See details for more information.
-are not R packages.}
+\item{git_pkgs}{List. A list of packages to install from Git. See details for more information.}
 
 \item{ide}{Character, defaults to "other". If you wish to use RStudio to work
 interactively use "rstudio", "code" for Visual Studio Code. For other editors,
@@ -33,7 +33,7 @@ editors don't work, please open an issue.}
 
 \item{path}{Character, defaults to the current working directory. Where to write
 \code{default.nix}, for example "/home/path/to/project".
-The file will thus be written to "/home/path/to/project/default.nix".}
+The file will thus be written to the file "/home/path/to/project/default.nix".}
 
 \item{overwrite}{Logical, defaults to FALSE. If TRUE, overwrite the \code{default.nix}
 file in the specified path.}
@@ -41,11 +41,11 @@ file in the specified path.}
 \value{
 Nothing, this function only has the side-effect of writing a file
 called "default.nix" in the working directory. This file contains the
-instructions to build a reproducible environment using the Nix package
+expression to build a reproducible environment using the Nix package
 manager.
 }
 \description{
-rix Build a reproducible development environment definition
+rix Generates a Nix expression that builds a reproducible development environment
 }
 \details{
 This function will write a \code{default.nix} in the chosen path. Using
@@ -58,14 +58,22 @@ system dependencies like compilers will get installed as well in that
 environment. If you use RStudio for interactive work, then set the
 \code{rstudio} parameter to \code{TRUE}. If you use another IDE (for example Emacs or
 Visual Studio Code), you do not need to add it to the \code{default.nix} file,
-you can simply use the version that is installed on your computer. To use
-Visual Studio Code however, you need to install the \code{{languageserver}}
-package, so don't forget to add it to the list of packages. Once you built
+you can simply use the version that is installed on your computer. Once you built
 the environment using \code{nix-build}, you can drop into an interactive session
-using \code{nix-shell}. See the "How-to Nix" vignette for detailled instructions.
+using \code{nix-shell}. See the "Building reproducible development environments with rix"
+vignette for detailled instructions.
 Packages to install from Github must be provided in a list of 4 elements:
 "package_name", "repo_url", "branch_name" and "commit". A fifth, optional
 element, "sri_hash" can be provided as well. This argument can also be a list
-of lists of these 4 elements.
-See the "Installing packages from Github" for detailled instructions.
+of lists of these 4 elements. It is also possible to install old versions
+of packages by specifying a version. For example, to install the latest
+version of \code{{AER}} but an old version of \code{{ggplot2}}, you could provide
+the set \code{r_pkgs} to: \code{r_pkgs = c("dplyr", "ggplot2@2.2.1")}. Note
+however that doing this could result in dependency hell, because an older
+version of a package might need older versions of its dependencies, but other
+packages might need more recent version of the same dependencies. If instead you
+want to use an environment as it would have looked at the time of \code{{ggplot2}}'s
+version 2.2.1 release, then use the Nix revision closest to that date, by setting
+\code{r_ver = "3.1.0"}, which was the version of R current at the time. This
+ensures that Nix builds a complete coherent environment.
 }

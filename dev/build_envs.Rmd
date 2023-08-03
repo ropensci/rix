@@ -384,7 +384,7 @@ rix <- function(r_ver = "current",
   r_pkgs <- r_and_archive_pkgs$cran_packages
 
   # get archive_pkgs
-  archived_pkgs <- r_and_archive_pkgs$archive_packages
+  archive_pkgs <- r_and_archive_pkgs$archive_packages
 
   r_pkgs <- if(ide == "code"){
             c(r_pkgs, "languageserver")

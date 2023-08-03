@@ -73,10 +73,10 @@ get_current <- function() {
   })
 }
 
-#' get_sri_hish Get the SRI hash of the NAR serialization of a Github repo
-#' @param repo_url A character. The URL to the package's Github repository
-#' @param branch_name A character. The branch of interest
-#' @param commit A character. The commit hash of interest, for reproducibility's sake
+#' get_sri_hash_deps Get the SRI hash of the NAR serialization of a Github repo
+#' @param repo_url A character. The URL to the package's Github repository or to the `.tar.gz` package hosted on CRAN.
+#' @param branch_name A character. The branch of interest, NULL for archived CRAN packages.
+#' @param commit A character. The commit hash of interest, for reproducibility's sake, NULL for archived CRAN packages.
 #' @return The SRI hash as a character
 #' @noRd
 get_sri_hash_deps <- function(repo_url, branch_name, commit){
@@ -135,8 +135,53 @@ fetchgit <- function(git_pkg){
 }
 
 
-#' fetchgits Downloads and installs a packages hosted of Git. Wrapper around `fetchgit()` to handle multiple packages
-#' @param git_pkg A list of at least four elements: "package_name", the name of the package, "repo_url", the repository's url, "branch_name", the name of the branch containing the code to download and "commit", the commit hash of interest. A fifth, optional argument called "sri_hash" can be provided, if available. If not, "sri_hash" will be obtained using `get_sri_hash_deps()`. This argument can also be a list of lists of these four elements.
+#' fetchzip Downloads and installs an archived CRAN package
+#' @param archive_pkg A character of the form "dplyr@0.80"
+#' @return A character. The Nix definition to download and build the R package from CRAN.
+#' @noRd
+fetchzip <- function(archive_pkg, sri_hash = NULL){
+
+  pkgs <- unlist(strsplit(archive_pkg, split = "@"))
+
+  cran_archive_link <- paste0(
+    "https://cran.r-project.org/src/contrib/Archive/",
+    pkgs[1], "/",
+    paste0(pkgs[1], "_", pkgs[2]),
+    ".tar.gz")
+
+  package_name <- pkgs[1]
+  repo_url <- cran_archive_link
+
+  if(is.null(sri_hash)){
+    output <- get_sri_hash_deps(repo_url, branch_name = NULL, commit = NULL)
+    sri_hash <- output$sri_hash
+    imports <- output$deps
+  } else {
+    sri_hash <- sri_hash
+    imports <- NULL
+  }
+
+  sprintf('(buildRPackage {
+    name = \"%s\";
+    src = fetchzip {
+      url = \"%s\";
+      sha256 = \"%s\";
+    };
+    propagatedBuildInputs = [
+        %s
+      ];
+  })',
+  package_name,
+  repo_url,
+  sri_hash,
+  imports
+)
+}
+
+
+
+#' fetchgits Downloads and installs a packages hosted of Git. Wraps `fetchgit()` to handle multiple packages
+#' @param git_pkgs A list of at least four elements: "package_name", the name of the package, "repo_url", the repository's url, "branch_name", the name of the branch containing the code to download and "commit", the commit hash of interest. A fifth, optional argument called "sri_hash" can be provided, if available. If not, "sri_hash" will be obtained using `get_sri_hash_deps()`. This argument can also be a list of lists of these four elements.
 #' @return A character. The Nix definition to download and build the R package from Github.
 #' @noRd
 fetchgits <- function(git_pkgs){
@@ -151,25 +196,55 @@ fetchgits <- function(git_pkgs){
 
 }
 
-#' rix Build a reproducible development environment definition
+#' fetchzips Downloads and installs packages hosted in the CRAN archives. Wraps `fetchzip()` to handle multiple packages.
+#' @param archive_pkgs A character, or an atomic vector of characters.
+#' @return A character. The Nix definition to download and build the R package from the CRAN archives.
+#' @noRd
+fetchzips <- function(archive_pkgs){
+
+  if(is.null(archive_pkgs)){
+    "" #Empty character in case the user doesn't need any packages from the CRAN archives.
+  } else if(length(archive_pkgs) == 1){
+    fetchzip(archive_pkgs)
+  } else if(length(archive_pkgs) > 1){
+    paste(lapply(archive_pkgs, fetchzip), collapse = "\n")
+  } else {
+    stop("There is something wrong with the input. Make sure it is either a sinle package name, or an atomic vector of package names, for example c('dplyr@0.8.0', 'tidyr@1.0.0').")
+  }
+
+}
+
+#' fetchpkgs Downloads and installs packages hosted in the CRAN archives or Github.
+#' @param git_pkgs A list of at least four elements: "package_name", the name of the package, "repo_url", the repository's url, "branch_name", the name of the branch containing the code to download and "commit", the commit hash of interest. A fifth, optional argument called "sri_hash" can be provided, if available. If not, "sri_hash" will be obtained using `get_sri_hash_deps()`. This argument can also be a list of lists of these four elements.
+#' @param archive_pkgs A character, or an atomic vector of characters.
+#' @return A character. The Nix definition to download and build the R package from the CRAN archives.
+#' @noRd
+fetchpkgs  <- function(git_pkgs, archive_pkgs){
+  paste(fetchgits(git_pkgs),
+        fetchzips(archive_pkgs),
+        collapse = "\n")
+}
+
+
+#' rix Generates a Nix expression that builds a reproducible development environment 
 #' @return Nothing, this function only has the side-effect of writing a file
 #'   called "default.nix" in the working directory. This file contains the
-#'   instructions to build a reproducible environment using the Nix package
+#'   expression to build a reproducible environment using the Nix package
 #'   manager.
 #' @param r_ver Character, defaults to "current". The required R version. To use the current version
 #'   of R, use "current". You can check which R versions are available using `available_r`.
 #' @param r_pkgs Vector of characters. List the required R packages for your
 #'   analysis here.
 #' @param other_pkgs Vector of characters. List further software you wish to install that
+#'   are not R packages such as command line applications for example.
 #' @param git_pkgs List. A list of packages to install from Git. See details for more information.
-#'   are not R packages.
 #' @param ide Character, defaults to "other". If you wish to use RStudio to work
 #'   interactively use "rstudio", "code" for Visual Studio Code. For other editors,
 #'   use "other". This has been tested with RStudio, VS Code and Emacs. If other
 #'   editors don't work, please open an issue.
 #' @param path Character, defaults to the current working directory. Where to write
 #'   `default.nix`, for example "/home/path/to/project".
-#'   The file will thus be written to "/home/path/to/project/default.nix".
+#'   The file will thus be written to the file "/home/path/to/project/default.nix".
 #' @param overwrite Logical, defaults to FALSE. If TRUE, overwrite the `default.nix`
 #'   file in the specified path.
 #' @details This function will write a `default.nix` in the chosen path. Using
@@ -182,16 +257,24 @@ fetchgits <- function(git_pkgs){
 #'   environment. If you use RStudio for interactive work, then set the
 #'   `rstudio` parameter to `TRUE`. If you use another IDE (for example Emacs or
 #'   Visual Studio Code), you do not need to add it to the `default.nix` file,
-#'   you can simply use the version that is installed on your computer. To use
-#'   Visual Studio Code however, you need to install the `{languageserver}`
-#'   package, so don't forget to add it to the list of packages. Once you built
+#'   you can simply use the version that is installed on your computer. Once you built
 #'   the environment using `nix-build`, you can drop into an interactive session
-#'   using `nix-shell`. See the "How-to Nix" vignette for detailled instructions.
+#'   using `nix-shell`. See the "Building reproducible development environments with rix" 
+#'   vignette for detailled instructions.
 #'   Packages to install from Github must be provided in a list of 4 elements:
 #'   "package_name", "repo_url", "branch_name" and "commit". A fifth, optional
 #'   element, "sri_hash" can be provided as well. This argument can also be a list
-#'   of lists of these 4 elements.
-#'   See the "Installing packages from Github" for detailled instructions.
+#'   of lists of these 4 elements. It is also possible to install old versions 
+#'   of packages by specifying a version. For example, to install the latest
+#'   version of `{AER}` but an old version of `{ggplot2}`, you could provide 
+#'   the set `r_pkgs` to: `r_pkgs = c("dplyr", "ggplot2@2.2.1")`. Note
+#'   however that doing this could result in dependency hell, because an older 
+#'   version of a package might need older versions of its dependencies, but other
+#'   packages might need more recent version of the same dependencies. If instead you
+#'   want to use an environment as it would have looked at the time of `{ggplot2}`'s
+#'   version 2.2.1 release, then use the Nix revision closest to that date, by setting
+#'   `r_ver = "3.1.0"`, which was the version of R current at the time. This
+#'   ensures that Nix builds a complete coherent environment.
 #' @export
 rix <- function(r_ver = "current",
                 r_pkgs,
@@ -210,6 +293,17 @@ rix <- function(r_ver = "current",
   }
 
   path <- file.path(path)
+
+  # in case users pass something like c("dplyr", "tidyr@1.0.0")
+  # r_pkgs will be "dplyr" only
+  # and "tidyr@1.0.0" needs to be handle by fetchzips
+  r_and_archive_pkgs <- detect_versions(r_pkgs)
+
+  # overwrite r_pkgs
+  r_pkgs <- r_and_archive_pkgs$cran_packages
+
+  # get archive_pkgs
+  archive_pkgs <- r_and_archive_pkgs$archive_packages
 
   r_pkgs <- if(ide == "code"){
             c(r_pkgs, "languageserver")
@@ -272,8 +366,9 @@ USE_RSTUDIO};
                   ifelse(!is.null(other_pkgs), '', 'TO_DELETE'),
                   nixFile)
 
+  # also handles CRAN archive packages through fetchpkgs
   nixFile <- gsub('GIT_PACKAGES', ifelse(!is.null(git_pkgs),
-                                         fetchgits(git_pkgs),
+                                         fetchpkgs(git_pkgs, archive_pkgs),
                                          'TO_DELETE'), nixFile)
 
   nixFile <- readLines(textConnection(nixFile))
