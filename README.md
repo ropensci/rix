@@ -14,7 +14,9 @@ remotes::install_github("b-rodrigues/rix")
 ```
 
 If you are on Windows, you need the windows subsystem for linux 2 (WSL2)
-to run Nixpkgs.
+to run Nixpkgs. Easiest is to get your R system set up via Nixpkgs, and
+then install {rix}. Feel free to check out the instructions at the
+bottom for further details on Windows.
 
 ## Introduction
 
