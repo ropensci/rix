@@ -65,24 +65,15 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9"><div class="section level1">
+  <main id="main" class="col-md-9">
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+<div class="section level1">
 <div class="page-header"><h1 id="rix-reproducible-environments-with-nix">Rix: Reproducible Environments with Nix<a class="anchor" aria-label="anchor" href="#rix-reproducible-environments-with-nix"></a>
 </h1></div>
 <div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
-</h2>
-<p>You can install the development version of rix from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"b-rodrigues/rix"</span><span class="op">)</span></span></code></pre></div>
-<p>If you are on Windows, you need the windows subsystem for linux 2 (WSL2) to run Nixpkgs. Easiest is to get your R system set up via Nixpkgs, and then install {rix}. Feel free to check out the instructions at the bottom for further details on Windows.</p>
-</div>
-<div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<!-- badges: start -->
-
-<p><code>{rix}</code> is an R package that provides functions to help you setup reproducible development environments that contain all the required packages that you need for your project. This is achieved by using the Nix package manager that you must install separately. The Nix package manager is extremely powerful: with it, it is possible to work on totally reproducible development environments, and even install old releases of R and R packages. With Nix, it is essentially possible to replace <a href="https://rstudio.github.io/renv/" class="external-link">renv</a> and Docker combined. If you need other tools or languages like Python or Julia, this can also be done easily. Nix is available for Linux, macOS and Windows.</p>
+<p><code>{rix}</code> is an R package that provides functions to help you setup reproducible and isolated development environments that contain R and all the required packages that you need for your project. This is achieved by using the Nix package manager that you must install separately. The Nix package manager is extremely powerful: with it, it is possible to work on totally reproducible development environments, and even install old releases of R and R packages. With Nix, it is essentially possible to replace <a href="https://rstudio.github.io/renv/" class="external-link">renv</a> and Docker combined. If you need other tools or languages like Python or Julia, this can also be done easily. Nix is available for Linux, macOS and Windows.</p>
 </div>
 <div class="section level2">
 <h2 id="the-nix-package-manager">The Nix package manager<a class="anchor" aria-label="anchor" href="#the-nix-package-manager"></a>
@@ -103,20 +94,24 @@
 <li>a path to save a file called <code>default.nix</code>.</li>
 </ul>
 <p>For example:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"current"</span>, r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"chronicler"</span><span class="op">)</span>, ide <span class="op">=</span> <span class="st">"rstudio"</span><span class="op">)</span></span></code></pre></div>
 <p>The call above writes a <code>default.nix</code> file in the current working directory. This <code>default.nix</code> can in turn be used by Nix to build an environment containing RStudio, the current (or latest) version of R, and the latest versions of the <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> and <code>{chronicler}</code> packages. In th case of RStudio, it actually needs to be installed for each environment. This is because RStudio changes some default environment variables and a globally installed RStudio (the one you install normally) would not recognize the R installed in the Nix environment. This is not the case for other IDEs such as VS code or Emacs. Another example:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"4.1.0"</span>, r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"chronicler"</span><span class="op">)</span>, ide <span class="op">=</span> <span class="st">"code"</span><span class="op">)</span></span></code></pre></div>
 <p>This call will generate a <code>default.nix</code> that installs R version 4.1.0, with the <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> and <code>{chronicler}</code> packages. Because the user wishes to use VS Code, the <code>ide</code> argument was set to “code”. This installs the required <a href="https://github.com/REditorSupport/languageserver/" class="external-link">languageserver</a> package as well, but unlike <code>ide = "rstudio"</code> does not install VS Code in that environment. Users should instead use the globally installed VS Code.</p>
+<p>It’s also possible to install specific versions of packages:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"current"</span>, r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr@1.0.0"</span><span class="op">)</span>, ide <span class="op">=</span> <span class="st">"code"</span><span class="op">)</span></span></code></pre></div>
+<p>but usually it is better to build an environment using the version of R that was current at the time of the release of <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> version 1.0.0, instead of using the current version of R and install an old package.</p>
 <div class="section level3">
 <h3 id="defaultnix">default.nix<a class="anchor" aria-label="anchor" href="#defaultnix"></a>
 </h3>
-<p>The Nix package manager can be used to build reproducible development environments according to the specifications found in a file called <code>default.nix</code>. To make it easier for R programmers to use Nix, <code>{rix}</code> can be used to write this file for you. Once this file has been written, go to where you chose to write it (ideally in a new, empty folder that will be the root folder of your project) and use the Nix package manager to build the environment. Call the following function in a terminal:</p>
+<p>The Nix package manager can be used to build reproducible development environments according to the specifications found in a file called <code>default.nix</code>, which contains an <em>expression</em>, in Nix jargon. To make it easier for R programmers to use Nix, <code>{rix}</code> can be used to write this file for you. <code>{rix}</code> does not require Nix to be installed, so you could generate expressions and use them on other machines. To actually build an environment using a <code>default.nix</code>, file, go to where you chose to write it (ideally in a new, empty folder that will be the root folder of your project) and use the Nix package manager to build the environment. Call the following function in a terminal:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>build</span></code></pre></div>
 <p>Once Nix done building the environment, you can start working on it interactively by using the following command:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>shell</span></code></pre></div>
-<p>You will <em>drop</em> in a Nix shell. You can now call the IDE of your choice. For RStudio, simply call:</p>
+<p>You will <em>drop</em> into a Nix shell. You can now call the IDE of your choice. For RStudio, simply call:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rstudio</span></code></pre></div>
 <p>This will start RStudio. RStudio will use the version of R and library of packages from that environment.</p>
 </div>
@@ -127,21 +122,49 @@
 <div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="sc">!</span><span class="co">#/bin/bash</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>shell <span class="sc">/</span>absolute<span class="sc">/</span>path<span class="sc">/</span>to<span class="sc">/</span>housing<span class="sc">/</span>default.nix <span class="sc">--</span>run rstudio</span></code></pre></div>
 <p>This will execute RStudio in the environment for the <code>housing</code> project. If you use <a href="https://docs.ropensci.org/targets/" class="external-link">targets</a> you could execute the pipeline in the environment by running:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>shell <span class="sc">/</span>absolute<span class="sc">/</span>path<span class="sc">/</span>to<span class="sc">/</span>housing<span class="sc">/</span>default.nix <span class="sc">--</span>run Rscript <span class="sc">-</span>e <span class="st">'targets::tar_make()'</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>cd <span class="sc">/</span>absolute<span class="sc">/</span>path<span class="sc">/</span>to<span class="sc">/</span>housing<span class="sc">/</span> <span class="er">&amp;&amp;</span> nix<span class="sc">-</span>shell default.nix <span class="sc">--</span>run <span class="st">"Rscript -e 'targets::tar_make()'"</span></span></code></pre></div>
 <p>It’s possible to execute the pipeline automatically using a so-called “shell hook”. See the “Non-interactive use” vignette for more details.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="windows-how-to">Windows how-to<a class="anchor" aria-label="anchor" href="#windows-how-to"></a>
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Since Nixpkgs needs a UNIX environment, the Windows Subsystem for Linux 2 (WSL2) is required to build and run the nix shell under Windows. If you are on a recent version of Windows 10 or 11, you can simply run this as an administrator in the PowerShell.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode ps"><code class="sourceCode postscript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>wsl --install</span></code></pre></div>
-<p>Further installation notes you can find at <a href="https://learn.microsoft.com/en-us/windows/wsl/install" class="external-link">this official MS documentation</a>.</p>
-<p>The only difference is that</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-L</span> https://nixos.org/nix/install <span class="kw">|</span> <span class="fu">sh</span> <span class="at">-s</span> <span class="at">--</span> <span class="at">--no-daemon</span></span></code></pre></div>
-<p>will be for single-user installations if you have <code>systemd</code> disabled (default).</p>
-<p>To make life easy, we recommend that you install {rix} using nix, which also equips you with the current R version available from Nixpkgs and RStudio. Please note that we currently manually update <code>default.nix</code> on GitHub. If you want the latest development version of {rix}, we recommend to use {remotes} to install it from GitHub.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">nix-shell</span> https://github.com/b-rodrigues/rix/master/inst/extdata/default.nix</span></code></pre></div>
+<p>You can install the development version of rix from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"b-rodrigues/rix"</span><span class="op">)</span></span></code></pre></div>
+<p>As stated above, <code>{rix}</code> does not require Nix to be installed to generate <code>default.nix</code> files. But if you are on a machine on which R is not already installed, and you want to start using <code>{rix}</code> to generate <code>default.nix</code> files, you could first start by installing Nix, and then use the following command to drop into a temporary Nix shell that comes with R and <code>{rix}</code> pre-installed:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>shell <span class="sc">--</span>expr <span class="st">"$(curl -sl https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix)"</span></span></code></pre></div>
+<p>This should immediately start an R session inside your terminal. You can now run something like this:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rix</span>(<span class="at">r_ver =</span> <span class="st">"current"</span>,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">r_pkgs =</span> <span class="fu">c</span>(<span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span>),</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">other_pkgs =</span> <span class="cn">NULL</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">git_pkgs =</span> <span class="cn">NULL</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">ide =</span> <span class="st">"rstudio"</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">path =</span> <span class="st">"."</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">overwrite =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>to generate a <code>default.nix</code>, and then use that file to generate an environment with R, Rstudio, <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> and <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>. If you need to add packages for your project, rerun the command above, but add the needed packages to <code>r_pkgs</code>.</p>
+</div>
+<div class="section level2">
+<h2 id="installing-nix">Installing Nix<a class="anchor" aria-label="anchor" href="#installing-nix"></a>
+</h2>
+<div class="section level3">
+<h3 id="windows-pre-requisites">Windows pre-requisites<a class="anchor" aria-label="anchor" href="#windows-pre-requisites"></a>
+</h3>
+<p>If you are on Windows, you need the Windows Subsystem for Linux 2 (WSL2) to run Nix. If you are on a recent version of Windows 10 or 11, you can simply run this as an administrator in PowerShell:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode ps"><code class="sourceCode postscript"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>wsl --install</span></code></pre></div>
+<p>You can find further installation notes at <a href="https://learn.microsoft.com/en-us/windows/wsl/install" class="external-link">this official MS documentation</a>.</p>
+</div>
+<div class="section level3">
+<h3 id="installing-nix-using-the-determinate-systems-installer">Installing Nix using the Determinate Systems installer<a class="anchor" aria-label="anchor" href="#installing-nix-using-the-determinate-systems-installer"></a>
+</h3>
+<p>To make installation and de-installation of Nix simple, we recommend the Determinate Systems installer which you can find <a href="https://zero-to-nix.com/start/install" class="external-link">here</a>. This installer works for any system and make <a href="https://zero-to-nix.com/start/uninstall" class="external-link">uninstalling Nix very easy as well</a>.</p>
+</div>
+<div class="section level3">
+<h3 id="docker">Docker<a class="anchor" aria-label="anchor" href="#docker"></a>
+</h3>
+<p>You can also try out Nix inside Docker. To do so, you can start your image from the <a href="https://hub.docker.com/r/nixos/nix/" class="external-link">NixOS Docker image</a>. NixOS is a full GNU/Linux distribution that uses Nix as its system package manager.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
@@ -149,6 +172,7 @@
 <p>This package is developed using the <a href="https://thinkr-open.github.io/fusen/" class="external-link">fusen</a> package. If you want to contribute, please edit the <code>.Rmd</code> files found in the <code>dev/</code> folder. Then, inflate the package using <code>fusen::inflate_all()</code>. If no errors are found (warning and notes are ok), then commit and open a PR. To learn how to use <a href="https://thinkr-open.github.io/fusen/" class="external-link">fusen</a> (don’t worry, it’s super easy), refer to this <a href="https://thinkr-open.github.io/fusen/articles/How-to-use-fusen.html" class="external-link">vignette</a>.</p>
 </div>
 </div>
+
   </main><aside class="col-md-3"><div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">

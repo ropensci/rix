@@ -135,9 +135,11 @@ run RStudio within this environment from anywhere.</p>
 </h2>
 <p>In case you don’t have R installed, you cannot use the
 <code>{rix}</code> package to generate new expressions. In this case you
-might consider installing Nix first, and then using the expression
-below, which will install the latest development version of
-<code>{rix}</code> and R:</p>
+might consider installing Nix first, and then running this inside your
+terminal to get dropped into a temporary Nix shell, which you can then
+use to generate new <code>default.nix</code> files:</p>
+<pre><code>nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix)"</code></pre>
+<p>This expression that gets built is this one:</p>
 <pre><code>{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/8ad5e8132c5dcf977e308e7bf5517cc6cc0bf7d8.tar.gz") {} }:
 
 with pkgs;
@@ -167,10 +169,20 @@ mkShell {
   shellHook = "R";
 }
 </code></pre>
-<p>Save this into a <code>default.nix</code> file and run
-<code>nix-build</code> then <code>nix-shell</code> to drop into an R
-console. From there you can start using <code>{rix}</code> to generate
-new and more complex environments.</p>
+<p>Running the command above will immediately start an R session inside
+your terminal. You can now run something like this:</p>
+<pre><code><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"current"</span>,</span>
+<span>    r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span><span class="op">)</span>,</span>
+<span>    other_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    git_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    ide <span class="op">=</span> <span class="st">"rstudio"</span>,</span>
+<span>    path <span class="op">=</span> <span class="st">"."</span>, <span class="co"># change to a project's path</span></span>
+<span>    overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre>
+<p>to generate a <code>default.nix</code>, and then use that file to
+generate an environment with R, Rstudio, <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> and
+<a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>. If you need to add packages for your project,
+rerun the command above, but add the needed packages to
+<code>r_pkgs</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="other-ides">Other IDEs<a class="anchor" aria-label="anchor" href="#other-ides"></a>
