@@ -87,7 +87,7 @@ arguments:
 For example:
 
 ``` r
-rix(r_ver = "current", pkgs = c("dplyr", "chronicler"), ide = "rstudio")
+rix(r_ver = "current", r_pkgs = c("dplyr", "chronicler"), ide = "rstudio")
 ```
 
 The call above writes a `default.nix` file in the current working
@@ -102,7 +102,7 @@ This is not the case for other IDEs such as VS code or Emacs. Another
 example:
 
 ``` r
-rix(r_ver = "4.1.0", pkgs = c("dplyr", "chronicler"), ide = "code")
+rix(r_ver = "4.1.0", r_pkgs = c("dplyr", "chronicler"), ide = "code")
 ```
 
 This call will generate a `default.nix` that installs R version 4.1.0,
