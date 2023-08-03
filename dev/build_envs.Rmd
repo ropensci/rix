@@ -60,7 +60,7 @@ testthat::expect_equal(
           )
 ```
 
-This function return available R versions:
+This function returns available R versions:
 
 ```{r function-available_r}
 #' available_r List available R versions
@@ -115,16 +115,17 @@ get_current <- function() {
 
 
 `get_sri_hash_deps()` returns the SRI hash of a NAR serialized path to a cloned
-Github repository. These hashes are used by Nix for security purposes. In
+Github repository, or package source downloaded from the CRAN archives, alongside
+that packages' build dependencies. These hashes are used by Nix for security purposes. In
 order to get the hash, a GET to a service I've made gets made. This request
 gets handled by a server with Nix installed, and so the SRI hash can get computed`
 by `nix hash path --sri path_to_repo`.
 
 ```{r function-get_sri_hash_deps}
-#' get_sri_hish Get the SRI hash of the NAR serialization of a Github repo
-#' @param repo_url A character. The URL to the package's Github repository
-#' @param branch_name A character. The branch of interest
-#' @param commit A character. The commit hash of interest, for reproducibility's sake
+#' get_sri_hash_deps Get the SRI hash of the NAR serialization of a Github repo
+#' @param repo_url A character. The URL to the package's Github repository or to the `.tar.gz` package hosted on CRAN.
+#' @param branch_name A character. The branch of interest, NULL for archived CRAN packages.
+#' @param commit A character. The commit hash of interest, for reproducibility's sake, NULL for archived CRAN packages.
 #' @return The SRI hash as a character
 get_sri_hash_deps <- function(repo_url, branch_name, commit){
   result <- httr::GET(paste0("http://git2nixsha.dev:1506/hash?repo_url=",
@@ -151,7 +152,6 @@ testthat::expect_equal(
           )
 
 ```
-
 
 Function `fetchgit()` takes a git repository as an input and returns a
 string using the Nix `fetchgit()` function to install the package. It
@@ -251,7 +251,7 @@ This function is a wrapper around `fetchgit()` used to handle multiple Github
 packages:
 
 ```{r function-fetchgits}
-#' fetchgits Downloads and installs a packages hosted of Git. Wrapper around `fetchgit()` to handle multiple packages
+#' fetchgits Downloads and installs a packages hosted of Git. Wraps `fetchgit()` to handle multiple packages
 #' @param git_pkgs A list of at least four elements: "package_name", the name of the package, "repo_url", the repository's url, "branch_name", the name of the branch containing the code to download and "commit", the commit hash of interest. A fifth, optional argument called "sri_hash" can be provided, if available. If not, "sri_hash" will be obtained using `get_sri_hash_deps()`. This argument can also be a list of lists of these four elements.
 #' @return A character. The Nix definition to download and build the R package from Github.
 fetchgits <- function(git_pkgs){
@@ -268,19 +268,19 @@ fetchgits <- function(git_pkgs){
 ```
 
 ```{r function-fetchzips}
-#' fetchzips Downloads and installs a packages hosted in the CRAN archives. Wrapper around `fetchzip()` to handle multiple packages
+#' fetchzips Downloads and installs packages hosted in the CRAN archives. Wraps `fetchzip()` to handle multiple packages.
 #' @param archive_pkgs A character, or an atomic vector of characters.
 #' @return A character. The Nix definition to download and build the R package from the CRAN archives.
 fetchzips <- function(archive_pkgs){
 
   if(is.null(archive_pkgs)){
-    ""
+    "" #Empty character in case the user doesn't need any packages from the CRAN archives.
   } else if(length(archive_pkgs) == 1){
     fetchzip(archive_pkgs)
   } else if(length(archive_pkgs) > 1){
     paste(lapply(archive_pkgs, fetchzip), collapse = "\n")
   } else {
-    stop("There is something wrong with the input. Make sure either a sinle package name, or an atomic vector of package names, for example c('dplyr@0.8.0', 'tidyr@1.0.0').")
+    stop("There is something wrong with the input. Make sure it is either a sinle package name, or an atomic vector of package names, for example c('dplyr@0.8.0', 'tidyr@1.0.0').")
   }
 
 }
@@ -306,25 +306,25 @@ whether the user wants to work with RStudio or not in that environment. If
 you use another IDE, you can leave the "ide" argument blank:
 
 ```{r function-rix}
-#' rix Build a reproducible development environment definition
+#' rix Generates a Nix expression that builds a reproducible development environment 
 #' @return Nothing, this function only has the side-effect of writing a file
 #'   called "default.nix" in the working directory. This file contains the
-#'   instructions to build a reproducible environment using the Nix package
+#'   expression to build a reproducible environment using the Nix package
 #'   manager.
 #' @param r_ver Character, defaults to "current". The required R version. To use the current version
 #'   of R, use "current". You can check which R versions are available using `available_r`.
 #' @param r_pkgs Vector of characters. List the required R packages for your
 #'   analysis here.
 #' @param other_pkgs Vector of characters. List further software you wish to install that
+#'   are not R packages such as command line applications for example.
 #' @param git_pkgs List. A list of packages to install from Git. See details for more information.
-#'   are not R packages.
 #' @param ide Character, defaults to "other". If you wish to use RStudio to work
 #'   interactively use "rstudio", "code" for Visual Studio Code. For other editors,
 #'   use "other". This has been tested with RStudio, VS Code and Emacs. If other
 #'   editors don't work, please open an issue.
 #' @param path Character, defaults to the current working directory. Where to write
 #'   `default.nix`, for example "/home/path/to/project".
-#'   The file will thus be written to "/home/path/to/project/default.nix".
+#'   The file will thus be written to the file "/home/path/to/project/default.nix".
 #' @param overwrite Logical, defaults to FALSE. If TRUE, overwrite the `default.nix`
 #'   file in the specified path.
 #' @details This function will write a `default.nix` in the chosen path. Using
@@ -337,16 +337,24 @@ you use another IDE, you can leave the "ide" argument blank:
 #'   environment. If you use RStudio for interactive work, then set the
 #'   `rstudio` parameter to `TRUE`. If you use another IDE (for example Emacs or
 #'   Visual Studio Code), you do not need to add it to the `default.nix` file,
-#'   you can simply use the version that is installed on your computer. To use
-#'   Visual Studio Code however, you need to install the `{languageserver}`
-#'   package, so don't forget to add it to the list of packages. Once you built
+#'   you can simply use the version that is installed on your computer. Once you built
 #'   the environment using `nix-build`, you can drop into an interactive session
-#'   using `nix-shell`. See the "How-to Nix" vignette for detailled instructions.
+#'   using `nix-shell`. See the "Building reproducible development environments with rix" 
+#'   vignette for detailled instructions.
 #'   Packages to install from Github must be provided in a list of 4 elements:
 #'   "package_name", "repo_url", "branch_name" and "commit". A fifth, optional
 #'   element, "sri_hash" can be provided as well. This argument can also be a list
-#'   of lists of these 4 elements.
-#'   See the "Installing packages from Github" for detailled instructions.
+#'   of lists of these 4 elements. It is also possible to install old versions 
+#'   of packages by specifying a version. For example, to install the latest
+#'   version of `{AER}` but an old version of `{ggplot2}`, you could provide 
+#'   the set `r_pkgs` to: `r_pkgs = c("dplyr", "ggplot2@2.2.1")`. Note
+#'   however that doing this could result in dependency hell, because an older 
+#'   version of a package might need older versions of its dependencies, but other
+#'   packages might need more recent version of the same dependencies. If instead you
+#'   want to use an environment as it would have looked at the time of `{ggplot2}`'s
+#'   version 2.2.1 release, then use the Nix revision closest to that date, by setting
+#'   `r_ver = "3.1.0"`, which was the version of R current at the time. This
+#'   ensures that Nix builds a complete coherent environment.
 #' @export
 rix <- function(r_ver = "current",
                 r_pkgs,
