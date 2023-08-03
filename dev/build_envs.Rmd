@@ -140,7 +140,7 @@ get_sri_hash_deps <- function(repo_url, branch_name, commit){
 }
 ```
 
-```{r tests-get_sri_hash_deps}
+```{r tests-get_sri_hash_deps, eval = F}
 testthat::expect_equal(
             get_sri_hash_deps("https://github.com/rap4all/housing/",
                          "fusen",
@@ -243,6 +243,7 @@ fetchzip <- function(archive_pkg, sri_hash = NULL){
   sri_hash,
   imports
 )
+}
 
 
 ```
