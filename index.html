@@ -140,6 +140,8 @@
 <p>The only difference is that</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-L</span> https://nixos.org/nix/install <span class="kw">|</span> <span class="fu">sh</span> <span class="at">-s</span> <span class="at">--</span> <span class="at">--no-daemon</span></span></code></pre></div>
 <p>will be for single-user installations if you have <code>systemd</code> disabled (default).</p>
+<p>To make life easy, we recommend that you install {rix} using nix, which also equips you with the current R version available from Nixpkgs and RStudio. Please note that we currently manually update <code>default.nix</code> on GitHub. If you want the latest development version of {rix}, we recommend to use {remotes} to install it from GitHub.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">nix-shell</span> https://github.com/b-rodrigues/rix/master/inst/extdata/default.nix</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
