@@ -79,8 +79,14 @@ from anywhere.
 
 In case you don't have R installed, you cannot use the `{rix}` package to
 generate new expressions. In this case you might consider installing Nix first,
-and then using the expression below, which will install the latest development
-version of `{rix}` and R:
+and then running this inside your terminal to get dropped into a temporary
+Nix shell, which you can then use to generate new `default.nix` files:
+
+```
+nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix)"
+```
+
+This expression that gets built is this one:
 
 ```
 { pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/8ad5e8132c5dcf977e308e7bf5517cc6cc0bf7d8.tar.gz") {} }:
@@ -114,9 +120,22 @@ mkShell {
 
 ```
 
-Save this into a `default.nix` file and run `nix-build` then `nix-shell` to drop
-into an R console. From there you can start using `{rix}` to generate new and
-more complex environments.
+Running the command above will immediately start an R session inside your
+terminal. You can now run something like this:
+
+```
+rix(r_ver = "current",
+    r_pkgs = c("dplyr", "ggplot2"),
+    other_pkgs = NULL,
+    git_pkgs = NULL,
+    ide = "rstudio",
+    path = ".", # change to a project's path
+    overwrite = TRUE)
+```
+
+to generate a `default.nix`, and then use that file to generate an environment
+with R, Rstudio, `{dplyr}` and `{ggplot2}`. If you need to add packages for your
+project, rerun the command above, but add the needed packages to `r_pkgs`.
 
 
 ## Other IDEs
