@@ -25,6 +25,9 @@ You can install the development version of rix from
 remotes::install_github("b-rodrigues/rix")
 ```
 
+If you are on Windows, you need the windows subsystem for linux 2 (WSL2) to
+run Nixpkgs.
+
 ## Introduction
 
 <!-- badges: start -->
