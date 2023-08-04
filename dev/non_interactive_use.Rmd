@@ -7,8 +7,12 @@ editor_options:
 
 ## Introduction
 
-## Running a {targets} pipeline
+Isolated environments are great to run pipelines in a safe and reproducible
+manner. This vignette details how to build a reproducible analytical pipeline
+using an environment built with Nix that contains the rigt version of R and
+packages.
 
+## Running a {targets} pipeline
 
 If you use `{targets}` you could execute the pipeline in the environment by
 running:
