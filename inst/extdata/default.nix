@@ -23,6 +23,6 @@ let
   };
 in
 mkShell {
-  buildInputs = [bootstrap_env];
+  buildInputs = [bootstrap_env curl];
   shellHook = "R";
 }
