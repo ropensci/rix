@@ -11,7 +11,7 @@ let
       src = fetchgit {
       url = "https://github.com/b-rodrigues/rix/";
       branchName = "master";
-      rev = "c8bc2e2ad2485d9fda06410642fc9ccd641bc490";
+      rev = "d505382ad8ef759a8257227a19043e228a6d70dd";
       sha256 = "sha256-axmHWXNEL2c00TQGYJEwrgVNkLbbNhrx/LHkzuMa9QM=";
       };
     propagatedBuildInputs = [
