@@ -12,7 +12,7 @@ let
       url = "https://github.com/b-rodrigues/rix/";
       branchName = "master";
       rev = "d505382ad8ef759a8257227a19043e228a6d70dd";
-      sha256 = "sha256-axmHWXNEL2c00TQGYJEwrgVNkLbbNhrx/LHkzuMa9QM=";
+      sha256 = "sha256-vLb7y/6K3iNy8Hb5XmwksAgq5R6yT14JfbDFVPtt2ZY=";
       };
     propagatedBuildInputs = [
       httr
