@@ -5,7 +5,7 @@ articles:
   building-reproducible-development-environments-with-rix: building-reproducible-development-environments-with-rix.html
   installing-old-packages-from-the-cran-archives: installing-old-packages-from-the-cran-archives.html
   interactive-use: interactive-use.html
-  non-interactive-use: non-interactive-use.html
+  reproducible-analytical-pipelines-with-nix: reproducible-analytical-pipelines-with-nix.html
   save-the-nix-package-versions-data: save-the-nix-package-versions-data.html
-last_built: 2023-08-04T21:03Z
+last_built: 2023-08-05T18:54Z
 

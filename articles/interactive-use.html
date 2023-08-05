@@ -44,7 +44,7 @@
     <a class="dropdown-item" href="../articles/building-reproducible-development-environments-with-rix.html">Building reproducible development environments with rix</a>
     <a class="dropdown-item" href="../articles/installing-old-packages-from-the-cran-archives.html">Installing old packages from the CRAN archives</a>
     <a class="dropdown-item" href="../articles/interactive-use.html">Interactive use</a>
-    <a class="dropdown-item" href="../articles/non-interactive-use.html">Non-interactive use</a>
+    <a class="dropdown-item" href="../articles/reproducible-analytical-pipelines-with-nix.html">Reproducible Analytical Pipelines with Nix</a>
     <a class="dropdown-item" href="../articles/save-the-nix-package-versions-data.html">Save the Nix Package Versions data</a>
   </div>
 </li>
@@ -127,50 +127,21 @@ an executable script that you can save in your PATH:</p>
 <span></span>
 <span><span class="va">rstudio</span></span></code></pre>
 <p>Name this script something like <code>kmeans_project</code>, make it
-executable (using <code>chmod +x kmeans_project</code>) and now you can
+executable (using <code>chmod +x kmeans_project</code>), and now you can
 run RStudio within this environment from anywhere.</p>
 </div>
 <div class="section level2">
 <h2 id="scenario-2-you-install-r-and-rstudio-using-nix">Scenario 2: you install R and RStudio using Nix<a class="anchor" aria-label="anchor" href="#scenario-2-you-install-r-and-rstudio-using-nix"></a>
 </h2>
-<p>In case you don’t have R installed, you cannot use the
-<code>{rix}</code> package to generate new expressions. In this case you
-might consider installing Nix first, and then running this inside your
+<p>If you don’t have R installed you cannot use the <code>{rix}</code>
+package to generate new expressions. In this case you might consider
+installing Nix first, and then running the following command inside your
 terminal to get dropped into a temporary Nix shell, which you can then
 use to generate new <code>default.nix</code> files:</p>
 <pre><code>nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix)"</code></pre>
-<p>This expression that gets built is this one:</p>
-<pre><code>{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/8ad5e8132c5dcf977e308e7bf5517cc6cc0bf7d8.tar.gz") {} }:
-
-with pkgs;
-
-let
-  bootstrap_env = rWrapper.override {
-    packages = with rPackages; [
-
-    (buildRPackage {
-      name = "rix";
-      src = fetchgit {
-      url = "https://github.com/b-rodrigues/rix/";
-      branchName = "master";
-      rev = "935fb194b38adfb085a5bda9ebe5dc5bb504f2cb";
-      sha256 = "sha256-qMKcBcoemx3CcayA0Vt3LcDCAskhWyWXJBJVN8BaIOw=";
-      };
-    propagatedBuildInputs = [
-      httr
-      jsonlite
-    ];
-      })
-    ];
-  };
-in
-mkShell {
-  buildInputs = [bootstrap_env];
-  shellHook = "R";
-}
-</code></pre>
-<p>Running the command above will immediately start an R session inside
-your terminal. You can now run something like this:</p>
+<p>Running the command above will download R and <code>{rix}</code> and
+then start an R session inside your terminal. You can now run something
+like this:</p>
 <pre><code><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"current"</span>,</span>
 <span>    r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span><span class="op">)</span>,</span>
 <span>    other_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
