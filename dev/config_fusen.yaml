@@ -63,15 +63,15 @@ interactive_use.Rmd:
     check: true
     document: true
     overwrite: 'yes'
-non_interactive_use.Rmd:
-  path: dev/non_interactive_use.Rmd
+raps_with_nix.Rmd:
+  path: dev/raps_with_nix.Rmd
   state: active
   R: []
   tests: []
-  vignettes: vignettes/non-interactive-use.Rmd
+  vignettes: vignettes/raps-with-nix.Rmd
   inflate:
-    flat_file: dev/non_interactive_use.Rmd
-    vignette_name: Non-interactive use
+    flat_file: dev/raps_with_nix.Rmd
+    vignette_name: Reproducible Analytical Pipelines with Nix
     open_vignette: true
     check: true
     document: true
