@@ -12,6 +12,7 @@
            branchName = "master";
            rev = "c8b4f6a92b8b56a96a5f1819ca884aca69f2afa7";
            sha256 = "sha256-Ek16NbD4XnbHTQ2vPVeA0mia336EBeXsVIL3QRXzPsk=";
+        };
          propagatedBuildInputs = [
            httr
            jsonlite
