@@ -390,6 +390,12 @@ USE_RSTUDIO};
 
 
 #' Invoke shell command `nix-build` from an R session
+#' @param exec_mode Either `"blocking"` (default) or `"non-blocking`. This
+#' will either block the R session while the `nix-build` shell command is
+#' executed, or run `nix-build` in the background ("non-blocking").
+#' @param nix_file File path to the `default.nix` file. The default is
+#' a `default.nix` file in the current working directory of the current R
+#' session.
 #' @return invisible
 #' @export
 nix_build <- function(exec_mode = c("blocking", "non-blocking"),
