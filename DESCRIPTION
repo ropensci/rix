@@ -12,6 +12,7 @@ Depends:
 Imports: 
     httr,
     jsonlite,
+    sys,
     utils
 Suggests: 
     knitr,
