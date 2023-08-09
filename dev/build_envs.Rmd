@@ -136,7 +136,7 @@ get_sri_hash_deps <- function(repo_url, branch_name, commit){
                              commit))
 
   if(httr::http_error(result)){
-    stop(paste0("Error in pulling from Github repo: ", repo_url, ". Check the url, branch name and commit. Are these correct?"))
+    stop(paste0("Error in pulling URL: ", repo_url, ". If it's a Github repo, check the url, branch name and commit. Are these correct? If it's an archived CRAN package, check the name of the package and the version number."))
   }
 
 
@@ -454,9 +454,8 @@ USE_RSTUDIO};
                   nixFile)
 
   # also handles CRAN archive packages through fetchpkgs
-  nixFile <- gsub('GIT_PACKAGES', ifelse(!is.null(git_pkgs),
-                                         fetchpkgs(git_pkgs, archive_pkgs),
-                                         'TO_DELETE'), nixFile)
+  # if both git_pkgs and archive_pkgs are NULL, the empty string gets returned
+  nixFile <- gsub('GIT_PACKAGES', fetchpkgs(git_pkgs, archive_pkgs), nixFile)
 
   nixFile <- readLines(textConnection(nixFile))
 
