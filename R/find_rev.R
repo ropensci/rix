@@ -405,7 +405,7 @@ nix_build <- function(exec_mode = c("blocking", "non-blocking"),
   proc <- switch(exec_mode,
     "blocking" = sys::exec_wait(cmd = "nix-build"),
     "non-blocking" = sys::exec_background(cmd = "nix-build"),
-    stop("invalid `exec_mode`")
+    stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
   )
   
   return(invisible(proc))
