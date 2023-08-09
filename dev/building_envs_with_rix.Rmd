@@ -181,6 +181,31 @@ using Nix. However, if you need a specific version of R, but also a specific
 version of a package that is not available in that particular Nix revision, one
 solution is to install that package from Github.
 
+## Installing old packages archived on CRAN
+
+It is also possible to install an arbitrary version of a package that has
+been archived on CRAN:
+
+```{r}
+rix(r_ver = "4.2.1",
+    r_pkgs = c("dplyr@0.8.0", "janitor@1.0.0"),
+    other_pkgs = NULL,
+    git_pkgs = NULL,
+    ide = "other",
+    path = path_default_nix,
+    overwrite = TRUE)
+```
+
+```{r}
+cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
+```
+
+This feature should ideally be used sparingly. If you want to reconstruct an
+environment as it was around 2019, use the version of R that was current at the
+time. This will ensure that every package that gets installed is at a version
+compatible with that version of R, which might not be the case if you need to
+install a very old version of one particular package.
+
 ## Installing packages from Github
 
 It is also possible to install packages from Github:
@@ -213,6 +238,35 @@ This will install two packages from Github: the `{housing}` package and more
 specifically the code as it is in the `fusen` branch. The commit is also
 provided, to pin the exact version of the package needed. The `{fusen}` package
 is also installed, from the main branch at commit `d617172447d`.
+
+## A complete example
+
+This example shows how all features of `{rix}` can work together:
+
+```{r}
+rix(r_ver = "4.2.1",
+    r_pkgs = c("dplyr", "janitor@1.0.0"),
+    other_pkgs = c("quarto"),
+    git_pkgs = list(
+                 list(package_name = "housing",
+                   repo_url = "https://github.com/rap4all/housing/",
+                   branch_name = "fusen",
+                   commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
+                 list(package_name = "fusen",
+                   repo_url = "https://github.com/ThinkR-open/fusen",
+                   branch_name = "main",
+                   commit = "d617172447d2947efb20ad6a4463742b8a5d79dc")
+    ),
+    ide = "rstudio",
+    path = path_default_nix,
+    overwrite = TRUE)
+
+```
+
+```{r}
+cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
+```
+
 
 To learn more about using `{rix}` on a daily basis, read the [Interactive
 use](https://b-rodrigues.github.io/rix/articles/interactive-use.html) vignette.
