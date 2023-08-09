@@ -135,6 +135,11 @@ get_sri_hash_deps <- function(repo_url, branch_name, commit){
                              "&commit=",
                              commit))
 
+  if(httr::http_error(result)){
+    stop(paste0("Error in pulling from Github repo: ", repo_url, ". Check the url, branch name and commit. Are these correct?"))
+  }
+
+
   lapply(httr::content(result), unlist)
 
 }

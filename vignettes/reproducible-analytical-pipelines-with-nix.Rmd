@@ -80,7 +80,7 @@ This call to `rix()` generates the following `default.nix` file:
          propagatedBuildInputs = [
              dplyr ggplot2 janitor purrr readxl rlang rvest stringr tidyr
            ];
-      }) 
+      })
      ];
     };
       in
