@@ -10,8 +10,8 @@
            src = fetchgit {
            url = "https://github.com/b-rodrigues/rix/";
            branchName = "master";
-           rev = "c8b4f6a92b8b56a96a5f1819ca884aca69f2afa7";
-           sha256 = "sha256-Ek16NbD4XnbHTQ2vPVeA0mia336EBeXsVIL3QRXzPsk=";
+           rev = "34f4715e7fa37748d3db047ce3b7f4dafe1da59c";
+           sha256 = "sha256-NUu+xn8r6wy5n2U6cyKgCxOw/z97waDxkoXoG1zwpI8=";
         };
          propagatedBuildInputs = [
            httr
