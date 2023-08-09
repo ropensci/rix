@@ -391,7 +391,7 @@ USE_RSTUDIO};
 
 #' Invoke shell command `nix-build` from an R session
 #' @return invisible
-#' @noRd
+#' @export
 nix_build <- function(exec_mode = c("blocking", "non-blocking"),
                       nix_file = file.path("default.nix")) {
   exec_mode <- match.arg(exec_mode)
