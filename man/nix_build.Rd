@@ -9,6 +9,15 @@ nix_build(
   nix_file = file.path("default.nix")
 )
 }
+\arguments{
+\item{exec_mode}{Either \code{"blocking"} (default) or \verb{"non-blocking}. This
+will either block the R session while the \code{nix-build} shell command is
+executed, or run \code{nix-build} in the background ("non-blocking").}
+
+\item{nix_file}{File path to the \code{default.nix} file. The default is
+a \code{default.nix} file in the current working directory of the current R
+session.}
+}
 \value{
 invisible
 }
