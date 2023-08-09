@@ -390,21 +390,23 @@ USE_RSTUDIO};
 
 
 #' Invoke shell command `nix-build` from an R session
-#' @param exec_mode Either `"blocking"` (default) or `"non-blocking`. This
-#' will either block the R session while the `nix-build` shell command is
-#' executed, or run `nix-build` in the background ("non-blocking").
 #' @param nix_file File path to the `default.nix` file. The default is
 #' a `default.nix` file in the current working directory of the current R
 #' session.
-#' @return invisible
+#' @param exec_mode Either `"blocking"` (default) or `"non-blocking`. This
+#' will either block the R session while the `nix-build` shell command is
+#' executed, or run `nix-build` in the background ("non-blocking").
+#' @return integer of the process ID (PID) of `nix-build` shell command
+#' launched.
 #' @export
-nix_build <- function(exec_mode = c("blocking", "non-blocking"),
-                      nix_file = file.path("default.nix")) {
+nix_build <- function(nix_file = file.path("default.nix"),
+                      exec_mode = c("blocking", "non-blocking")) {
+  stopifnot(is.character(nix_file))
   exec_mode <- match.arg(exec_mode)
   
   proc <- switch(exec_mode,
-    "blocking" = sys::exec_wait(cmd = "nix-build"),
-    "non-blocking" = sys::exec_background(cmd = "nix-build"),
+    "blocking" = sys::exec_wait("nix-build", nix_file),
+    "non-blocking" = sys::exec_background("nix-build", nix_file),
     stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
   )
   

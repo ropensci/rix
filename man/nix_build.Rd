@@ -5,21 +5,22 @@
 \title{Invoke shell command \code{nix-build} from an R session}
 \usage{
 nix_build(
-  exec_mode = c("blocking", "non-blocking"),
-  nix_file = file.path("default.nix")
+  nix_file = file.path("default.nix"),
+  exec_mode = c("blocking", "non-blocking")
 )
 }
 \arguments{
-\item{exec_mode}{Either \code{"blocking"} (default) or \verb{"non-blocking}. This
-will either block the R session while the \code{nix-build} shell command is
-executed, or run \code{nix-build} in the background ("non-blocking").}
-
 \item{nix_file}{File path to the \code{default.nix} file. The default is
 a \code{default.nix} file in the current working directory of the current R
 session.}
+
+\item{exec_mode}{Either \code{"blocking"} (default) or \verb{"non-blocking}. This
+will either block the R session while the \code{nix-build} shell command is
+executed, or run \code{nix-build} in the background ("non-blocking").}
 }
 \value{
-invisible
+integer of the process ID (PID) of \code{nix-build} shell command
+launched.
 }
 \description{
 Invoke shell command \code{nix-build} from an R session
