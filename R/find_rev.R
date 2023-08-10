@@ -413,12 +413,15 @@ nix_build <- function(nix_file = file.path("default.nix"),
   cat(paste0("Launching `nix-build`", " in ", exec_mode, " mode ===> "))
   
   pid <- switch(exec_mode,
-    "blocking" = sys::exec_wait("nix-build", nix_file),
+    "blocking" = sys::exec_internal("nix-build", nix_file),
     "non-blocking" = sys::exec_background("nix-build", nix_file),
     stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
   )
   
   if (exec_mode == "non-blocking") cat(paste0("Process ID (PID) is ", pid, "."))
+  
+  # clean zombies for background/non-blocking mode
+  # rm(pid)
   
   return(invisible(pid))
 }
