@@ -490,7 +490,7 @@ nix_build <- function(nix_file = file.path("default.nix"),
   stopifnot(is.character(nix_file))
   exec_mode <- match.arg(exec_mode)
 
-  cat(paste0("Launching `nix-build`", " in ", exec_mode, " mode ===>"))
+  cat(paste0("Launching `nix-build`", " in ", exec_mode, " mode ===> "))
   
   pid <- switch(exec_mode,
     "blocking" = sys::exec_wait("nix-build", nix_file),
