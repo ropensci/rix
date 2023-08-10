@@ -498,7 +498,7 @@ nix_build <- function(nix_file = file.path("default.nix"),
     stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
   )
   
-  if (exec_mode == "non-blocking") cat(paste0("Process ID (PID) is ", pid), ".")
+  if (exec_mode == "non-blocking") cat(paste0("Process ID (PID) is ", pid, "."))
   
   return(invisible(pid))
 }
