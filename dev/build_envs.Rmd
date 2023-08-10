@@ -488,7 +488,12 @@ session.
 #' @export
 nix_build <- function(nix_file = file.path("default.nix"),
                       exec_mode = c("blocking", "non-blocking")) {
-  stopifnot(is.character(nix_file))
+  stopifnot(
+    "Argument `nix_file` must be character of length 1." =
+      is.character(nix_file) && length(nix_file) == 1L,
+    "`nix_file` does not exist. Please use a valid path." =
+      file.exists(nix_file)
+  )
   exec_mode <- match.arg(exec_mode)
 
   cat(paste0("Launching `nix-build`", " in ", exec_mode, " mode ===> "))
