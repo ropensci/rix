@@ -419,8 +419,12 @@ nix_build <- function(nix_file = file.path("default.nix"),
   )
   
   if (exec_mode == "non-blocking") {
-    cat(paste0("==> Process ID (PID) is ", proc, "."))
+    cat(paste0("\n==> Process ID (PID) is ", proc, "."))
     cat("\n==> Receiving stdout and stderr streams...\n")
+    status <- sys::exec_status(proc, wait = TRUE)
+    if (status == 0L) {
+      cat("\n==> `nix-build` succeeded!")
+    }
   }
   
   if (exec_mode == "blocking") {
