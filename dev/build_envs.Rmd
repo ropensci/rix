@@ -483,7 +483,8 @@ session.
 #' will either block the R session while the `nix-build` shell command is
 #' executed, or run `nix-build` in the background ("non-blocking").
 #' @return integer of the process ID (PID) of `nix-build` shell command
-#' launched, if `nix_build()` call is assigned to an R object.
+#' launched, if `nix_build()` call is assigned to an R object. Otherwise, it 
+#' will be returned as "invisible".
 #' @export
 nix_build <- function(nix_file = file.path("default.nix"),
                       exec_mode = c("blocking", "non-blocking")) {

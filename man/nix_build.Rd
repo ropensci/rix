@@ -20,7 +20,8 @@ executed, or run \code{nix-build} in the background ("non-blocking").}
 }
 \value{
 integer of the process ID (PID) of \code{nix-build} shell command
-launched, if \code{nix_build()} call is assigned to an R object.
+launched, if \code{nix_build()} call is assigned to an R object. Otherwise, it
+will be returned as "invisible".
 }
 \description{
 Invoke shell command \code{nix-build} from an R session
