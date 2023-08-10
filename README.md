@@ -108,9 +108,7 @@ to generate a `default.nix`, and then use that file to generate an environment w
 
 If you are on Windows, you need the Windows Subsystem for Linux 2 (WSL2) to run Nix. If you are on a recent version of Windows 10 or 11, you can simply run this as an administrator in PowerShell:
 
-``` ps
-wsl --install
-```
+    wsl --install
 
 You can find further installation notes at [this official MS documentation](https://learn.microsoft.com/en-us/windows/wsl/install).
 
