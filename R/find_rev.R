@@ -410,7 +410,7 @@ nix_build <- function(nix_file = file.path("default.nix"),
   )
   exec_mode <- match.arg(exec_mode)
 
-  cat(paste0("Launching `nix-build`", " in ", exec_mode, " mode ===> "))
+  cat(paste0("Launching `nix-build`", " in ", exec_mode, " mode\n"))
   
   proc <- switch(exec_mode,
     "blocking" = sys::exec_internal("nix-build", nix_file),
@@ -418,7 +418,10 @@ nix_build <- function(nix_file = file.path("default.nix"),
     stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
   )
   
-  if (exec_mode == "non-blocking") cat(paste0("Process ID (PID) is ", proc, "."))
+  if (exec_mode == "non-blocking") {
+    cat(paste0("==> Process ID (PID) is ", proc, "."))
+    cat("\n==> Receiving stdout and stderr streams...\n")
+  }
   
   if (exec_mode == "blocking") {
     status <- proc$status
