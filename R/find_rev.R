@@ -397,12 +397,14 @@ USE_RSTUDIO};
 #' will either block the R session while the `nix-build` shell command is
 #' executed, or run `nix-build` in the background ("non-blocking").
 #' @return integer of the process ID (PID) of `nix-build` shell command
-#' launched.
+#' launched, if `nix_build()` call is assigned to an R object.
 #' @export
 nix_build <- function(nix_file = file.path("default.nix"),
                       exec_mode = c("blocking", "non-blocking")) {
   stopifnot(is.character(nix_file))
   exec_mode <- match.arg(exec_mode)
+
+  cat(paste0("Launching `nix-build`", " in ", exec_mode, " mode ===>"))
   
   proc <- switch(exec_mode,
     "blocking" = sys::exec_wait("nix-build", nix_file),
