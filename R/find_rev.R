@@ -420,11 +420,10 @@ nix_build <- function(nix_file = file.path("default.nix"),
   
   if (exec_mode == "non-blocking") cat(paste0("Process ID (PID) is ", proc, "."))
   
-  status <- proc$status
-  
   if (exec_mode == "blocking") {
+    status <- proc$status
     if (status == 0L) {
-      cat(paste0("\n==>", sys::as_text(proc$stdout)))
+      cat(paste0("\n==> ", sys::as_text(proc$stdout)))
       cat("\n==> `nix-build` succeeded!")
     } else {
       msg <- nix_build_exit_msg()
