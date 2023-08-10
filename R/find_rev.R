@@ -412,16 +412,44 @@ nix_build <- function(nix_file = file.path("default.nix"),
 
   cat(paste0("Launching `nix-build`", " in ", exec_mode, " mode ===> "))
   
-  pid <- switch(exec_mode,
+  proc <- switch(exec_mode,
     "blocking" = sys::exec_internal("nix-build", nix_file),
     "non-blocking" = sys::exec_background("nix-build", nix_file),
     stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
   )
   
-  if (exec_mode == "non-blocking") cat(paste0("Process ID (PID) is ", pid, "."))
+  if (exec_mode == "non-blocking") cat(paste0("Process ID (PID) is ", proc, "."))
+  
+  status <- proc$status
+  
+  if (exec_mode == "blocking") {
+    if (status == 0L) {
+      cat(paste0("\n==>", sys::as_text(proc$stdout)))
+      cat("\n==> `nix-build` succeeded!")
+    } else {
+      msg <- nix_build_exit_msg()
+      cat(paste0("`nix-build` failed with ", msg))
+    }
+  }
   
   # clean zombies for background/non-blocking mode
   # rm(pid)
   
-  return(invisible(pid))
+  return(invisible(proc))
+}
+
+#' @noRd
+nix_build_exit_msg <- function(x) {
+  x_char <- as.character(x)
+  
+  err_msg <- switch(
+    x_char,
+    "100" = "generic build failure (100).",
+    "101" = "build timeout (101).",
+    "102" = "hash mismatch (102).",
+    "104" = "not deterministic (104).",
+    stop(paste0("general exit code ", x_char, "."))
+  )
+  
+  return(err_msg)
 }
