@@ -22,7 +22,7 @@ This function takes an R version as an input and returns the Nix revision that p
 
 ```{r function-find_rev}
 #' find_rev Find the right Nix revision
-#' @param r_version Character. R version to look for, for example, "4.2.0"
+#' @param r_version Character. R version to look for, for example, "4.2.0". If a nixpkgs revision is provided instead, this gets returned.
 #' @return A character. The Nix revision to use
 #' @export
 #'
@@ -32,6 +32,8 @@ find_rev <- function(r_version){
 
   if(r_version == "current"){
     return(get_current())
+  } else if(nchar(r_version) == 40){
+    return(r_version)
   } else {
 
   temp <- new.env(parent = emptyenv())
@@ -56,6 +58,11 @@ find_rev <- function(r_version){
 ```{r tests-find_rev}
 testthat::expect_equal(
             find_rev("4.2.2"),
+            "8ad5e8132c5dcf977e308e7bf5517cc6cc0bf7d8"
+          )
+
+testthat::expect_equal(
+            find_rev("8ad5e8132c5dcf977e308e7bf5517cc6cc0bf7d8"),
             "8ad5e8132c5dcf977e308e7bf5517cc6cc0bf7d8"
           )
 ```

@@ -7,7 +7,7 @@
 find_rev(r_version)
 }
 \arguments{
-\item{r_version}{Character. R version to look for, for example, "4.2.0"}
+\item{r_version}{Character. R version to look for, for example, "4.2.0". If a nixpkgs revision is provided instead, this gets returned.}
 }
 \value{
 A character. The Nix revision to use
