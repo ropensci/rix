@@ -46,6 +46,9 @@
     <loc>/reference/index.html</loc>
   </url>
   <url>
+    <loc>/reference/nix_build.html</loc>
+  </url>
+  <url>
     <loc>/reference/r_nix_revs.html</loc>
   </url>
   <url>
