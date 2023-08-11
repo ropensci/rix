@@ -182,14 +182,9 @@ fetchgit <- function(git_pkg){
   branch_name <- git_pkg$branch_name
   commit <- git_pkg$commit
 
-  if(is.null(sri_hash)){
-    output <- get_sri_hash_deps(repo_url, branch_name, commit)
-    sri_hash <- output$sri_hash
-    imports <- output$deps
-  } else {
-    sri_hash <- sri_hash
-    imports <- NULL
-  }
+  output <- get_sri_hash_deps(repo_url, branch_name, commit)
+  sri_hash <- output$sri_hash
+  imports <- output$deps
 
   sprintf('(buildRPackage {
     name = \"%s\";
