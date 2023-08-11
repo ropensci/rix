@@ -4,7 +4,7 @@ Version: 0.0.9
 Authors@R: c(
     person("Bruno", "Rodrigues", , "bruno@brodrigues.co", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3211-3689")),
-    person("Philipp", "Baumann", , "baumann-philipp@protonmail.com", role = "ctb",
+    person("Philipp", "Baumann", , "baumann-philipp@protonmail.com", role = "aut",
            comment = c(ORCID = "0000-0002-3194-8975"))
   )
 Description: Provides helper functions to create reproducible development

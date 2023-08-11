@@ -246,7 +246,7 @@ fetchpkgs  <- function(git_pkgs, archive_pkgs){
 #'   interactively use "rstudio", "code" for Visual Studio Code. For other editors,
 #'   use "other". This has been tested with RStudio, VS Code and Emacs. If other
 #'   editors don't work, please open an issue.
-#' @param path Character, defaults to the current working directory. Where to write
+#' @param project_path Character, defaults to the current working directory. Where to write
 #'   `default.nix`, for example "/home/path/to/project".
 #'   The file will thus be written to the file "/home/path/to/project/default.nix".
 #' @param overwrite Logical, defaults to FALSE. If TRUE, overwrite the `default.nix`

@@ -32,12 +32,12 @@ interactively use "rstudio", "code" for Visual Studio Code. For other editors,
 use "other". This has been tested with RStudio, VS Code and Emacs. If other
 editors don't work, please open an issue.}
 
-\item{overwrite}{Logical, defaults to FALSE. If TRUE, overwrite the \code{default.nix}
-file in the specified path.}
-
-\item{path}{Character, defaults to the current working directory. Where to write
+\item{project_path}{Character, defaults to the current working directory. Where to write
 \code{default.nix}, for example "/home/path/to/project".
 The file will thus be written to the file "/home/path/to/project/default.nix".}
+
+\item{overwrite}{Logical, defaults to FALSE. If TRUE, overwrite the \code{default.nix}
+file in the specified path.}
 }
 \value{
 Nothing, this function only has the side-effect of writing a file
