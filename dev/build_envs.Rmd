@@ -488,7 +488,7 @@ session.
 #' @export
 nix_build <- function(nix_file = file.path("default.nix"),
                       exec_mode = c("blocking", "non-blocking")) {
-  has_nix_build <- nix_build_installed() # returns invisibly if no error
+  has_nix_build <- nix_build_installed() # TRUE if yes, FALSE if no
   stopifnot(
     "Argument `nix_file` must be character of length 1." =
       is.character(nix_file) && length(nix_file) == 1L,
