@@ -408,3 +408,89 @@ USE_RSTUDIO};
 
 }
 
+
+#' Invoke shell command `nix-build` from an R session
+#' @param project_path Path to the folder where the `default.nix` file resides. 
+#  The default is `".`, which is the current working directory in the R session.
+#' session.
+#' @param exec_mode Either `"blocking"` (default) or `"non-blocking`. This
+#' will either block the R session while the `nix-build` shell command is
+#' executed, or run `nix-build` in the background ("non-blocking").
+#' @return integer of the process ID (PID) of `nix-build` shell command
+#' launched, if `nix_build()` call is assigned to an R object. Otherwise, it 
+#' will be returned as "invisible".
+#' @export
+nix_build <- function(project_path = ".",
+                      exec_mode = c("blocking", "non-blocking")) {
+  has_nix_build <- nix_build_installed() # TRUE if yes, FALSE if no
+  nix_file <- file.path(project_path, "default.nix")
+  
+  stopifnot(
+    "Argument `nix_file` must be character of length 1." =
+      is.character(nix_file) && length(nix_file) == 1L,
+    "`nix_file` does not exist. Please use a valid path." =
+      file.exists(nix_file),
+    "`nix-build` not available. To install, we suggest you follow https://zero-to-nix.com/start/install ." =
+      isFALSE(has_nix_build)
+  )
+  exec_mode <- match.arg(exec_mode)
+  
+  cat(paste0("Launching `nix-build`", " in ", exec_mode, " mode\n"))
+  
+  proc <- switch(exec_mode,
+    "blocking" = sys::exec_internal("nix-build", nix_file),
+    "non-blocking" = sys::exec_background("nix-build", nix_file),
+    stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
+  )
+  
+  if (exec_mode == "non-blocking") {
+    cat(paste0("\n==> Process ID (PID) is ", proc, "."))
+    cat("\n==> Receiving stdout and stderr streams...\n")
+    status <- sys::exec_status(proc, wait = TRUE)
+    if (status == 0L) {
+      cat("\n==> `nix-build` succeeded!")
+    }
+  }
+  
+  if (exec_mode == "blocking") {
+    status <- proc$status
+    if (status == 0L) {
+      cat(paste0("\n==> ", sys::as_text(proc$stdout)))
+      cat("\n==> `nix-build` succeeded!")
+    } else {
+      msg <- nix_build_exit_msg()
+      cat(paste0("`nix-build` failed with ", msg))
+    }
+  }
+  
+  # todo (?): clean zombies for background/non-blocking mode
+  # rm(pid)
+  
+  return(invisible(proc))
+}
+
+#' @noRd
+nix_build_installed <- function() {
+  exit_code <- system2("command", "-v", "nix-build")
+  if (exit_code == 0L) {
+    return(invisible(TRUE))
+  } else {
+    return(invisible(FALSE))
+  }
+}
+
+#' @noRd
+nix_build_exit_msg <- function(x) {
+  x_char <- as.character(x)
+  
+  err_msg <- switch(
+    x_char,
+    "100" = "generic build failure (100).",
+    "101" = "build timeout (101).",
+    "102" = "hash mismatch (102).",
+    "104" = "not deterministic (104).",
+    stop(paste0("general exit code ", x_char, "."))
+  )
+  
+  return(err_msg)
+}

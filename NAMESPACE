@@ -3,6 +3,7 @@
 export(available_r)
 export(find_rev)
 export(get_current)
+export(nix_build)
 export(rix)
 importFrom(httr,GET)
 importFrom(httr,content)
