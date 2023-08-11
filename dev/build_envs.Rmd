@@ -522,7 +522,7 @@ nix_build <- function(project_path = ".",
     "`nix_file` does not exist. Please use a valid path." =
       file.exists(nix_file),
     "`nix-build` not available. To install, we suggest you follow https://zero-to-nix.com/start/install ." =
-      isFALSE(has_nix_build)
+      isTRUE(has_nix_build)
   )
   exec_mode <- match.arg(exec_mode)
   
