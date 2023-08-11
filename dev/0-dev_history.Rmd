@@ -23,7 +23,8 @@ fusen::fill_description(
       person("Bruno", "Rodrigues", email = "bruno@brodrigues.co", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-3211-3689")),
       person("Philipp", "Baumann", email = "baumann-philipp@protonmail.com", role = "ctb", comment = c(ORCID = "0000-0002-3194-8975"))
     )
-  )
+  ),
+  overwrite = TRUE
 )
 # Define License with use_*_license()
 usethis::use_gpl3_license()
@@ -66,12 +67,6 @@ usethis::use_git()
 
 **From now, you will need to "inflate" your package at least once to be able to use the following commands. Let's go to your flat template, and come back here later if/when needed.**
 
-```{r}
-fusen::inflate(flat_file = "dev/build_envs.Rmd",
-               vignette_name = NA,
-               overwrite = TRUE)
-```
-
 ```{r development-inflate, eval=FALSE}
 # Run but keep eval=FALSE to avoid infinite loop
 # Execute in the console directly
@@ -95,6 +90,13 @@ fusen::inflate(flat_file = "dev/data_doc.Rmd",
                vignette_name = NA,
                overwrite = TRUE)
 ```
+
+```{r}
+fusen::inflate(flat_file = "dev/build_envs.Rmd",
+               vignette_name = NA,
+               overwrite = TRUE)
+```
+
 
 ```{r}
 fusen::inflate(flat_file = "dev/zzz.Rmd",
