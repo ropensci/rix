@@ -390,8 +390,8 @@ USE_RSTUDIO};
 
 
 #' Invoke shell command `nix-build` from an R session
-#' @param nix_file File path to the `default.nix` file. The default is
-#' a `default.nix` file in the current working directory of the current R
+#' @param project_path Path to the folder where the `default.nix` file resides. 
+#  The default is `".`, which is the current working directory in the R session.
 #' session.
 #' @param exec_mode Either `"blocking"` (default) or `"non-blocking`. This
 #' will either block the R session while the `nix-build` shell command is
@@ -400,9 +400,11 @@ USE_RSTUDIO};
 #' launched, if `nix_build()` call is assigned to an R object. Otherwise, it 
 #' will be returned as "invisible".
 #' @export
-nix_build <- function(nix_file = file.path("default.nix"),
+nix_build <- function(project_path = ".",
                       exec_mode = c("blocking", "non-blocking")) {
   has_nix_build <- nix_build_installed() # TRUE if yes, FALSE if no
+  nix_file <- file.path(project_path, "default.nix")
+  
   stopifnot(
     "Argument `nix_file` must be character of length 1." =
       is.character(nix_file) && length(nix_file) == 1L,
@@ -441,7 +443,7 @@ nix_build <- function(nix_file = file.path("default.nix"),
     }
   }
   
-  # clean zombies for background/non-blocking mode
+  # todo (?): clean zombies for background/non-blocking mode
   # rm(pid)
   
   return(invisible(proc))

@@ -4,14 +4,10 @@
 \alias{nix_build}
 \title{Invoke shell command \code{nix-build} from an R session}
 \usage{
-nix_build(
-  nix_file = file.path("default.nix"),
-  exec_mode = c("blocking", "non-blocking")
-)
+nix_build(project_path = ".", exec_mode = c("blocking", "non-blocking"))
 }
 \arguments{
-\item{nix_file}{File path to the \code{default.nix} file. The default is
-a \code{default.nix} file in the current working directory of the current R
+\item{project_path}{Path to the folder where the \code{default.nix} file resides.
 session.}
 
 \item{exec_mode}{Either \code{"blocking"} (default) or \verb{"non-blocking}. This
