@@ -496,7 +496,7 @@ nix_build <- function(project_path = ".",
       is.character(nix_file) && length(nix_file) == 1L,
     "`nix_file` does not exist. Please use a valid path." =
       file.exists(nix_file),
-    "`nix-build` not available. To install, we suggest you follow https://zero-to-nix.com/start/install for installation." =
+    "`nix-build` not available. To install, we suggest you follow https://zero-to-nix.com/start/install ." =
       isFALSE(has_nix_build)
   )
   exec_mode <- match.arg(exec_mode)
