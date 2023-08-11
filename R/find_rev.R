@@ -402,14 +402,17 @@ USE_RSTUDIO};
 #' @export
 nix_build <- function(nix_file = file.path("default.nix"),
                       exec_mode = c("blocking", "non-blocking")) {
+  has_nix_build <- nix_build_installed() # returns invisibly if no error
   stopifnot(
     "Argument `nix_file` must be character of length 1." =
       is.character(nix_file) && length(nix_file) == 1L,
     "`nix_file` does not exist. Please use a valid path." =
-      file.exists(nix_file)
+      file.exists(nix_file),
+    "`nix-build` not available. To install, we suggest you follow https://zero-to-nix.com/start/install for installation." =
+      isFALSE(has_nix_build)
   )
   exec_mode <- match.arg(exec_mode)
-
+  
   cat(paste0("Launching `nix-build`", " in ", exec_mode, " mode\n"))
   
   proc <- switch(exec_mode,
@@ -442,6 +445,16 @@ nix_build <- function(nix_file = file.path("default.nix"),
   # rm(pid)
   
   return(invisible(proc))
+}
+
+#' @noRd
+nix_build_installed <- function() {
+  exit_code <- system2("command", "-v", "nix-build")
+  if (exit_code == 0L) {
+    return(invisible(TRUE))
+  } else {
+    return(invisible(FALSE))
+  }
 }
 
 #' @noRd
