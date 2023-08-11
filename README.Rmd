@@ -12,7 +12,7 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "man/figures/README-",
+  fig.project_path = "man/figures/README-",
   out.width = "100%"
 )
 ```
@@ -194,7 +194,7 @@ rix(r_ver = "current",
     other_pkgs = NULL,
     git_pkgs = NULL,
     ide = "rstudio",
-    path = ".",
+    project_path = ".",
     overwrite = TRUE)
 ```
 

@@ -143,7 +143,7 @@ rix(r_ver = "8ad5e8132c5dcf977e308e7bf5517cc6cc0bf7d8",
       commit = "34f4715e7fa37748d3db047ce3b7f4dafe1da59c"
     ),
     ide = "other",
-    path = ".",
+    project_path = ".",
     overwrite = TRUE)
 ```
 

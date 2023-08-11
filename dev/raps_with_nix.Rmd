@@ -27,7 +27,7 @@ rix(r_ver = "4.2.2",
                     branch_name = "fusen",
                     commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
     ide = "other",
-    path = ".",
+    project_path = ".",
     overwrite = TRUE)
 
 ```
@@ -92,17 +92,15 @@ add a *Shell-hook* to the generated `default.nix` file:
 
 ```
 ...
-      mkShell {
-        shellHook = ''
-             Rscript -e "targets::tar_make()"
-          '';
-        LOCALE_ARCHIVE = "${glibcLocales}/lib/locale/locale-archive";
-        buildInputs = [
-          my-r
-          ];
-      }
-
-
+mkShell {
+  shellHook = ''
+       Rscript -e "targets::tar_make()"
+    '';
+  LOCALE_ARCHIVE = "${glibcLocales}/lib/locale/locale-archive";
+  buildInputs = [
+    my-r
+    ];
+}
 ```
 
 Now, each time you drop into the Nix shell for that project using `nix-shell`,
