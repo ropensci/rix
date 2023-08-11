@@ -97,7 +97,7 @@ rix(r_ver = "current",
     other_pkgs = NULL,
     git_pkgs = NULL,
     ide = "rstudio",
-    path = path_default_nix,
+    project_path = path_default_nix,
     overwrite = TRUE)
 ```
 
@@ -142,7 +142,7 @@ rix(r_ver = "current",
     other_pkgs = NULL,
     git_pkgs = NULL,
     ide = "code",
-    path = path_default_nix,
+    project_path = path_default_nix,
     overwrite = TRUE)
 ```
 
@@ -183,7 +183,7 @@ rix(r_ver = "4.2.1",
     other_pkgs = c("quarto"),
     git_pkgs = NULL,
     ide = "other",
-    path = path_default_nix,
+    project_path = path_default_nix,
     overwrite = TRUE)
 
 ```
@@ -218,7 +218,7 @@ rix(r_ver = "4.2.1",
     other_pkgs = NULL,
     git_pkgs = NULL,
     ide = "other",
-    path = path_default_nix,
+    project_path = path_default_nix,
     overwrite = TRUE)
 ```
 
@@ -253,7 +253,7 @@ rix(r_ver = "4.2.1",
                    commit = "d617172447d2947efb20ad6a4463742b8a5d79dc")
     ),
     ide = "other",
-    path = path_default_nix,
+    project_path = path_default_nix,
     overwrite = TRUE)
 
 ```
@@ -288,7 +288,7 @@ rix(r_ver = "4.2.1",
                    commit = "d617172447d2947efb20ad6a4463742b8a5d79dc")
     ),
     ide = "rstudio",
-    path = path_default_nix,
+    project_path = path_default_nix,
     overwrite = TRUE)
 
 ```

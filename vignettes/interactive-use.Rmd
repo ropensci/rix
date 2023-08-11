@@ -95,7 +95,7 @@ rix(r_ver = "current",
     other_pkgs = NULL,
     git_pkgs = NULL,
     ide = "rstudio",
-    path = ".", # change to a project's path
+    project_path = ".", # change to a project's path
     overwrite = TRUE)
 ```
 

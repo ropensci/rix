@@ -10,13 +10,14 @@ rix(
   other_pkgs = NULL,
   git_pkgs = NULL,
   ide = "other",
-  path = ".",
+  project_path = ".",
   overwrite = FALSE
 )
 }
 \arguments{
 \item{r_ver}{Character, defaults to "current". The required R version. To use the current version
-of R, use "current". You can check which R versions are available using \code{available_r}.}
+of R, use "current". You can check which R versions are available using \code{available_r}.
+If a nixpkgs revision is provided instead, this gets returned.}
 
 \item{r_pkgs}{Vector of characters. List the required R packages for your
 analysis here.}
@@ -31,12 +32,12 @@ interactively use "rstudio", "code" for Visual Studio Code. For other editors,
 use "other". This has been tested with RStudio, VS Code and Emacs. If other
 editors don't work, please open an issue.}
 
+\item{overwrite}{Logical, defaults to FALSE. If TRUE, overwrite the \code{default.nix}
+file in the specified path.}
+
 \item{path}{Character, defaults to the current working directory. Where to write
 \code{default.nix}, for example "/home/path/to/project".
 The file will thus be written to the file "/home/path/to/project/default.nix".}
-
-\item{overwrite}{Logical, defaults to FALSE. If TRUE, overwrite the \code{default.nix}
-file in the specified path.}
 }
 \value{
 Nothing, this function only has the side-effect of writing a file
@@ -63,12 +64,11 @@ the environment using \code{nix-build}, you can drop into an interactive session
 using \code{nix-shell}. See the "Building reproducible development environments with rix"
 vignette for detailled instructions.
 Packages to install from Github must be provided in a list of 4 elements:
-"package_name", "repo_url", "branch_name" and "commit". A fifth, optional
-element, "sri_hash" can be provided as well. This argument can also be a list
-of lists of these 4 elements. It is also possible to install old versions
+"package_name", "repo_url", "branch_name" and "commit".
+This argument can also be a list of lists of these 4 elements. It is also possible to install old versions
 of packages by specifying a version. For example, to install the latest
-version of \code{{AER}} but an old version of \code{{ggplot2}}, you could provide
-the set \code{r_pkgs} to: \code{r_pkgs = c("dplyr", "ggplot2@2.2.1")}. Note
+version of \code{{AER}} but an old version of \code{{ggplot2}}, you could
+write: \code{r_pkgs = c("AER", "ggplot2@2.2.1")}. Note
 however that doing this could result in dependency hell, because an older
 version of a package might need older versions of its dependencies, but other
 packages might need more recent version of the same dependencies. If instead you

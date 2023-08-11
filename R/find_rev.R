@@ -9,6 +9,8 @@
 #' find_rev("4.2.0")
 find_rev <- function(r_version){
 
+  stopifnot("r_version has to be a character." = is.character(r_version))
+
   if(r_version == "current"){
     return(get_current())
   } else if(nchar(r_version) == 40){
@@ -99,7 +101,7 @@ get_sri_hash_deps <- function(repo_url, branch_name, commit){
 }
 
 #' fetchgit Downloads and installs a package hosted of Git
-#' @param git_pkg A list of at least four elements: "package_name", the name of the package, "repo_url", the repository's url, "branch_name", the name of the branch containing the code to download and "commit", the commit hash of interest. A fifth, optional argument called "sri_hash" can be provided, if available. If not, "sri_hash" will be obtained using `get_sri_hash_deps()`
+#' @param git_pkg A list of four elements: "package_name", the name of the package, "repo_url", the repository's url, "branch_name", the name of the branch containing the code to download and "commit", the commit hash of interest. 
 #' @return A character. The Nix definition to download and build the R package from Github.
 #' @noRd
 fetchgit <- function(git_pkg){
@@ -108,7 +110,6 @@ fetchgit <- function(git_pkg){
   repo_url <- git_pkg$repo_url
   branch_name <- git_pkg$branch_name
   commit <- git_pkg$commit
-  sri_hash <- git_pkg$sri_hash
 
   if(is.null(sri_hash)){
     output <- get_sri_hash_deps(repo_url, branch_name, commit)
@@ -188,7 +189,7 @@ fetchzip <- function(archive_pkg, sri_hash = NULL){
 
 
 #' fetchgits Downloads and installs a packages hosted of Git. Wraps `fetchgit()` to handle multiple packages
-#' @param git_pkgs A list of at least four elements: "package_name", the name of the package, "repo_url", the repository's url, "branch_name", the name of the branch containing the code to download and "commit", the commit hash of interest. A fifth, optional argument called "sri_hash" can be provided, if available. If not, "sri_hash" will be obtained using `get_sri_hash_deps()`. This argument can also be a list of lists of these four elements.
+#' @param git_pkgs A list of four elements: "package_name", the name of the package, "repo_url", the repository's url, "branch_name", the name of the branch containing the code to download and "commit", the commit hash of interest. This argument can also be a list of lists of these four elements.
 #' @return A character. The Nix definition to download and build the R package from Github.
 #' @noRd
 fetchgits <- function(git_pkgs){
@@ -222,7 +223,7 @@ fetchzips <- function(archive_pkgs){
 }
 
 #' fetchpkgs Downloads and installs packages hosted in the CRAN archives or Github.
-#' @param git_pkgs A list of at least four elements: "package_name", the name of the package, "repo_url", the repository's url, "branch_name", the name of the branch containing the code to download and "commit", the commit hash of interest. A fifth, optional argument called "sri_hash" can be provided, if available. If not, "sri_hash" will be obtained using `get_sri_hash_deps()`. This argument can also be a list of lists of these four elements.
+#' @param git_pkgs A list of four elements: "package_name", the name of the package, "repo_url", the repository's url, "branch_name", the name of the branch containing the code to download and "commit", the commit hash of interest. This argument can also be a list of lists of these four elements.
 #' @param archive_pkgs A character, or an atomic vector of characters.
 #' @return A character. The Nix definition to download and build the R package from the CRAN archives.
 #' @noRd
@@ -240,6 +241,7 @@ fetchpkgs  <- function(git_pkgs, archive_pkgs){
 #'   manager.
 #' @param r_ver Character, defaults to "current". The required R version. To use the current version
 #'   of R, use "current". You can check which R versions are available using `available_r`.
+#'   If a nixpkgs revision is provided instead, this gets returned.
 #' @param r_pkgs Vector of characters. List the required R packages for your
 #'   analysis here.
 #' @param other_pkgs Vector of characters. List further software you wish to install that
@@ -266,16 +268,15 @@ fetchpkgs  <- function(git_pkgs, archive_pkgs){
 #'   Visual Studio Code), you do not need to add it to the `default.nix` file,
 #'   you can simply use the version that is installed on your computer. Once you built
 #'   the environment using `nix-build`, you can drop into an interactive session
-#'   using `nix-shell`. See the "Building reproducible development environments with rix" 
+#'   using `nix-shell`. See the "Building reproducible development environments with rix"
 #'   vignette for detailled instructions.
 #'   Packages to install from Github must be provided in a list of 4 elements:
-#'   "package_name", "repo_url", "branch_name" and "commit". A fifth, optional
-#'   element, "sri_hash" can be provided as well. This argument can also be a list
-#'   of lists of these 4 elements. It is also possible to install old versions 
+#'   "package_name", "repo_url", "branch_name" and "commit".
+#'   This argument can also be a list of lists of these 4 elements. It is also possible to install old versions
 #'   of packages by specifying a version. For example, to install the latest
-#'   version of `{AER}` but an old version of `{ggplot2}`, you could provide 
-#'   the set `r_pkgs` to: `r_pkgs = c("dplyr", "ggplot2@2.2.1")`. Note
-#'   however that doing this could result in dependency hell, because an older 
+#'   version of `{AER}` but an old version of `{ggplot2}`, you could
+#'   write: `r_pkgs = c("AER", "ggplot2@2.2.1")`. Note
+#'   however that doing this could result in dependency hell, because an older
 #'   version of a package might need older versions of its dependencies, but other
 #'   packages might need more recent version of the same dependencies. If instead you
 #'   want to use an environment as it would have looked at the time of `{ggplot2}`'s
@@ -288,18 +289,19 @@ rix <- function(r_ver = "current",
                 other_pkgs = NULL,
                 git_pkgs = NULL,
                 ide = "other",
-                path = ".",
+                project_path = ".",
                 overwrite = FALSE){
+
 
   stopifnot("'ide' has to be one of 'other', 'rstudio' or 'code'" = (ide %in% c("other", "rstudio", "code")))
 
-  path <- if(path == "."){
+  project_path <- if(project_path == "."){
      "default.nix"
   } else {
-    paste0(path, "/default.nix")
+    paste0(project_path, "/default.nix")
   }
 
-  path <- file.path(path)
+  project_path <- file.path(project_path)
 
   # in case users pass something like c("dplyr", "tidyr@1.0.0")
   # r_pkgs will be "dplyr" only
@@ -323,8 +325,10 @@ rix <- function(r_ver = "current",
 
   nixFile <- "
 # This file was generated by the {rix} R package on DATE
+# with following call:
+RIX_CALL
 # It uses nixpkgs' revision NIX_REV for reproducibility purposes
-# which will install R version RE_VERSION
+# which will install R RE_VERSION
 # Report any issues to https://github.com/b-rodrigues/rix
     { pkgs ? import (fetchTarball \"https://github.com/NixOS/nixpkgs/archive/NIX_REV.tar.gz\") {} }:
 
@@ -354,8 +358,27 @@ USE_RSTUDIO};
           ];
       }"
 
-  nixFile <- gsub('NIX_REV', find_rev(r_ver) , nixFile)
-  nixFile <- gsub('RE_VERSION', r_ver , nixFile)
+  nix_rev <- find_rev(r_ver)
+
+  # replace r_ver in call by nix_rev for repro purposes
+  rix_call <- match.call()
+
+  rix_call$r_ver <- nix_rev
+
+  rix_call <- paste0("#", deparse1(rix_call))
+
+  rix_call <- gsub("\n", "\n#", rix_call)
+
+  nixFile <- gsub('NIX_REV', nix_rev, nixFile)
+
+  # change the sentence depending on whether r_ver is an R version or a nixpkgs revision
+  if(nchar(r_ver) > 20){
+    r_ver_text <- paste0("as it was as of nixpkgs revision: ", r_ver)
+  } else {
+    r_ver_text <- paste0("version ", r_ver)
+  }
+
+  nixFile <- gsub('RE_VERSION', r_ver_text, nixFile)
   nixFile <- gsub('DATE', date(), nixFile)
 
   nixFile <- gsub('USE_RSTUDIO',
@@ -382,10 +405,10 @@ USE_RSTUDIO};
 
   nixFile <- grep('TO_DELETE', nixFile, invert = TRUE, value = TRUE)
 
-  if(!file.exists(path) || overwrite){
-    writeLines(nixFile, path)
+  if(!file.exists(project_path) || overwrite){
+    writeLines(nixFile, project_path)
   } else {
-    stop(paste0("File exists at ", path, ". Set `overwrite == TRUE` to overwrite."))
+    stop(paste0("File exists at ", project_path, ". Set `overwrite == TRUE` to overwrite."))
   }
 
 }
