@@ -104,7 +104,7 @@ environment:</p>
 <span>                    branch_name <span class="op">=</span> <span class="st">"fusen"</span>,</span>
 <span>                    commit <span class="op">=</span> <span class="st">"1c860959310b80e67c41f7bbdc3e84cef00df18e"</span><span class="op">)</span>,</span>
 <span>    ide <span class="op">=</span> <span class="st">"other"</span>,</span>
-<span>    path <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>    project_path <span class="op">=</span> <span class="st">"."</span>,</span>
 <span>    overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>This call to <code><a href="../reference/rix.html">rix()</a></code> generates the following
 <code>default.nix</code> file:</p>
@@ -163,17 +163,15 @@ the environment by running in a terminal:</p>
 you could add a <em>Shell-hook</em> to the generated
 <code>default.nix</code> file:</p>
 <pre><code>...
-      mkShell {
-        shellHook = ''
-             Rscript -e "targets::tar_make()"
-          '';
-        LOCALE_ARCHIVE = "${glibcLocales}/lib/locale/locale-archive";
-        buildInputs = [
-          my-r
-          ];
-      }
-
-</code></pre>
+mkShell {
+  shellHook = ''
+       Rscript -e "targets::tar_make()"
+    '';
+  LOCALE_ARCHIVE = "${glibcLocales}/lib/locale/locale-archive";
+  buildInputs = [
+    my-r
+    ];
+}</code></pre>
 <p>Now, each time you drop into the Nix shell for that project using
 <code>nix-shell</code>, the pipeline gets automatically executed.</p>
 </div>
