@@ -158,6 +158,17 @@
 <p>If you are on Windows, you need the Windows Subsystem for Linux 2 (WSL2) to run Nix. If you are on a recent version of Windows 10 or 11, you can simply run this as an administrator in PowerShell:</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>wsl <span class="sc">--</span>install</span></code></pre></div>
 <p>You can find further installation notes at <a href="https://learn.microsoft.com/en-us/windows/wsl/install" class="external-link">this official MS documentation</a>.</p>
+<p>We recommend to activate systemd in Ubuntu WSL2, mainly because this supports other users than <code>root</code> running Nix. To set this up, please do as outlined <a href="https://ubuntu.com/blog/ubuntu-wsl-enable-systemd" class="external-link">this official Ubuntu blog entry</a>:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># in WSL2 Ubuntu shell</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> <span class="at">-i</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> /etc/wsl.conf</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># add this entry</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="ex">[boot]</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="va">systemd</span><span class="op">=</span>true</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># then restart running instance from PowerShell</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="ex">wsl</span> <span class="at">--shutdown</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co"># relaunch Ubuntu WSL2</span></span></code></pre></div>
+<p>Afterwards, you can install Nix like business as usual. You can proceed with the Determinant Systems installer. If you cannot or have decided not to activate systemd, then you have to append <code>--init none</code> to the command. More details about this you can find at <a href="https://github.com/DeterminateSystems/nix-installer" class="external-link">The Determinante Nix Installer</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="installing-nix-using-the-determinate-systems-installer">Installing Nix using the Determinate Systems installer<a class="anchor" aria-label="anchor" href="#installing-nix-using-the-determinate-systems-installer"></a>
