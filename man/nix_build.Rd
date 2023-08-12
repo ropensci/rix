@@ -8,6 +8,7 @@ nix_build(project_path = ".", exec_mode = c("blocking", "non-blocking"))
 }
 \arguments{
 \item{project_path}{Path to the folder where the \code{default.nix} file resides.
+The default is \code{"."}, which is the working directory in the current R
 session.}
 
 \item{exec_mode}{Either \code{"blocking"} (default) or \verb{"non-blocking}. This
@@ -17,7 +18,7 @@ executed, or run \code{nix-build} in the background ("non-blocking").}
 \value{
 integer of the process ID (PID) of \code{nix-build} shell command
 launched, if \code{nix_build()} call is assigned to an R object. Otherwise, it
-will be returned as "invisible".
+will be returned invisibly.
 }
 \description{
 Invoke shell command \code{nix-build} from an R session
