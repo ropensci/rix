@@ -502,14 +502,14 @@ session.
 ```{r function-nix_build}
 #' Invoke shell command `nix-build` from an R session
 #' @param project_path Path to the folder where the `default.nix` file resides. 
-#  The default is `".`, which is the current working directory in the R session.
+#' The default is `"."`, which is the working directory in the current R
 #' session.
 #' @param exec_mode Either `"blocking"` (default) or `"non-blocking`. This
 #' will either block the R session while the `nix-build` shell command is
 #' executed, or run `nix-build` in the background ("non-blocking").
 #' @return integer of the process ID (PID) of `nix-build` shell command
 #' launched, if `nix_build()` call is assigned to an R object. Otherwise, it 
-#' will be returned as "invisible".
+#' will be returned invisibly.
 #' @export
 nix_build <- function(project_path = ".",
                       exec_mode = c("blocking", "non-blocking")) {
