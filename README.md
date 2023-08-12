@@ -216,6 +216,29 @@ simply run this as an administrator in PowerShell:
 You can find further installation notes at [this official MS
 documentation](https://learn.microsoft.com/en-us/windows/wsl/install).
 
+We recommend to activate systemd in Ubuntu WSL2, mainly because this
+supports other users than `root` running Nix. To set this up, please do
+as outlined [this official Ubuntu blog
+entry](https://ubuntu.com/blog/ubuntu-wsl-enable-systemd):
+
+``` sh
+# in WSL2 Ubuntu shell
+sudo -i
+nano /etc/wsl.conf
+# add this entry
+[boot]
+systemd=true
+# then restart running instance from PowerShell
+wsl --shutdown
+# relaunch Ubuntu WSL2
+```
+
+Afterwards, you can install Nix like business as usual. You can proceed
+with the Determinant Systems installer. If you cannot or have decided
+not to activate systemd, then you have to append `--init none` to the
+command. More details about this you can find at [The Determinante Nix
+Installer](https://github.com/DeterminateSystems/nix-installer).
+
 ### Installing Nix using the Determinate Systems installer
 
 To make installation and de-installation of Nix simple, we recommend the
