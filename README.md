@@ -1,4 +1,25 @@
 
+- <a href="#rix-reproducible-environments-with-nix"
+  id="toc-rix-reproducible-environments-with-nix">Rix: Reproducible
+  Environments with Nix</a>
+  - <a href="#introduction" id="toc-introduction">Introduction</a>
+  - <a href="#the-nix-package-manager" id="toc-the-nix-package-manager">The
+    Nix package manager</a>
+  - <a href="#rix-workflow" id="toc-rix-workflow">Rix workflow</a>
+    - <a href="#defaultnix" id="toc-defaultnix">default.nix</a>
+    - <a href="#running-programs-from-an-environment"
+      id="toc-running-programs-from-an-environment">Running programs from an
+      environment</a>
+  - <a href="#installation" id="toc-installation">Installation</a>
+  - <a href="#installing-nix" id="toc-installing-nix">Installing Nix</a>
+    - <a href="#windows-pre-requisites"
+      id="toc-windows-pre-requisites">Windows pre-requisites</a>
+    - <a href="#installing-nix-using-the-determinate-systems-installer"
+      id="toc-installing-nix-using-the-determinate-systems-installer">Installing
+      Nix using the Determinate Systems installer</a>
+    - <a href="#docker" id="toc-docker">Docker</a>
+  - <a href="#contributing" id="toc-contributing">Contributing</a>
+
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/b-rodrigues/rix/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/b-rodrigues/rix/actions/workflows/R-CMD-check.yaml)
