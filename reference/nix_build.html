@@ -62,6 +62,7 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>project_path</dt>
 <dd><p>Path to the folder where the <code>default.nix</code> file resides.
+The default is <code>"."</code>, which is the working directory in the current R
 session.</p></dd>
 
 
@@ -77,7 +78,7 @@ executed, or run <code>nix-build</code> in the background ("non-blocking").</p><
 
 <p>integer of the process ID (PID) of <code>nix-build</code> shell command
 launched, if <code>nix_build()</code> call is assigned to an R object. Otherwise, it
-will be returned as "invisible".</p>
+will be returned invisibly.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
