@@ -199,8 +199,8 @@ drop into a temporary Nix shell that comes with R and `{rix}` pre-installed:
 nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix)"
 ```
 
-This should immediately start an R session inside your terminal. You can now run
-something like this:
+This should immediately build the nix environment and launch the nix-shell. You can now 
+open the R console by hitting `R` and run something like this:
 
 ```
 rix(r_ver = "current",
