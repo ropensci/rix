@@ -42,4 +42,5 @@
     buildInputs = [
        my-r
         ];
+    shellHook = "R";
 }
