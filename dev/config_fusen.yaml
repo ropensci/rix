@@ -68,7 +68,7 @@ raps_with_nix.Rmd:
   state: active
   R: []
   tests: []
-  vignettes: vignettes/raps-with-nix.Rmd
+  vignettes: vignettes/reproducible-analytical-pipelines-with-nix.Rmd
   inflate:
     flat_file: dev/raps_with_nix.Rmd
     vignette_name: Reproducible Analytical Pipelines with Nix
