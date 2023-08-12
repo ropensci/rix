@@ -446,9 +446,11 @@ USE_RSTUDIO};
 
   rix_call$r_ver <- nix_rev
 
-  rix_call <- paste0("#", deparse1(rix_call))
+  rix_call <- paste0("# >", deparse1(rix_call))
 
-  rix_call <- gsub("\n", "\n#", rix_call)
+  rix_call <- gsub(",", ",\n#  >", rix_call)
+
+  nixFile <- gsub('RIX_CALL', rix_call, nixFile)
 
   nixFile <- gsub('NIX_REV', nix_rev, nixFile)
 
