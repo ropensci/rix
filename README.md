@@ -43,7 +43,7 @@ is possible to work on totally reproducible development environments,
 and even install old releases of R and R packages. With Nix, it is
 essentially possible to replace `{renv}` and Docker combined. If you
 need other tools or languages like Python or Julia, this can also be
-done easily. Nix is available for Linux, macOS and Windows.
+done easily. Nix is available for Linux, macOS and Windows (via WSL2).
 
 ## The Nix package manager
 
