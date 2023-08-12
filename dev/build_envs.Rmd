@@ -517,9 +517,9 @@ nix_build <- function(project_path = ".",
   nix_file <- file.path(project_path, "default.nix")
   
   stopifnot(
-    "Argument `nix_file` must be character of length 1." =
-      is.character(nix_file) && length(nix_file) == 1L,
-    "`nix_file` does not exist. Please use a valid path." =
+    "`project_path` must be character of length 1." =
+      is.character(project_path) && length(project_path) == 1L,
+    "`project_path` has no `default.nix` file. Use one that contains `default.nix`" =
       file.exists(nix_file),
     "`nix-build` not available. To install, we suggest you follow https://zero-to-nix.com/start/install ." =
       isTRUE(has_nix_build)
