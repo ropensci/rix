@@ -168,6 +168,15 @@ You can install the development version of rix from
 remotes::install_github("b-rodrigues/rix")
 ```
 
+Or you can install it from the [{rix}
+r-universe](https://b-rodrigues.r-universe.dev/rix), which serves you
+from a CRAN-like R package repository:
+
+``` r
+install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
+  "https://cloud.r-project.org"))
+```
+
 As stated above, `{rix}` does not require Nix to be installed to
 generate `default.nix` files. But if you are on a machine on which R is
 not already installed, and you want to start using `{rix}` to generate
