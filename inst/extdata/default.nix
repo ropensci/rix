@@ -16,30 +16,33 @@
 # Report any issues to https://github.com/b-rodrigues/rix
     { pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/8ad5e8132c5dcf977e308e7bf5517cc6cc0bf7d8.tar.gz") {} }:
 
-      with pkgs;
+  with pkgs;
 
-      let
-      my-r = rWrapper.override {
-        packages = with rPackages; [
-          
-          (buildRPackage {
-    name = "rix";
-    src = fetchgit {
-      url = "https://github.com/b-rodrigues/rix/";
-      branchName = "master";
-      rev = "c5a189343b32b442e6a3b344de19c0ddcbd2f700";
-      sha256 = "sha256-tqRVNrFdg9TIlH0DCPzIlTNOdR5SjQNNrfdi59KU1to=";
-    };
-    propagatedBuildInputs = [
-        httr jsonlite sys
+  let
+   my-r = rWrapper.override {
+     packages = with rPackages; [
+        (buildRPackage {
+         name = "rix";
+         src = fetchgit {
+           url = "https://github.com/b-rodrigues/rix/";
+           branchName = "master";
+           rev = "c5a189343b32b442e6a3b344de19c0ddcbd2f700";
+           sha256 = "sha256-tqRVNrFdg9TIlH0DCPzIlTNOdR5SjQNNrfdi59KU1to=";
+         };
+         propagatedBuildInputs = [
+           httr
+           jsonlite
+           sys
+         ];
+        })
       ];
-  }) 
+    };
+  in
+   mkShell {
+    LOCALE_ARCHIVE = "${glibcLocales}/lib/locale/locale-archive";
+    buildInputs = [
+       my-r
         ];
-      };
-      in
-      mkShell {
-        LOCALE_ARCHIVE = "${glibcLocales}/lib/locale/locale-archive";
-        buildInputs = [
-          my-r
-          ];
-      }
+    shellHook = "R";
+}
+
