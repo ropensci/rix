@@ -39,7 +39,7 @@
     };
   in
    mkShell {
-    LOCALE_ARCHIVE = "${glibcLocales}/lib/locale/locale-archive";
+    #LOCALE_ARCHIVE = "${glibcLocales}/lib/locale/locale-archive";
     buildInputs = [
        my-r
         ];
