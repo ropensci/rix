@@ -2,15 +2,15 @@
 % Please edit documentation in R/find_rev.R
 \name{available_r}
 \alias{available_r}
-\title{available_r List available R versions}
+\title{List available R versions from Nixpkgs}
 \usage{
 available_r()
 }
 \value{
-A character vector containing the available R versrions.
+A character vector containing the available R versions.
 }
 \description{
-available_r List available R versions
+List available R versions from Nixpkgs
 }
 \examples{
 available_r()

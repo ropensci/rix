@@ -35,8 +35,8 @@ find_rev <- function(r_version){
 }
 
 
-#' available_r List available R versions
-#' @return A character vector containing the available R versrions.
+#' List available R versions from Nixpkgs
+#' @return A character vector containing the available R versions.
 #' @export
 #'
 #' @examples
@@ -52,7 +52,6 @@ available_r <- function(){
   get("r_nix_revs", envir = temp)
 
   c("current", r_nix_revs$version)
-
 }
 
 
