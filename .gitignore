@@ -1,8 +1,8 @@
 .Rproj.user
 .Rhistory
 .RData
+.Rprofile
 .DS_Store
 .httr-oauth
-.Rprofile
 inst/doc
 docs
