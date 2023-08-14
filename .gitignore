@@ -3,5 +3,6 @@
 .RData
 .DS_Store
 .httr-oauth
+.Rprofile
 inst/doc
 docs
