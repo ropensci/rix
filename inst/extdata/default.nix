@@ -41,5 +41,5 @@
     buildInputs = [
        my-r
         ];
-    shellHook = "R";
+    shellHook = "R --vanilla";
 }
