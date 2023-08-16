@@ -8,14 +8,12 @@ name: nix-builder
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
     name: nix builder
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
-      - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v4
-      - name: Run the Magic Nix Cache
-        uses: DeterminateSystems/magic-nix-cache-action@v2
-      - name: Run `nix build ./inst/extdata/default.nix`
-        run: |
-          nix build ./inst/extdata/default.nix
+    - uses: actions/checkout@v3
+    - name: Install Nix
+      uses: DeterminateSystems/nix-installer-action@main
+    - name: Run `nix-build ./inst/extdata/default.nix`
+      run: |
+        nix-build ./inst/extdata/default.nix
