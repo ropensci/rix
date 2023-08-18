@@ -27,13 +27,18 @@
            inherit (pkgs.rPackages) httr jsonlite sys;
          };
         });
-    rpkgs = builtins.attrValues {
-        inherit (pkgs.rPackages) dplyr janitor;
+    rpkgs = pkgs.rWrapper.override {
+      packages = builtins.attrValues {
+        inherit (pkgs.rPackages) dplyr janitor quarto;
+      };
+    };
+    system_packages = builtins.attrValues {
+        inherit (pkgs) quarto;
       };
    in
    pkgs.mkShell {
     buildInputs = [
-      rpkgs rix
+      rpkgs rix system_packages
         ];
     shellHook = "R --vanilla";
    }
