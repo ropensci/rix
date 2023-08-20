@@ -13,30 +13,32 @@
 # It uses nixpkgs' revision 8ad5e8132c5dcf977e308e7bf5517cc6cc0bf7d8 for reproducibility purposes
 # which will install R as it was as of nixpkgs revision: 8ad5e8132c5dcf977e308e7bf5517cc6cc0bf7d8
 # Report any issues to https://github.com/b-rodrigues/rix
-  let
-    pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/8ad5e8132c5dcf977e308e7bf5517cc6cc0bf7d8.tar.gz") {};
-    rix = (pkgs.rPackages.buildRPackage {
-         name = "rix";
-         src = pkgs.fetchgit {
-           url = "https://github.com/b-rodrigues/rix/";
-           branchName = "master";
-           rev = "da581f90273cb1ccfedbe18808097bf33b84d63c";
-           sha256 = "sha256-eDAxkXSrX+Q5TWwzkwMDG5rB8VXFKaLJLLKEJEvxjeo=";
-         };
-         propagatedBuildInputs = builtins.attrValues {
-           inherit (pkgs.rPackages) httr jsonlite sys;
-         };
-        });
-    rpkgs = builtins.attrValues {
-        inherit (pkgs.rPackages) dplyr janitor quarto;
-    };
-    system_packages = builtins.attrValues {
-        inherit (pkgs) R quarto;
-      };
-   in
-   pkgs.mkShell {
-    buildInputs = [
-      rpkgs rix system_packages
-        ];
-    shellHook = "R --vanilla";
-   }
+let
+  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/8ad5e8132c5dcf977e308e7bf5517cc6cc0bf7d8.tar.gz") {};
+  rix = (pkgs.rPackages.buildRPackage {
+           name = "rix";
+           src = pkgs.fetchgit {
+             url = "https://github.com/b-rodrigues/rix/";
+             branchName = "master";
+             rev = "da581f90273cb1ccfedbe18808097bf33b84d63c";
+             sha256 = "sha256-eDAxkXSrX+Q5TWwzkwMDG5rB8VXFKaLJLLKEJEvxjeo=";
+           };
+           propagatedBuildInputs = builtins.attrValues {
+             inherit (pkgs.rPackages) httr jsonlite sys;
+           };
+  });
+  rpkgs = builtins.attrValues {
+      inherit (pkgs.rPackages) dplyr janitor quarto;
+  };
+  system_packages = builtins.attrValues {
+      inherit (pkgs) R quarto;
+  };
+in
+  pkgs.mkShell {
+   buildInputs = [
+     system_packages
+     rpkgs
+     rix
+   ];
+  shellHook = "R --vanilla";
+  }
