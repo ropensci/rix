@@ -336,6 +336,7 @@ you use another IDE, you can leave the "ide" argument blank:
 #'   The file will thus be written to the file "/home/path/to/project/default.nix".
 #' @param overwrite Logical, defaults to FALSE. If TRUE, overwrite the `default.nix`
 #'   file in the specified path.
+#' @param print Logical, defaults to FALSE. If TRUE, print `default.nix` to console.
 #' @details This function will write a `default.nix` in the chosen path. Using
 #'   the Nix package manager, it is then possible to build a reproducible
 #'   development environment using the `nix-build` command in the path. This
@@ -369,7 +370,8 @@ rix2 <- function(r_ver = "current",
                  git_pkgs = NULL,
                  ide = "other",
                  project_path = ".",
-                 overwrite = FALSE){
+                 overwrite = FALSE,
+                 print = FALSE){
 
   stopifnot("'ide' has to be one of 'other', 'rstudio' or 'code'" = (ide %in% c("other", "rstudio", "code")))
 
@@ -418,7 +420,7 @@ rix2 <- function(r_ver = "current",
 # which will install R %s
 # Report any issues to https://github.com/b-rodrigues/rix
 let
-  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/%s.tar.gz") {};
+ pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/%s.tar.gz") {};
 ',
   rix_version,
   Sys.Date(),
@@ -469,7 +471,7 @@ let
   flag_rpkgs <- if(is.null(cran_pkgs$rPackages) | cran_pkgs$rPackages == ""){
                   ""
                 } else {
-                  "rpkgs,"
+                  "rpkgs"
                 }
 
   # generate_* function generate the actual Nix code
@@ -478,8 +480,9 @@ let
       NULL
     } else {
       sprintf('rpkgs = builtins.attrValues {
-  inherit (pkgs.rPackages) %s
-}\n',
+  inherit (pkgs.rPackages) %s;
+};
+',
 rPackages)
     }
   }
@@ -490,7 +493,7 @@ rPackages)
   }
 
   flag_git_archive <- if(!is.null(cran_pkgs$archive) | !is.null(git_pkgs)){
-                        "git_archive_pkgs,"
+                        "git_archive_pkgs"
                       } else {
                         ""
                       }
@@ -511,35 +514,51 @@ rPackages)
   # to add it.
   generate_system_pkgs <- function(system_pkgs){
     sprintf('system_packages = builtins.attrValues {
-  inherit (pkgs) R %s
-}\n',
+  inherit (pkgs) R %s;
+};
+',
 get_system_pkgs(system_pkgs))
   }
+
+  generate_rstudio_pkgs <- function(ide, flag_git_archive, flag_rpkgs){
+    if(ide == "rstudio"){
+      sprintf('rstudio_pkgs = pkgs.rstudioWrapper.override {
+  packages = [ %s %s ];
+};
+',
+flag_git_archive,
+flag_rpkgs
+)
+    } else {
+      NULL
+    }
+  }
+
+  flag_rstudio <- if(ide == "rstudio"){
+                        "rstudio_pkgs"
+                      } else {
+                        ""
+                      }
 
   # Generate the shell
   # we should add arguments to this function
   # for example, give the option to have a shellhook etc
   # for now, keep the shellhook R --vanilla
-  generate_shell <- function(){
-    # need to handle nulls in rpkgs and git archive pkgs
-    # replace [a b c] with a ++ b ++ c
+  generate_shell <- function(flag_git_archive, flag_rpkgs){
     sprintf('in
   pkgs.mkShell {
-    buildInputs = [
-      %s
-      %s
-  system_packages
-      ];
+    buildInputs = [ %s %s system_packages %s ];
     shellHook = "R --vanilla";
   }',
   flag_git_archive,
-  flag_rpkgs
+  flag_rpkgs,
+  flag_rstudio
   )
 
   }
 
   # Generate default.nix file
-  paste(
+  default.nix <- paste(
     generate_header(rix_version,
                     nix_revision,
                     r_ver_text,
@@ -547,9 +566,24 @@ get_system_pkgs(system_pkgs))
     generate_rpkgs(cran_pkgs$rPackages),
     generate_git_archived_packages(git_pkgs, cran_pkgs$archive_pkgs),
     generate_system_pkgs(system_pkgs),
-    generate_shell(),
+    generate_rstudio_pkgs(ide, flag_git_archive, flag_rpkgs),
+    generate_shell(flag_git_archive, flag_rpkgs),
     collapse = "\n"
     )
+
+  default.nix <- readLines(textConnection(default.nix))
+
+  if(print){
+    cat(default.nix, sep = "\n")
+  }
+
+  if(!file.exists(project_path) || overwrite){
+    writeLines(default.nix, project_path)
+  } else {
+    stop(paste0("File exists at ", project_path, ". Set `overwrite == TRUE` to overwrite."))
+  }
+
+
 
 }
 
@@ -701,7 +735,7 @@ USE_RSTUDIO};
   } else {
     r_ver_text <- paste0("version ", r_ver)
   }
-  
+
   rix_ver_text <- utils::packageVersion("rix")
 
   nixFile <- gsub('RE_VERSION', r_ver_text, nixFile)
