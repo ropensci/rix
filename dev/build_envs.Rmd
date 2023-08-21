@@ -314,7 +314,55 @@ whether the user wants to work with RStudio or not in that environment. If
 you use another IDE, you can leave the "ide" argument blank:
 
 ```{r function-rix2}
-
+#' rix Generates a Nix expression that builds a reproducible development environment
+#' @return Nothing, this function only has the side-effect of writing a file
+#'   called "default.nix" in the working directory. This file contains the
+#'   expression to build a reproducible environment using the Nix package
+#'   manager.
+#' @param r_ver Character, defaults to "current". The required R version. To use the current version
+#'   of R, use "current". You can check which R versions are available using `available_r`.
+#'   If a nixpkgs revision is provided instead, this gets returned.
+#' @param r_pkgs Vector of characters. List the required R packages for your
+#'   analysis here.
+#' @param system_pkgs Vector of characters. List further software you wish to install that
+#'   are not R packages such as command line applications for example.
+#' @param git_pkgs List. A list of packages to install from Git. See details for more information.
+#' @param ide Character, defaults to "other". If you wish to use RStudio to work
+#'   interactively use "rstudio" or "code" for Visual Studio Code. For other editors,
+#'   use "other". This has been tested with RStudio, VS Code and Emacs. If other
+#'   editors don't work, please open an issue.
+#' @param project_path Character, defaults to the current working directory. Where to write
+#'   `default.nix`, for example "/home/path/to/project".
+#'   The file will thus be written to the file "/home/path/to/project/default.nix".
+#' @param overwrite Logical, defaults to FALSE. If TRUE, overwrite the `default.nix`
+#'   file in the specified path.
+#' @details This function will write a `default.nix` in the chosen path. Using
+#'   the Nix package manager, it is then possible to build a reproducible
+#'   development environment using the `nix-build` command in the path. This
+#'   environment will contain the chosen version of R and packages, and will not
+#'   interfere with any other installed version (via Nix or not) on your
+#'   machine. Every dependency, including both R package dependencies but also
+#'   system dependencies like compilers will get installed as well in that
+#'   environment. If you use RStudio for interactive work, then set the
+#'   `rstudio` parameter to `TRUE`. If you use another IDE (for example Emacs or
+#'   Visual Studio Code), you do not need to add it to the `default.nix` file,
+#'   you can simply use the version that is installed on your computer. Once you built
+#'   the environment using `nix-build`, you can drop into an interactive session
+#'   using `nix-shell`. See the "Building reproducible development environments with rix"
+#'   vignette for detailled instructions.
+#'   Packages to install from Github must be provided in a list of 4 elements:
+#'   "package_name", "repo_url", "branch_name" and "commit".
+#'   This argument can also be a list of lists of these 4 elements. It is also possible to install old versions
+#'   of packages by specifying a version. For example, to install the latest
+#'   version of `{AER}` but an old version of `{ggplot2}`, you could
+#'   write: `r_pkgs = c("AER", "ggplot2@2.2.1")`. Note
+#'   however that doing this could result in dependency hell, because an older
+#'   version of a package might need older versions of its dependencies, but other
+#'   packages might need more recent versions of the same dependencies. If instead you
+#'   want to use an environment as it would have looked at the time of `{ggplot2}`'s
+#'   version 2.2.1 release, then use the Nix revision closest to that date, by setting
+#'   `r_ver = "3.1.0"`, which was the version of R current at the time. This
+#'   ensures that Nix builds a completely coherent environment.
 rix2 <- function(r_ver = "current",
                  r_pkgs,
                  system_pkgs = NULL,
@@ -418,10 +466,14 @@ let
 
   # generate_* function generate the actual Nix code
   generate_rpkgs <- function(rPackages){
-    sprintf('rpkgs = builtins.attrValues {
+    if(is.null(rPackages)){
+      out <- ""
+    } else {
+      sprintf('rpkgs = builtins.attrValues {
   inherit (pkgs.rPackages) %s
 }\n',
-  rPackages)
+rPackages)
+    }
   }
 
   # system packages
@@ -464,6 +516,7 @@ get_system_pkgs(system_pkgs))
 
   }
 
+  # Generate default.nix file
   paste(
     generate_header(rix_version,
                     nix_revision,
