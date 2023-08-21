@@ -464,10 +464,18 @@ let
   # the other is archived CRAN packages.
   cran_pkgs <- get_rPackages(r_pkgs)
 
+  # we need to know if the user wants R packages
+
+  flag_rpkgs <- if(is.null(cran_pkgs$rPackages) | cran_pkgs$rPackages == ""){
+                  ""
+                } else {
+                  "rpkgs,"
+                }
+
   # generate_* function generate the actual Nix code
   generate_rpkgs <- function(rPackages){
-    if(is.null(rPackages)){
-      out <- ""
+    if(flag_rpkgs == ""){
+      NULL
     } else {
       sprintf('rpkgs = builtins.attrValues {
   inherit (pkgs.rPackages) %s
@@ -481,11 +489,22 @@ rPackages)
     paste(system_pkgs, collapse = ' ')
   }
 
+  flag_git_archive <- if(!is.null(cran_pkgs$archive) | !is.null(git_pkgs)){
+                        "git_archive_pkgs,"
+                      } else {
+                        ""
+                      }
+
   generate_git_archived_packages <- function(git_pkgs, archive_pkgs){
+    if(flag_git_archive == ""){
+      NULL
+    } else {
     sprintf('git_archive_pkgs = [%s];\n',
             fetchpkgs(git_pkgs, archive_pkgs)
             )
+    }
   }
+
 
   # `R` needs to be added. If we were using the rWrapper
   # this wouldn't be needed, but we're not so we need
@@ -507,12 +526,15 @@ get_system_pkgs(system_pkgs))
     sprintf('in
   pkgs.mkShell {
     buildInputs = [
-      system_packages
-      rpkgs
-      git_archive_pkgs
+      %s
+      %s
+  system_packages
       ];
     shellHook = "R --vanilla";
-  }')
+  }',
+  flag_git_archive,
+  flag_rpkgs
+  )
 
   }
 
