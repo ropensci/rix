@@ -38,7 +38,7 @@ to build that environment:
 ```{r eval = F}
 rix(r_ver = "4.2.2",
     r_pkgs = c("targets", "tarchetypes", "rmarkdown"),
-    other_pkgs = NULL,
+    system_pkgs = NULL,
     git_pkgs = list(package_name = "housing",
                     repo_url = "https://github.com/rap4all/housing/",
                     branch_name = "fusen",

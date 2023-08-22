@@ -313,7 +313,7 @@ correct Nix revision is found using `find_rev()`), a list of R packages, and
 whether the user wants to work with RStudio or not in that environment. If
 you use another IDE, you can leave the "ide" argument blank:
 
-```{r function-rix2}
+```{r function-rix}
 #' rix Generates a Nix expression that builds a reproducible development environment
 #' @return Nothing, this function only has the side-effect of writing a file
 #'   called "default.nix" in the working directory. This file contains the
@@ -364,7 +364,8 @@ you use another IDE, you can leave the "ide" argument blank:
 #'   version 2.2.1 release, then use the Nix revision closest to that date, by setting
 #'   `r_ver = "3.1.0"`, which was the version of R current at the time. This
 #'   ensures that Nix builds a completely coherent environment.
-rix2 <- function(r_ver = "current",
+#' @export
+rix <- function(r_ver = "current",
                  r_pkgs,
                  system_pkgs = NULL,
                  git_pkgs = NULL,
@@ -587,192 +588,6 @@ flag_rpkgs
 
 }
 
-
-```
-
-```{r function-rix}
-#' rix Generates a Nix expression that builds a reproducible development environment 
-#' @return Nothing, this function only has the side-effect of writing a file
-#'   called "default.nix" in the working directory. This file contains the
-#'   expression to build a reproducible environment using the Nix package
-#'   manager.
-#' @param r_ver Character, defaults to "current". The required R version. To use the current version
-#'   of R, use "current". You can check which R versions are available using `available_r`.
-#'   If a nixpkgs revision is provided instead, this gets returned.
-#' @param r_pkgs Vector of characters. List the required R packages for your
-#'   analysis here.
-#' @param other_pkgs Vector of characters. List further software you wish to install that
-#'   are not R packages such as command line applications for example.
-#' @param git_pkgs List. A list of packages to install from Git. See details for more information.
-#' @param ide Character, defaults to "other". If you wish to use RStudio to work
-#'   interactively use "rstudio", "code" for Visual Studio Code. For other editors,
-#'   use "other". This has been tested with RStudio, VS Code and Emacs. If other
-#'   editors don't work, please open an issue.
-#' @param project_path Character, defaults to the current working directory. Where to write
-#'   `default.nix`, for example "/home/path/to/project".
-#'   The file will thus be written to the file "/home/path/to/project/default.nix".
-#' @param overwrite Logical, defaults to FALSE. If TRUE, overwrite the `default.nix`
-#'   file in the specified path.
-#' @details This function will write a `default.nix` in the chosen path. Using
-#'   the Nix package manager, it is then possible to build a reproducible
-#'   development environment using the `nix-build` command in the path. This
-#'   environment will contain the chosen version of R and packages, and will not
-#'   interfere with any other installed version (via Nix or not) on your
-#'   machine. Every dependency, including both R package dependencies but also
-#'   system dependencies like compilers will get installed as well in that
-#'   environment. If you use RStudio for interactive work, then set the
-#'   `rstudio` parameter to `TRUE`. If you use another IDE (for example Emacs or
-#'   Visual Studio Code), you do not need to add it to the `default.nix` file,
-#'   you can simply use the version that is installed on your computer. Once you built
-#'   the environment using `nix-build`, you can drop into an interactive session
-#'   using `nix-shell`. See the "Building reproducible development environments with rix"
-#'   vignette for detailled instructions.
-#'   Packages to install from Github must be provided in a list of 4 elements:
-#'   "package_name", "repo_url", "branch_name" and "commit".
-#'   This argument can also be a list of lists of these 4 elements. It is also possible to install old versions
-#'   of packages by specifying a version. For example, to install the latest
-#'   version of `{AER}` but an old version of `{ggplot2}`, you could
-#'   write: `r_pkgs = c("AER", "ggplot2@2.2.1")`. Note
-#'   however that doing this could result in dependency hell, because an older
-#'   version of a package might need older versions of its dependencies, but other
-#'   packages might need more recent version of the same dependencies. If instead you
-#'   want to use an environment as it would have looked at the time of `{ggplot2}`'s
-#'   version 2.2.1 release, then use the Nix revision closest to that date, by setting
-#'   `r_ver = "3.1.0"`, which was the version of R current at the time. This
-#'   ensures that Nix builds a complete coherent environment.
-#' @export
-rix <- function(r_ver = "current",
-                r_pkgs,
-                other_pkgs = NULL,
-                git_pkgs = NULL,
-                ide = "other",
-                project_path = ".",
-                overwrite = FALSE){
-
-
-  stopifnot("'ide' has to be one of 'other', 'rstudio' or 'code'" = (ide %in% c("other", "rstudio", "code")))
-
-  project_path <- if(project_path == "."){
-     "default.nix"
-  } else {
-    paste0(project_path, "/default.nix")
-  }
-
-  project_path <- file.path(project_path)
-
-  # in case users pass something like c("dplyr", "tidyr@1.0.0")
-  # r_pkgs will be "dplyr" only
-  # and "tidyr@1.0.0" needs to be handle by fetchzips
-  r_and_archive_pkgs <- detect_versions(r_pkgs)
-
-  # overwrite r_pkgs
-  r_pkgs <- r_and_archive_pkgs$cran_packages
-
-  # get archive_pkgs
-  archive_pkgs <- r_and_archive_pkgs$archive_packages
-
-  r_pkgs <- if(ide == "code"){
-            c(r_pkgs, "languageserver")
-          } else {
-            r_pkgs
-          }
-
-  r_packages <- paste(r_pkgs, collapse = ' ')
-  other_packages <- paste(other_pkgs, collapse = ' ')
-
-  nixFile <- "
-# This file was generated by the {rix} R package vRIX_VERSION on DATE
-# with following call:
-RIX_CALL
-# It uses nixpkgs' revision NIX_REV for reproducibility purposes
-# which will install R RE_VERSION
-# Report any issues to https://github.com/b-rodrigues/rix
-    { pkgs ? import (fetchTarball \"https://github.com/NixOS/nixpkgs/archive/NIX_REV.tar.gz\") {} }:
-
-      with pkgs;
-
-      let
-      my-r = rWrapper.override {
-        packages = with rPackages; [
-          PACKAGE_LIST
-          GIT_PACKAGES
-        ];
-      };
-OTHER_PACKAGES other-pkgs = [OTHER_PKGS];
-USE_RSTUDIO  my-rstudio = rstudioWrapper.override {
-USE_RSTUDIO    packages = with rPackages; [
-USE_RSTUDIO                      PACKAGE_LIST
-USE_RSTUDIO                      RSTUDIO_GITPKGS
-USE_RSTUDIO        ];
-USE_RSTUDIO};
-      in
-      mkShell {
-        buildInputs = [
-          my-r
-         USE_RSTUDIO my-rstudio
-         OTHER_PACKAGES other-pkgs
-          ];
-      }"
-
-  nix_rev <- find_rev(r_ver)
-
-  # replace r_ver in call by nix_rev for repro purposes
-  rix_call <- match.call()
-
-  rix_call$r_ver <- nix_rev
-
-  rix_call <- paste0("# >", deparse1(rix_call))
-
-  rix_call <- gsub(",", ",\n#  >", rix_call)
-
-  nixFile <- gsub('RIX_CALL', rix_call, nixFile)
-
-  nixFile <- gsub('NIX_REV', nix_rev, nixFile)
-
-  # change the sentence depending on whether r_ver is an R version or a nixpkgs revision
-  if(nchar(r_ver) > 20){
-    r_ver_text <- paste0("as it was as of nixpkgs revision: ", r_ver)
-  } else {
-    r_ver_text <- paste0("version ", r_ver)
-  }
-
-  rix_ver_text <- utils::packageVersion("rix")
-
-  nixFile <- gsub('RE_VERSION', r_ver_text, nixFile)
-  nixFile <- gsub('RIX_VERSION', rix_ver_text, nixFile)
-  nixFile <- gsub('DATE', date(), nixFile)
-
-  nixFile <- gsub('USE_RSTUDIO',
-                  ifelse(!is.null(ide) & ide == "rstudio", '', 'TO_DELETE'),
-                  nixFile)
-
-  nixFile <- gsub('RSTUDIO_GITPKGS',
-                  ifelse(!is.null(ide) & ide == "rstudio", 'GIT_PACKAGES', 'RSTUDIO_GITPKGS'),
-                  nixFile)
-
-  r_packages <- gsub('\\.', '_', r_packages)
-  nixFile <- gsub('PACKAGE_LIST', r_packages, nixFile)
-
-  nixFile <- gsub('OTHER_PKGS', other_packages, nixFile)
-  nixFile <- gsub('OTHER_PACKAGES',
-                  ifelse(!is.null(other_pkgs), '', 'TO_DELETE'),
-                  nixFile)
-
-  # also handles CRAN archive packages through fetchpkgs
-  # if both git_pkgs and archive_pkgs are NULL, the empty string gets returned
-  nixFile <- gsub('GIT_PACKAGES', fetchpkgs(git_pkgs, archive_pkgs), nixFile)
-
-  nixFile <- readLines(textConnection(nixFile))
-
-  nixFile <- grep('TO_DELETE', nixFile, invert = TRUE, value = TRUE)
-
-  if(!file.exists(project_path) || overwrite){
-    writeLines(nixFile, project_path)
-  } else {
-    stop(paste0("File exists at ", project_path, ". Set `overwrite == TRUE` to overwrite."))
-  }
-
-}
 
 ```
 

@@ -114,17 +114,17 @@ fetchgit <- function(git_pkg){
   sri_hash <- output$sri_hash
   imports <- output$deps
 
-  sprintf('(buildRPackage {
+  sprintf('(pkgs.rPackages.buildRPackage {
     name = \"%s\";
-    src = fetchgit {
+    src = pkgs.fetchgit {
       url = \"%s\";
       branchName = \"%s\";
       rev = \"%s\";
       sha256 = \"%s\";
     };
-    propagatedBuildInputs = [
-        %s
-      ];
+    propagatedBuildInputs = builtins.attrValues {
+      inherit (pkgs.rPackages) %s;
+    };
   })',
   package_name,
   repo_url,
@@ -163,15 +163,15 @@ fetchzip <- function(archive_pkg, sri_hash = NULL){
     imports <- NULL
   }
 
-  sprintf('(buildRPackage {
+  sprintf('(pkgs.rPackages.buildRPackage {
     name = \"%s\";
-    src = fetchzip {
+    src = pkgs.fetchzip {
       url = \"%s\";
       sha256 = \"%s\";
     };
-    propagatedBuildInputs = [
-        %s
-      ];
+    propagatedBuildInputs = builtins.attrValues {
+      inherit (pkgs.rPackages) %s;
+    };
   })',
   package_name,
   repo_url,
@@ -228,7 +228,7 @@ fetchpkgs  <- function(git_pkgs, archive_pkgs){
 }
 
 
-#' rix Generates a Nix expression that builds a reproducible development environment 
+#' rix Generates a Nix expression that builds a reproducible development environment
 #' @return Nothing, this function only has the side-effect of writing a file
 #'   called "default.nix" in the working directory. This file contains the
 #'   expression to build a reproducible environment using the Nix package
@@ -238,11 +238,11 @@ fetchpkgs  <- function(git_pkgs, archive_pkgs){
 #'   If a nixpkgs revision is provided instead, this gets returned.
 #' @param r_pkgs Vector of characters. List the required R packages for your
 #'   analysis here.
-#' @param other_pkgs Vector of characters. List further software you wish to install that
+#' @param system_pkgs Vector of characters. List further software you wish to install that
 #'   are not R packages such as command line applications for example.
 #' @param git_pkgs List. A list of packages to install from Git. See details for more information.
 #' @param ide Character, defaults to "other". If you wish to use RStudio to work
-#'   interactively use "rstudio", "code" for Visual Studio Code. For other editors,
+#'   interactively use "rstudio" or "code" for Visual Studio Code. For other editors,
 #'   use "other". This has been tested with RStudio, VS Code and Emacs. If other
 #'   editors don't work, please open an issue.
 #' @param project_path Character, defaults to the current working directory. Where to write
@@ -250,6 +250,7 @@ fetchpkgs  <- function(git_pkgs, archive_pkgs){
 #'   The file will thus be written to the file "/home/path/to/project/default.nix".
 #' @param overwrite Logical, defaults to FALSE. If TRUE, overwrite the `default.nix`
 #'   file in the specified path.
+#' @param print Logical, defaults to FALSE. If TRUE, print `default.nix` to console.
 #' @details This function will write a `default.nix` in the chosen path. Using
 #'   the Nix package manager, it is then possible to build a reproducible
 #'   development environment using the `nix-build` command in the path. This
@@ -272,20 +273,20 @@ fetchpkgs  <- function(git_pkgs, archive_pkgs){
 #'   write: `r_pkgs = c("AER", "ggplot2@2.2.1")`. Note
 #'   however that doing this could result in dependency hell, because an older
 #'   version of a package might need older versions of its dependencies, but other
-#'   packages might need more recent version of the same dependencies. If instead you
+#'   packages might need more recent versions of the same dependencies. If instead you
 #'   want to use an environment as it would have looked at the time of `{ggplot2}`'s
 #'   version 2.2.1 release, then use the Nix revision closest to that date, by setting
 #'   `r_ver = "3.1.0"`, which was the version of R current at the time. This
-#'   ensures that Nix builds a complete coherent environment.
+#'   ensures that Nix builds a completely coherent environment.
 #' @export
 rix <- function(r_ver = "current",
-                r_pkgs,
-                other_pkgs = NULL,
-                git_pkgs = NULL,
-                ide = "other",
-                project_path = ".",
-                overwrite = FALSE){
-
+                 r_pkgs,
+                 system_pkgs = NULL,
+                 git_pkgs = NULL,
+                 ide = "other",
+                 project_path = ".",
+                 overwrite = FALSE,
+                 print = FALSE){
 
   stopifnot("'ide' has to be one of 'other', 'rstudio' or 'code'" = (ide %in% c("other", "rstudio", "code")))
 
@@ -295,121 +296,212 @@ rix <- function(r_ver = "current",
     paste0(project_path, "/default.nix")
   }
 
-  project_path <- file.path(project_path)
-
-  # in case users pass something like c("dplyr", "tidyr@1.0.0")
-  # r_pkgs will be "dplyr" only
-  # and "tidyr@1.0.0" needs to be handle by fetchzips
-  r_and_archive_pkgs <- detect_versions(r_pkgs)
-
-  # overwrite r_pkgs
-  r_pkgs <- r_and_archive_pkgs$cran_packages
-
-  # get archive_pkgs
-  archive_pkgs <- r_and_archive_pkgs$archive_packages
-
-  r_pkgs <- if(ide == "code"){
-            c(r_pkgs, "languageserver")
-          } else {
-            r_pkgs
-          }
-
-  r_packages <- paste(r_pkgs, collapse = ' ')
-  other_packages <- paste(other_pkgs, collapse = ' ')
-
-  nixFile <- "
-# This file was generated by the {rix} R package vRIX_VERSION on DATE
-# with following call:
-RIX_CALL
-# It uses nixpkgs' revision NIX_REV for reproducibility purposes
-# which will install R RE_VERSION
-# Report any issues to https://github.com/b-rodrigues/rix
-    { pkgs ? import (fetchTarball \"https://github.com/NixOS/nixpkgs/archive/NIX_REV.tar.gz\") {} }:
-
-      with pkgs;
-
-      let
-      my-r = rWrapper.override {
-        packages = with rPackages; [
-          PACKAGE_LIST
-          GIT_PACKAGES
-        ];
-      };
-OTHER_PACKAGES other-pkgs = [OTHER_PKGS];
-USE_RSTUDIO  my-rstudio = rstudioWrapper.override {
-USE_RSTUDIO    packages = with rPackages; [
-USE_RSTUDIO                      PACKAGE_LIST
-USE_RSTUDIO                      RSTUDIO_GITPKGS
-USE_RSTUDIO        ];
-USE_RSTUDIO};
-      in
-      mkShell {
-        buildInputs = [
-          my-r
-         USE_RSTUDIO my-rstudio
-         OTHER_PACKAGES other-pkgs
-          ];
-      }"
-
-  nix_rev <- find_rev(r_ver)
-
-  # replace r_ver in call by nix_rev for repro purposes
-  rix_call <- match.call()
-
-  rix_call$r_ver <- nix_rev
-
-  rix_call <- paste0("# >", deparse1(rix_call))
-
-  rix_call <- gsub(",", ",\n#  >", rix_call)
-
-  nixFile <- gsub('RIX_CALL', rix_call, nixFile)
-
-  nixFile <- gsub('NIX_REV', nix_rev, nixFile)
-
-  # change the sentence depending on whether r_ver is an R version or a nixpkgs revision
+  # Generate the correct text for the header depending on wether
+  # an R version or a Nix revision is supplied to `r_ver`
   if(nchar(r_ver) > 20){
     r_ver_text <- paste0("as it was as of nixpkgs revision: ", r_ver)
   } else {
     r_ver_text <- paste0("version ", r_ver)
   }
-  
-  rix_ver_text <- utils::packageVersion("rix")
 
-  nixFile <- gsub('RE_VERSION', r_ver_text, nixFile)
-  nixFile <- gsub('RIX_VERSION', rix_ver_text, nixFile)
-  nixFile <- gsub('DATE', date(), nixFile)
+  # Find the Nix revision to use
+  nix_revision <- find_rev(r_ver)
 
-  nixFile <- gsub('USE_RSTUDIO',
-                  ifelse(!is.null(ide) & ide == "rstudio", '', 'TO_DELETE'),
-                  nixFile)
+  project_path <- file.path(project_path)
 
-  nixFile <- gsub('RSTUDIO_GITPKGS',
-                  ifelse(!is.null(ide) & ide == "rstudio", 'GIT_PACKAGES', 'RSTUDIO_GITPKGS'),
-                  nixFile)
+  rix_call <- match.call()
 
-  r_packages <- gsub('\\.', '_', r_packages)
-  nixFile <- gsub('PACKAGE_LIST', r_packages, nixFile)
+  generate_rix_call <- function(rix_call, nix_revision){
 
-  nixFile <- gsub('OTHER_PKGS', other_packages, nixFile)
-  nixFile <- gsub('OTHER_PACKAGES',
-                  ifelse(!is.null(other_pkgs), '', 'TO_DELETE'),
-                  nixFile)
+    rix_call$r_ver <- nix_revision
 
-  # also handles CRAN archive packages through fetchpkgs
-  # if both git_pkgs and archive_pkgs are NULL, the empty string gets returned
-  nixFile <- gsub('GIT_PACKAGES', fetchpkgs(git_pkgs, archive_pkgs), nixFile)
+    rix_call <- paste0("# >", deparse1(rix_call))
 
-  nixFile <- readLines(textConnection(nixFile))
+    gsub(",", ",\n#  >", rix_call)
+  }
 
-  nixFile <- grep('TO_DELETE', nixFile, invert = TRUE, value = TRUE)
+  # Get teh current rix version
+  rix_version <- utils::packageVersion("rix")
+
+  generate_header <- function(rix_version,
+                              nix_revision,
+                              r_ver_text,
+                              rix_call){
+
+    sprintf('# This file was generated by the {rix} R package v%s on %s
+# with following call:
+%s
+# It uses nixpkgs\' revision %s for reproducibility purposes
+# which will install R %s
+# Report any issues to https://github.com/b-rodrigues/rix
+let
+ pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/%s.tar.gz") {};
+',
+  rix_version,
+  Sys.Date(),
+  generate_rix_call(rix_call, nix_revision),
+  nix_revision,
+  r_ver_text,
+  nix_revision
+  )
+ }
+
+  # Now we need to generate all the different sets of packages
+  # to install. Let's start by the CRAN packages, current
+  # and archived. The function below builds the strings.
+  get_rPackages <- function(r_pkgs){
+
+    # in case users pass something like c("dplyr", "tidyr@1.0.0")
+    # r_pkgs will be "dplyr" only
+    # and "tidyr@1.0.0" needs to be handle by fetchzips
+    r_and_archive_pkgs <- detect_versions(r_pkgs)
+
+    # overwrite r_pkgs
+    r_pkgs <- r_and_archive_pkgs$cran_packages
+
+    # get archive_pkgs
+    archive_pkgs <- r_and_archive_pkgs$archive_packages
+
+    r_pkgs <- if(ide == "code"){
+                c(r_pkgs, "languageserver")
+              } else {
+                r_pkgs
+              }
+
+    rPackages <- paste(r_pkgs, collapse = ' ')
+
+    rPackages <- gsub('\\.', '_', rPackages)
+
+    list("rPackages" = rPackages,
+         "archive_pkgs" = archive_pkgs)
+
+  }
+
+  # Get the two lists. One list is current CRAN packages
+  # the other is archived CRAN packages.
+  cran_pkgs <- get_rPackages(r_pkgs)
+
+  # we need to know if the user wants R packages
+
+  flag_rpkgs <- if(is.null(cran_pkgs$rPackages) | cran_pkgs$rPackages == ""){
+                  ""
+                } else {
+                  "rpkgs"
+                }
+
+  # generate_* function generate the actual Nix code
+  generate_rpkgs <- function(rPackages){
+    if(flag_rpkgs == ""){
+      NULL
+    } else {
+      sprintf('rpkgs = builtins.attrValues {
+  inherit (pkgs.rPackages) %s;
+};
+',
+rPackages)
+    }
+  }
+
+  # system packages
+  get_system_pkgs <- function(system_pkgs){
+    paste(system_pkgs, collapse = ' ')
+  }
+
+  flag_git_archive <- if(!is.null(cran_pkgs$archive) | !is.null(git_pkgs)){
+                        "git_archive_pkgs"
+                      } else {
+                        ""
+                      }
+
+  generate_git_archived_packages <- function(git_pkgs, archive_pkgs){
+    if(flag_git_archive == ""){
+      NULL
+    } else {
+    sprintf('git_archive_pkgs = [%s];\n',
+            fetchpkgs(git_pkgs, archive_pkgs)
+            )
+    }
+  }
+
+
+  # `R` needs to be added. If we were using the rWrapper
+  # this wouldn't be needed, but we're not so we need
+  # to add it.
+  generate_system_pkgs <- function(system_pkgs){
+    sprintf('system_packages = builtins.attrValues {
+  inherit (pkgs) R %s;
+};
+',
+get_system_pkgs(system_pkgs))
+  }
+
+  generate_rstudio_pkgs <- function(ide, flag_git_archive, flag_rpkgs){
+    if(ide == "rstudio"){
+      sprintf('rstudio_pkgs = pkgs.rstudioWrapper.override {
+  packages = [ %s %s ];
+};
+',
+flag_git_archive,
+flag_rpkgs
+)
+    } else {
+      NULL
+    }
+  }
+
+  flag_rstudio <- if(ide == "rstudio"){
+                        "rstudio_pkgs"
+                      } else {
+                        ""
+                      }
+
+  # Generate the shell
+  # we should add arguments to this function
+  # for example, give the option to have a shellhook etc
+  # for now, keep the shellhook R --vanilla
+  generate_shell <- function(flag_git_archive, flag_rpkgs){
+    sprintf('in
+  pkgs.mkShell {
+    buildInputs = [ %s %s system_packages %s ];
+    shellHook = "R --vanilla";
+  }',
+  flag_git_archive,
+  flag_rpkgs,
+  flag_rstudio
+  )
+
+  }
+
+  # Generate default.nix file
+  default.nix <- paste(
+    generate_header(rix_version,
+                    nix_revision,
+                    r_ver_text,
+                    rix_call),
+    generate_rpkgs(cran_pkgs$rPackages),
+    generate_git_archived_packages(git_pkgs, cran_pkgs$archive_pkgs),
+    generate_system_pkgs(system_pkgs),
+    generate_rstudio_pkgs(ide, flag_git_archive, flag_rpkgs),
+    generate_shell(flag_git_archive, flag_rpkgs),
+    collapse = "\n"
+    )
+
+  default.nix <- readLines(textConnection(default.nix))
+
+  if(print){
+    cat(default.nix, sep = "\n")
+  }
 
   if(!file.exists(project_path) || overwrite){
-    writeLines(nixFile, project_path)
+    writeLines(default.nix, project_path)
   } else {
     stop(paste0("File exists at ", project_path, ". Set `overwrite == TRUE` to overwrite."))
   }
 
+
+
 }
+
 
 
 #' Invoke shell command `nix-build` from an R session

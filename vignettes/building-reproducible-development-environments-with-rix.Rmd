@@ -80,11 +80,12 @@ IDE. With the `rix::rix()` function, you can easily generate the right
 
 - `r_ver`: the version of R required. Use "current" for the latest version;
 - `r_pkgs`: the required R packages. For example "dplyr";
-- `other_pkgs`: the required system packages, if needed. For example "quarto", or a Python interpreter;
+- `system_pkgs`: the required system packages, if needed. For example "quarto", or a Python interpreter;
 - `git_pkgs`: list of git packages to add. See the example below;
 - `ide`: the integrated development editor to use. For example "rstudio" if you want to use RStudio. Refer to the "Interactive work with {rix}" for more details;
 - `path`: the path where to save the `default.nix` file.
 - `overwrite`: whether to overwrite the `default.nix` file or not.
+- `print`: whether to print the `default.nix` file to the console or not.
 
 In such a situation, you could create an environment with the following call to `rix()`:
 
@@ -94,18 +95,12 @@ path_default_nix <- tempdir()
 
 rix(r_ver = "current",
     r_pkgs = c("dplyr", "ggplot2"),
-    other_pkgs = NULL,
+    system_pkgs = NULL,
     git_pkgs = NULL,
     ide = "rstudio",
     project_path = path_default_nix,
-    overwrite = TRUE)
-```
-
-This generates the following `default.nix` file:
-
-
-```{r echo = F}
-cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
+    overwrite = TRUE,
+    print = TRUE)
 ```
 
 To start using this environment, open a console in the folder containing
@@ -139,7 +134,7 @@ path_default_nix <- tempdir()
 
 rix(r_ver = "current",
     r_pkgs = c("dplyr", "ggplot2"),
-    other_pkgs = NULL,
+    system_pkgs = NULL,
     git_pkgs = NULL,
     ide = "code",
     project_path = path_default_nix,
@@ -180,7 +175,7 @@ path_default_nix <- tempdir()
 
 rix(r_ver = "4.2.1",
     r_pkgs = c("dplyr", "janitor"),
-    other_pkgs = c("quarto"),
+    system_pkgs = c("quarto"),
     git_pkgs = NULL,
     ide = "other",
     project_path = path_default_nix,
@@ -215,7 +210,7 @@ been archived on CRAN:
 ```{r}
 rix(r_ver = "4.2.1",
     r_pkgs = c("dplyr@0.8.0", "janitor@1.0.0"),
-    other_pkgs = NULL,
+    system_pkgs = NULL,
     git_pkgs = NULL,
     ide = "other",
     project_path = path_default_nix,
@@ -241,7 +236,7 @@ It is also possible to install packages from Github:
 ```{r}
 rix(r_ver = "4.2.1",
     r_pkgs = c("dplyr", "janitor"),
-    other_pkgs = c("quarto"),
+    system_pkgs = c("quarto"),
     git_pkgs = list(
                  list(package_name = "housing",
                    repo_url = "https://github.com/rap4all/housing/",
@@ -276,7 +271,7 @@ This example shows how all features of `{rix}` can work together:
 ```{r}
 rix(r_ver = "4.2.1",
     r_pkgs = c("dplyr", "janitor@1.0.0"),
-    other_pkgs = c("quarto"),
+    system_pkgs = c("quarto"),
     git_pkgs = list(
                  list(package_name = "housing",
                    repo_url = "https://github.com/rap4all/housing/",
