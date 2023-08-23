@@ -133,14 +133,14 @@ fusen::inflate(flat_file = "dev/cran_archive.Rmd",
 # Generating the inst/extdata/default.nix
 
 ```{r, eval = FALSE}
-rix(r_ver = "8ad5e8132c5dcf977e308e7bf5517cc6cc0bf7d8",
+rix(r_ver = "976fa3369d722e76f37c77493d99829540d43845",
     r_pkgs = NULL,
     system_pkgs = NULL,
     git_pkgs = list(
       package_name = "rix",
       repo_url = "https://github.com/b-rodrigues/rix/",
       branch_name = "master",
-      commit = "da581f90273cb1ccfedbe18808097bf33b84d63c"
+      commit = "ae39d2142461688b1be41db800752a949ebb3c7b"
     ),
     ide = "other",
     project_path = "inst/extdata",
