@@ -337,6 +337,9 @@ you use another IDE, you can leave the "ide" argument blank:
 #' @param overwrite Logical, defaults to FALSE. If TRUE, overwrite the `default.nix`
 #'   file in the specified path.
 #' @param print Logical, defaults to FALSE. If TRUE, print `default.nix` to console.
+#' @param shellHook Character, defaults to "R --vanilla". Commands added to the shellHook get
+#'   executed when the Nix shell starts. So by default, using `nix-shell default.nix` will
+#'   start R. Set to NULL if you want bash to be started instead.
 #' @details This function will write a `default.nix` in the chosen path. Using
 #'   the Nix package manager, it is then possible to build a reproducible
 #'   development environment using the `nix-build` command in the path. This
@@ -372,7 +375,8 @@ rix <- function(r_ver = "current",
                  ide = "other",
                  project_path = ".",
                  overwrite = FALSE,
-                 print = FALSE){
+                 print = FALSE,
+                 shellHook = "R --vanilla"){
 
   stopifnot("'ide' has to be one of 'other', 'rstudio' or 'code'" = (ide %in% c("other", "rstudio", "code")))
 
@@ -541,6 +545,10 @@ flag_rpkgs
                         ""
                       }
 
+  shellHook <- if(!is.null(shellHook)){
+                 paste0("shellHook = ''\n", shellHook, "\n'';")
+               }
+
   # Generate the shell
   # we should add arguments to this function
   # for example, give the option to have a shellhook etc
@@ -549,11 +557,12 @@ flag_rpkgs
     sprintf('in
   pkgs.mkShell {
     buildInputs = [ %s %s system_packages %s ];
-    shellHook = "R --vanilla";
+    %s
   }',
   flag_git_archive,
   flag_rpkgs,
-  flag_rstudio
+  flag_rstudio,
+  shellHook
   )
 
   }
