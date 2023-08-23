@@ -12,7 +12,8 @@ rix(
   ide = "other",
   project_path = ".",
   overwrite = FALSE,
-  print = FALSE
+  print = FALSE,
+  shellHook = "R --vanilla"
 )
 }
 \arguments{
@@ -41,6 +42,10 @@ The file will thus be written to the file "/home/path/to/project/default.nix".}
 file in the specified path.}
 
 \item{print}{Logical, defaults to FALSE. If TRUE, print \code{default.nix} to console.}
+
+\item{shellHook}{Character, defaults to "R --vanilla". Commands added to the shellHook get
+executed when the Nix shell starts. So by default, using \verb{nix-shell default.nix} will
+start R. Set to NULL if you want bash to be started instead.}
 }
 \value{
 Nothing, this function only has the side-effect of writing a file

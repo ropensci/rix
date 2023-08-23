@@ -557,7 +557,7 @@ flag_rpkgs
     sprintf('in
   pkgs.mkShell {
     buildInputs = [ %s %s system_packages %s ];
-    %s
+      %s
   }',
   flag_git_archive,
   flag_rpkgs,

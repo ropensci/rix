@@ -270,7 +270,7 @@ This example shows how all features of `{rix}` can work together:
 
 ```{r}
 rix(r_ver = "4.2.1",
-    r_pkgs = c("dplyr", "janitor@1.0.0"),
+    r_pkgs = c("dplyr", "janitor", "AER@1.2-8"),
     system_pkgs = c("quarto"),
     git_pkgs = list(
                  list(package_name = "housing",
