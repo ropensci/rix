@@ -7,11 +7,13 @@
 rix(
   r_ver = "current",
   r_pkgs,
-  other_pkgs = NULL,
+  system_pkgs = NULL,
   git_pkgs = NULL,
   ide = "other",
   project_path = ".",
-  overwrite = FALSE
+  overwrite = FALSE,
+  print = FALSE,
+  shellHook = "R --vanilla"
 )
 }
 \arguments{
@@ -22,13 +24,13 @@ If a nixpkgs revision is provided instead, this gets returned.}
 \item{r_pkgs}{Vector of characters. List the required R packages for your
 analysis here.}
 
-\item{other_pkgs}{Vector of characters. List further software you wish to install that
+\item{system_pkgs}{Vector of characters. List further software you wish to install that
 are not R packages such as command line applications for example.}
 
 \item{git_pkgs}{List. A list of packages to install from Git. See details for more information.}
 
 \item{ide}{Character, defaults to "other". If you wish to use RStudio to work
-interactively use "rstudio", "code" for Visual Studio Code. For other editors,
+interactively use "rstudio" or "code" for Visual Studio Code. For other editors,
 use "other". This has been tested with RStudio, VS Code and Emacs. If other
 editors don't work, please open an issue.}
 
@@ -38,6 +40,12 @@ The file will thus be written to the file "/home/path/to/project/default.nix".}
 
 \item{overwrite}{Logical, defaults to FALSE. If TRUE, overwrite the \code{default.nix}
 file in the specified path.}
+
+\item{print}{Logical, defaults to FALSE. If TRUE, print \code{default.nix} to console.}
+
+\item{shellHook}{Character, defaults to "R --vanilla". Commands added to the shellHook get
+executed when the Nix shell starts. So by default, using \verb{nix-shell default.nix} will
+start R. Set to NULL if you want bash to be started instead.}
 }
 \value{
 Nothing, this function only has the side-effect of writing a file
@@ -71,9 +79,9 @@ version of \code{{AER}} but an old version of \code{{ggplot2}}, you could
 write: \code{r_pkgs = c("AER", "ggplot2@2.2.1")}. Note
 however that doing this could result in dependency hell, because an older
 version of a package might need older versions of its dependencies, but other
-packages might need more recent version of the same dependencies. If instead you
+packages might need more recent versions of the same dependencies. If instead you
 want to use an environment as it would have looked at the time of \code{{ggplot2}}'s
 version 2.2.1 release, then use the Nix revision closest to that date, by setting
 \code{r_ver = "3.1.0"}, which was the version of R current at the time. This
-ensures that Nix builds a complete coherent environment.
+ensures that Nix builds a completely coherent environment.
 }

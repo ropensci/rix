@@ -72,7 +72,7 @@ session inside your terminal. You can now run something like this:
 ```
 rix(r_ver = "current",
     r_pkgs = c("dplyr", "ggplot2"),
-    other_pkgs = NULL,
+    system_pkgs = NULL,
     git_pkgs = NULL,
     ide = "rstudio",
     project_path = ".", # change to a project's path
