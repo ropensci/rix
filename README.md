@@ -98,25 +98,24 @@ arguments:
 For example:
 
 ``` r
-rix(r_ver = "current", r_pkgs = c("dplyr", "chronicler"), ide = "rstudio")
+rix(r_ver = "latest", r_pkgs = c("dplyr", "chronicler"), ide = "rstudio")
 ```
 
 The call above writes a `default.nix` file in the current working
 directory. This `default.nix` can in turn be used by Nix to build an
-environment containing RStudio, the current (or latest) version of R,
-and the latest versions of the `{dplyr}` and `{chronicler}` packages. In
-th case of RStudio, it actually needs to be installed for each
-environment. This is because RStudio changes some default environment
-variables and a globally installed RStudio (the one you install
-normally) would not recognize the R installed in the Nix environment.
-This is not the case for other IDEs such as VS code or Emacs. Another
-example:
+environment containing RStudio, the latest version of R, and the latest
+versions of the `{dplyr}` and `{chronicler}` packages. In the case of
+RStudio, it actually needs to be installed for each environment. This is
+because RStudio changes some default environment variables and a
+globally installed RStudio (the one you install normally) would not
+recognize the R installed in the Nix environment. This is not the case
+for other IDEs such as VS code or Emacs. Another example:
 
 ``` r
-rix(r_ver = "4.1.0", r_pkgs = c("dplyr", "chronicler"), ide = "code")
+rix(r_ver = "4.2.2", r_pkgs = c("dplyr", "chronicler"), ide = "code")
 ```
 
-This call will generate a `default.nix` that installs R version 4.1.0,
+This call will generate a `default.nix` that installs R version 4.2.2,
 with the `{dplyr}` and `{chronicler}` packages. Because the user wishes
 to use VS Code, the `ide` argument was set to “code”. This installs the
 required `{languageserver}` package as well, but unlike
@@ -126,12 +125,17 @@ should instead use the globally installed VS Code.
 It’s also possible to install specific versions of packages:
 
 ``` r
-rix(r_ver = "current", r_pkgs = c("dplyr@1.0.0"), ide = "code")
+rix(r_ver = "latest", r_pkgs = c("dplyr@1.0.0"), ide = "code")
 ```
 
 but usually it is better to build an environment using the version of R
 that was current at the time of the release of `{dplyr}` version 1.0.0,
-instead of using the current version of R and install an old package.
+instead of using the current version of R and install an old package. It
+is also possible to specify software to install alongside R and R
+packages with `rix()`, read the [Building reproducible development
+environments with rix
+vignette](https://b-rodrigues.github.io/rix/articles/building-reproducible-development-environments-with-rix.html)
+for more details.
 
 ### default.nix
 
@@ -211,9 +215,9 @@ with R and `{rix}` pre-installed:
 This should immediately start an R session inside your terminal. You can
 now run something like this:
 
-    rix(r_ver = "current",
+    rix(r_ver = "latest",
         r_pkgs = c("dplyr", "ggplot2"),
-        other_pkgs = NULL,
+        system_pkgs = NULL,
         git_pkgs = NULL,
         ide = "rstudio",
         project_path = ".",

@@ -83,12 +83,12 @@ The main function of `{rix}` is called `rix()`. `rix()` has several arguments:
 For example:
 
 ```{r, eval = FALSE}
-rix(r_ver = "current", r_pkgs = c("dplyr", "chronicler"), ide = "rstudio")
+rix(r_ver = "latest", r_pkgs = c("dplyr", "chronicler"), ide = "rstudio")
 ```
 
 The call above writes a `default.nix` file in the current working directory.
 This `default.nix` can in turn be used by Nix to build an environment containing
-RStudio, the current (or latest) version of R, and the latest versions of the
+RStudio, the latest version of R, and the latest versions of the
 `{dplyr}` and `{chronicler}` packages. In the case of RStudio, it actually needs
 to be installed for each environment. This is because RStudio changes some
 default environment variables and a globally installed RStudio (the one you
@@ -109,7 +109,7 @@ installed VS Code.
 It's also possible to install specific versions of packages:
 
 ```{r, eval = FALSE}
-rix(r_ver = "current", r_pkgs = c("dplyr@1.0.0"), ide = "code")
+rix(r_ver = "latest", r_pkgs = c("dplyr@1.0.0"), ide = "code")
 ```
 
 but usually it is better to build an environment using the version of R that was
@@ -207,7 +207,7 @@ This should immediately start an R session inside your terminal. You can now run
 something like this:
 
 ```
-rix(r_ver = "current",
+rix(r_ver = "latest",
     r_pkgs = c("dplyr", "ggplot2"),
     system_pkgs = NULL,
     git_pkgs = NULL,

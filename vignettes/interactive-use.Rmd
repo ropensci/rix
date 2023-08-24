@@ -90,7 +90,7 @@ Running the command above will download R and `{rix}` and then start an R
 session inside your terminal. You can now run something like this:
 
 ```
-rix(r_ver = "current",
+rix(r_ver = "latest",
     r_pkgs = c("dplyr", "ggplot2"),
     system_pkgs = NULL,
     git_pkgs = NULL,

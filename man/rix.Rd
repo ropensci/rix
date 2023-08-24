@@ -5,7 +5,7 @@
 \title{rix Generates a Nix expression that builds a reproducible development environment}
 \usage{
 rix(
-  r_ver = "current",
+  r_ver = "latest",
   r_pkgs,
   system_pkgs = NULL,
   git_pkgs = NULL,
@@ -17,9 +17,10 @@ rix(
 )
 }
 \arguments{
-\item{r_ver}{Character, defaults to "current". The required R version. To use the current version
-of R, use "current". You can check which R versions are available using \code{available_r}.
-If a nixpkgs revision is provided instead, this gets returned.}
+\item{r_ver}{Character, defaults to "latest". The required R version, for example "4.0.0".
+To use the latest version of R, use "latest", if you need the latest, bleeding edge version
+of R and packages, then use "latest". You can check which R versions are available using \code{available_r}.
+For reproducibility purposes, you can also provide a nixpkgs revision.}
 
 \item{r_pkgs}{Vector of characters. List the required R packages for your
 analysis here.}

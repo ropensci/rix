@@ -3,16 +3,16 @@
 #' find_rev Find the right Nix revision
 #' @param r_version Character. R version to look for, for example, "4.2.0". If a nixpkgs revision is provided instead, this gets returned.
 #' @return A character. The Nix revision to use
-#' @export
 #'
 #' @examples
 #' find_rev("4.2.0")
+#' @noRd
 find_rev <- function(r_version){
 
   stopifnot("r_version has to be a character." = is.character(r_version))
 
-  if(r_version == "current"){
-    return(get_current())
+  if(r_version == "latest"){
+    return(get_latest())
   } else if(nchar(r_version) == 40){
     return(r_version)
   } else {
@@ -51,17 +51,17 @@ available_r <- function(){
 
   get("r_nix_revs", envir = temp)
 
-  c("current", r_nix_revs$version)
+  c("latest", r_nix_revs$version)
 }
 
 
-#' get_current Get the current R version and packages
+#' get_latest Get the latest R version and packages
 #' @return A character. The commit hash of the latest nixpkgs-unstable revision
 #' @importFrom httr content GET stop_for_status
 #' @importFrom jsonlite fromJSON
-#' @export
 #'
-get_current <- function() {
+#' @noRd
+get_latest <- function() {
   api_url <- "https://api.github.com/repos/NixOS/nixpkgs/commits?sha=nixpkgs-unstable"
 
   tryCatch({
@@ -233,9 +233,10 @@ fetchpkgs  <- function(git_pkgs, archive_pkgs){
 #'   called "default.nix" in the working directory. This file contains the
 #'   expression to build a reproducible environment using the Nix package
 #'   manager.
-#' @param r_ver Character, defaults to "current". The required R version. To use the current version
-#'   of R, use "current". You can check which R versions are available using `available_r`.
-#'   If a nixpkgs revision is provided instead, this gets returned.
+#' @param r_ver Character, defaults to "latest". The required R version, for example "4.0.0".
+#'   To use the latest version of R, use "latest", if you need the latest, bleeding edge version
+#'   of R and packages, then use "latest". You can check which R versions are available using `available_r`.
+#'   For reproducibility purposes, you can also provide a nixpkgs revision.
 #' @param r_pkgs Vector of characters. List the required R packages for your
 #'   analysis here.
 #' @param system_pkgs Vector of characters. List further software you wish to install that
@@ -282,7 +283,7 @@ fetchpkgs  <- function(git_pkgs, archive_pkgs){
 #'   `r_ver = "3.1.0"`, which was the version of R current at the time. This
 #'   ensures that Nix builds a completely coherent environment.
 #' @export
-rix <- function(r_ver = "current",
+rix <- function(r_ver = "latest",
                  r_pkgs,
                  system_pkgs = NULL,
                  git_pkgs = NULL,
@@ -324,7 +325,7 @@ rix <- function(r_ver = "current",
     gsub(",", ",\n#  >", rix_call)
   }
 
-  # Get teh current rix version
+  # Get the rix version
   rix_version <- utils::packageVersion("rix")
 
   generate_header <- function(rix_version,
@@ -471,7 +472,7 @@ flag_rpkgs
     sprintf('in
   pkgs.mkShell {
     buildInputs = [ %s %s system_packages %s ];
-    %s
+      %s
   }',
   flag_git_archive,
   flag_rpkgs,

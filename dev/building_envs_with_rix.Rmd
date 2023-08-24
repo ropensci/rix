@@ -61,7 +61,7 @@ need `{dplyr}` and `{ggplot2}`. Let's also suppose that you use RStudio as your
 IDE. With the `rix::rix()` function, you can easily generate the right
 `default.nix` file. You need to provide the following inputs to `rix()`:
 
-- `r_ver`: the version of R required. Use "current" for the latest version;
+- `r_ver`: the version of R required. Use "latest" for the latest version;
 - `r_pkgs`: the required R packages. For example "dplyr";
 - `system_pkgs`: the required system packages, if needed. For example "quarto", or a Python interpreter;
 - `git_pkgs`: list of git packages to add. See the example below;
@@ -75,7 +75,7 @@ In such a situation, you could create an environment with the following call to 
 ```{r}
 path_default_nix <- tempdir()
 
-rix(r_ver = "current",
+rix(r_ver = "latest",
     r_pkgs = c("dplyr", "ggplot2"),
     system_pkgs = NULL,
     git_pkgs = NULL,
@@ -113,7 +113,7 @@ Emacs. If you use Visual Studio Code, you can use the following call to `rix()`:
 ```{r}
 path_default_nix <- tempdir()
 
-rix(r_ver = "current",
+rix(r_ver = "latest",
     r_pkgs = c("dplyr", "ggplot2"),
     system_pkgs = NULL,
     git_pkgs = NULL,
