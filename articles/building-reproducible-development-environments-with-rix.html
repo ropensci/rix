@@ -142,7 +142,7 @@ the right <code>default.nix</code> file. You need to provide the
 following inputs to <code><a href="../reference/rix.html">rix()</a></code>:</p>
 <ul>
 <li>
-<code>r_ver</code>: the version of R required. Use “current” for the
+<code>r_ver</code>: the version of R required. Use “latest” for the
 latest version;</li>
 <li>
 <code>r_pkgs</code>: the required R packages. For example
@@ -172,7 +172,7 @@ following call to <code><a href="../reference/rix.html">rix()</a></code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">path_default_nix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"current"</span>,</span>
+<span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"latest"</span>,</span>
 <span>    r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span><span class="op">)</span>,</span>
 <span>    system_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    git_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -192,7 +192,7 @@ following call to <code><a href="../reference/rix.html">rix()</a></code>:</p>
 <span><span class="co">#&gt; #  &gt; overwrite = TRUE,</span></span>
 <span><span class="co">#&gt; #  &gt; print = TRUE)</span></span>
 <span><span class="co">#&gt; # It uses nixpkgs' revision 9201b5ff357e781bf014d0330d18555695df7ba8 for reproducibility purposes</span></span>
-<span><span class="co">#&gt; # which will install R version current</span></span>
+<span><span class="co">#&gt; # which will install R version latest</span></span>
 <span><span class="co">#&gt; # Report any issues to https://github.com/b-rodrigues/rix</span></span>
 <span><span class="co">#&gt; let</span></span>
 <span><span class="co">#&gt;  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/9201b5ff357e781bf014d0330d18555695df7ba8.tar.gz") {};</span></span>
@@ -208,7 +208,7 @@ following call to <code><a href="../reference/rix.html">rix()</a></code>:</p>
 <span><span class="co">#&gt;  in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
 <span><span class="co">#&gt;     buildInputs = [  rpkgs system_packages rstudio_pkgs ];</span></span>
-<span><span class="co">#&gt;     shellHook = ''</span></span>
+<span><span class="co">#&gt;       shellHook = ''</span></span>
 <span><span class="co">#&gt; R --vanilla</span></span>
 <span><span class="co">#&gt; '';</span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre></div>
@@ -235,7 +235,7 @@ you use Visual Studio Code, you can use the following call to
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">path_default_nix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"current"</span>,</span>
+<span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"latest"</span>,</span>
 <span>    r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span><span class="op">)</span>,</span>
 <span>    system_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    git_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -255,7 +255,7 @@ you use Visual Studio Code, you can use the following call to
 <span><span class="co">#&gt; #  &gt; project_path = path_default_nix,</span></span>
 <span><span class="co">#&gt; #  &gt; overwrite = TRUE)</span></span>
 <span><span class="co">#&gt; # It uses nixpkgs' revision 9201b5ff357e781bf014d0330d18555695df7ba8 for reproducibility purposes</span></span>
-<span><span class="co">#&gt; # which will install R version current</span></span>
+<span><span class="co">#&gt; # which will install R version latest</span></span>
 <span><span class="co">#&gt; # Report any issues to https://github.com/b-rodrigues/rix</span></span>
 <span><span class="co">#&gt; let</span></span>
 <span><span class="co">#&gt;  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/9201b5ff357e781bf014d0330d18555695df7ba8.tar.gz") {};</span></span>
@@ -268,7 +268,7 @@ you use Visual Studio Code, you can use the following call to
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
 <span><span class="co">#&gt;     buildInputs = [  rpkgs system_packages  ];</span></span>
-<span><span class="co">#&gt;     shellHook = ''</span></span>
+<span><span class="co">#&gt;       shellHook = ''</span></span>
 <span><span class="co">#&gt; R --vanilla</span></span>
 <span><span class="co">#&gt; '';</span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre>
@@ -328,7 +328,7 @@ IDE:</p>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
 <span><span class="co">#&gt;     buildInputs = [  rpkgs system_packages  ];</span></span>
-<span><span class="co">#&gt;     shellHook = ''</span></span>
+<span><span class="co">#&gt;       shellHook = ''</span></span>
 <span><span class="co">#&gt; R --vanilla</span></span>
 <span><span class="co">#&gt; '';</span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre>
@@ -401,7 +401,7 @@ has been archived on CRAN:</p>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
 <span><span class="co">#&gt;     buildInputs = [ git_archive_pkgs  system_packages  ];</span></span>
-<span><span class="co">#&gt;     shellHook = ''</span></span>
+<span><span class="co">#&gt;       shellHook = ''</span></span>
 <span><span class="co">#&gt; R --vanilla</span></span>
 <span><span class="co">#&gt; '';</span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre></div>
@@ -490,7 +490,7 @@ particular package.</p>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
 <span><span class="co">#&gt;     buildInputs = [ git_archive_pkgs rpkgs system_packages  ];</span></span>
-<span><span class="co">#&gt;     shellHook = ''</span></span>
+<span><span class="co">#&gt;       shellHook = ''</span></span>
 <span><span class="co">#&gt; R --vanilla</span></span>
 <span><span class="co">#&gt; '';</span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre></div>
@@ -593,7 +593,7 @@ together:</p>
 <span><span class="co">#&gt;  in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
 <span><span class="co">#&gt;     buildInputs = [ git_archive_pkgs rpkgs system_packages rstudio_pkgs ];</span></span>
-<span><span class="co">#&gt;     shellHook = ''</span></span>
+<span><span class="co">#&gt;       shellHook = ''</span></span>
 <span><span class="co">#&gt; R --vanilla</span></span>
 <span><span class="co">#&gt; '';</span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre></div>

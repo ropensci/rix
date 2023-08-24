@@ -56,7 +56,7 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rix</span><span class="op">(</span></span>
-<span>  r_ver <span class="op">=</span> <span class="st">"current"</span>,</span>
+<span>  r_ver <span class="op">=</span> <span class="st">"latest"</span>,</span>
 <span>  <span class="va">r_pkgs</span>,</span>
 <span>  system_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  git_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -71,9 +71,10 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>r_ver</dt>
-<dd><p>Character, defaults to "current". The required R version. To use the current version
-of R, use "current". You can check which R versions are available using <code>available_r</code>.
-If a nixpkgs revision is provided instead, this gets returned.</p></dd>
+<dd><p>Character, defaults to "latest". The required R version, for example "4.0.0".
+To use the latest version of R, use "latest", if you need the latest, bleeding edge version
+of R and packages, then use "latest". You can check which R versions are available using <code>available_r</code>.
+For reproducibility purposes, you can also provide a nixpkgs revision.</p></dd>
 
 
 <dt>r_pkgs</dt>
