@@ -252,8 +252,8 @@ fetchpkgs  <- function(git_pkgs, archive_pkgs){
 #' @param overwrite Logical, defaults to FALSE. If TRUE, overwrite the `default.nix`
 #'   file in the specified path.
 #' @param print Logical, defaults to FALSE. If TRUE, print `default.nix` to console.
-#' @param shellHook Character, defaults to "R --vanilla". Commands added to the shellHook get
-#'   executed when the Nix shell starts. So by default, using `nix-shell default.nix` will
+#' @param shell_hook Character, defaults to `"R --vanilla"`. Commands added to the shell_hook get
+#'   executed when the Nix shell starts (via `shellHook`). So by default, using `nix-shell default.nix` will
 #'   start R. Set to NULL if you want bash to be started instead.
 #' @details This function will write a `default.nix` in the chosen path. Using
 #'   the Nix package manager, it is then possible to build a reproducible
@@ -291,7 +291,7 @@ rix <- function(r_ver = "latest",
                  project_path = ".",
                  overwrite = FALSE,
                  print = FALSE,
-                 shellHook = "R --vanilla"){
+                 shell_hook = "R --vanilla"){
 
   stopifnot("'ide' has to be one of 'other', 'rstudio' or 'code'" = (ide %in% c("other", "rstudio", "code")))
 
@@ -460,8 +460,8 @@ flag_rpkgs
                         ""
                       }
 
-  shellHook <- if(!is.null(shellHook)){
-                 paste0("shellHook = ''\n", shellHook, "\n'';")
+  shell_hook <- if(!is.null(shell_hook)){
+                 paste0("shellHook = ''\n", shell_hook, "\n'';")
                }
 
   # Generate the shell
@@ -477,7 +477,7 @@ flag_rpkgs
   flag_git_archive,
   flag_rpkgs,
   flag_rstudio,
-  shellHook
+  shell_hook
   )
 
   }
