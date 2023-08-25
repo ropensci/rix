@@ -1,5 +1,17 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.2.0 (2023-08-25)
+
+## New features
+
+- Updated Nix historical revision data to include R version 4.3.1.
+- Provision a new `shell_hook` arg for `rix::rix()`, which will create a `shellHook` entry in `default.nix`.
+
+## Bug fixes
+
+- `inst/extdata/default.nix`: use `R --vanilla` in shellHook to not propagate user-specific `.Renviron` and `.Rprofile`. Fixes #56
+
+
 # rix 0.1.2 (2023-08-14)
 
 # Bug fixes
@@ -14,7 +26,7 @@
 
 # rix 0.1.1 (2023-08-11)
 
-# Bug-fixes
+# Bug fixes
 
 - `nix_build()` now correctly checks presence of `nix-build`. ([4be69b2](https://github.com/b-rodrigues/rix/commit/4be69b2c438276a1f636f3b407a124555bb12c9b))
 
