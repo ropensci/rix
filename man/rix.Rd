@@ -13,7 +13,7 @@ rix(
   project_path = ".",
   overwrite = FALSE,
   print = FALSE,
-  shellHook = "R --vanilla"
+  shell_hook = "R --vanilla"
 )
 }
 \arguments{
@@ -44,8 +44,8 @@ file in the specified path.}
 
 \item{print}{Logical, defaults to FALSE. If TRUE, print \code{default.nix} to console.}
 
-\item{shellHook}{Character, defaults to "R --vanilla". Commands added to the shellHook get
-executed when the Nix shell starts. So by default, using \verb{nix-shell default.nix} will
+\item{shell_hook}{Character, defaults to \code{"R --vanilla"}. Commands added to the shell_hook get
+executed when the Nix shell starts (via \code{shellHook}). So by default, using \verb{nix-shell default.nix} will
 start R. Set to NULL if you want bash to be started instead.}
 }
 \value{
