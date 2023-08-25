@@ -64,7 +64,7 @@
 <span>  project_path <span class="op">=</span> <span class="st">"."</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  print <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  shellHook <span class="op">=</span> <span class="st">"R --vanilla"</span></span>
+<span>  shell_hook <span class="op">=</span> <span class="st">"R --vanilla"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -113,9 +113,9 @@ file in the specified path.</p></dd>
 <dd><p>Logical, defaults to FALSE. If TRUE, print <code>default.nix</code> to console.</p></dd>
 
 
-<dt>shellHook</dt>
-<dd><p>Character, defaults to "R --vanilla". Commands added to the shellHook get
-executed when the Nix shell starts. So by default, using <code>nix-shell default.nix</code> will
+<dt>shell_hook</dt>
+<dd><p>Character, defaults to <code>"R --vanilla"</code>. Commands added to the shell_hook get
+executed when the Nix shell starts (via <code>shellHook</code>). So by default, using <code>nix-shell default.nix</code> will
 start R. Set to NULL if you want bash to be started instead.</p></dd>
 
 </dl></div>
