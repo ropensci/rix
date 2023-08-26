@@ -6,7 +6,7 @@
 \usage{
 rix(
   r_ver = "latest",
-  r_pkgs,
+  r_pkgs = NULL,
   system_pkgs = NULL,
   git_pkgs = NULL,
   ide = "other",
