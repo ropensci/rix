@@ -599,7 +599,7 @@ flag_rpkgs
 
 ```
 
-This is a helper to create `./inst/extadata`.
+This is a helper to create `./inst/extadata/default.nix`.
 
 ```{r, function-create_default_nix}
 #' @noRd
