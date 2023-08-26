@@ -1,5 +1,19 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.2.1 (2023-08-26)
+
+## Bug fixes
+
+- Patch `rix()` to allow empty `r_pkgs` (##67).
+- Patch `rix()` to do bug-free calling of `rix_build()` within default nix
+  shell.
+
+## Chore
+
+- New internal helper `create_default_nix()` to bootstrap 
+  `./inst/extdata/default.nix`
+
+
 # rix 0.2.0 (2023-08-25)
 
 ## New features
