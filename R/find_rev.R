@@ -284,7 +284,7 @@ fetchpkgs  <- function(git_pkgs, archive_pkgs){
 #'   ensures that Nix builds a completely coherent environment.
 #' @export
 rix <- function(r_ver = "latest",
-                 r_pkgs,
+                 r_pkgs = NULL,
                  system_pkgs = NULL,
                  git_pkgs = NULL,
                  ide = "other",
@@ -358,7 +358,7 @@ let
 
     # in case users pass something like c("dplyr", "tidyr@1.0.0")
     # r_pkgs will be "dplyr" only
-    # and "tidyr@1.0.0" needs to be handle by fetchzips
+    # and "tidyr@1.0.0" needs to be handled by fetchzips
     r_and_archive_pkgs <- detect_versions(r_pkgs)
 
     # overwrite r_pkgs
@@ -395,8 +395,8 @@ let
                 }
 
   # generate_* function generate the actual Nix code
-  generate_rpkgs <- function(rPackages){
-    if(flag_rpkgs == ""){
+  generate_rpkgs <- function(rPackages) {
+    if (flag_rpkgs == ""){
       NULL
     } else {
       sprintf('rpkgs = builtins.attrValues {
