@@ -599,6 +599,36 @@ flag_rpkgs
 
 ```
 
+This is a helper to create `./inst/extadata`.
+
+```{r, function-create_default_nix}
+#' @noRd
+create_default_nix <- function(path = file.path("inst", "extdata",
+                                 "default.nix")) {
+  if (!dir.exists(path)) {
+    stop("Path", path, "does not exist.")
+  }
+  
+  rix(
+    r_ver = "latest",
+    r_pkgs = "data.table",
+    system_pkgs = "nix",
+    git_pkgs = list(
+      list(
+        package_name = "rix",
+        repo_url = "https://github.com/b-rodrigues/rix",
+        branch_name = "master",
+        commit = "0c735909d8db4928dbecdc9f301767a5b21bc739"
+    )
+    ),
+    ide = "other",
+    project_path = path,
+    shell_hook = "R --vanilla"
+  )
+}
+```
+
+
 The function below is to invoke the shell command `nix-build` from a R 
 session.
 
