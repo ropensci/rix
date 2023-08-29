@@ -32,7 +32,7 @@ to install R and RStudio (or any other IDE).
 ## Scenario 0: you installed nix and want to build from an expression using {rix}
 
 We have a little helper `rix::nix_build()` which calls `nix-build` from R. All
-you need is nix installed the curl command line utility or {curl}, it's
+you need is nix installed, and the curl command line utility or {curl}, it's
 interface from R. Here is an example to get the nix expression that can use 
 to build the "latest" R version available from nix and the development version
 of {rix} from GitHub.
