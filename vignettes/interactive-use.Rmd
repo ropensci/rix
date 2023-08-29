@@ -29,18 +29,29 @@ installation method for your operating system, and another in which you used Nix
 to install R and RStudio (or any other IDE).
 
 
-## Scenario 0: you installed nix and want to build using {rix}
+## Scenario 0: you installed nix and want to build from an expression using {rix}
 
-We have a little helper `rix::nix_build()` which calls `nix-build` from R.
+We have a little helper `rix::nix_build()` which calls `nix-build` from R. All
+you need is nix installed the curl command line utility or {curl}, it's
+interface from R. Here is an example to get the nix expression that can use 
+to build the "latest" R version available from nix and the development version
+of {rix} from GitHub.
 
 
 ```{sh}
 curl -sl -o default.nix https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix
 ```
 
+Then open an R session from terminal located in your project root folder.
+
+
 ```{r}
 nix_build(project_path = ".", exec_mode = "non-blocking")
 ```
+
+This will build your project and stream messages and errors back in your 
+R console.
+
 
 ## Scenario 1: you installed R and RStudio as usual
 
