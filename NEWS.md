@@ -1,5 +1,13 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.2.1.9000 (2023-08-29)
+
+## Chore
+
+- Fix internal `create_default_nix()` so that `project_path` is directory name.
+- Updated `inst/extdata/default.nix` to latest commit of {rix} prior bumping.
+
+
 # rix 0.2.1 (2023-08-26)
 
 ## Bug fixes
