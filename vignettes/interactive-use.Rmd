@@ -38,14 +38,14 @@ to build the "latest" R version available from nix and the development version
 of {rix} from GitHub.
 
 
-```{sh}
+```{sh eval = FALSE}
 curl -sl -o default.nix https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix
 ```
 
 Then open an R session from terminal located in your project root folder.
 
 
-```{r}
+```{r eval = FALSE}
 nix_build(project_path = ".", exec_mode = "non-blocking")
 ```
 
