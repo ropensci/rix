@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.2.1.9001 (2023-08-29)
+
+- Include `nix_build()` in interactive use vignette (#68).
+
+
 # rix 0.2.1.9000 (2023-08-29)
 
 ## Chore
