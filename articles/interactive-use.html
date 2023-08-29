@@ -91,6 +91,24 @@ system, and another in which you used Nix to install R and RStudio (or
 any other IDE).</p>
 </div>
 <div class="section level2">
+<h2 id="scenario-0-you-installed-nix-and-want-to-build-from-an-expression-using-rix">Scenario 0: you installed nix and want to build from an expression
+using {rix}<a class="anchor" aria-label="anchor" href="#scenario-0-you-installed-nix-and-want-to-build-from-an-expression-using-rix"></a>
+</h2>
+<p>We have a little helper <code><a href="../reference/nix_build.html">rix::nix_build()</a></code> which calls
+<code>nix-build</code> from R. All you need is nix installed, and the
+curl command line utility or {curl}, its interface from R. Here is an
+example to get the nix expression that can use to build the “latest” R
+version available from nix and the development version of {rix} from
+GitHub.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sl</span> <span class="at">-o</span> default.nix https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix</span></code></pre></div>
+<p>Then open an R session from terminal located in your project root
+folder.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/nix_build.html">nix_build</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="st">"."</span>, exec_mode <span class="op">=</span> <span class="st">"non-blocking"</span><span class="op">)</span></span></code></pre></div>
+<p>This will build your project and stream messages and errors back in
+your R console.</p>
+</div>
+<div class="section level2">
 <h2 id="scenario-1-you-installed-r-and-rstudio-as-usual">Scenario 1: you installed R and RStudio as usual<a class="anchor" aria-label="anchor" href="#scenario-1-you-installed-r-and-rstudio-as-usual"></a>
 </h2>
 <p>Let’s suppose that you are already running R and RStudio and that you
@@ -120,11 +138,8 @@ define a bash alias like this:</p>
 <p>which would then execute RStudio in the right project by simply
 typing <code>kmeans</code> in a terminal. It’s also possible to create
 an executable script that you can save in your PATH:</p>
-<pre><code><span></span>
-<span><span class="co"># !/usr/bin/env nix-shell</span></span>
-<span></span>
-<span><span class="co"># !nix-shell /home/Billy/Document/kmeans/default.nix -i bash</span></span>
-<span></span>
+<pre><code><span><span class="co">#!/usr/bin/env nix-shell</span></span>
+<span><span class="co">#!nix-shell /home/Billy/Document/kmeans/default.nix -i bash</span></span>
 <span><span class="va">rstudio</span></span></code></pre>
 <p>Name this script something like <code>kmeans_project</code>, make it
 executable (using <code>chmod +x kmeans_project</code>), and now you can
