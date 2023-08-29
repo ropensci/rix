@@ -517,24 +517,25 @@ flag_rpkgs
 #' @noRd
 create_default_nix <- function(path = file.path("inst", "extdata",
                                  "default.nix")) {
-  if (!dir.exists(path)) {
-    stop("Path", path, "does not exist.")
+  if (!dir.exists(dirname(path))) {
+    stop("Path", path, " does not exist.")
   }
   
   rix(
     r_ver = "latest",
-    r_pkgs = "data.table",
+    r_pkgs = NULL,
     system_pkgs = "nix",
     git_pkgs = list(
       list(
         package_name = "rix",
         repo_url = "https://github.com/b-rodrigues/rix",
         branch_name = "master",
-        commit = "0c735909d8db4928dbecdc9f301767a5b21bc739"
+        commit = "4956c143fd5b81974fca6feb67dea07534430052"
     )
     ),
     ide = "other",
-    project_path = path,
+    project_path = dirname(path),
+    overwrite = TRUE,
     shell_hook = "R --vanilla"
   )
 }
