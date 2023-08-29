@@ -29,6 +29,19 @@ installation method for your operating system, and another in which you used Nix
 to install R and RStudio (or any other IDE).
 
 
+## Scenario 0: you installed nix and want to build using {rix}
+
+We have a little helper `rix::nix_build()` which calls `nix-build` from R.
+
+
+```{sh}
+curl -sl -o default.nix https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix
+```
+
+```{r}
+nix_build(project_path = ".", exec_mode = "non-blocking")
+```
+
 ## Scenario 1: you installed R and RStudio as usual
 
 Let's suppose that you are already running R and RStudio and that you wish to
@@ -53,22 +66,15 @@ You can also define a shortcut to a project that will take care of activating
 the environment and launching rstudio. For example, you could define a bash
 alias like this:
 
-```
-alias kmeans='nix-shell ~/Documents/kmeans/default.nix --run rstudio
-```
+    alias kmeans='nix-shell ~/Documents/kmeans/default.nix --run rstudio
 
 which would then execute RStudio in the right project by simply typing `kmeans`
 in a terminal. It's also possible to create an executable script that you can
 save in your PATH:
 
-```
-
-# !/usr/bin/env nix-shell
-
-# !nix-shell /home/Billy/Document/kmeans/default.nix -i bash
-
-rstudio
-```
+    #!/usr/bin/env nix-shell
+    #!nix-shell /home/Billy/Document/kmeans/default.nix -i bash
+    rstudio
 
 Name this script something like `kmeans_project`, make it executable (using
 `chmod +x kmeans_project`), and now you can run RStudio within this environment
@@ -82,22 +88,18 @@ expressions. In this case you might consider installing Nix first, and then
 running the following command inside your terminal to get dropped into a
 temporary Nix shell, which you can then use to generate new `default.nix` files:
 
-```
-nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix)"
-```
+    nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix)"
 
 Running the command above will download R and `{rix}` and then start an R
 session inside your terminal. You can now run something like this:
 
-```
-rix(r_ver = "latest",
-    r_pkgs = c("dplyr", "ggplot2"),
-    system_pkgs = NULL,
-    git_pkgs = NULL,
-    ide = "rstudio",
-    project_path = ".", # change to a project's path
-    overwrite = TRUE)
-```
+    rix(r_ver = "latest",
+        r_pkgs = c("dplyr", "ggplot2"),
+        system_pkgs = NULL,
+        git_pkgs = NULL,
+        ide = "rstudio",
+        project_path = ".", # change to a project's path
+        overwrite = TRUE)
 
 to generate a `default.nix`, and then use that file to generate an environment
 with R, Rstudio, `{dplyr}` and `{ggplot2}`. If you need to add packages for your
