@@ -566,11 +566,23 @@ nix_build <- function(project_path = ".",
   )
   exec_mode <- match.arg(exec_mode)
   
-  cat(paste0("Launching `nix-build`", " in ", exec_mode, " mode\n"))
+  max_jobs <- getOption("rix.nix_build_max_jobs", default = 1L)
+  stopifnot("option `rix.nix_build_max_jobs` is not integerish" =
+    is_integerish(max_jobs))
+  max_jobs <- as.integer(max_jobs)
+  
+  if (max_jobs == 1L) {
+    cmd <- c("nix-build", nix_file)
+  } else {
+    cmd <- c("nix-build", paste("--max-jobs", max_jobs), nix_file)
+  }
+  
+  cat(paste0("Launching `", paste0(cmd, collapse = " "), "`", " in ",
+    exec_mode, " mode\n"))
   
   proc <- switch(exec_mode,
-    "blocking" = sys::exec_internal("nix-build", nix_file),
-    "non-blocking" = sys::exec_background("nix-build", nix_file),
+    "blocking" = sys::exec_internal(cmd = cmd),
+    "non-blocking" = sys::exec_background(cmd = cmd),
     stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
   )
   
@@ -590,7 +602,7 @@ nix_build <- function(project_path = ".",
       cat("\n==> `nix-build` succeeded!")
     } else {
       msg <- nix_build_exit_msg()
-      cat(paste0("`nix-build` failed with ", msg))
+      cat(paste0("`", cmd, "`", " failed with ", msg))
     }
   }
   
@@ -598,6 +610,11 @@ nix_build <- function(project_path = ".",
   # rm(pid)
   
   return(invisible(proc))
+}
+
+#' @noRd
+is_integerish <- function(x, tol = .Machine$double.eps^0.5) {
+  return(abs(x - round(x)) < tol)
 }
 
 #' @noRd
