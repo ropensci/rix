@@ -2,7 +2,7 @@
 
 # rix 0.2.1.9002 (2023-09-02)
 
-- `nix_build()` now supports `--max_jobs` flag of `nix-build` via `options(rix.nix_build_max_jobs = <integer>)`. Custom settings of this option can be useful for leveraging full I/O latency or 
+- `nix_build()` now supports `--max_jobs` flag of `nix-build` via `options(rix.nix_build_max_jobs = <integer>)`. Custom settings of this option can be useful for leveraging full I/O latency or efficient builds on shared memory multiprocessing systems.
 
 
 # rix 0.2.1.9001 (2023-08-29)
