@@ -644,6 +644,15 @@ session.
 #' @return integer of the process ID (PID) of `nix-build` shell command
 #' launched, if `nix_build()` call is assigned to an R object. Otherwise, it 
 #' will be returned invisibly.
+#' @details The `nix-build` command line interface has more arguments. We will
+#' probably not support all of them in this R wrapper, but currently we have
+#' support for the following `nix-build` flags:
+#' - `--max-jobs`: Maximum number of build jobs done in parallel by Nix.
+#'   According to the official docs of Nix, it defaults to `1`, which is one
+#'   core. This option can be useful for shared memory multiprocessing or
+#'   systems with high I/O latency. To set `--max-jobs` used, you can declare
+#'   with `options(rix.nix_build_max_jobs = <integer>)`. Once you call
+#'   `nix_build()` the flag will be propagated to the call of `nix-build`.
 #' @export
 nix_build <- function(project_path = ".",
                       exec_mode = c("blocking", "non-blocking")) {
