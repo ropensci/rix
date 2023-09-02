@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.2.1.9002 (2023-09-02)
+
+- `nix_build()` now supports `--max_jobs` flag of `nix-build` via `options(rix.nix_build_max_jobs = <integer>)`. Custom settings of this option can be useful for leveraging full I/O latency or 
+
+
 # rix 0.2.1.9001 (2023-08-29)
 
 - Include `nix_build()` in interactive use vignette (#68).
