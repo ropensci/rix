@@ -279,3 +279,5 @@ inflate the package using `fusen::inflate_all()`. If no errors are found
 (warning and notes are ok), then commit and open a PR. To learn how to use
 `{fusen}` (don't worry, it's super easy), refer to this
 [vignette](https://thinkr-open.github.io/fusen/articles/How-to-use-fusen.html).
+In our development workflow, we use [semantic versioning](https://semver.org)
+via [{fledge}](https://fledge.cynkra.com).
