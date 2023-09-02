@@ -668,7 +668,7 @@ nix_build <- function(project_path = ".",
   if (max_jobs == 1L) {
     cmd <- c("nix-build", nix_file)
   } else {
-    cmd <- c("nix-build", paste("--max-jobs", max_jobs), nix_file)
+    cmd <- c("nix-build", "--max-jobs", as.character(max_jobs), nix_file)
   }
   
   cat(paste0("Launching `", paste0(cmd, collapse = " "), "`", " in ",
