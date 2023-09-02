@@ -80,6 +80,17 @@ executed, or run <code>nix-build</code> in the background ("non-blocking").</p><
 launched, if <code>nix_build()</code> call is assigned to an R object. Otherwise, it
 will be returned invisibly.</p>
     </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The <code>nix-build</code> command line interface has more arguments. We will
+probably not support all of them in this R wrapper, but currently we have
+support for the following <code>nix-build</code> flags:</p><ul><li><p><code>--max-jobs</code>: Maximum number of build jobs done in parallel by Nix.
+According to the official docs of Nix, it defaults to <code>1</code>, which is one
+core. This option can be useful for shared memory multiprocessing or
+systems with high I/O latency. To set <code>--max-jobs</code> used, you can declare
+with <code>options(rix.nix_build_max_jobs = &lt;integer&gt;)</code>. Once you call
+<code>nix_build()</code> the flag will be propagated to the call of <code>nix-build</code>.</p></li>
+</ul></div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
