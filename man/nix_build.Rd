@@ -23,3 +23,16 @@ will be returned invisibly.
 \description{
 Invoke shell command \code{nix-build} from an R session
 }
+\details{
+The \code{nix-build} command line interface has more arguments. We will
+probably not support all of them in this R wrapper, but currently we have
+support for the following \code{nix-build} flags:
+\itemize{
+\item \code{--max-jobs}: Maximum number of build jobs done in parallel by Nix.
+According to the official docs of Nix, it defaults to \code{1}, which is one
+core. This option can be useful for shared memory multiprocessing or
+systems with high I/O latency. To set \code{--max-jobs} used, you can declare
+with \verb{options(rix.nix_build_max_jobs = <integer>)}. Once you call
+\code{nix_build()} the flag will be propagated to the call of \code{nix-build}.
+}
+}

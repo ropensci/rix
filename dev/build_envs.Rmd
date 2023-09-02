@@ -644,6 +644,15 @@ session.
 #' @return integer of the process ID (PID) of `nix-build` shell command
 #' launched, if `nix_build()` call is assigned to an R object. Otherwise, it 
 #' will be returned invisibly.
+#' @details The `nix-build` command line interface has more arguments. We will
+#' probably not support all of them in this R wrapper, but currently we have
+#' support for the following `nix-build` flags:
+#' - `--max-jobs`: Maximum number of build jobs done in parallel by Nix.
+#'   According to the official docs of Nix, it defaults to `1`, which is one
+#'   core. This option can be useful for shared memory multiprocessing or
+#'   systems with high I/O latency. To set `--max-jobs` used, you can declare
+#'   with `options(rix.nix_build_max_jobs = <integer>)`. Once you call
+#'   `nix_build()` the flag will be propagated to the call of `nix-build`.
 #' @export
 nix_build <- function(project_path = ".",
                       exec_mode = c("blocking", "non-blocking")) {
@@ -660,11 +669,23 @@ nix_build <- function(project_path = ".",
   )
   exec_mode <- match.arg(exec_mode)
   
-  cat(paste0("Launching `nix-build`", " in ", exec_mode, " mode\n"))
+  max_jobs <- getOption("rix.nix_build_max_jobs", default = 1L)
+  stopifnot("option `rix.nix_build_max_jobs` is not integerish" =
+    is_integerish(max_jobs))
+  max_jobs <- as.integer(max_jobs)
+  
+  if (max_jobs == 1L) {
+    cmd <- c("nix-build", nix_file)
+  } else {
+    cmd <- c("nix-build", "--max-jobs", as.character(max_jobs), nix_file)
+  }
+  
+  cat(paste0("Launching `", paste0(cmd, collapse = " "), "`", " in ",
+    exec_mode, " mode\n"))
   
   proc <- switch(exec_mode,
-    "blocking" = sys::exec_internal("nix-build", nix_file),
-    "non-blocking" = sys::exec_background("nix-build", nix_file),
+    "blocking" = sys::exec_internal(cmd = cmd),
+    "non-blocking" = sys::exec_background(cmd = cmd),
     stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
   )
   
@@ -684,7 +705,7 @@ nix_build <- function(project_path = ".",
       cat("\n==> `nix-build` succeeded!")
     } else {
       msg <- nix_build_exit_msg()
-      cat(paste0("`nix-build` failed with ", msg))
+      cat(paste0("`", cmd, "`", " failed with ", msg))
     }
   }
   
@@ -692,6 +713,11 @@ nix_build <- function(project_path = ".",
   # rm(pid)
   
   return(invisible(proc))
+}
+
+#' @noRd
+is_integerish <- function(x, tol = .Machine$double.eps^0.5) {
+  return(abs(x - round(x)) < tol)
 }
 
 #' @noRd
