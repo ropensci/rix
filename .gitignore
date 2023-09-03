@@ -5,6 +5,7 @@
 .Rprofile
 .DS_Store
 .httr-oauth
+default.nix
 inst/doc
 docs
 result
