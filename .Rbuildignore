@@ -8,3 +8,4 @@
 ^pkgdown$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^rix\.Rproj$
