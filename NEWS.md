@@ -1,5 +1,14 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.3.0 (2023-09-10)
+
+- Added support for installing TeX Live packages via new `rix::rix()` argument `tex_pkgs`.
+
+## Chore
+
+- update `inst/extdata/default.nix` so that it installs {rix} v0.3.0.
+
+
 # rix 0.2.1.9002 (2023-09-02)
 
 - `nix_build()` now supports `--max_jobs` flag of `nix-build` via `options(rix.nix_build_max_jobs = <integer>)`. Custom settings of this option can be useful for leveraging full I/O latency or efficient builds on shared memory multiprocessing systems.
