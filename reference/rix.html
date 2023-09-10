@@ -61,6 +61,7 @@
 <span>  r_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  system_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  git_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tex_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ide <span class="op">=</span> <span class="st">"other"</span>,</span>
 <span>  project_path <span class="op">=</span> <span class="st">"."</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -90,6 +91,10 @@ are not R packages such as command line applications for example.</p></dd>
 
 <dt>git_pkgs</dt>
 <dd><p>List. A list of packages to install from Git. See details for more information.</p></dd>
+
+
+<dt>tex_pkgs</dt>
+<dd><p>Vector of characters. A set of tex packages to install. Use this if you need to compile <code>.tex</code> documents, or build PDF documents using Quarto. If you don't know which package to add, start by adding "amsmath". See the Vignette "Authoring LaTeX documents" for more details.</p></dd>
 
 
 <dt>ide</dt>
