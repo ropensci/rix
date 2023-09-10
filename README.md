@@ -53,9 +53,10 @@ If you are already familiar with nix and R, you can dive deep quickly.
 You can for example check out [series 4 on nix for data science on
 Bruno’s
 blog](https://www.brodrigues.co/blog/2023-08-12-nix_for_r_part4/). Or,
-in case you like video tutorials, watch \[this one on Reproducible R
-development environments with Nix\]. If you have R installed, you can
-start straight away from your R session.
+in case you like video tutorials, watch [this one on Reproducible R
+development environments with
+Nix](https://www.youtube.com/watch?v=c1LhgeTTxaI). If you have R
+installed, you can start straight away from your R session.
 
 ``` r
 install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
