@@ -3,6 +3,8 @@
   id="toc-rix-reproducible-environments-with-nix">Rix: Reproducible
   Environments with Nix</a>
   - <a href="#introduction" id="toc-introduction">Introduction</a>
+  - <a href="#from-quickstart-to-deep-dive"
+    id="toc-from-quickstart-to-deep-dive">From quickstart to deep dive</a>
   - <a href="#the-nix-package-manager" id="toc-the-nix-package-manager">The
     Nix package manager</a>
   - <a href="#rix-workflow" id="toc-rix-workflow">Rix workflow</a>
@@ -44,6 +46,27 @@ and even install old releases of R and R packages. With Nix, it is
 essentially possible to replace `{renv}` and Docker combined. If you
 need other tools or languages like Python or Julia, this can also be
 done easily. Nix is available for Linux, macOS and Windows (via WSL2).
+
+## From quickstart to deep dive
+
+If you are already familiar with nix and R, you can dive deep quickly.
+You can for example check out [series 4 on nix for data science on
+Bruno’s
+blog](https://www.brodrigues.co/blog/2023-08-12-nix_for_r_part4/). Or,
+in case you like video tutorials, watch \[this one on Reproducible R
+development environments with Nix\]. If you have R installed, you can
+start straight away from your R session.
+
+``` r
+install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
+  "https://cloud.r-project.org"))
+library("rix")
+file.copy(
+  from = system.file("extdata", "default.nix", package = "rix"),
+  to = ".", overwrite = TRUE
+)
+nix_build(project_path = ".")
+```
 
 ## The Nix package manager
 

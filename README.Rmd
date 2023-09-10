@@ -36,6 +36,27 @@ With Nix, it is essentially possible to replace `{renv}` and Docker combined. If
 you need other tools or languages like Python or Julia, this can also be done
 easily. Nix is available for Linux, macOS and Windows (via WSL2).
 
+## From quickstart to deep dive
+
+If you are already familiar with nix and R, you can dive deep quickly. You can
+for example check out 
+[series 4 on nix for data science on Bruno's blog](https://www.brodrigues.co/blog/2023-08-12-nix_for_r_part4/).
+Or, in case you like video tutorials, watch 
+[this one on Reproducible R development environments with Nix]. If you have
+R installed, you can start straight away from your R session.
+
+```{r, eval=FALSE}
+install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
+  "https://cloud.r-project.org"))
+library("rix")
+file.copy(
+  from = system.file("extdata", "default.nix", package = "rix"),
+  to = ".", overwrite = TRUE
+)
+nix_build(project_path = ".")
+```
+
+
 ## The Nix package manager
 
 Nix is a piece of software that can be installed on your computer (regardless of
