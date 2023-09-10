@@ -9,6 +9,7 @@ rix(
   r_pkgs = NULL,
   system_pkgs = NULL,
   git_pkgs = NULL,
+  tex_pkgs = NULL,
   ide = "other",
   project_path = ".",
   overwrite = FALSE,
@@ -29,6 +30,8 @@ analysis here.}
 are not R packages such as command line applications for example.}
 
 \item{git_pkgs}{List. A list of packages to install from Git. See details for more information.}
+
+\item{tex_pkgs}{Vector of characters. A set of tex packages to install. Use this if you need to compile \code{.tex} documents, or build PDF documents using Quarto. If you don't know which package to add, start by adding "amsmath". See the Vignette "Authoring LaTeX documents" for more details.}
 
 \item{ide}{Character, defaults to "other". If you wish to use RStudio to work
 interactively use "rstudio" or "code" for Visual Studio Code. For other editors,

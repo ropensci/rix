@@ -242,6 +242,7 @@ fetchpkgs  <- function(git_pkgs, archive_pkgs){
 #' @param system_pkgs Vector of characters. List further software you wish to install that
 #'   are not R packages such as command line applications for example.
 #' @param git_pkgs List. A list of packages to install from Git. See details for more information.
+#' @param tex_pkgs Vector of characters. A set of tex packages to install. Use this if you need to compile `.tex` documents, or build PDF documents using Quarto. If you don't know which package to add, start by adding "amsmath". See the Vignette "Authoring LaTeX documents" for more details.
 #' @param ide Character, defaults to "other". If you wish to use RStudio to work
 #'   interactively use "rstudio" or "code" for Visual Studio Code. For other editors,
 #'   use "other". This has been tested with RStudio, VS Code and Emacs. If other
@@ -284,14 +285,15 @@ fetchpkgs  <- function(git_pkgs, archive_pkgs){
 #'   ensures that Nix builds a completely coherent environment.
 #' @export
 rix <- function(r_ver = "latest",
-                 r_pkgs = NULL,
-                 system_pkgs = NULL,
-                 git_pkgs = NULL,
-                 ide = "other",
-                 project_path = ".",
-                 overwrite = FALSE,
-                 print = FALSE,
-                 shell_hook = "R --vanilla"){
+                r_pkgs = NULL,
+                system_pkgs = NULL,
+                git_pkgs = NULL,
+                tex_pkgs = NULL,
+                ide = "other",
+                project_path = ".",
+                overwrite = FALSE,
+                print = FALSE,
+                shell_hook = "R --vanilla"){
 
   stopifnot("'ide' has to be one of 'other', 'rstudio' or 'code'" = (ide %in% c("other", "rstudio", "code")))
 
@@ -407,6 +409,24 @@ rPackages)
     }
   }
 
+  # Texlive packages
+  generate_tex_pkgs <- function(tex_pkgs) {
+
+    tex_pkgs <- paste(tex_pkgs, collapse = ' ')
+
+    sprintf('tex = (pkgs.texlive.combine {
+  inherit (pkgs.texlive) scheme-basic %s;
+});
+',
+tex_pkgs)
+  }
+
+  flag_tex_pkgs <- if(is.null(tex_pkgs)){
+                     ""
+                   } else {
+                     "tex"
+                   }
+
   # system packages
   get_system_pkgs <- function(system_pkgs){
     paste(system_pkgs, collapse = ' ')
@@ -471,11 +491,12 @@ flag_rpkgs
   generate_shell <- function(flag_git_archive, flag_rpkgs){
     sprintf('in
   pkgs.mkShell {
-    buildInputs = [ %s %s system_packages %s ];
+    buildInputs = [ %s %s %s system_packages %s ];
       %s
   }',
   flag_git_archive,
   flag_rpkgs,
+  flag_tex_pkgs,
   flag_rstudio,
   shell_hook
   )
@@ -490,6 +511,7 @@ flag_rpkgs
                     rix_call),
     generate_rpkgs(cran_pkgs$rPackages),
     generate_git_archived_packages(git_pkgs, cran_pkgs$archive_pkgs),
+    generate_tex_pkgs(tex_pkgs),
     generate_system_pkgs(system_pkgs),
     generate_rstudio_pkgs(ide, flag_git_archive, flag_rpkgs),
     generate_shell(flag_git_archive, flag_rpkgs),
