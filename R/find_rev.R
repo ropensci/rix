@@ -413,12 +413,15 @@ rPackages)
   generate_tex_pkgs <- function(tex_pkgs) {
 
     tex_pkgs <- paste(tex_pkgs, collapse = ' ')
+    
+    if (!is.null(tex_pkgs)) {
 
     sprintf('tex = (pkgs.texlive.combine {
   inherit (pkgs.texlive) scheme-basic %s;
 });
 ',
 tex_pkgs)
+    }
   }
 
   flag_tex_pkgs <- if(is.null(tex_pkgs)){
