@@ -99,14 +99,13 @@ a packages with dependencies on Github.</p>
 <div class="section level2">
 <h2 id="the-lookup-package">The {lookup} package<a class="anchor" aria-label="anchor" href="#the-lookup-package"></a>
 </h2>
-<p>As an example we are going to use the <a href="https://kwstat.github.io/lookup/" class="external-link">lookup</a> package
-which has only been released on Github. <a href="https://github.com/jimhester/lookup" class="external-link">Here is the repository</a>.
+<p>As an example we are going to use the <a href="https://github.com/jimhester/lookup" class="external-link">{lookup}</a> package which
+has only been released on Github. <a href="https://github.com/jimhester/lookup" class="external-link">Here is the repository</a>.
 This package comes with the <code>lookup()</code> function which makes
 it possible to check the source code of any function from a loaded
 package, even if the source of that function is in C or Fortran. To
-create a reproducible development environment that makes
-<a href="https://kwstat.github.io/lookup/" class="external-link">lookup</a> available to you, you could use the following
-<code><a href="../reference/rix.html">rix::rix()</a></code> call:</p>
+create a reproducible development environment that makes <a href="https://github.com/jimhester/lookup" class="external-link">{lookup}</a> available to
+you, you could use the following <code><a href="../reference/rix.html">rix::rix()</a></code> call:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">path_default_nix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -171,9 +170,9 @@ message:</p>
 <div class="section level2">
 <h2 id="building-remote-dependencies">Building remote dependencies<a class="anchor" aria-label="anchor" href="#building-remote-dependencies"></a>
 </h2>
-<p><code>{highlite}</code> is a dependency of <a href="https://kwstat.github.io/lookup/" class="external-link">lookup</a> that
-is only available on CRAN. This can be checked by looking at the
-<code>DESCRIPTION</code> file of <a href="https://kwstat.github.io/lookup/" class="external-link">lookup</a>:</p>
+<p><code>{highlite}</code> is a dependency of <a href="https://github.com/jimhester/lookup" class="external-link">{lookup}</a> that is only
+available on CRAN. This can be checked by looking at the
+<code>DESCRIPTION</code> file of <a href="https://github.com/jimhester/lookup" class="external-link">{lookup}</a>:</p>
 <pre><code>Remotes:
     jimhester/highlite,
     gaborcsardi/gh,
@@ -268,7 +267,7 @@ automatically. This is for mainly three reasons:</p>
 Bioconductor;</li>
 <li>packages may have remote dependencies, but these dependencies may
 later be available on CRAN (such as with <a href="https://memoise.r-lib.org" class="external-link">memoise</a> and
-<a href="https://gh.r-lib.org/" class="external-link">gh</a> for <a href="https://kwstat.github.io/lookup/" class="external-link">lookup</a>);</li>
+<a href="https://gh.r-lib.org/" class="external-link">gh</a> for <a href="https://github.com/jimhester/lookup" class="external-link">{lookup}</a>);</li>
 <li>
 <code>{rix}</code> cannot decide for the user which commit to use
 for a remote dependency (or whether to use the released version of that
