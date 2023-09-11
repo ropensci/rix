@@ -1,5 +1,12 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.3.1 (2023-09-11)
+
+## Chore
+
+- Remove boilerplate code for `rix::rix(tex_pkgs = NULL)`
+
+
 # rix 0.3.0 (2023-09-10)
 
 - Added support for installing TeX Live packages via new `rix::rix()` argument `tex_pkgs`.
