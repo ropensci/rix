@@ -676,3 +676,42 @@ nix_build_exit_msg <- function(x) {
   
   return(err_msg)
 }
+
+
+#' Evaluate expression in R or default shell
+#'
+#' @param expr Expression. Can either be character of length 1 or a bare
+#' expression.
+#' @param where String stating where to evaluate the expression. Either `"R"`, 
+#' the default, or `"shell"`. `where = "R"` will evaluate the expression via
+#' `RScript`.
+#' @inheritParams nix_build
+#'
+#' @return
+#' @export
+with_nix <- function(expr,
+                     where = c("R", "shell"),
+                     exec_mode = c("blocking", "non-blocking"),
+                     project_path = ".") {
+  has_nix_shell <- nix_shell_installed() # TRUE if yes, FALSE if no
+  nix_file <- file.path(project_path, "default.nix")
+  
+  stopifnot(
+    "`project_path` must be character of length 1." =
+      is.character(project_path) && length(project_path) == 1L,
+    "`project_path` has no `default.nix` file. Use one that contains `default.nix`" =
+      file.exists(nix_file),
+    "`nix-shell` not available. To install, we suggest you follow https://zero-to-nix.com/start/install ." =
+      isTRUE(has_nix_shell)
+  )
+}
+
+#' @noRd
+nix_shell_installed <- function() {
+  exit_code <- system2("command", "-v", "nix-shell")
+  if (exit_code == 0L) {
+    return(invisible(TRUE))
+  } else {
+    return(invisible(FALSE))
+  }
+}
