@@ -714,9 +714,9 @@ nix_build <- function(project_path = ".",
     stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
   )
   
-  if (exec_mode == "non-blocking") poll_non_blocking(cmd, proc)
+  if (exec_mode == "non-blocking") poll_build_non_blocking(cmd, proc)
   
-  if (exec_mode == "blocking") poll_blocking(cmd, proc)
+  if (exec_mode == "blocking") poll_build_blocking(cmd, proc)
   
   # todo (?): clean zombies for background/non-blocking mode
   # rm(pid)
@@ -725,21 +725,21 @@ nix_build <- function(project_path = ".",
 }
 
 #' @noRd
-poll_non_blocking <- function(cmd, proc) {
+poll_build_non_blocking <- function(cmd, proc) {
   cat(paste0("\n==> Process ID (PID) is ", proc, "."))
   cat("\n==> Receiving stdout and stderr streams...\n")
   status <- sys::exec_status(proc, wait = TRUE)
   if (status == 0L) {
-    cat("\n==> `nix-build` succeeded!")
+    cat("\n==> `nix-shell` succeeded!")
   }
 }
 
 #' @noRd
-poll_blocking <- function(cmd, proc) {
+poll_build_blocking <- function(cmd, proc) {
   status <- proc$status
   if (status == 0L) {
     cat(paste0("\n==> ", sys::as_text(proc$stdout)))
-    cat("\n==> `nix-build` succeeded!")
+    cat("\n==> `nix-shell` succeeded!")
   } else {
     msg <- nix_build_exit_msg()
     cat(paste0("`", cmd, "`", " failed with ", msg))
@@ -825,16 +825,16 @@ with_nix <- function(expr,
     stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
   )
   
-  if (exec_mode == "non-blocking") poll_non_blocking(cmd, proc)
+  if (exec_mode == "non-blocking") poll_shell_non_blocking(cmd, proc)
   
-  if (exec_mode == "blocking") poll_blocking(cmd, proc)
+  if (exec_mode == "blocking") poll_shell_blocking(cmd, proc)
   
   return(invisible(proc))
   
 }
 
 #' @noRd
-poll_blocking <- function(cmd, proc) {
+poll_shell_blocking <- function(cmd, proc) {
   status <- proc$status
     if (status == 0L) {
       cat(paste0("\n==> ", sys::as_text(proc$stdout)))
@@ -846,7 +846,7 @@ poll_blocking <- function(cmd, proc) {
 }
 
 #' @noRd
-poll_non_blocking <- function(cmd, proc) {
+poll_shell_non_blocking <- function(cmd, proc) {
   cat(paste0("\n==> Process ID (PID) is ", proc, "."))
   cat("\n==> Receiving stdout and stderr streams...\n")
   status <- sys::exec_status(proc, wait = TRUE)
