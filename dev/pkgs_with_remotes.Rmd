@@ -19,13 +19,15 @@ vignette explains how to install such a packages with dependencies on Github.
 
 ## The {lookup} package
 
-As an example we are going to use the `{lookup}` package which has only been
+As an example we are going to use the
+[{lookup}](https://github.com/jimhester/lookup) package which has only been
 released on Github. [Here is the
 repository](https://github.com/jimhester/lookup). This package comes with the
 `lookup()` function which makes it possible to check the source code of any
 function from a loaded package, even if the source of that function is in C or
-Fortran. To create a reproducible development environment that makes `{lookup}`
-available to you, you could use the following `rix::rix()` call:
+Fortran. To create a reproducible development environment that makes
+[{lookup}](https://github.com/jimhester/lookup) available to you, you could use
+the following `rix::rix()` call:
 
 ```{r}
 path_default_nix <- tempdir()
@@ -52,8 +54,9 @@ error: attribute 'highlite' missing
 
 ## Building remote dependencies
 
-`{highlite}` is a dependency of `{lookup}` that is only available on CRAN. This
-can be checked by looking at the `DESCRIPTION` file of `{lookup}`:
+`{highlite}` is a dependency of [{lookup}](https://github.com/jimhester/lookup)
+that is only available on CRAN. This can be checked by looking at the
+`DESCRIPTION` file of [{lookup}](https://github.com/jimhester/lookup):
 
 ```
 Remotes:
@@ -168,7 +171,7 @@ make `{rix}` handle remote dependencies automatically. This is for mainly three
 reasons:
 
 - packages with remote dependencies are rare, and never on CRAN on Bioconductor;
-- packages may have remote dependencies, but these dependencies may later be available on CRAN (such as with `{memoise}` and `{gh}` for `{lookup}`);
+- packages may have remote dependencies, but these dependencies may later be available on CRAN (such as with `{memoise}` and `{gh}` for [{lookup}](https://github.com/jimhester/lookup));
 - `{rix}` cannot decide for the user which commit to use for a remote dependency (or whether to use the released version of that dependency from CRAN).
 
 Because of these reasons, we believe that it is safer for users that really need

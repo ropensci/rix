@@ -1,26 +1,20 @@
 
-- <a href="#rix-reproducible-environments-with-nix"
-  id="toc-rix-reproducible-environments-with-nix">Rix: Reproducible
-  Environments with Nix</a>
-  - <a href="#introduction" id="toc-introduction">Introduction</a>
-  - <a href="#from-quickstart-to-deep-dive"
-    id="toc-from-quickstart-to-deep-dive">From quickstart to deep dive</a>
-  - <a href="#the-nix-package-manager" id="toc-the-nix-package-manager">The
-    Nix package manager</a>
-  - <a href="#rix-workflow" id="toc-rix-workflow">Rix workflow</a>
-    - <a href="#defaultnix" id="toc-defaultnix">default.nix</a>
-    - <a href="#running-programs-from-an-environment"
-      id="toc-running-programs-from-an-environment">Running programs from an
-      environment</a>
-  - <a href="#installation" id="toc-installation">Installation</a>
-  - <a href="#installing-nix" id="toc-installing-nix">Installing Nix</a>
-    - <a href="#windows-pre-requisites"
-      id="toc-windows-pre-requisites">Windows pre-requisites</a>
-    - <a href="#installing-nix-using-the-determinate-systems-installer"
-      id="toc-installing-nix-using-the-determinate-systems-installer">Installing
-      Nix using the Determinate Systems installer</a>
-    - <a href="#docker" id="toc-docker">Docker</a>
-  - <a href="#contributing" id="toc-contributing">Contributing</a>
+- [Rix: Reproducible Environments with
+  Nix](#rix-reproducible-environments-with-nix)
+  - [Introduction](#introduction)
+  - [From quickstart to deep dive](#from-quickstart-to-deep-dive)
+  - [The Nix package manager](#the-nix-package-manager)
+  - [Rix workflow](#rix-workflow)
+    - [default.nix](#defaultnix)
+    - [Running programs from an
+      environment](#running-programs-from-an-environment)
+  - [Installation](#installation)
+  - [Installing Nix](#installing-nix)
+    - [Windows pre-requisites](#windows-pre-requisites)
+    - [Installing Nix using the Determinate Systems
+      installer](#installing-nix-using-the-determinate-systems-installer)
+    - [Docker](#docker)
+  - [Contributing](#contributing)
 
 <!-- badges: start -->
 
@@ -68,6 +62,16 @@ file.copy(
 )
 nix_build(project_path = ".")
 ```
+
+This will build an environment with the latest version of R and `{rix}`.
+
+If you don’t have R installed, but have the Nix package manager
+installed, you can run a temporary R session with R using this command:
+
+    nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix)"
+
+You can then create new development environment definitions, build them,
+and start using them.
 
 ## The Nix package manager
 

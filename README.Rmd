@@ -56,6 +56,17 @@ file.copy(
 nix_build(project_path = ".")
 ```
 
+This will build an environment with the latest version of R and `{rix}`.
+
+If you don't have R installed, but have the Nix package manager installed, you
+can run a temporary R session with R using this command:
+
+```
+nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix)"
+```
+
+You can then create new development environment definitions, build them, and
+start using them.
 
 ## The Nix package manager
 
