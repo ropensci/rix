@@ -714,30 +714,36 @@ nix_build <- function(project_path = ".",
     stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
   )
   
-  if (exec_mode == "non-blocking") {
-    cat(paste0("\n==> Process ID (PID) is ", proc, "."))
-    cat("\n==> Receiving stdout and stderr streams...\n")
-    status <- sys::exec_status(proc, wait = TRUE)
-    if (status == 0L) {
-      cat("\n==> `nix-build` succeeded!")
-    }
-  }
+  if (exec_mode == "non-blocking") poll_non_blocking(cmd, proc)
   
-  if (exec_mode == "blocking") {
-    status <- proc$status
-    if (status == 0L) {
-      cat(paste0("\n==> ", sys::as_text(proc$stdout)))
-      cat("\n==> `nix-build` succeeded!")
-    } else {
-      msg <- nix_build_exit_msg()
-      cat(paste0("`", cmd, "`", " failed with ", msg))
-    }
-  }
+  if (exec_mode == "blocking") poll_blocking(cmd, proc)
   
   # todo (?): clean zombies for background/non-blocking mode
   # rm(pid)
   
   return(invisible(proc))
+}
+
+#' @noRd
+poll_non_blocking <- function(cmd, proc) {
+  cat(paste0("\n==> Process ID (PID) is ", proc, "."))
+  cat("\n==> Receiving stdout and stderr streams...\n")
+  status <- sys::exec_status(proc, wait = TRUE)
+  if (status == 0L) {
+    cat("\n==> `nix-build` succeeded!")
+  }
+}
+
+#' @noRd
+poll_blocking <- function(cmd, proc) {
+  status <- proc$status
+  if (status == 0L) {
+    cat(paste0("\n==> ", sys::as_text(proc$stdout)))
+    cat("\n==> `nix-build` succeeded!")
+  } else {
+    msg <- nix_build_exit_msg()
+    cat(paste0("`", cmd, "`", " failed with ", msg))
+  }
 }
 
 #' @noRd
