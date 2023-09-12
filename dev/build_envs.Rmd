@@ -782,9 +782,8 @@ This function can evaluate an shell or R expression in Nix.
 #' expression.
 #' @param where String stating where to evaluate the expression. Either `"R"`, 
 #' the default, or `"shell"`. `where = "R"` will evaluate the expression via
-#' `RScript`.
+#' `RScript` and `where = "shell"` will run in the standard shell.
 #' @inheritParams nix_build
-#'
 #' @return
 #' @export
 with_nix <- function(expr,
@@ -802,6 +801,52 @@ with_nix <- function(expr,
     "`nix-shell` not available. To install, we suggest you follow https://zero-to-nix.com/start/install ." =
       isTRUE(has_nix_shell)
   )
+  where <- match.arg(where)
+  exec_mode <- match.arg(exec_mode)
+  
+  cmd <- switch(where,
+    "R" = c("Rscript", "-e", paste0("'", expr, "'")),
+    "shell" = expr,
+    stop('invalid `where` to evaluate `expr`. Either use "R" or "shell".')
+  )
+  
+  cat(paste0("Running `", paste0(cmd, collapse = " "), "` in Nix", " in ",
+    exec_mode, " mode\n"))
+  
+  proc <- switch(exec_mode,
+    "blocking" = sys::exec_internal(cmd = cmd),
+    "non-blocking" = sys::exec_background(cmd = cmd),
+    stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
+  )
+  
+  if (exec_mode == "non-blocking") poll_non_blocking(cmd, proc)
+  
+  if (exec_mode == "blocking") poll_blocking(cmd, proc)
+  
+  return(invisible(proc))
+  
+}
+
+#' @noRd
+poll_blocking <- function(cmd, proc) {
+  status <- proc$status
+    if (status == 0L) {
+      cat(paste0("\n==> ", sys::as_text(proc$stdout)))
+      cat("\n==> `expr` succeeded!")
+    } else {
+      msg <- nix_build_exit_msg()
+      cat(paste0("`", cmd, "`", " failed with ", msg))
+    }
+}
+
+#' @noRd
+poll_non_blocking <- function(cmd, proc) {
+  cat(paste0("\n==> Process ID (PID) is ", proc, "."))
+  cat("\n==> Receiving stdout and stderr streams...\n")
+  status <- sys::exec_status(proc, wait = TRUE)
+  if (status == 0L) {
+    cat("\n==> `expr` succeeded!")
+  }
 }
 
 #' @noRd
@@ -812,6 +857,11 @@ nix_shell_installed <- function() {
   } else {
     return(invisible(FALSE))
   }
+}
+
+#' @noRd
+nix_run_r <- function(expr) {
+  
 }
 ```
 

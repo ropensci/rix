@@ -17,7 +17,7 @@ expression.}
 
 \item{where}{String stating where to evaluate the expression. Either \code{"R"},
 the default, or \code{"shell"}. \code{where = "R"} will evaluate the expression via
-\code{RScript}.}
+\code{RScript} and \code{where = "shell"} will run in the standard shell.}
 
 \item{exec_mode}{Either \code{"blocking"} (default) or \verb{"non-blocking}. This
 will either block the R session while the \code{nix-build} shell command is
