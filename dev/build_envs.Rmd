@@ -784,9 +784,8 @@ This function can evaluate an shell or R expression in Nix.
 
 #' Evaluate expression in R or default shell
 #'
-#' @param expr Expression. Can either be character of length 1 or a bare
-#' expression.
-#' @param where String stating where to evaluate the expression. Either `"R"`, 
+#' @param expr Single R function or call, shell command, or list of them.
+#' @param where String stating where to evaluate the expression. Either `"R"`,
 #' the default, or `"shell"`. `where = "R"` will evaluate the expression via
 #' `RScript` and `where = "shell"` will run in the standard shell.
 #' @inheritParams nix_build
@@ -805,13 +804,18 @@ with_nix <- function(expr,
     "`project_path` has no `default.nix` file. Use one that contains `default.nix`" =
       file.exists(nix_file),
     "`nix-shell` not available. To install, we suggest you follow https://zero-to-nix.com/start/install ." =
-      isTRUE(has_nix_shell)
+      isTRUE(has_nix_shell),
+    "`expr` needs to be a call or function" = is.function(expr) || is.call(expr)
   )
   where <- match.arg(where)
   exec_mode <- match.arg(exec_mode)
   
   cmd <- switch(where,
-    "R" = c("Rscript", "-e", paste0("'", expr, "'")),
+    # for R, 1) save all function inputs on disk, then 2) read the objects
+    # in the Nix-R shell env, and 3) run the function and save the output 
+    # again on disk. In the current session, 4) read the evaluated output again.
+    "R" = c("Rscript", "-e", paste0("'out <- ", expr, "'",
+      "; saveRds(object = out, file = tempfile('out', fileext = '.Rds'))")),
     "shell" = expr,
     stop('invalid `where` to evaluate `expr`. Either use "R" or "shell".')
   )
@@ -860,7 +864,7 @@ nix_shell_installed <- function() {
   exit_code <- system2("command", "-v", "nix-shell")
   if (exit_code == 0L) {
     return(invisible(TRUE))
-  } else {
+} else {
     return(invisible(FALSE))
   }
 }

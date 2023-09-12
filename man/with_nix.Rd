@@ -12,8 +12,7 @@ with_nix(
 )
 }
 \arguments{
-\item{expr}{Expression. Can either be character of length 1 or a bare
-expression.}
+\item{expr}{Single R function or call, shell command, or list of them.}
 
 \item{where}{String stating where to evaluate the expression. Either \code{"R"},
 the default, or \code{"shell"}. \code{where = "R"} will evaluate the expression via
