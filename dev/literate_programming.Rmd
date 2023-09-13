@@ -1,0 +1,24 @@
+---
+title: "Building an environment for literate programming"
+output: html_document
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+## An example
+
+```{r}
+path_default_nix <- tempdir()
+
+rix(r_ver = "latest",
+    r_pkgs = c("quarto"),
+    system_pkgs = "quarto",
+    tex_pkgs = c("float", "hyperref"),
+    ide = "other",
+    project_path = path_default_nix,
+    overwrite = FALSE,
+    print = TRUE)
+
+```
