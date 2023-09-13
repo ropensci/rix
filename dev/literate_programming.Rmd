@@ -7,18 +7,99 @@ editor_options:
 
 ## Introduction
 
-## An example
+Trying to compile this: https://github.com/quarto-journals/jss
+
+Build a first env:
 
 ```{r}
 path_default_nix <- tempdir()
 
-rix(r_ver = "latest",
+rix(r_ver = "4.3.1",
     r_pkgs = c("quarto"),
     system_pkgs = "quarto",
-    tex_pkgs = c("float", "hyperref"),
+    tex_pkgs = c("amsmath"),
     ide = "other",
+    shell_hook = "",
     project_path = path_default_nix,
-    overwrite = FALSE,
+    overwrite = TRUE,
     print = TRUE)
 
 ```
+
+Drop into the shell, and run `quarto add quarto-journals/jss`.
+Now try to compile:
+
+```
+quarto render article.qmd --to jss-pdf
+
+```
+
+get following error message
+
+```
+Quitting from lines 99-101 [unnamed-chunk-1] (template.qmd)
+Error in `find.package()`:
+! there is no package called 'MASS'
+Backtrace:
+ 1. utils::data("quine", package = "MASS")
+ 2. base::find.package(package, lib.loc, verbose = verbose)
+Execution halted
+
+```
+
+So there's an R chunk using the MASS package. Change code to generate
+`default.nix`
+
+```{r}
+rix(r_ver = "4.3.1",
+    r_pkgs = c("quarto", "MASS"),
+    system_pkgs = "quarto",
+    tex_pkgs = c("amsmath"),
+    ide = "other",
+    shell_hook = "",
+    project_path = path_default_nix,
+    overwrite = TRUE,
+    print = TRUE)
+```
+
+Second error message:
+
+```
+compilation failed- no matching packages
+LaTeX Error: File `orcidlink.sty' not found
+```
+
+Can be solved by adding `"orcidlink"` to the list of `tex_pkgs`. Just 
+google it.
+
+
+```
+compilation failed- no matching packages
+LaTeX Error: File `tcolorbox.sty' not found.
+```
+
+Same as before.
+
+This is what the final script looks like:
+
+```{r}
+rix(r_ver = "4.3.1",
+    r_pkgs = c("quarto", "MASS"),
+    system_pkgs = "quarto",
+    tex_pkgs = c(
+      "amsmath",
+      "environ",
+      "fontawesome5",
+      "orcidlink",
+      "pdfcol",
+      "tcolorbox",
+      "tikzfill"
+    ),
+    ide = "other",
+    shell_hook = "",
+    project_path = path_default_nix,
+    overwrite = TRUE,
+    print = TRUE)
+```
+
+The template now compiles.
