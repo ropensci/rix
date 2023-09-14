@@ -2,11 +2,12 @@ pandoc: 2.19.2
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
+  building-an-environment-for-literate-programming: building-an-environment-for-literate-programming.html
   building-reproducible-development-environments-with-rix: building-reproducible-development-environments-with-rix.html
   handling-packages-with-remote-dependencies: handling-packages-with-remote-dependencies.html
   installing-old-packages-from-the-cran-archives: installing-old-packages-from-the-cran-archives.html
   interactive-use: interactive-use.html
   reproducible-analytical-pipelines-with-nix: reproducible-analytical-pipelines-with-nix.html
   save-the-nix-package-versions-data: save-the-nix-package-versions-data.html
-last_built: 2023-09-13T21:01Z
+last_built: 2023-09-14T19:02Z
 
