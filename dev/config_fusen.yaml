@@ -102,6 +102,19 @@ save_r_nix_revs.Rmd:
     check: true
     document: true
     overwrite: 'yes'
+literate_programming.Rmd:
+  path: dev/literate_programming.Rmd
+  state: active
+  R: []
+  tests: []
+  vignettes: vignettes/building-an-environment-for-literate-programming.Rmd
+  inflate:
+    flat_file: dev/literate_programming.Rmd
+    vignette_name: Building an environment for literate programming
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: 'yes'
 zzz.Rmd:
   path: dev/zzz.Rmd
   state: active
