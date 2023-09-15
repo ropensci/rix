@@ -25,10 +25,19 @@ library(rix)
 This vignette will walk you through setting up a development environment with
 `{rix}` that can be used to compile Quarto documents into PDFs. We are going to
 use the [Quarto template for the JSS](https://github.com/quarto-journals/jss) to
-illustrate the process.
+illustrate the process. The first section will show a simple way of achieving
+this, which will also be ideal for interactive development (writing the doc).
+The second section will discuss a way to build the document in a completely
+reproducible manner once it's done.
 
 
-## Starting with the basics
+## Starting with the basics (simple but not entirely reproducible)
+
+This approach will not be the most optimal, but it will be the simplest. We will
+start by building a development environment with all our dependencies, and we
+can then use it to compile our document interactively. But this approach is not
+quite reproducible and requires manual actions. In the next section we will show
+you to build a 100% reproducible document in a single command.
 
 Since we need both the `{quarto}` R package as well as the `quarto` engine, we
 add both of them to the `r_pkgs` and `system_pkgs` of arguments of `{rix}`.
@@ -158,4 +167,199 @@ rix(r_ver = "4.3.1",
 The template will now compile with this environment. To look for a LaTeX
 package, you can use the [search engine on
 CTAN](https://ctan.org/pkg/orcidlink?lang=en).
+
+As stated in the beginning of this section, this approach is not the most
+optimal, but it has its merits, especially if you're still working on the
+document. Once the environment is set up, you can simply work on the doc and
+compile it as needed using `quarto render`. In the next section, we will explain
+how to build a 100% reproducible document.
+
+
+## 100% reproducible literate programming
+
+Let's not forget that Nix is not just a package manager, but also a programming
+language. The `default.nix` files that `{rix}` generates are written in this
+language, which was made entirely for the purpose of building software. If you
+are not a developer, you may not realise it but the process of compiling a
+Quarto or LaTeX document is very similar to the process of building any piece of
+software. So we can use Nix to compile a document in a completely reproducible
+environment.
+
+First, let's fork the repo that contains the Quarto template we need. We will
+fork [this repo](https://github.com/quarto-journals/jss). This repo contains the
+`template.qmd` file that we can change (which is why we fork it, in practice we
+would replace this `template.qmd` by our own, finished, source `.qmd` file). Now
+we need to change our `default.nix`:
+
+```
+let
+ pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/976fa3369d722e76f37c77493d99829540d43845.tar.gz") {};
+ rpkgs = builtins.attrValues {
+   inherit (pkgs.rPackages) quarto MASS;
+ };
+ tex = (pkgs.texlive.combine {
+   inherit (pkgs.texlive) scheme-small amsmath environ fontawesome5 orcidlink pdfcol tcolorbox tikzfill;
+ });
+ system_packages = builtins.attrValues {
+   inherit (pkgs) R quarto;
+ };
+ in
+ pkgs.mkShell {
+   buildInputs = [  rpkgs tex system_packages  ];
+ }
+```
+
+to the following:
+
+```
+let
+ pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/976fa3369d722e76f37c77493d99829540d43845.tar.gz") {};
+ rpkgs = builtins.attrValues {
+  inherit (pkgs.rPackages) quarto MASS;
+ };
+ tex = (pkgs.texlive.combine {
+  inherit (pkgs.texlive) scheme-small amsmath environ fontawesome5 orcidlink pdfcol tcolorbox tikzfill;
+ });
+ system_packages = builtins.attrValues {
+  inherit (pkgs) R quarto;
+ };
+ in
+ pkgs.stdenv.mkDerivation {
+   name = "my-paper";
+   src = pkgs.fetchgit {
+       url = "https://github.com/b-rodrigues/my_paper/";
+       branchName = "main";
+       rev = "715e9f007d104c23763cebaf03782b8e80cb5445";
+       sha256 = "sha256-e8Xg7nJookKoIfiJVTGoJkvCuFNTT83YZ6SK3GT2T8g=";
+     };
+   buildInputs = [  rpkgs tex system_packages  ];
+   buildPhase =
+     ''
+     # Deno needs to add stuff to $HOME/.cache
+     # so we give it a home to do this
+     mkdir home
+     export HOME=$PWD/home
+     quarto add --no-prompt $src
+     quarto render $PWD/template.qmd --to jss-pdf
+     '';
+   installPhase =
+     ''
+     mkdir -p $out
+     cp template.pdf $out/
+     '';
+ }
+```
+
+So we changed the second part of the file, we're not building a shell anymore
+using `mkShell`, but a *derivation*. *Derivation* is Nix jargon for package, or
+software. So what is our derivation? First, we clone the repo we forked just
+before (I forked the repository and called it `my_paper`):
+
+```
+pkgs.stdenv.mkDerivation {
+  name = "my-paper";
+  src = pkgs.fetchgit {
+      url = "https://github.com/b-rodrigues/my_paper/";
+      branchName = "main";
+      rev = "715e9f007d104c23763cebaf03782b8e80cb5445";
+      sha256 = "sha256-e8Xg7nJookKoIfiJVTGoJkvCuFNTT83YZ6SK3GT2T8g=";
+    };
+```
+
+This repo contains our quarto template, and because we're using a specific
+commit, we will always use exactly this release of the template for our
+document. This is in contrast to before where we used `quarto add
+quarto-journals/jss` to install the template. Doing this interactively makes our
+project not reproducible because if we compile our Quarto doc today, we would be
+using the template as it is today, but if we compile the document in 6 months,
+then we would be using the template as it would be in 6 months (I should say
+that it is possible to install specific releases of Quarto templates using
+following notation: `quarto add quarto-journals/jss@v0.9.2` so this problem can
+be mitigated).
+
+The next part of the file contains following lines:
+
+```
+buildInputs = [  rpkgs tex system_packages  ];
+buildPhase =
+  ''
+  # Deno needs to add stuff to $HOME/.cache
+  # so we give it a home to do this
+  mkdir home
+  export HOME=$PWD/home
+  quarto add --no-prompt $src
+  quarto render $PWD/template.qmd --to jss-pdf
+  '';
+```
+
+The `buildInputs` are the same as before. What's new is the `buildPhase`.
+This is actually the part in which the document gets compiled. The first
+step is to create a `home` directory. This is because Quarto needs to save
+the template we want to use in `/home/.cache/deno`. If you're using
+`quarto` interactively, that's not an issue, since your home directory
+will be used. But with Nix, things are different, so we need to create
+an empty directory and specify this as the home. This is what these
+two lines do:
+
+```
+mkdir home
+export HOME=$PWD/home
+```
+
+(`$PWD` —Print Working Directory— is a shell variable referring to the current
+working directory.)
+
+Now, we need to install the template that we cloned from Github. For this we can
+use `quarto add` just as before, but instead of installing it directly from
+Github, we install it from the repository that we cloned. We also add the
+`--no-prompt` flag so that the template gets installed without asking us for
+confirmation. This is similar to how when building a Docker image, we don't want
+any interactive prompt to show up, or else the process will get stuck. `$src`
+refers to the path of our downloaded Github repository. Finally we can compile
+the document:
+
+```
+quarto render $PWD/template.qmd --to jss-pdf
+```
+
+This will compile the `template.qmd` (our finished paper). Finally, there's the
+`installPhase`:
+
+```
+installPhase =
+  ''
+  mkdir -p $out
+  cp template.pdf $out/
+  '';
+```
+
+`$out` is a shell variable defined inside the build environment and refers to
+the path, so we can use it to create a directory that will contain our output
+(the compiled PDF file). So we use `mkdir -p` to recursively create all the
+directory structure, and then copy the compiled document to `$out/`. We can now
+build our document by running `nix_build()`. Now, you may be confused by the
+fact that you won't see the PDF in your working directory. But remember that
+software built by Nix will always be stored in the Nix store, so our PDF is also
+in the store, since this is what we built. To find it, run:
+
+```
+readlink result
+```
+
+which will show the path to the PDF. You could use this to open the
+PDF in your PDF viewer application (on Linux at least):
+
+```
+xdg-open $(readlink result)/template.pdf
+```
+
+
+## Conclusion
+
+This vignette showed two approaches, both have their merits: the first approach
+that is more interactive is useful while writing the document. You get access to
+a shell and can work on the document and compile it quickly. The second approach
+is more useful once the document is ready and you want to have a way of quickly
+rebuilding it for reproducibility purposes. This approach should also be quite
+useful in a CI/CD environment.
 
