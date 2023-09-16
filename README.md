@@ -26,6 +26,8 @@ rix](https://b-rodrigues.r-universe.dev/badges/rix?scale=1&color=pink&style=roun
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+<img src="man/figures/logo.png" align="right" style="width: 25%;"/>
+
 # Rix: Reproducible Environments with Nix
 
 ## Introduction
