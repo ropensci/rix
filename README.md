@@ -1,6 +1,6 @@
 
-- [Rix: Reproducible Environments with Nix
-  <img src="man/figures/logo.png" align="right" style="width: 25%;"/>](#rix-reproducible-environments-with-nix-)
+- [Rix: Reproducible Environments with
+  Nix](#rix-reproducible-environments-with-nix)
   - [Introduction](#introduction)
   - [From quickstart to deep dive](#from-quickstart-to-deep-dive)
   - [The Nix package manager](#the-nix-package-manager)
@@ -26,7 +26,7 @@ rix](https://b-rodrigues.r-universe.dev/badges/rix?scale=1&color=pink&style=roun
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Rix: Reproducible Environments with Nix <img src="man/figures/logo.png" align="right" style="width: 25%;"/>
+# Rix: Reproducible Environments with Nix
 
 ## Introduction
 
