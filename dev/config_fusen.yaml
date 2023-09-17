@@ -29,10 +29,10 @@ cran_archive.Rmd:
   state: active
   R: R/detect_versions.R
   tests: tests/testthat/test-detect_versions.R
-  vignettes: vignettes/installing-old-packages-from-the-cran-archives.Rmd
+  vignettes: []
   inflate:
     flat_file: dev/cran_archive.Rmd
-    vignette_name: Installing old packages from the CRAN archives
+    vignette_name: .na
     open_vignette: true
     check: true
     document: true
