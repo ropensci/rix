@@ -823,6 +823,8 @@ with_nix <- function(expr,
   cat(paste0("Running `", paste0(cmd, collapse = " "), "` in Nix", " in ",
     exec_mode, " mode\n"))
   
+  proc_serialize <- 
+  
   proc <- switch(exec_mode,
     "blocking" = sys::exec_internal(cmd = cmd),
     "non-blocking" = sys::exec_background(cmd = cmd),
