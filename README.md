@@ -51,8 +51,18 @@ Bruno’s
 blog](https://www.brodrigues.co/blog/2023-08-12-nix_for_r_part4/). Or,
 in case you like video tutorials, watch [this one on Reproducible R
 development environments with
-Nix](https://www.youtube.com/watch?v=c1LhgeTTxaI). If you have R
-installed, you can start straight away from your R session.
+Nix](https://www.youtube.com/watch?v=c1LhgeTTxaI).
+
+First install Nix on your system:
+
+``` sh
+curl --proto '=https' --tlsv1.2 -sSf \
+    -L https://install.determinate.systems/nix | \
+     sh -s -- install
+```
+
+If you have R installed, you can start straight away from your R
+session.
 
 ``` r
 install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
