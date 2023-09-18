@@ -9,3 +9,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^rix\.Rproj$
+^result$
+^default.nix$
