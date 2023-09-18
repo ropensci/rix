@@ -7,7 +7,7 @@
 #' @examples
 #' find_rev("4.2.0")
 #' @noRd
-find_rev <- function(r_version){
+find_rev <- function(r_version) {
 
   stopifnot("r_version has to be a character." = is.character(r_version))
 
@@ -620,35 +620,40 @@ nix_build <- function(project_path = ".",
     stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
   )
   
-  if (exec_mode == "non-blocking") poll_build_non_blocking(cmd, proc)
-  
-  if (exec_mode == "blocking") poll_build_blocking(cmd, proc)
+  if (exec_mode == "non-blocking") {
+    poll_sys_proc_nonblocking(cmd, proc, what = "nix-build")
+  } else if (exec_mode == "blocking") {
+    poll_sys_proc_blocking(cmd, proc, what = "nix-build")
+  }
   
   # todo (?): clean zombies for background/non-blocking mode
-  # rm(pid)
   
   return(invisible(proc))
 }
 
 #' @noRd
-poll_build_non_blocking <- function(cmd, proc) {
-  cat(paste0("\n==> Process ID (PID) is ", proc, "."))
-  cat("\n==> Receiving stdout and stderr streams...\n")
-  status <- sys::exec_status(proc, wait = TRUE)
+poll_sys_proc_blocking <- function(cmd, proc,
+                                   what = c("nix-build", "expr")) {
+  what <- match.arg(what)
+  status <- proc$status
   if (status == 0L) {
-    cat("\n==> `nix-shell` succeeded!")
+    cat(paste0("\n==> ", sys::as_text(proc$stdout)))
+    cat(paste0("\n==> `", what, "` succeeded!"))
+  } else {
+    msg <- nix_build_exit_msg()
+    cat(paste0("`", cmd, "`", " failed with ", msg))
   }
 }
 
 #' @noRd
-poll_build_blocking <- function(cmd, proc) {
-  status <- proc$status
+poll_sys_proc_nonblocking <- function(cmd, proc, 
+                                      what = c("nix-build", "expr")) {
+  what <- match.arg(what)
+  cat(paste0("\n==> Process ID (PID) is ", proc, "."))
+  cat("\n==> Receiving stdout and stderr streams...\n")
+  status <- sys::exec_status(proc, wait = TRUE)
   if (status == 0L) {
-    cat(paste0("\n==> ", sys::as_text(proc$stdout)))
-    cat("\n==> `nix-shell` succeeded!")
-  } else {
-    msg <- nix_build_exit_msg()
-    cat(paste0("`", cmd, "`", " failed with ", msg))
+    cat(paste0("\n==> `", what, "` succeeded!"))
   }
 }
 
@@ -725,48 +730,30 @@ with_nix <- function(expr,
   cat(paste0("Running `", paste0(cmd, collapse = " "), "` in Nix", " in ",
     exec_mode, " mode\n"))
   
+  proc_serialize <- 
+  
   proc <- switch(exec_mode,
     "blocking" = sys::exec_internal(cmd = cmd),
     "non-blocking" = sys::exec_background(cmd = cmd),
     stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
   )
   
-  if (exec_mode == "non-blocking") poll_shell_non_blocking(cmd, proc)
-  
-  if (exec_mode == "blocking") poll_shell_blocking(cmd, proc)
+  if (exec_mode == "non-blocking") {
+    poll_sys_proc_nonblocking(cmd, proc, what = "expr")
+  } else if (exec_mode == "blocking") {
+    poll_sys_proc_blocking(cmd, proc, what = "expr")
+  }
   
   return(invisible(proc))
-  
 }
 
-#' @noRd
-poll_shell_blocking <- function(cmd, proc) {
-  status <- proc$status
-    if (status == 0L) {
-      cat(paste0("\n==> ", sys::as_text(proc$stdout)))
-      cat("\n==> `expr` succeeded!")
-    } else {
-      msg <- nix_build_exit_msg()
-      cat(paste0("`", cmd, "`", " failed with ", msg))
-    }
-}
-
-#' @noRd
-poll_shell_non_blocking <- function(cmd, proc) {
-  cat(paste0("\n==> Process ID (PID) is ", proc, "."))
-  cat("\n==> Receiving stdout and stderr streams...\n")
-  status <- sys::exec_status(proc, wait = TRUE)
-  if (status == 0L) {
-    cat("\n==> `expr` succeeded!")
-  }
-}
 
 #' @noRd
 nix_shell_installed <- function() {
   exit_code <- system2("command", "-v", "nix-shell")
   if (exit_code == 0L) {
     return(invisible(TRUE))
-} else {
+  } else {
     return(invisible(FALSE))
   }
 }
