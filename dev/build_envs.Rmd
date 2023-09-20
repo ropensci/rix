@@ -797,7 +797,7 @@ This function can evaluate an shell or R expression in Nix.
 #' @return
 #' @export
 with_nix <- function(expr,
-                     where = c("R", "shell"),
+                     program = c("R", "shell"),
                      exec_mode = c("blocking", "non-blocking"),
                      project_path = ".") {
   has_nix_shell <- nix_shell_installed() # TRUE if yes, FALSE if no
@@ -812,10 +812,13 @@ with_nix <- function(expr,
       isTRUE(has_nix_shell),
     "`expr` needs to be a call or function" = is.function(expr) || is.call(expr)
   )
-  where <- match.arg(where)
+  program <- match.arg(program)
   exec_mode <- match.arg(exec_mode)
   
-  cmd <- switch(where,
+  # get the function arguments as a list
+  expr_args <- as.list(match.call(expr))
+  
+  cmd <- switch(program,
     # for R, 1) save all function inputs on disk, then 2) read the objects
     # in the Nix-R shell env, and 3) run the function and save the output 
     # again on disk. In the current session, 4) read the evaluated output again.
@@ -843,6 +846,11 @@ with_nix <- function(expr,
   }
   
   return(invisible(proc))
+}
+
+# here we do some computing on the language
+run_with_serialize_args <- function() {
+  
 }
 
 
