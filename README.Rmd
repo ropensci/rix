@@ -30,13 +30,14 @@ knitr::opts_chunk$set(
 
 `{rix}` is an R package that provides functions to help you setup reproducible
 and isolated development environments that contain R and all the required
-packages that you need for your project. This is achieved by using the Nix
-package manager that you must install separately. The Nix package manager is
-extremely powerful: with it, it is possible to work on totally reproducible
-development environments, and even install old releases of R and R packages.
-With Nix, it is essentially possible to replace `{renv}` and Docker combined. If
-you need other tools or languages like Python or Julia, this can also be done
-easily. Nix is available for Linux, macOS and Windows (via WSL2).
+packages that you need for your project. This is achieved by using the
+[Nix package manager](https://nixos.org) that you must install separately. 
+The Nix package manager is extremely powerful: with it, it is possible to work 
+on totally reproducible development environments, and even install old releases
+of R and R packages. With Nix, it is essentially possible to replace `{renv}` 
+and Docker combined. If you need other tools or languages like Python or Julia,
+this can also be done easily. Nix is available for Linux, macOS and Windows
+(via WSL2).
 
 ## From quickstart to deep dive
 
