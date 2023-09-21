@@ -488,15 +488,15 @@ flag_rpkgs
                }
 
   # Generate the shell
-  # we should add arguments to this function
-  # for example, give the option to have a shellhook etc
-  # for now, keep the shellhook R --vanilla
-  generate_shell <- function(flag_git_archive, flag_rpkgs){
+  generate_shell <- function(flag_git_archive,
+                             flag_rpkgs){
     sprintf('in
   pkgs.mkShell {
+    %s
     buildInputs = [ %s %s %s system_packages %s ];
       %s
   }',
+  generate_locale_archive(detect_os()),
   flag_git_archive,
   flag_rpkgs,
   flag_tex_pkgs,
