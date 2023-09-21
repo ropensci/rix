@@ -154,6 +154,7 @@ this, we use the <code>tex_pkgs</code> argument:</p>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
+<span><span class="co">#&gt;     LOCALE_ARCHIVE = "${glibcLocales}/lib/locale/locale-archive";</span></span>
 <span><span class="co">#&gt;     buildInputs = [  rpkgs tex system_packages  ];</span></span>
 <span><span class="co">#&gt;       shellHook = ''</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -233,6 +234,7 @@ a new <code>default.nix</code> file that will now add
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
+<span><span class="co">#&gt;     LOCALE_ARCHIVE = "${glibcLocales}/lib/locale/locale-archive";</span></span>
 <span><span class="co">#&gt;     buildInputs = [  rpkgs tex system_packages  ];</span></span>
 <span><span class="co">#&gt;       shellHook = ''</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -306,6 +308,7 @@ like:</p>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
+<span><span class="co">#&gt;     LOCALE_ARCHIVE = "${glibcLocales}/lib/locale/locale-archive";</span></span>
 <span><span class="co">#&gt;     buildInputs = [  rpkgs tex system_packages  ];</span></span>
 <span><span class="co">#&gt;       shellHook = ''</span></span>
 <span><span class="co">#&gt; </span></span>

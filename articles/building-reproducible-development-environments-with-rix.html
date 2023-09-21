@@ -218,6 +218,7 @@ following call to <code><a href="../reference/rix.html">rix()</a></code>:</p>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;  in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
+<span><span class="co">#&gt;     LOCALE_ARCHIVE = "${glibcLocales}/lib/locale/locale-archive";</span></span>
 <span><span class="co">#&gt;     buildInputs = [  rpkgs  system_packages rstudio_pkgs ];</span></span>
 <span><span class="co">#&gt;       shellHook = ''</span></span>
 <span><span class="co">#&gt; R --vanilla</span></span>
@@ -281,6 +282,7 @@ you use Visual Studio Code, you can use the following call to
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
+<span><span class="co">#&gt;     LOCALE_ARCHIVE = "${glibcLocales}/lib/locale/locale-archive";</span></span>
 <span><span class="co">#&gt;     buildInputs = [  rpkgs  system_packages  ];</span></span>
 <span><span class="co">#&gt;       shellHook = ''</span></span>
 <span><span class="co">#&gt; R --vanilla</span></span>
@@ -344,6 +346,7 @@ IDE:</p>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
+<span><span class="co">#&gt;     LOCALE_ARCHIVE = "${glibcLocales}/lib/locale/locale-archive";</span></span>
 <span><span class="co">#&gt;     buildInputs = [  rpkgs  system_packages  ];</span></span>
 <span><span class="co">#&gt;       shellHook = ''</span></span>
 <span><span class="co">#&gt; R --vanilla</span></span>
@@ -420,6 +423,7 @@ has been archived on CRAN:</p>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
+<span><span class="co">#&gt;     LOCALE_ARCHIVE = "${glibcLocales}/lib/locale/locale-archive";</span></span>
 <span><span class="co">#&gt;     buildInputs = [ git_archive_pkgs   system_packages  ];</span></span>
 <span><span class="co">#&gt;       shellHook = ''</span></span>
 <span><span class="co">#&gt; R --vanilla</span></span>
@@ -512,6 +516,7 @@ particular package.</p>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
+<span><span class="co">#&gt;     LOCALE_ARCHIVE = "${glibcLocales}/lib/locale/locale-archive";</span></span>
 <span><span class="co">#&gt;     buildInputs = [ git_archive_pkgs rpkgs  system_packages  ];</span></span>
 <span><span class="co">#&gt;       shellHook = ''</span></span>
 <span><span class="co">#&gt; R --vanilla</span></span>
@@ -618,6 +623,7 @@ together:</p>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;  in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
+<span><span class="co">#&gt;     LOCALE_ARCHIVE = "${glibcLocales}/lib/locale/locale-archive";</span></span>
 <span><span class="co">#&gt;     buildInputs = [ git_archive_pkgs rpkgs  system_packages rstudio_pkgs ];</span></span>
 <span><span class="co">#&gt;       shellHook = ''</span></span>
 <span><span class="co">#&gt; R --vanilla</span></span>
