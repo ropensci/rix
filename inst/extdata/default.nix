@@ -6,7 +6,7 @@
 #  > git_pkgs = list(list(package_name = "rix",
 #  > repo_url = "https://github.com/b-rodrigues/rix",
 #  > branch_name = "master",
-#  > commit = "9390e28e6495f8167f782a17c529949d50c0948c")),
+#  > commit = "b4501842723ef19391c7653e0b44a487505d89f2")),
 #  > ide = "other",
 #  > project_path = dirname(path),
 #  > overwrite = TRUE,
@@ -21,8 +21,8 @@ let
     src = pkgs.fetchgit {
       url = "https://github.com/b-rodrigues/rix";
       branchName = "master";
-      rev = "9390e28e6495f8167f782a17c529949d50c0948c";
-      sha256 = "sha256-Ra9pAi0VkDxLmNSLKql5M350BwWjEWi51ktBjdXH4/Q=";
+      rev = "b4501842723ef19391c7653e0b44a487505d89f2";
+      sha256 = "sha256-pQdRKxzNhDPPWW1T9oaQEtkLTdmU0+Ry0aGzEGfeYFo=";
     };
     propagatedBuildInputs = builtins.attrValues {
       inherit (pkgs.rPackages) httr jsonlite sys;
