@@ -42,7 +42,7 @@ This function adds deals with locale on Linux (and WSL2):
 #' generate_locale_archive("Linux")
 generate_locale_archive <- function(os){
   if(detect_os() == "Linux"){
-    'LOCALE_ARCHIVE = \"${pkgs.glibcLocalesUtf8}/lib/locale/locale-archive\";'
+    'LOCALE_ARCHIVE = \"${pkgs.glibcLocales}/lib/locale/locale-archive\";'
   } else if(detect_os() == "Darwin") {
     ''
   } else {

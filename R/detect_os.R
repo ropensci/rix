@@ -23,7 +23,7 @@ detect_os <- function(){
 #' @noRd
 generate_locale_archive <- function(os){
   if(detect_os() == "Linux"){
-    'LOCALE_ARCHIVE = \"${pkgs.glibcLocalesUtf8}/lib/locale/locale-archive\";'
+    'LOCALE_ARCHIVE = \"${pkgs.glibcLocales}/lib/locale/locale-archive\";'
   } else if(detect_os() == "Darwin") {
     ''
   } else {
