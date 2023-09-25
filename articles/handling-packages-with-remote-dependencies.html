@@ -161,11 +161,11 @@ you, you could use the following <code><a href="../reference/rix.html">rix::rix(
 <span><span class="co">#&gt;   inherit (pkgs.texlive) scheme-small ;</span></span>
 <span><span class="co">#&gt; });</span></span>
 <span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) R glibcLocalesUtf8 ;</span></span>
+<span><span class="co">#&gt;   inherit (pkgs) R glibcLocales ;</span></span>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;     LOCALE_ARCHIVE = "${pkgs.glibcLocalesUtf8}/lib/locale/locale-archive";</span></span>
+<span><span class="co">#&gt;     LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";</span></span>
 <span><span class="co">#&gt;     buildInputs = [ git_archive_pkgs   system_packages  ];</span></span>
 <span><span class="co">#&gt;       shellHook = ''</span></span>
 <span><span class="co">#&gt; R --vanilla</span></span>
