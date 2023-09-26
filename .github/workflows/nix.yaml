@@ -8,8 +8,23 @@ name: nix-builder
 
 jobs:
   build:
-    name: nix builder
+    name: nix builder for Ubuntu
     runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install Nix
+      uses: DeterminateSystems/nix-installer-action@main
+    - name: Run `nix-build ./inst/extdata/default.nix`
+      run: |
+        nix-build ./inst/extdata/default.nix
+        nix-shell ./inst/extdata/default.nix
+
+jobs:
+  build:
+    name: nix builder for MacOS X86_64
+    # the DeterminateSystems action currently uses macos-12
+    # https://github.com/DeterminateSystems/nix-installer-action/blob/main/.github/workflows/ci.yml
+    runs-on: macos-12
     steps:
     - uses: actions/checkout@v3
     - name: Install Nix
