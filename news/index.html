@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rix</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,6 +49,18 @@
       
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.0" id="rix-040-2023-09-26">rix 0.4.0 (2023-09-26)<a class="anchor" aria-label="anchor" href="#rix-040-2023-09-26"></a></h2>
+<div class="section level3">
+<h3 id="features-0-4-0">Features<a class="anchor" aria-label="anchor" href="#features-0-4-0"></a></h3>
+<ul><li>
+<code><a href="../reference/rix.html">rix::rix()</a></code> now defaults to <code>"en_US.UTF-8"</code> for the relevant locale variables (<code>LANG</code>, <code>LC_ALL</code>, <code>LC_TIME</code>, <code>LC_MONETARY</code>, <code>LC_PAPER</code>, <code>LC_MEASUREMENT</code>) and sets these environment variables in the Nix shell. These will be correctly propagated into the Nix R session. Users can modify the locale setting via <code>options(rix.nix_locale_variables = list(LANG = "de_CH.UTF-8", &lt;...&gt;)</code>, e.g., but it needs to be an UTF-8 locale. This is because we only import the <code>glibcLocalesUtf8</code> subset, to not keep the size reasonable.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-4-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-4-0"></a></h3>
+<ul><li>fix locale warnings when starting R in linux, which uses glibc (closes <a href="https://github.com/b-rodrigues/rix/issues/50" class="external-link">#50</a>). Now, we use <code>glibcLocalesUtf8</code> from Nix for “x86_64-linux”.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.1" id="rix-031-2023-09-11">rix 0.3.1 (2023-09-11)<a class="anchor" aria-label="anchor" href="#rix-031-2023-09-11"></a></h2>
 <div class="section level3">
