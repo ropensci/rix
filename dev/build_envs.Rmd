@@ -367,6 +367,17 @@ you use another IDE, you can leave the "ide" argument blank:
 #'   version 2.2.1 release, then use the Nix revision closest to that date, by setting
 #'   `r_ver = "3.1.0"`, which was the version of R current at the time. This
 #'   ensures that Nix builds a completely coherent environment.
+#'   By default, the nix shell will be configured with `"en_US.UTF-8"` for the
+#'   relevant locale variables (`LANG`, `LC_ALL`, `LC_TIME`, `LC_MONETARY`,
+#'   `LC_PAPER`, `LC_MEASUREMENT`). This is done to ensure locale
+#'   reproducibility by default in Nix environments created with `rix()`.
+#'   If there are good reasons to not stick to the default, you can set your
+#'   preferred locale variables via 
+#'   `options(rix.nix_locale_variables = list(LANG = "de_CH.UTF-8", <...>)`
+#'   and the aforementioned locale variable names. However, you should use 
+#'   UTF-8 locales since we import the `glibcLocalesUtf8` set only, to not 
+#'   download the full set of locales and thereby keep the size reasonably
+#'   small.
 #' @export
 rix <- function(r_ver = "latest",
                 r_pkgs = NULL,
@@ -495,10 +506,9 @@ rPackages)
 
   # Texlive packages
   generate_tex_pkgs <- function(tex_pkgs) {
-
-    tex_pkgs <- paste(tex_pkgs, collapse = ' ')
-    
     if (!is.null(tex_pkgs)) {
+      
+      tex_pkgs <- paste(tex_pkgs, collapse = ' ')
 
     sprintf('tex = (pkgs.texlive.combine {
   inherit (pkgs.texlive) scheme-small %s;
@@ -541,10 +551,38 @@ tex_pkgs)
   # to add it.
   generate_system_pkgs <- function(system_pkgs){
     sprintf('system_packages = builtins.attrValues {
-  inherit (pkgs) R %s;
+  inherit (pkgs) R glibcLocalesUtf8 %s;
 };
 ',
 get_system_pkgs(system_pkgs))
+  }
+  
+  generate_locale_variables <- function() {
+    locale_defaults <- list(
+      LANG = "en_US.UTF-8",
+      LC_ALL = "en_US.UTF-8",
+      LC_TIME = "en_US.UTF-8",
+      LC_MONETARY = "en_US.UTF-8",
+      LC_PAPER = "en_US.UTF-8",
+      LC_MEASUREMENT = "en_US.UTF-8"
+    )
+    locale_variables <- getOption(
+      "rix.nix_locale_variables",
+      default = locale_defaults
+    )
+    valid_vars <- all(names(locale_variables) %in% names(locale_defaults))
+    if (!isTRUE(valid_vars)) {
+      stop("`options(rix.nix_locale_variables = list())` ",
+        "only allows the following element names (locale variables):\n",
+        paste(names(locale_defaults), collapse = "; "),
+        call. = FALSE)
+    }
+    locale_vars <- paste(
+      Map(function(x, nm) paste0(nm, ' = ', '"', x, '"'),
+        nm = names(locale_variables), x = locale_variables),
+      collapse = ";\n    "
+    )
+    paste0(locale_vars, ";\n")
   }
 
   generate_rstudio_pkgs <- function(ide, flag_git_archive, flag_rpkgs){
@@ -561,26 +599,24 @@ flag_rpkgs
     }
   }
 
-  flag_rstudio <- if(ide == "rstudio"){
-                        "rstudio_pkgs"
-                      } else {
-                        ""
-                      }
+  flag_rstudio <- if (ide == "rstudio") "rstudio_pkgs" else  ""
 
-  shell_hook <- if(!is.null(shell_hook)){
-                 paste0("shellHook = ''\n", shell_hook, "\n'';")
-               }
+  shell_hook <- if (!is.null(shell_hook)) {
+    paste0('shellHook = "', shell_hook, '";')
+  }
 
   # Generate the shell
-  # we should add arguments to this function
-  # for example, give the option to have a shellhook etc
-  # for now, keep the shellhook R --vanilla
-  generate_shell <- function(flag_git_archive, flag_rpkgs){
+  generate_shell <- function(flag_git_archive,
+                             flag_rpkgs){
     sprintf('in
   pkgs.mkShell {
+    %s
+    %s
     buildInputs = [ %s %s %s system_packages %s ];
       %s
   }',
+  generate_locale_archive(detect_os()),
+  generate_locale_variables(),
   flag_git_archive,
   flag_rpkgs,
   flag_tex_pkgs,
@@ -637,13 +673,13 @@ create_default_nix <- function(path = file.path("inst", "extdata",
   rix(
     r_ver = "latest",
     r_pkgs = NULL,
-    system_pkgs = "nix",
+    system_pkgs = NULL,
     git_pkgs = list(
       list(
         package_name = "rix",
         repo_url = "https://github.com/b-rodrigues/rix",
         branch_name = "master",
-        commit = "1bd327c7cf315d22ab69865b6fc96c943cd97bd4"
+        commit = "b4501842723ef19391c7653e0b44a487505d89f2"
     )
     ),
     ide = "other",

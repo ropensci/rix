@@ -11,3 +11,5 @@
 ^rix\.Rproj$
 ^result$
 ^default.nix$
+^doc$
+^Meta$

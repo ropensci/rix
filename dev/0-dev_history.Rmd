@@ -104,6 +104,12 @@ fusen::inflate(flat_file = "dev/zzz.Rmd",
                overwrite = TRUE)
 ```
 
+```{r}
+fusen::inflate(flat_file = "dev/get_os.Rmd",
+               vignette_name = NA,
+               overwrite = TRUE)
+```
+
 # Vignettes for users
 
 ```{r}

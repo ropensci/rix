@@ -9,3 +9,5 @@ default.nix
 inst/doc
 docs
 result
+/doc/
+/Meta/
