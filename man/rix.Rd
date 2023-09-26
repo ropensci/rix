@@ -88,4 +88,14 @@ want to use an environment as it would have looked at the time of \code{{ggplot2
 version 2.2.1 release, then use the Nix revision closest to that date, by setting
 \code{r_ver = "3.1.0"}, which was the version of R current at the time. This
 ensures that Nix builds a completely coherent environment.
+By default, the nix shell will be configured with \code{"en_US.UTF-8"} for the
+relevant locale variables (\code{LANG}, \code{LC_ALL}, \code{LC_TIME}, \code{LC_MONETARY},
+\code{LC_PAPER}). This is done to ensure locale reproducibility by default
+in Nix environments. If there are good reasons to not stick to the default,
+you can set your preferred locale variables via
+\verb{options(rix.nix_locale_variables = list(LANG = "de_CH.UTF-8", <...>)}
+and the aforementioned locale variable names. However, you should use
+UTF-8 locales since we import the \code{glibcLocalesUtf8} set only, to not
+download the full set of locales and thereby keep the size reasonably
+small.
 }

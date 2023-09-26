@@ -29,7 +29,7 @@ let
     };
   }) ];
   system_packages = builtins.attrValues {
-  inherit (pkgs) R glibcLocales ;
+  inherit (pkgs) R glibcLocalesUtf8 ;
 };
   in
   pkgs.mkShell {
