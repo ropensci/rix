@@ -1,5 +1,25 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.4.0 (2023-09-26)
+
+## Features
+
+- `rix::rix()` now defaults to `"en_US.UTF-8"` for the relevant locale
+  variables (`LANG`, `LC_ALL`, `LC_TIME`, `LC_MONETARY`, `LC_PAPER`,
+  `LC_MEASUREMENT`) and sets these environment variables in 
+  the Nix shell. These will be correctly propagated into the Nix R session.
+  Users can modify the locale setting via 
+  `options(rix.nix_locale_variables = list(LANG = "de_CH.UTF-8"), <...>)`, e.g.,
+  but it needs to be an UTF-8 locale. This is because we only import the
+  `glibcLocalesUtf8` subset, to not keep the size reasonable.
+
+## Bug fixes
+
+- fix locale warnings when starting R in linux, which uses glibc (closes 
+  [#50](https://github.com/b-rodrigues/rix/issues/50)). Now, we use
+  `glibcLocalesUtf8` from Nix for "x86_64-linux".
+
+
 # rix 0.3.1 (2023-09-11)
 
 ## Chore
