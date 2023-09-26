@@ -463,16 +463,24 @@ get_system_pkgs(system_pkgs))
   }
   
   generate_locale_variables <- function() {
+    locale_defaults <- list(
+      LANG = "en_US.UTF-8",
+      LC_ALL = "en_US.UTF-8",
+      LC_TIME = "en_US.UTF-8",
+      LC_MONETARY = "en_US.UTF-8",
+      LC_PAPER = "en_US.UTF-8"
+    )
     locale_variables <- getOption(
       "rix.nix_locale_variables",
-      default = list(
-        LANG = "en_US.UTF-8",
-        LC_ALL = "en_US.UTF-8",
-        LC_TIME = "en_US.UTF-8",
-        LC_MONETARY = "en_US.UTF-8",
-        LC_PAPER = "en_US.UTF-8"
-      )
+      default = locale_defaults
     )
+    valid_vars <- all(names(locale_variables) %in% names(locale_defaults))
+    if (!isTRUE(valid_vars)) {
+      stop("`options(rix.nix_locale_variables = list())` ",
+        "only allows the following element names (locale variables):\n",
+        paste(names(locale_defaults), collapse = "; "),
+        call. = FALSE)
+    }
     locale_vars <- paste(
       Map(function(x, nm) paste0(nm, ' = ', '"', x, '"'),
         nm = names(locale_variables), x = locale_variables),
