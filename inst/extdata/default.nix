@@ -31,13 +31,11 @@ let
   inherit (pkgs.texlive) scheme-small ;
 });
  system_packages = builtins.attrValues {
-  inherit (pkgs) R glibcLocales ;
+  inherit (pkgs) R glibcLocalesUtf8 ;
 };
   in
   pkgs.mkShell {
-    LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";
+    LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then "${pkgs.glibcLocalesUtf8}/lib/locale/locale-archive" else "";
     buildInputs = [ git_archive_pkgs   system_packages  ];
-      shellHook = ''
-R --vanilla
-'';
+      shellHook = "R --vanilla";
   }
