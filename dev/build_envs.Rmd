@@ -653,7 +653,7 @@ create_default_nix <- function(path = file.path("inst", "extdata",
   rix(
     r_ver = "latest",
     r_pkgs = NULL,
-    system_pkgs = "nix",
+    system_pkgs = NULL,
     git_pkgs = list(
       list(
         package_name = "rix",

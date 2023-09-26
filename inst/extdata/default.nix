@@ -28,7 +28,7 @@ let
     };
   }) ];
   system_packages = builtins.attrValues {
-  inherit (pkgs) R glibcLocales nix;
+  inherit (pkgs) R glibcLocales;
 };
   in
   pkgs.mkShell {
