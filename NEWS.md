@@ -9,7 +9,7 @@
   `LC_MEASUREMENT`) and sets these environment variables in 
   the Nix shell. These will be correctly propagated into the Nix R session.
   Users can modify the locale setting via 
-  `options(rix.nix_locale_variables = list(LANG = "de_CH.UTF-8"), <...>)`, e.g.,
+  `options(rix.nix_locale_variables = list(LANG = "de_CH.UTF-8", <...>)`, e.g.,
   but it needs to be an UTF-8 locale. This is because we only import the
   `glibcLocalesUtf8` subset, to not keep the size reasonable.
 
