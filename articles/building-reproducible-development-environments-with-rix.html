@@ -207,22 +207,24 @@ following call to <code><a href="../reference/rix.html">rix()</a></code>:</p>
 <span><span class="co">#&gt;  rpkgs = builtins.attrValues {</span></span>
 <span><span class="co">#&gt;   inherit (pkgs.rPackages) dplyr ggplot2;</span></span>
 <span><span class="co">#&gt; };</span></span>
-<span><span class="co">#&gt;   tex = (pkgs.texlive.combine {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.texlive) scheme-small ;</span></span>
-<span><span class="co">#&gt; });</span></span>
-<span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) R glibcLocales ;</span></span>
+<span><span class="co">#&gt;    system_packages = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;   inherit (pkgs) R glibcLocalesUtf8 ;</span></span>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;  rstudio_pkgs = pkgs.rstudioWrapper.override {</span></span>
 <span><span class="co">#&gt;   packages = [  rpkgs ];</span></span>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;  in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;     LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";</span></span>
+<span><span class="co">#&gt;     LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocalesUtf8}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;     LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_ALL = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_TIME = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_MONETARY = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_PAPER = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_MEASUREMENT = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     buildInputs = [  rpkgs  system_packages rstudio_pkgs ];</span></span>
-<span><span class="co">#&gt;       shellHook = ''</span></span>
-<span><span class="co">#&gt; R --vanilla</span></span>
-<span><span class="co">#&gt; '';</span></span>
+<span><span class="co">#&gt;       shellHook = "R --vanilla";</span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre></div>
 <p>To start using this environment, open a console in the folder
 containing <code>default.nix</code> and use the following Nix
@@ -274,19 +276,21 @@ you use Visual Studio Code, you can use the following call to
 <span><span class="co">#&gt;  rpkgs = builtins.attrValues {</span></span>
 <span><span class="co">#&gt;   inherit (pkgs.rPackages) dplyr ggplot2 languageserver;</span></span>
 <span><span class="co">#&gt; };</span></span>
-<span><span class="co">#&gt;   tex = (pkgs.texlive.combine {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.texlive) scheme-small ;</span></span>
-<span><span class="co">#&gt; });</span></span>
-<span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) R glibcLocales ;</span></span>
+<span><span class="co">#&gt;    system_packages = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;   inherit (pkgs) R glibcLocalesUtf8 ;</span></span>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;     LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";</span></span>
+<span><span class="co">#&gt;     LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocalesUtf8}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;     LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_ALL = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_TIME = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_MONETARY = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_PAPER = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_MEASUREMENT = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     buildInputs = [  rpkgs  system_packages  ];</span></span>
-<span><span class="co">#&gt;       shellHook = ''</span></span>
-<span><span class="co">#&gt; R --vanilla</span></span>
-<span><span class="co">#&gt; '';</span></span>
+<span><span class="co">#&gt;       shellHook = "R --vanilla";</span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre>
 <p>As you can see, specifying <code>ide = "code"</code> adds the
 <a href="https://github.com/REditorSupport/languageserver/" class="external-link">languageserver</a> package to the list of packages that must
@@ -338,19 +342,21 @@ IDE:</p>
 <span><span class="co">#&gt;  rpkgs = builtins.attrValues {</span></span>
 <span><span class="co">#&gt;   inherit (pkgs.rPackages) dplyr janitor;</span></span>
 <span><span class="co">#&gt; };</span></span>
-<span><span class="co">#&gt;   tex = (pkgs.texlive.combine {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.texlive) scheme-small ;</span></span>
-<span><span class="co">#&gt; });</span></span>
-<span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) R glibcLocales quarto;</span></span>
+<span><span class="co">#&gt;    system_packages = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;   inherit (pkgs) R glibcLocalesUtf8 quarto;</span></span>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;     LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";</span></span>
+<span><span class="co">#&gt;     LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocalesUtf8}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;     LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_ALL = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_TIME = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_MONETARY = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_PAPER = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_MEASUREMENT = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     buildInputs = [  rpkgs  system_packages  ];</span></span>
-<span><span class="co">#&gt;       shellHook = ''</span></span>
-<span><span class="co">#&gt; R --vanilla</span></span>
-<span><span class="co">#&gt; '';</span></span>
+<span><span class="co">#&gt;       shellHook = "R --vanilla";</span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre>
 <p>The first line is quite important, as it shows which
 <em>revision</em> of <code>nixpkgs</code> is being used for this
@@ -415,19 +421,21 @@ has been archived on CRAN:</p>
 <span><span class="co">#&gt;       inherit (pkgs.rPackages) dplyr tidyr snakecase magrittr purrr rlang;</span></span>
 <span><span class="co">#&gt;     };</span></span>
 <span><span class="co">#&gt;   })];</span></span>
-<span><span class="co">#&gt;  tex = (pkgs.texlive.combine {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.texlive) scheme-small ;</span></span>
-<span><span class="co">#&gt; });</span></span>
-<span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) R glibcLocales ;</span></span>
+<span><span class="co">#&gt;   system_packages = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;   inherit (pkgs) R glibcLocalesUtf8 ;</span></span>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;     LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";</span></span>
+<span><span class="co">#&gt;     LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocalesUtf8}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;     LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_ALL = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_TIME = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_MONETARY = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_PAPER = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_MEASUREMENT = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     buildInputs = [ git_archive_pkgs   system_packages  ];</span></span>
-<span><span class="co">#&gt;       shellHook = ''</span></span>
-<span><span class="co">#&gt; R --vanilla</span></span>
-<span><span class="co">#&gt; '';</span></span>
+<span><span class="co">#&gt;       shellHook = "R --vanilla";</span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre></div>
 <p>This feature should ideally be used sparingly. If you want to
 reconstruct an environment as it was around 2019, use the version of R
@@ -508,19 +516,21 @@ particular package.</p>
 <span><span class="co">#&gt;       inherit (pkgs.rPackages) attachment cli desc devtools glue here magrittr parsermd roxygen2 stringi tibble tidyr usethis yaml;</span></span>
 <span><span class="co">#&gt;     };</span></span>
 <span><span class="co">#&gt;   }) ];</span></span>
-<span><span class="co">#&gt;  tex = (pkgs.texlive.combine {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.texlive) scheme-small ;</span></span>
-<span><span class="co">#&gt; });</span></span>
-<span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) R glibcLocales quarto;</span></span>
+<span><span class="co">#&gt;   system_packages = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;   inherit (pkgs) R glibcLocalesUtf8 quarto;</span></span>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;     LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";</span></span>
+<span><span class="co">#&gt;     LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocalesUtf8}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;     LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_ALL = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_TIME = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_MONETARY = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_PAPER = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_MEASUREMENT = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     buildInputs = [ git_archive_pkgs rpkgs  system_packages  ];</span></span>
-<span><span class="co">#&gt;       shellHook = ''</span></span>
-<span><span class="co">#&gt; R --vanilla</span></span>
-<span><span class="co">#&gt; '';</span></span>
+<span><span class="co">#&gt;       shellHook = "R --vanilla";</span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre></div>
 <p>This will install two packages from Github: the
 <code>{housing}</code> package and more specifically the code as it is
@@ -612,22 +622,24 @@ together:</p>
 <span><span class="co">#&gt;       inherit (pkgs.rPackages) car lmtest sandwich survival zoo Formula;</span></span>
 <span><span class="co">#&gt;     };</span></span>
 <span><span class="co">#&gt;   })];</span></span>
-<span><span class="co">#&gt;  tex = (pkgs.texlive.combine {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.texlive) scheme-small ;</span></span>
-<span><span class="co">#&gt; });</span></span>
-<span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) R glibcLocales quarto;</span></span>
+<span><span class="co">#&gt;   system_packages = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;   inherit (pkgs) R glibcLocalesUtf8 quarto;</span></span>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;  rstudio_pkgs = pkgs.rstudioWrapper.override {</span></span>
 <span><span class="co">#&gt;   packages = [ git_archive_pkgs rpkgs ];</span></span>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;  in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;     LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";</span></span>
+<span><span class="co">#&gt;     LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocalesUtf8}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;     LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_ALL = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_TIME = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_MONETARY = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_PAPER = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_MEASUREMENT = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     buildInputs = [ git_archive_pkgs rpkgs  system_packages rstudio_pkgs ];</span></span>
-<span><span class="co">#&gt;       shellHook = ''</span></span>
-<span><span class="co">#&gt; R --vanilla</span></span>
-<span><span class="co">#&gt; '';</span></span>
+<span><span class="co">#&gt;       shellHook = "R --vanilla";</span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre></div>
 <p>To learn more about using <code>{rix}</code> on a daily basis, read
 the <a href="https://b-rodrigues.github.io/rix/articles/interactive-use.html" class="external-link">Interactive

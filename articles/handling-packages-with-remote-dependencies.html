@@ -157,19 +157,21 @@ you, you could use the following <code><a href="../reference/rix.html">rix::rix(
 <span><span class="co">#&gt;       inherit (pkgs.rPackages) gh memoise Rcpp codetools crayon rex highlite jsonlite rstudioapi withr httr;</span></span>
 <span><span class="co">#&gt;     };</span></span>
 <span><span class="co">#&gt;   }) ];</span></span>
-<span><span class="co">#&gt;  tex = (pkgs.texlive.combine {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.texlive) scheme-small ;</span></span>
-<span><span class="co">#&gt; });</span></span>
-<span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) R glibcLocales ;</span></span>
+<span><span class="co">#&gt;   system_packages = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;   inherit (pkgs) R glibcLocalesUtf8 ;</span></span>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;     LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";</span></span>
+<span><span class="co">#&gt;     LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocalesUtf8}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;     LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_ALL = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_TIME = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_MONETARY = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_PAPER = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_MEASUREMENT = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     buildInputs = [ git_archive_pkgs   system_packages  ];</span></span>
-<span><span class="co">#&gt;       shellHook = ''</span></span>
-<span><span class="co">#&gt; R --vanilla</span></span>
-<span><span class="co">#&gt; '';</span></span>
+<span><span class="co">#&gt;       shellHook = "R --vanilla";</span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre></div>
 <p>Trying to build this environment will fail with following error
 message:</p>

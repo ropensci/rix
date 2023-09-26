@@ -150,15 +150,20 @@ this, we use the <code>tex_pkgs</code> argument:</p>
 <span><span class="co">#&gt;   inherit (pkgs.texlive) scheme-small amsmath;</span></span>
 <span><span class="co">#&gt; });</span></span>
 <span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) R glibcLocales quarto;</span></span>
+<span><span class="co">#&gt;   inherit (pkgs) R glibcLocalesUtf8 quarto;</span></span>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;     LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";</span></span>
-<span><span class="co">#&gt;     buildInputs = [  rpkgs tex system_packages  ];</span></span>
-<span><span class="co">#&gt;       shellHook = ''</span></span>
+<span><span class="co">#&gt;     LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocalesUtf8}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;     LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_ALL = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_TIME = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_MONETARY = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_PAPER = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_MEASUREMENT = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; '';</span></span>
+<span><span class="co">#&gt;     buildInputs = [  rpkgs tex system_packages  ];</span></span>
+<span><span class="co">#&gt;       shellHook = "";</span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre></div>
 <p>(Save these lines into a script called <code>build_env.R</code> for
 instance, and run the script into a new folder made for this
@@ -230,15 +235,20 @@ a new <code>default.nix</code> file that will now add
 <span><span class="co">#&gt;   inherit (pkgs.texlive) scheme-small amsmath;</span></span>
 <span><span class="co">#&gt; });</span></span>
 <span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) R glibcLocales quarto;</span></span>
+<span><span class="co">#&gt;   inherit (pkgs) R glibcLocalesUtf8 quarto;</span></span>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;     LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";</span></span>
-<span><span class="co">#&gt;     buildInputs = [  rpkgs tex system_packages  ];</span></span>
-<span><span class="co">#&gt;       shellHook = ''</span></span>
+<span><span class="co">#&gt;     LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocalesUtf8}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;     LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_ALL = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_TIME = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_MONETARY = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_PAPER = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_MEASUREMENT = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; '';</span></span>
+<span><span class="co">#&gt;     buildInputs = [  rpkgs tex system_packages  ];</span></span>
+<span><span class="co">#&gt;       shellHook = "";</span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre></div>
 <p>Trying to compile the document results now in another error
 message:</p>
@@ -304,15 +314,20 @@ like:</p>
 <span><span class="co">#&gt;   inherit (pkgs.texlive) scheme-small amsmath environ fontawesome5 orcidlink pdfcol tcolorbox tikzfill;</span></span>
 <span><span class="co">#&gt; });</span></span>
 <span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) R glibcLocales quarto;</span></span>
+<span><span class="co">#&gt;   inherit (pkgs) R glibcLocalesUtf8 quarto;</span></span>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;     LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";</span></span>
-<span><span class="co">#&gt;     buildInputs = [  rpkgs tex system_packages  ];</span></span>
-<span><span class="co">#&gt;       shellHook = ''</span></span>
+<span><span class="co">#&gt;     LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocalesUtf8}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;     LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_ALL = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_TIME = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_MONETARY = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_PAPER = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt;     LC_MEASUREMENT = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; '';</span></span>
+<span><span class="co">#&gt;     buildInputs = [  rpkgs tex system_packages  ];</span></span>
+<span><span class="co">#&gt;       shellHook = "";</span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre></div>
 <p>The template will now compile with this environment. To look for a
 LaTeX package, you can use the <a href="https://ctan.org/pkg/orcidlink?lang=en" class="external-link">search engine on
