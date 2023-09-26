@@ -37,7 +37,7 @@ let
     LC_ALL = en_US.UTF-8;
     LC_TIME = en_US.UTF-8;
     LC_MONETARY = en_US.UTF-8;
-    LC_PAPER = en_US.UTF-8
+    LC_PAPER = en_US.UTF-8;
     buildInputs = [ git_archive_pkgs   system_packages  ];
       shellHook = "R --vanilla";
   }

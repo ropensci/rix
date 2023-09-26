@@ -473,11 +473,12 @@ get_system_pkgs(system_pkgs))
         LC_PAPER = "en_US.UTF-8"
       )
     )
-    paste(
+    locale_vars <- paste(
       Map(function(x, nm) paste0(nm, " = ", x),
         nm = names(locale_variables), x = locale_variables),
       collapse = ";\n    "
     )
+    paste0(locale_vars, ";\n")
   }
 
   generate_rstudio_pkgs <- function(ide, flag_git_archive, flag_rpkgs){
