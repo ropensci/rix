@@ -474,7 +474,7 @@ get_system_pkgs(system_pkgs))
       )
     )
     locale_vars <- paste(
-      Map(function(x, nm) paste0(nm, " = ", x),
+      Map(function(x, nm) paste0(nm, ' = ', '"', x, '"'),
         nm = names(locale_variables), x = locale_variables),
       collapse = ";\n    "
     )
