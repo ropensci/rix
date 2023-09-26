@@ -19,7 +19,6 @@ jobs:
         nix-build ./inst/extdata/default.nix
         nix-shell ./inst/extdata/default.nix
 
-jobs:
   build:
     name: nix builder for MacOS X86_64
     # the DeterminateSystems action currently uses macos-12
