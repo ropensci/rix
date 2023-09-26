@@ -7,7 +7,7 @@ on:
 name: nix-builder
 
 jobs:
-  build:
+  run-x86_64-linux:
     name: nix builder for Ubuntu
     runs-on: ubuntu-22.04
     steps:
@@ -19,6 +19,7 @@ jobs:
         nix-build ./inst/extdata/default.nix
         nix-shell ./inst/extdata/default.nix
 
+  run-x86_64-darwin:
     name: nix builder for MacOS X86_64
     # the DeterminateSystems action currently uses macos-12
     # https://github.com/DeterminateSystems/nix-installer-action/blob/main/.github/workflows/ci.yml
