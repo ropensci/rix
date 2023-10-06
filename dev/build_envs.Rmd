@@ -866,7 +866,7 @@ with_nix <- function(expr,
   # `<tag.Rds>` and `value` as serialized objects from RAM
   invisible({
     Map(
-      function(obj, nm, temp_dir) {
+      function(obj, temp_dir, nm) {
         saveRDS(
           object = eval(expr = obj, envir = parent.frame()),
           file = file.path(temp_dir, paste0(nm, ".Rds"))
