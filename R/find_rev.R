@@ -785,9 +785,10 @@ with_nix <- function(expr,
   
   # 2) deserialize formals in nix session
   
-  # 3) run expression in nix session using formals/input args
+  # 3) run expression in nix session using formals/input args;
+  #    mostly metaprogramming
   
-  # 4) serialize resulted output from evaluating functoin in `expr`
+  # 4) serialize resulted output from evaluating function in `expr`
   
   # 5) deserialize final output of `expr` evaluated in nix-shell
   #    into host R session
@@ -801,9 +802,12 @@ with_nix <- function(expr,
     ##   assign(nm, readRds(file = file.path(temp_dir, paste0(obj, ".Rds"))))
     ## }
     "R" = c("Rscript", "-e", paste0(
-    'Map(
-       # ...
-    )')),
+    '
+       ## boilderplating with functional approaches
+       # boilerplate of 2
+       # boilerplate of 3
+       # boilerplate of 4
+    ')),
     "shell" = expr, # this has to be properly composed/decomposed
     stop('invalid `where` to evaluate `expr`. Either use "R" or "shell".')
   )
