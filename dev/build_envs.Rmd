@@ -890,9 +890,7 @@ with_nix <- function(expr,
   #    into host R session
   
   cmd <- switch(program,
-    # for R, 1) save all function inputs on disk, then 2) read the objects
-    # in the Nix-R shell env, and 3) run the function and save the output 
-    # again on disk. In the current session, 4) read the evaluated output again.
+    # do 2), 3), 4) in nix-shell-R session (check how to deal with shellHook)
     "R" = c("Rscript", "-e", paste0("'out <- ", expr, "'",
       "; saveRds(object = out, file = tempfile('out', fileext = '.Rds'))")),
     "shell" = expr,
