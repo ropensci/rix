@@ -763,6 +763,7 @@ with_nix <- function(expr,
 
   temp_dir <- tempdir()
   
+  # 1) serialize formals from host R session;
   # save all function input args onto a temporary folder each with
   # `<tag.Rds>` and `value` as serialized objects from RAM
   invisible({
@@ -779,7 +780,16 @@ with_nix <- function(expr,
     )
   })
 
-  # if necessary, do a `nix-build` first
+  # if necessary, run a `nix-build` (eventually check artefacts linked to nix
+  # store) to make sure nix-shell corresponds to the build
+  
+  # 2) deserialize formals in nix session, and 
+  # 3) run expression in nix session using formals/input args
+  
+  # 4) serialize resulted output from evaluating functoin in `expr`
+  
+  # 5) deserialize final output of `expr` evaluated in nix-shell
+  #    into host R session
   
   cmd <- switch(program,
     # for R, 1) save all function inputs on disk, then 2) read the objects
