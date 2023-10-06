@@ -784,12 +784,6 @@ with_nix <- function(expr,
   # store) to make sure nix-shell corresponds to the build
   
   # 2) deserialize formals in nix session
-  # do something like
-  # for (i in seq_len(args)) {
-  #   nm <- args[[i]]
-  #   obj <- names(args)[i]
-  #   assign(nm, readRds(file = file.path(temp_dir, paste0(obj, ".Rds"))))
-  # }
   
   # 3) run expression in nix session using formals/input args
   
@@ -800,6 +794,12 @@ with_nix <- function(expr,
   
   cmd <- switch(program,
     # do 2), 3), 4) in nix-shell-R session (check how to deal with shellHook)
+    # for 2), do something like
+    ## for (i in seq_len(args)) {
+    ##   nm <- args[[i]]
+    ##   obj <- names(args)[i]
+    ##   assign(nm, readRds(file = file.path(temp_dir, paste0(obj, ".Rds"))))
+    ## }
     "R" = c("Rscript", "-e", paste0(
     'Map(
        # ...
