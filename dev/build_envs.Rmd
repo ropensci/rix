@@ -853,7 +853,7 @@ with_nix <- function(expr,
   
   # get the function arguments as a pairlist;
   # save formal arguments of pairlist via `tag = value`; e.g., if we have a
-  # `expr = function(p = p_root) dir(path = path)`, the input object
+  # `expr = function(p = p_root) dir(path = p)`, the input object
   # to be serialized will be serialized under `"path.Rds"`  in a tmp dir, and
   # will contain object `p_root`, which is defined in the global environment
   # and bound to `"."` (project root)
