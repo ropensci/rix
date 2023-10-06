@@ -591,7 +591,7 @@ create_default_nix <- function(path = file.path("inst", "extdata",
         package_name = "rix",
         repo_url = "https://github.com/b-rodrigues/rix",
         branch_name = "master",
-        commit = "dece23496465223e8ff585341a55ec9d58b2f7ac"
+        commit = "a7b1659a5676ba34dfb68009d1993fc53431a4e3"
     )
     ),
     ide = "other",
