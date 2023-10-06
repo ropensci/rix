@@ -853,7 +853,7 @@ with_nix <- function(expr,
   
   # get the function arguments as a pairlist;
   # save formal arguments of pairlist via `tag = value`; e.g., if we have a
-  # `expr = function(path = p_root) dir(path = path)`, the input object
+  # `expr = function(p = p_root) dir(path = path)`, the input object
   # to be serialized will be serialized under `"path.Rds"`  in a tmp dir, and
   # will contain object `p_root`, which is defined in the global environment
   # and bound to `"."` (project root)
@@ -881,7 +881,8 @@ with_nix <- function(expr,
   # if necessary, run a `nix-build` (eventually check artefacts linked to nix
   # store) to make sure nix-shell corresponds to the build
   
-  # 2) deserialize formals in nix session, and 
+  # 2) deserialize formals in nix session
+  
   # 3) run expression in nix session using formals/input args
   
   # 4) serialize resulted output from evaluating functoin in `expr`
@@ -891,16 +892,22 @@ with_nix <- function(expr,
   
   cmd <- switch(program,
     # do 2), 3), 4) in nix-shell-R session (check how to deal with shellHook)
-    "R" = c("Rscript", "-e", paste0("'out <- ", expr, "'",
-      "; saveRds(object = out, file = tempfile('out', fileext = '.Rds'))")),
-    "shell" = expr,
+    # for 2), do something like
+    ## for (i in seq_len(args)) {
+    ##   nm <- args[[i]]
+    ##   obj <- names(args)[i]
+    ##   assign(nm, readRds(file = file.path(temp_dir, paste0(obj, ".Rds"))))
+    ## }
+    "R" = c("Rscript", "-e", paste0(
+    'Map(
+       # ...
+    )')),
+    "shell" = expr, # this has to be properly composed/decomposed
     stop('invalid `where` to evaluate `expr`. Either use "R" or "shell".')
   )
   
   cat(paste0("Running `", paste0(cmd, collapse = " "), "` in Nix", " in ",
     exec_mode, " mode\n"))
-  
-  proc_serialize <- 
   
   proc <- switch(exec_mode,
     "blocking" = sys::exec_internal(cmd = cmd),
