@@ -517,9 +517,9 @@ flag_rpkgs
 
   flag_rstudio <- if (ide == "rstudio") "rstudio_pkgs" else  ""
 
-  shell_hook <- if (!is.null(shell_hook)) {
+  shell_hook <- if (!is.null(shell_hook) && nzchar(shell_hook)) {
     paste0('shellHook = "', shell_hook, '";')
-  }
+  } else {''}
 
   # Generate the shell
   generate_shell <- function(flag_git_archive,
