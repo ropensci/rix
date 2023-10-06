@@ -728,14 +728,14 @@ nix_build_exit_msg <- function(x) {
 #' Evaluate expression in R or default shell
 #'
 #' @param expr Single R function or call, shell command, or list of them.
-#' @param where String stating where to evaluate the expression. Either `"R"`,
+#' @param program String stating where to evaluate the expression. Either `"R"`,
 #' the default, or `"shell"`. `where = "R"` will evaluate the expression via
 #' `RScript` and `where = "shell"` will run in the standard shell.
 #' @inheritParams nix_build
 #' @return
 #' @export
 with_nix <- function(expr,
-                     where = c("R", "shell"),
+                     program = c("R", "shell"),
                      exec_mode = c("blocking", "non-blocking"),
                      project_path = ".") {
   has_nix_shell <- nix_shell_installed() # TRUE if yes, FALSE if no
@@ -750,10 +750,38 @@ with_nix <- function(expr,
       isTRUE(has_nix_shell),
     "`expr` needs to be a call or function" = is.function(expr) || is.call(expr)
   )
-  where <- match.arg(where)
+  program <- match.arg(program)
   exec_mode <- match.arg(exec_mode)
   
-  cmd <- switch(where,
+  # get the function arguments as a pairlist;
+  # save formal arguments of pairlist via `tag = value`; e.g., if we have a
+  # `expr = function(path = p_root) dir(path = path)`, the input object
+  # to be serialized will be serialized under `"path.Rds"`  in a tmp dir, and
+  # will contain object `p_root`, which is defined in the global environment
+  # and bound to `"."` (project root)
+  args <- as.list(formals(expr))
+
+  temp_dir <- tempdir()
+  
+  # save all function input args onto a temporary folder each with
+  # `<tag.Rds>` and `value` as serialized objects from RAM
+  invisible({
+    Map(
+      function(obj, nm, temp_dir) {
+        saveRDS(
+          object = eval(expr = obj, envir = parent.frame()),
+          file = file.path(temp_dir, paste0(nm, ".Rds"))
+        )
+      },
+      obj = args,
+      temp_dir = temp_dir,
+      nm = names(args)
+    )
+  })
+
+  # if necessary, do a `nix-build` first
+  
+  cmd <- switch(program,
     # for R, 1) save all function inputs on disk, then 2) read the objects
     # in the Nix-R shell env, and 3) run the function and save the output 
     # again on disk. In the current session, 4) read the evaluated output again.
@@ -781,6 +809,11 @@ with_nix <- function(expr,
   }
   
   return(invisible(proc))
+}
+
+# here we do some computing on the language
+run_with_serialize_args <- function() {
+  
 }
 
 

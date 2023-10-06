@@ -826,7 +826,7 @@ This function can evaluate an shell or R expression in Nix.
 #' Evaluate expression in R or default shell
 #'
 #' @param expr Single R function or call, shell command, or list of them.
-#' @param where String stating where to evaluate the expression. Either `"R"`,
+#' @param program String stating where to evaluate the expression. Either `"R"`,
 #' the default, or `"shell"`. `where = "R"` will evaluate the expression via
 #' `RScript` and `where = "shell"` will run in the standard shell.
 #' @inheritParams nix_build
@@ -851,8 +851,33 @@ with_nix <- function(expr,
   program <- match.arg(program)
   exec_mode <- match.arg(exec_mode)
   
-  # get the function arguments as a list
-  expr_args <- as.list(match.call(expr))
+  # get the function arguments as a pairlist;
+  # save formal arguments of pairlist via `tag = value`; e.g., if we have a
+  # `expr = function(path = p_root) dir(path = path)`, the input object
+  # to be serialized will be serialized under `"path.Rds"`  in a tmp dir, and
+  # will contain object `p_root`, which is defined in the global environment
+  # and bound to `"."` (project root)
+  args <- as.list(formals(expr))
+
+  temp_dir <- tempdir()
+  
+  # save all function input args onto a temporary folder each with
+  # `<tag.Rds>` and `value` as serialized objects from RAM
+  invisible({
+    Map(
+      function(obj, nm, temp_dir) {
+        saveRDS(
+          object = eval(expr = obj, envir = parent.frame()),
+          file = file.path(temp_dir, paste0(nm, ".Rds"))
+        )
+      },
+      obj = args,
+      temp_dir = temp_dir,
+      nm = names(args)
+    )
+  })
+
+  # if necessary, do a `nix-build` first
   
   cmd <- switch(program,
     # for R, 1) save all function inputs on disk, then 2) read the objects

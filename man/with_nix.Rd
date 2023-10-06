@@ -6,7 +6,7 @@
 \usage{
 with_nix(
   expr,
-  where = c("R", "shell"),
+  program = c("R", "shell"),
   exec_mode = c("blocking", "non-blocking"),
   project_path = "."
 )
@@ -14,7 +14,7 @@ with_nix(
 \arguments{
 \item{expr}{Single R function or call, shell command, or list of them.}
 
-\item{where}{String stating where to evaluate the expression. Either \code{"R"},
+\item{program}{String stating where to evaluate the expression. Either \code{"R"},
 the default, or \code{"shell"}. \code{where = "R"} will evaluate the expression via
 \code{RScript} and \code{where = "shell"} will run in the standard shell.}
 
