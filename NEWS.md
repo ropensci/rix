@@ -1,5 +1,14 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.4.1 (2023-10-06)
+
+# Bug fixes
+
+- `rix::rix()`: fix missing `pkgs.mkShell` when `shell_hook = NULL`.
+  Both `shell_hook = ""` and `shell_hook = NULL` are now producing valid nix
+  expressions.
+
+
 # rix 0.4.0 (2023-09-26)
 
 ## Features
