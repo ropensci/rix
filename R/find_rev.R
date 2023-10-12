@@ -801,7 +801,7 @@ with_nix <- function(expr,
     ##   obj <- names(args)[i]
     ##   assign(nm, readRds(file = file.path(temp_dir, paste0(obj, ".Rds"))))
     ## }
-    "R" = c("Rscript", "-e", paste0(
+    "R" = c("Rscript", "--vanilla", "-e", paste0(
     '
        ## boilderplating with functional approaches
        # boilerplate of 2
