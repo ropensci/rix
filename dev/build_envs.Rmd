@@ -904,11 +904,10 @@ with_nix <- function(expr,
   
   cmd <- switch(program,
     # do 2), 3), 4) in nix-shell-R session (check how to deal with shellHook)
-    "R" = c("nix-shell", "--expr", paste('"Rscript --vanilla -e "',
+    "R" = c("nix-shell", "--expr", sprintf(
+      '\"Rscript --vanilla -e \'%s%s ls()',
        with_assign_args_vec(args_vec),
-       with_deserialize_args_deparse(args_vec, temp_dir), # step 2
-       "ls()", 
-       collapse = "; "
+       with_deserialize_args_deparse(args_vec, temp_dir) # step 2
        # boilerplate of 3
        # boilerplate of 4
     )),
@@ -937,7 +936,7 @@ with_nix <- function(expr,
 
 with_assign_args_vec <- function(args_vec) {
   paste0(unlist(Map(
-    function(x, value) paste0(x, " <- ", "'", value, "'"),
+    function(x, value) paste0(x, " <- ", "\"", value, "\""),
     names(args_vec),
     args_vec
   )), "; ", collapse = "; ")
