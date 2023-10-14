@@ -797,40 +797,40 @@ with_nix <- function(expr,
   # deparsed version (string) of deserializing arguments from disk
   args_vec <- vapply(args, as.character, FUN.VALUE = character(1L))
   
-  # in an interactive R session, one would for example do as follows
-  # convert string into expression and evaluate the expresion
-  # eval(
-  #   expr = parse(text = with_deserialize_args_deparse(args_vec, temp_dir)),
-  #   envir = list(args_vec = args_vec, temp_dir = temp_dir)
-  # )
-  
-  cmd <- switch(program,
+  cmd_formals <- switch(program,
     # do 2), 3), 4) in nix-shell-R session (check how to deal with shellHook)
     "R" = c("nix-shell", "--expr", sprintf(
-      '\"Rscript --vanilla -e \'%s%s ls()',
-       with_assign_args_vec(args_vec),
-       with_deserialize_args_deparse(args_vec, temp_dir) # step 2
-       # boilerplate of 3
-       # boilerplate of 4
+    '\"Rscript --vanilla -e \'temp_dir <- %s; %s; eval(expr = str2lang(s = \'%s\'), envir = list(args_vec = args_vec, temp_dir = temp_dir))\'
+       ls()\"',
+      temp_dir,
+      # `args_vec` needs to be assigned, too, some combination of quoting 
+      # to make a call and also making use of some substitution tricks
+      # args_vec <- c(p = "p_root"); maybe use list2env() and separate env
+      # with reconstructed symbols bound to objects
+      with_assign_args_vec(args_vec),
+      with_deserialize_args_deparse(args_vec, temp_dir) # step 2
     )),
     "shell" = expr, # this has to be properly composed/decomposed
     stop('invalid `where` to evaluate `expr`. Either use "R" or "shell".')
   )
   
+  # write `RScript` script for step 2)
+  # writeLines(c("#!/bin/bash", cmd_formals[3]), file("test.R"))
+  
   cat(paste0("==> Running deparsed expression via `nix-shell`", " in ",
     exec_mode, " mode:\n",
-    paste0(cmd, collapse = " ")))
+    paste0(cmd_formals, collapse = " ")))
   
   proc <- switch(exec_mode,
-    "blocking" = sys::exec_internal(cmd = cmd),
-    "non-blocking" = sys::exec_background(cmd = cmd),
+    "blocking" = sys::exec_internal(cmd = cmd_formals),
+    "non-blocking" = sys::exec_background(cmd = cmd_formals),
     stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
   )
   
   if (exec_mode == "non-blocking") {
-    poll_sys_proc_nonblocking(cmd, proc, what = "expr")
+    poll_sys_proc_nonblocking(cmd = cmd_formals, proc, what = "expr")
   } else if (exec_mode == "blocking") {
-    poll_sys_proc_blocking(cmd, proc, what = "expr")
+    poll_sys_proc_blocking(cmd = cmd_formals, proc, what = "expr")
   }
   
   return(invisible(proc))
@@ -838,10 +838,10 @@ with_nix <- function(expr,
 
 with_assign_args_vec <- function(args_vec) {
   paste0(unlist(Map(
-    function(x, value) paste0(x, " <- ", "\"", value, "\""),
+    function(x, value) paste0(x, " <- ", '"', value, '"'),
     names(args_vec),
     args_vec
-  )), "; ", collapse = "; ")
+  )), collapse = "; ")
 }
 
 # here we do some computing on the language
@@ -867,7 +867,6 @@ with_deserialize_args_deparse <- function(args_vec, temp_dir) {
 deparse_chr1 <- function(expr, width.cutoff = 500L, collapse = " ", ...) {
   paste(deparse(expr, width.cutoff, ...), collapse = collapse)
 }
-
 
 #' @noRd
 nix_shell_installed <- function() {
