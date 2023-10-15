@@ -1,0 +1,37 @@
+---
+title: "Running pipelines on Github Actions"
+output: html_document
+editor_options:
+  chunk_output_type: console
+---
+
+```{r development, include=FALSE}
+library(testthat)
+```
+
+<!--
+You need to run the 'description' chunk in the '0-dev_history.Rmd' file before continuing your code there.
+-->
+
+```{r development-load}
+# Load already included functions if relevant
+pkgload::load_all(export_all = FALSE)
+```
+
+The function below copies a Github actions workflow file into the `.github/workflows/run-pipeline.yaml`:
+
+```{r function-nix_github_actions}
+#' nix_github_actions
+#' @return Nothing, copies file to a diretory.
+#'
+nix_github_actions <- function(){
+dir_create(dirname(file.path(".github", "workflows", "run-pipeline.yaml"))
+  source <- system.file(
+    file.path("extdata", "run-pipeline.yaml"),
+    package = "rix",
+    mustWork = TRUE
+  )
+  file.copy(source, path, overwrite = TRUE)
+  invisible()
+}
+```
