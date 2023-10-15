@@ -760,6 +760,9 @@ with_nix <- function(expr,
   # will contain object `p_root`, which is defined in the global environment
   # and bound to `"."` (project root)
   args <- as.list(formals(expr))
+  
+  # tbd: also text with alternative expression
+  # with_nix(expr = function(m = mtcars) nrow(mtcars), exec_mode = "non-blocking")
 
   temp_dir <- tempdir()
   
@@ -797,21 +800,42 @@ with_nix <- function(expr,
   # deparsed version (string) of deserializing arguments from disk
   args_vec <- vapply(args, as.character, FUN.VALUE = character(1L))
   
-  cmd_formals <- switch(program,
-    # do 2), 3), 4) in nix-shell-R session (check how to deal with shellHook)
-    "R" = c("nix-shell", "--expr", sprintf(
-    '\"Rscript --vanilla -e \'temp_dir <- %s; %s; eval(expr = str2lang(s = \'%s\'), envir = list(args_vec = args_vec, temp_dir = temp_dir))\'
-       ls()\"',
-      temp_dir,
-      # `args_vec` needs to be assigned, too, some combination of quoting 
-      # to make a call and also making use of some substitution tricks
-      # args_vec <- c(p = "p_root"); maybe use list2env() and separate env
-      # with reconstructed symbols bound to objects
-      with_assign_args_vec(args_vec),
-      with_deserialize_args_deparse(args_vec, temp_dir) # step 2
-    )),
+  rnix_deparsed <- switch(program,
+  # do 2), 3), 4) in nix-shell-R session (check how to deal with shellHook)
+  "R" = sprintf(
+'#!/bin/sh
+temp_dir <- \"%s\"
+r_version_num <- paste0(R.version$major, ".", R.version$minor)
+# assign `args_vec` as in c(...) form.
+args_vec <- %s
+# assign elements of `args_vec` individually
+%s
+# actual deserialization step
+%s
+# evaluate function
+read_args(args_vec, temp_dir)
+ls()\n',
+    temp_dir,
+    # `args_vec` needs to be assigned, too, some combination of quoting
+    # to make a call and also making use of some substitution tricks
+    # args_vec <- c(p = "p_root"); maybe use list2env() and separate env
+    # with reconstructed symbols bound to objects
+    with_assign_args_vec(args_vec),
+    with_multiassign_args_vec(args_vec),
+    with_deserialize_args_deparse(args_vec, temp_dir) # step 2
+    ),
     "shell" = expr, # this has to be properly composed/decomposed
     stop('invalid `where` to evaluate `expr`. Either use "R" or "shell".')
+  )
+  
+  # construct code to reconstruct `args_vec`
+  
+  rnix_file <- file.path(temp_dir, "with_nix_r.R")
+  
+  # write deparsed expressions into R script.
+  writeLines(
+    text = rnix_deparsed,
+    file(rnix_file)
   )
   
   # write `RScript` script for step 2)
@@ -819,29 +843,47 @@ with_nix <- function(expr,
   
   cat(paste0("==> Running deparsed expression via `nix-shell`", " in ",
     exec_mode, " mode:\n",
-    paste0(cmd_formals, collapse = " ")))
+    paste0(rnix_deparsed, collapse = " ")))
   
   proc <- switch(exec_mode,
-    "blocking" = sys::exec_internal(cmd = cmd_formals),
-    "non-blocking" = sys::exec_background(cmd = cmd_formals),
+    "blocking" = sys::exec_internal(cmd = rnix_deparsed),
+    "non-blocking" = sys::exec_background(cmd = rnix_deparsed),
     stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
   )
   
   if (exec_mode == "non-blocking") {
-    poll_sys_proc_nonblocking(cmd = cmd_formals, proc, what = "expr")
+    poll_sys_proc_nonblocking(cmd = rnix_deparsed, proc, what = "expr")
   } else if (exec_mode == "blocking") {
-    poll_sys_proc_blocking(cmd = cmd_formals, proc, what = "expr")
+    poll_sys_proc_blocking(cmd = rnix_deparsed, proc, what = "expr")
   }
   
   return(invisible(proc))
 }
 
 with_assign_args_vec <- function(args_vec) {
-  paste0(unlist(Map(
-    function(x, value) paste0(x, " <- ", '"', value, '"'),
-    names(args_vec),
-    args_vec
-  )), collapse = "; ")
+  x <- vector(mode = "character", length = length(args_vec))
+  
+  vec_elems <- unlist(
+    Map(
+      function(nm, x) {
+        sprintf('%s = \"%s\"', nm, x)
+      },
+      names(args_vec),
+      args_vec
+    )
+  )
+  
+  paste0("c(", paste0(vec_elems, collapse = ", "), ")")
+}
+
+with_multiassign_args_vec <- function(args_vec) {
+  paste0(unlist(
+    Map(
+      function(x, value) paste0(x, " <- ", '"', value, '"'),
+      names(args_vec),
+      args_vec
+    )
+  ), collapse = "\n")
 }
 
 # here we do some computing on the language
