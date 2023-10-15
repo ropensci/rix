@@ -1,5 +1,5 @@
 ---
-title: "Running pipelines on Github Actions"
+title: "Run pipelines on Github Actions"
 output: html_document
 editor_options:
   chunk_output_type: console
@@ -25,7 +25,7 @@ The function below copies a Github actions workflow file into the `.github/workf
 #' @return Nothing, copies file to a diretory.
 #'
 nix_github_actions <- function(){
-  path <- file.path(".github", "workflows", "run-pipeline.yaml")
+  path <- file.path(".github", "workflows")
   dir.create(path)
   source <- system.file(
     file.path("extdata", "run-pipeline.yaml"),

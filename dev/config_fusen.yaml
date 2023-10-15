@@ -29,14 +29,14 @@ cicd.Rmd:
   state: active
   R: R/nix_github_actions.R
   tests: []
-  vignettes: vignettes/get-started.Rmd
+  vignettes: []
   inflate:
     flat_file: dev/cicd.Rmd
-    vignette_name: Get started
+    vignette_name: .na
     open_vignette: true
     check: true
     document: true
-    overwrite: ask
+    overwrite: 'yes'
 cran_archive.Rmd:
   path: dev/cran_archive.Rmd
   state: active

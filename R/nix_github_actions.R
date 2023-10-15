@@ -5,7 +5,7 @@
 #'
 #' @noRd
 nix_github_actions <- function(){
-  path <- file.path(".github", "workflows", "run-pipeline.yaml")
+  path <- file.path(".github", "workflows")
   dir.create(path)
   source <- system.file(
     file.path("extdata", "run-pipeline.yaml"),
