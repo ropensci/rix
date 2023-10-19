@@ -860,7 +860,8 @@ with_nix <- function(expr,
   args <- as.list(formals(expr))
   
   # tbd: also text with alternative expression
-  # with_nix(expr = function(m = mtcars) nrow(mtcars), exec_mode = "non-blocking")
+  # with_nix(expr = function(m = mtcars) nrow(mtcars),
+  # exec_mode = "non-blocking", project_path = "inst/extdata/with_nix")
 
   temp_dir <- tempdir()
   
@@ -898,10 +899,13 @@ with_nix <- function(expr,
   # deparsed version (string) of deserializing arguments from disk
   args_vec <- vapply(args, as.character, FUN.VALUE = character(1L))
   
+  # https://nixos.wiki/wiki/Nix-shell_shebang
+  
   rnix_deparsed <- switch(program,
   # do 2), 3), 4) in nix-shell-R session (check how to deal with shellHook)
   "R" = sprintf(
-'#!/bin/sh
+'#! /usr/bin/env nix-shell
+#! nix-shell -i bash -p bash
 temp_dir <- \"%s\"
 r_version_num <- paste0(R.version$major, ".", R.version$minor)
 # assign `args_vec` as in c(...) form.
@@ -912,7 +916,7 @@ args_vec <- %s
 %s
 # evaluate function
 read_args(args_vec, temp_dir)
-ls()\n',
+cat(paste0(R.version$major, ".", R.version$minor)\n',
     temp_dir,
     # `args_vec` needs to be assigned, too, some combination of quoting
     # to make a call and also making use of some substitution tricks
@@ -943,16 +947,23 @@ ls()\n',
     exec_mode, " mode:\n",
     paste0(rnix_deparsed, collapse = " ")))
   
+  # command to run deparsed R expression via nix-shell
+  cmd_rnix_deparsed <- c(
+    "nix-shell", file.path(project_path, "default.nix"),
+    "--run",
+    sprintf("Rscript --vanilla -e \"source('%s')\"", rnix_file)
+  )
+  
   proc <- switch(exec_mode,
-    "blocking" = sys::exec_internal(cmd = rnix_deparsed),
-    "non-blocking" = sys::exec_background(cmd = rnix_deparsed),
+    "blocking" = sys::exec_internal(cmd = cmd_rnix_deparsed),
+    "non-blocking" = sys::exec_background(cmd = cmd_rnix_deparsed),
     stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
   )
   
   if (exec_mode == "non-blocking") {
-    poll_sys_proc_nonblocking(cmd = rnix_deparsed, proc, what = "expr")
+    poll_sys_proc_nonblocking(cmd = cmd_rnix_deparsed, proc, what = "expr")
   } else if (exec_mode == "blocking") {
-    poll_sys_proc_blocking(cmd = rnix_deparsed, proc, what = "expr")
+    poll_sys_proc_blocking(cmd = cmd_rnix_deparsed, proc, what = "expr")
   }
   
   return(invisible(proc))
@@ -1018,9 +1029,22 @@ nix_shell_installed <- function() {
   }
 }
 
-#' @noRd
-nix_run_r <- function(expr) {
+create_shell_nix <- function(path = file.path("inst", "extdata", 
+                              "with_nix", "default.nix")) {
+  if (!dir.exists(dirname(path))) {
+    dir.create(dirname(path), recursive = TRUE)
+  }
   
+  rix(
+    r_ver = "latest",
+    r_pkgs = NULL,
+    system_pkgs = NULL,
+    git_pkgs = NULL,
+    ide = "other",
+    project_path = dirname(path),
+    overwrite = TRUE,
+    shell_hook = NULL
+  )
 }
 ```
 
