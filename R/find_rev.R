@@ -802,6 +802,7 @@ with_nix <- function(expr,
   args_vec <- vapply(args, as.character, FUN.VALUE = character(1L))
 
   r_version_file <- file.path(temp_dir, "nix-r-version.txt")
+  rnix_file <- file.path(temp_dir, "with_nix_r.R")
   
   rnix_deparsed <- switch(program,
   # do 2), 3), 4) in nix-shell-R session (check how to deal with shellHook)
@@ -816,8 +817,9 @@ args_vec <- %s
 %s
 # evaluate function
 read_args(args_vec, temp_dir)
-cat(paste0(R.version$major, ".", R.version$minor))
-writeLines(text = as.character(r_version_num), file(\"%s\"))\n',
+cat("\n* using Nix with R version", paste0(R.version$major, ".", R.version$minor), "\n")
+cat("* writing R script evaluated via `Rscript` in `nix-shell`:", \"%s\")
+\n',
     temp_dir,
     # `args_vec` needs to be assigned, too, some combination of quoting
     # to make a call and also making use of some substitution tricks
@@ -826,13 +828,11 @@ writeLines(text = as.character(r_version_num), file(\"%s\"))\n',
     with_assign_args_vec(args_vec),
     with_multiassign_args_vec(args_vec),
     with_deserialize_args_deparse(args_vec, temp_dir), # step 2
-    r_version_file
+    rnix_file
     ),
     "shell" = expr, # this has to be properly composed/decomposed
     stop('invalid `where` to evaluate `expr`. Either use "R" or "shell".')
   )
-  
-  rnix_file <- file.path(temp_dir, "with_nix_r.R")
   
   # write deparsed expressions into R script.
   writeLines(
@@ -850,19 +850,18 @@ writeLines(text = as.character(r_version_num), file(\"%s\"))\n',
   # command to run deparsed R expression via nix-shell
   # also check this out: https://github.com/NixOS/nix/issues/4230
   cmd_rnix_deparsed <- c(
-    "-c", "nix-shell",  file.path(project_path, "default.nix"),
+    file.path(project_path, "default.nix"),
     "--pure",
+    "--run",
     sprintf(
-      "--run 'Rscript --vanilla %s'",
+      "Rscript --vanilla %s",
       rnix_file
     )
   )
   
-  # browser()
-  
   proc <- switch(exec_mode,
-    "blocking" = sys::exec_internal(cmd = "bash", cmd_rnix_deparsed),
-    "non-blocking" = sys::exec_background(cmd = "bash", cmd_rnix_deparsed),
+    "blocking" = sys::exec_internal(cmd = "nix-shell", cmd_rnix_deparsed),
+    "non-blocking" = sys::exec_background(cmd = "nix-shell", cmd_rnix_deparsed),
     stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
   )
   
@@ -871,8 +870,6 @@ writeLines(text = as.character(r_version_num), file(\"%s\"))\n',
   } else if (exec_mode == "blocking") {
     poll_sys_proc_blocking(cmd = cmd_rnix_deparsed, proc, what = "expr")
   }
-  
-  cat("File:", r_version_file)
   
   return(invisible(proc))
 }
