@@ -898,15 +898,13 @@ with_nix <- function(expr,
   # cast list of symbols/names to list of strings; this is to prepare
   # deparsed version (string) of deserializing arguments from disk
   args_vec <- vapply(args, as.character, FUN.VALUE = character(1L))
-  
-  # https://nixos.wiki/wiki/Nix-shell_shebang
+
+  r_version_file <- file.path(temp_dir, "nix-r-version.txt")
   
   rnix_deparsed <- switch(program,
   # do 2), 3), 4) in nix-shell-R session (check how to deal with shellHook)
   "R" = sprintf(
-'#! /usr/bin/env nix-shell
-#! nix-shell -i bash -p bash
-temp_dir <- \"%s\"
+'temp_dir <- \"%s\"
 r_version_num <- paste0(R.version$major, ".", R.version$minor)
 # assign `args_vec` as in c(...) form.
 args_vec <- %s
@@ -916,7 +914,8 @@ args_vec <- %s
 %s
 # evaluate function
 read_args(args_vec, temp_dir)
-cat(paste0(R.version$major, ".", R.version$minor)\n',
+cat(paste0(R.version$major, ".", R.version$minor))
+writeLines(text = as.character(r_version_num), file(\"%s\"))\n',
     temp_dir,
     # `args_vec` needs to be assigned, too, some combination of quoting
     # to make a call and also making use of some substitution tricks
@@ -924,13 +923,12 @@ cat(paste0(R.version$major, ".", R.version$minor)\n',
     # with reconstructed symbols bound to objects
     with_assign_args_vec(args_vec),
     with_multiassign_args_vec(args_vec),
-    with_deserialize_args_deparse(args_vec, temp_dir) # step 2
+    with_deserialize_args_deparse(args_vec, temp_dir), # step 2
+    r_version_file
     ),
     "shell" = expr, # this has to be properly composed/decomposed
     stop('invalid `where` to evaluate `expr`. Either use "R" or "shell".')
   )
-  
-  # construct code to reconstruct `args_vec`
   
   rnix_file <- file.path(temp_dir, "with_nix_r.R")
   
@@ -948,15 +946,21 @@ cat(paste0(R.version$major, ".", R.version$minor)\n',
     paste0(rnix_deparsed, collapse = " ")))
   
   # command to run deparsed R expression via nix-shell
+  # also check this out: https://github.com/NixOS/nix/issues/4230
   cmd_rnix_deparsed <- c(
-    "nix-shell", file.path(project_path, "default.nix"),
-    "--run",
-    sprintf("Rscript --vanilla -e \"source('%s')\"", rnix_file)
+    "-c", "nix-shell",  file.path(project_path, "default.nix"),
+    "--pure",
+    sprintf(
+      "--run 'Rscript --vanilla %s'",
+      rnix_file
+    )
   )
   
+  # browser()
+  
   proc <- switch(exec_mode,
-    "blocking" = sys::exec_internal(cmd = cmd_rnix_deparsed),
-    "non-blocking" = sys::exec_background(cmd = cmd_rnix_deparsed),
+    "blocking" = sys::exec_internal(cmd = "bash", cmd_rnix_deparsed),
+    "non-blocking" = sys::exec_background(cmd = "bash", cmd_rnix_deparsed),
     stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
   )
   
@@ -965,6 +969,8 @@ cat(paste0(R.version$major, ".", R.version$minor)\n',
   } else if (exec_mode == "blocking") {
     poll_sys_proc_blocking(cmd = cmd_rnix_deparsed, proc, what = "expr")
   }
+  
+  cat("File:", r_version_file)
   
   return(invisible(proc))
 }
