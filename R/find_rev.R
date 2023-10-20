@@ -807,7 +807,8 @@ with_nix <- function(expr,
   rnix_deparsed <- switch(program,
   # do 2), 3), 4) in nix-shell-R session (check how to deal with shellHook)
   "R" = sprintf(
-'temp_dir <- \"%s\"
+'# -----------------------------------------------------------------------------
+temp_dir <- \"%s\"
 r_version_num <- paste0(R.version$major, ".", R.version$minor)
 # assign `args_vec` as in c(...) form.
 args_vec <- %s
@@ -819,6 +820,9 @@ args_vec <- %s
 read_args(args_vec, temp_dir)
 cat("\n* using Nix with R version", paste0(R.version$major, ".", R.version$minor), "\n")
 cat("* writing R script evaluated via `Rscript` in `nix-shell`:", \"%s\")
+cat("\n`sessionInfo()` output:\n")
+capture.output(sessionInfo())
+# ------------------------------------------------------------------------------
 \n',
     temp_dir,
     # `args_vec` needs to be assigned, too, some combination of quoting
