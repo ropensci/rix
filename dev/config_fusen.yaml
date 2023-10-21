@@ -24,6 +24,19 @@ building_envs_with_rix.Rmd:
     check: true
     document: true
     overwrite: 'yes'
+cicd.Rmd:
+  path: dev/cicd.Rmd
+  state: active
+  R: R/nix_github_actions.R
+  tests: []
+  vignettes: []
+  inflate:
+    flat_file: dev/cicd.Rmd
+    vignette_name: .na
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: 'yes'
 cran_archive.Rmd:
   path: dev/cran_archive.Rmd
   state: active
