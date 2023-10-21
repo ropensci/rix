@@ -728,6 +728,7 @@ nix_build_exit_msg <- function(x) {
 #' Evaluate expression in R or default shell
 #'
 #' @param expr Single R function or call, shell command, or list of them.
+#' R expression 
 #' @param program String stating where to evaluate the expression. Either `"R"`,
 #' the default, or `"shell"`. `where = "R"` will evaluate the expression via
 #' `RScript` and `where = "shell"` will run in the standard shell.
@@ -798,15 +799,16 @@ with_nix <- function(expr,
   #    into host R session
   
   # cast list of symbols/names to list of strings; this is to prepare
-  # deparsed version (string) of deserializing arguments from disk
-  args_vec <- vapply(args, as.character, FUN.VALUE = character(1L))
+  # deparsed version (string) of deserializing arguments from disk;
+  # elements of args for now should be of type "symbol" or "language"
+  args_vec <- vapply(args, deparse, FUN.VALUE = character(1L))
 
   r_version_file <- file.path(temp_dir, "nix-r-version.txt")
   rnix_file <- file.path(temp_dir, "with_nix_r.R")
   
   rnix_deparsed <- switch(program,
   # do 2), 3), 4) in nix-shell-R session (check how to deal with shellHook)
-  "R" = sprintf(
+    "R" = sprintf(
 '# -----------------------------------------------------------------------------
 temp_dir <- \"%s\"
 r_version_num <- paste0(R.version$major, ".", R.version$minor)
@@ -818,9 +820,15 @@ args_vec <- %s
 %s
 # evaluate function
 read_args(args_vec, temp_dir)
+# deparse and run function given in `expr` arg
+%s
+cat(m)
+cat(paste("\n* m has", nrow(m), "rows"))
 cat("\n* using Nix with R version", paste0(R.version$major, ".", R.version$minor), "\n")
 cat("* writing R script evaluated via `Rscript` in `nix-shell`:", \"%s\")
-cat("\n`sessionInfo()` output:\n")
+cat("\n* the following objects are in the global environment:\n")
+cat(ls())
+cat("\n* `sessionInfo()` output:\n")
 capture.output(sessionInfo())
 # ------------------------------------------------------------------------------
 \n',
@@ -832,6 +840,7 @@ capture.output(sessionInfo())
     with_assign_args_vec(args_vec),
     with_multiassign_args_vec(args_vec),
     with_deserialize_args_deparse(args_vec, temp_dir), # step 2
+    with_expr_deparse(expr),
     rnix_file
     ),
     "shell" = expr, # this has to be properly composed/decomposed
@@ -915,7 +924,7 @@ with_deserialize_args_deparse <- function(args_vec, temp_dir) {
         readRDS(file = file.path(
           temp_dir, paste0(obj, ".Rds")))
       )
-      cat(paste0("reading ", obj, ".Rds"))
+      cat(paste0("* reading ", obj, ".Rds"))
     }
   }
 
@@ -926,6 +935,12 @@ with_deserialize_args_deparse <- function(args_vec, temp_dir) {
 # this is what `deparse1()` does, however, it is only since 4.0.0
 deparse_chr1 <- function(expr, width.cutoff = 500L, collapse = " ", ...) {
   paste(deparse(expr, width.cutoff, ...), collapse = collapse)
+}
+
+with_expr_deparse <- function(expr) {
+  paste0(
+    "run_expr <- ", deparse_chr1(expr = expr, collapse = "\n")
+  )
 }
 
 #' @noRd
