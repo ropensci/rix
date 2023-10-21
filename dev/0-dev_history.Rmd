@@ -97,6 +97,12 @@ fusen::inflate(flat_file = "dev/build_envs.Rmd",
                overwrite = TRUE)
 ```
 
+```{r}
+fusen::inflate(flat_file = "dev/cicd.Rmd",
+               vignette_name = NA,
+               overwrite = TRUE)
+```
+
 
 ```{r}
 fusen::inflate(flat_file = "dev/zzz.Rmd",

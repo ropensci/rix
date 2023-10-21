@@ -27,7 +27,7 @@ building_envs_with_rix.Rmd:
 cicd.Rmd:
   path: dev/cicd.Rmd
   state: active
-  R: R/nix_github_actions.R
+  R: R/tar_nix_ga.R
   tests: []
   vignettes: []
   inflate:
