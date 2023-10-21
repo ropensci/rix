@@ -18,14 +18,14 @@ You need to run the 'description' chunk in the '0-dev_history.Rmd' file before c
 pkgload::load_all(export_all = FALSE)
 ```
 
-The function below copies a Github actions workflow 
-file into the `.github/workflows/run-pipeline.yaml`:
+The function below copies a Github actions workflow file into the
+`.github/workflows/run-pipeline.yaml`:
 
 ```{r function-nix_github_actions}
-#' nix_github_actions
+#' tar_nix_ga
 #' @return Nothing, copies file to a diretory.
 #'
-nix_github_actions <- function(){
+tar_nix_ga <- function(){
   # Add an empty .gitignore file if there isn’t any
 
   if(file.exists(".gitignore")){
