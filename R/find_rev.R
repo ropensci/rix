@@ -798,7 +798,7 @@ with_nix <- function(expr,
   # 5) deserialize final output of `expr` evaluated in nix-shell
   #    into host R session
   
-  # cast list of symbols/names to list of strings; this is to prepare
+  # cast list of symbols/names and calls to list of strings; this is to prepare
   # deparsed version (string) of deserializing arguments from disk;
   # elements of args for now should be of type "symbol" or "language"
   args_vec <- vapply(args, deparse, FUN.VALUE = character(1L))
@@ -814,16 +814,12 @@ temp_dir <- \"%s\"
 r_version_num <- paste0(R.version$major, ".", R.version$minor)
 # assign `args_vec` as in c(...) form.
 args_vec <- %s
-# assign elements of `args_vec` individually
-%s
 # actual deserialization step
 %s
 # evaluate function
 read_args(args_vec, temp_dir)
 # deparse and run function given in `expr` arg
 %s
-cat(m)
-cat(paste("\n* m has", nrow(m), "rows"))
 cat("\n* using Nix with R version", paste0(R.version$major, ".", R.version$minor), "\n")
 cat("* writing R script evaluated via `Rscript` in `nix-shell`:", \"%s\")
 cat("\n* the following objects are in the global environment:\n")
@@ -838,7 +834,6 @@ capture.output(sessionInfo())
     # args_vec <- c(p = "p_root"); maybe use list2env() and separate env
     # with reconstructed symbols bound to objects
     with_assign_args_vec(args_vec),
-    with_multiassign_args_vec(args_vec),
     with_deserialize_args_deparse(args_vec, temp_dir), # step 2
     with_expr_deparse(expr),
     rnix_file
@@ -888,19 +883,10 @@ capture.output(sessionInfo())
 }
 
 with_assign_args_vec <- function(args_vec) {
-  x <- vector(mode = "character", length = length(args_vec))
-  
-  vec_elems <- unlist(
-    Map(
-      function(nm, x) {
-        sprintf('%s = \"%s\"', nm, x)
-      },
-      names(args_vec),
-      args_vec
-    )
+  vec_nms <- vapply(
+    names(args_vec), function(x) paste0('"', x, '"'), FUN.VALUE = character(1L)
   )
-  
-  paste0("c(", paste0(vec_elems, collapse = ", "), ")")
+  paste0("c(", paste0(vec_nms, collapse = ", "), ")")
 }
 
 with_multiassign_args_vec <- function(args_vec) {
@@ -918,7 +904,7 @@ with_deserialize_args_deparse <- function(args_vec, temp_dir) {
   deserialize_args <- function(args_vec, temp_dir) {
     for (i in seq_len(length(args_vec))) {
       nm <- args_vec[i]
-      obj <- names(args_vec)[i]
+      obj <- args_vec[i]
       assign(
         nm,
         readRDS(file = file.path(
