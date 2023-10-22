@@ -893,8 +893,9 @@ with_nix <- function(expr,
   # https://github.com/cran/codetools/blob/master/R/codetools.R
   # http://adv-r.had.co.nz/Expressions.html#ast-funs
   globals_expr <- codetools::findGlobals(fun = expr)
-  envs_check <- lapply(globals_expr, where)
-  nm_envs_check <- lapply(envs_check, environmentName)
+  
+  # for now only level 1; recursion will be necessary
+  extra_pkgs_call1 <- get_expr_extra_pkgs(globals_expr)
   
   # also check if is function when global in "R_GlobalEnv", otherwise throw
   # an informative warning if "". specifically attach packages for "package:..."
@@ -946,6 +947,7 @@ with_nix <- function(expr,
   return(invisible(proc))
 }
 
+
 serialize_args <- function(args, temp_dir) {
   invisible({
       Map(
@@ -960,6 +962,37 @@ serialize_args <- function(args, temp_dir) {
         nm = names(args)
       )
     })
+}
+
+# to determine which extra packages to load in Nix R prior evaluating `expr`
+get_expr_extra_pkgs <- function(globals_expr) {
+  envs_check <- lapply(globals_expr, where)
+  names_envs_check <- vapply(envs_check, environmentName, character(1L))
+  
+  default_pkgnames <- paste0("package:", getOption("defaultPackages"))
+  pkgenvs_attached <- setdiff(
+     grep("^package:", names_envs_check, value = TRUE), 
+    c(default_pkgnames, "base")
+  )
+  if (!length(pkgenvs_attached) == 0L) {
+    pkgs_to_attach <- gsub("^package:", "", pkgenvs_attached)
+    return(pkgs_to_attach)
+  } else {
+    return(NULL)
+  }
+}
+
+is_empty <- function(x) identical(x, emptyenv())
+
+
+where <- function(name, env = parent.frame()) {
+  while(!is_empty(env)) {
+    if (exists(name, envir = env, inherits = FALSE)) {
+      return(env)
+    }
+    # inspect parent
+    env <- parent.env(env)
+  }
 }
 
 get_rnix_deparsed <- function(expr,
@@ -1002,18 +1035,6 @@ capture.output(sessionInfo())
     "shell" = expr, # this has to be properly composed/decomposed
     stop('invalid `where` to evaluate `expr`. Either use "R" or "shell".')
   )
-}
-
-is_empty <- function(x) identical(x, emptyenv())
-
-where <- function(name, env = parent.frame()) {
-  while(!is_empty(env)) {
-    if (exists(name, envir = env, inherits = FALSE)) {
-      return(env)
-    }
-    # inspect parent
-    env <- parent.env(env)
-  }
 }
 
 # https://github.com/cran/codetools/blob/master/R/codetools.R
