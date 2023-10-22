@@ -734,6 +734,7 @@ nix_build_exit_msg <- function(x) {
 #' `RScript` and `where = "shell"` will run in the standard shell.
 #' @inheritParams nix_build
 #' @return
+#' @importFrom codetools findGlobals checkUsage
 #' @export
 with_nix <- function(expr,
                      program = c("R", "shell"),
@@ -806,6 +807,26 @@ with_nix <- function(expr,
   r_version_file <- file.path(temp_dir, "nix-r-version.txt")
   rnix_file <- file.path(temp_dir, "with_nix_r.R")
   
+  # todo in `rnix_deparsed`:
+  # => locate all global variables used by function
+  # https://github.com/cran/codetools/blob/master/R/codetools.R
+  # http://adv-r.had.co.nz/Expressions.html#ast-funs
+  globals_expr <- codetools::findGlobals(fun = expr)
+  envs_check <- lapply(globals_expr, where)
+  nm_envs_check <- lapply(envs_check, environmentName)
+  
+  # also check if is function when global in "R_GlobalEnv", otherwise throw
+  # an informative warning if "". specifically attach packages for "package:..."
+  # entries in Nix R session; if globals of `expr` are functions, again 
+  # recursively deparse and assign functions in nix R script. Warn if objects
+  # are not defined in function environment/provided as args to function 
+  # in `expr`
+  
+  cat("* checking code in `expr` for potential problems:\n",
+   "`codetools::checkUsage(fun = expr)`\n")
+  codetools::checkUsage(fun = expr)
+  cat("\n")
+  
   rnix_deparsed <- switch(program,
   # do 2), 3), 4) in nix-shell-R session (check how to deal with shellHook)
     "R" = sprintf(
@@ -818,8 +839,6 @@ cat("\n* using Nix with R version", r_version_num, "\n")
 args_vec <- %s
 # deserialize arguments from disk
 %s
-# evaluate function
-read_args(args_vec, temp_dir)
 # deparse and run function given in `expr` arg
 %s
 # execute function call in `expr` with list of correct args
@@ -849,10 +868,8 @@ capture.output(sessionInfo())
   )
   
   # write deparsed expressions of step 2) into R script.
-  writeLines(
-    text = rnix_deparsed,
-    file(rnix_file)
-  )
+  writeLines(text = rnix_deparsed, file(rnix_file))
+  close(file(rnix_file))
   
   cat(paste0("==> Running deparsed expression via `nix-shell`", " in ",
     exec_mode, " mode:\n\n",
@@ -884,6 +901,21 @@ capture.output(sessionInfo())
   return(invisible(proc))
 }
 
+is_empty <- function(x) identical(x, emptyenv())
+
+where <- function(name, env = parent.frame()) {
+  while(!is_empty(env)) {
+    if (exists(name, envir = env, inherits = FALSE)) {
+      return(env)
+    }
+    # inspect parent
+    env <- parent.env(env)
+  }
+}
+
+# https://github.com/cran/codetools/blob/master/R/codetools.R
+# finding global variables
+
 with_assign_args_vec <- function(args_vec) {
   vec_nms <- vapply(
     names(args_vec), function(x) paste0('"', x, '"'), FUN.VALUE = character(1L)
@@ -903,23 +935,19 @@ with_multiassign_args_vec <- function(args_vec) {
 
 # here we do some computing on the language
 with_deserialize_args_deparse <- function(args_vec, temp_dir) {
-  deserialize_args <- function(args_vec, temp_dir) {
-    for (i in seq_len(length(args_vec))) {
-      nm <- args_vec[i]
-      obj <- args_vec[i]
-      assign(
-        x = nm,
-        value = readRDS(file = file.path(
+    deparse_chr1(
+      expr = quote(for (i in seq_len(length(args_vec))) {
+        nm <- args_vec[i]
+        obj <- args_vec[i]
+        assign(
+          x = nm,
+          value = readRDS(file = file.path(
           temp_dir, paste0(obj, ".Rds"))
-        ),
-        envir = .GlobalEnv
-      )
-      cat(paste0("* reading ", obj, ".Rds"))
-    }
-  }
-
-  paste0(
-    "read_args <- ", deparse_chr1(expr = deserialize_args, collapse = "\n"))
+        ))
+        cat(paste0("* reading ", obj, ".Rds"))
+      }), 
+      collapse = "\n"
+    )
 }
 
 # this is what `deparse1()` does, however, it is only since 4.0.0
@@ -927,7 +955,6 @@ deparse_chr1 <- function(expr, width.cutoff = 500L, collapse = " ", ...) {
   paste(deparse(expr, width.cutoff, ...), collapse = collapse)
 }
 
-# substitute formals and deparse
 with_expr_deparse <- function(expr) {
   sprintf(
     'run_expr <- %s\n',
