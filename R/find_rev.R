@@ -769,22 +769,9 @@ with_nix <- function(expr,
 
   temp_dir <- tempdir()
   
-  # 1) serialize formals from host R session;
-  # save all function input args onto a temporary folder each with
+  # 1) save all function args onto a temporary folder each with
   # `<tag.Rds>` and `value` as serialized objects from RAM
-  invisible({
-    Map(
-      function(obj, temp_dir, nm) {
-        saveRDS(
-          object = eval(expr = obj, envir = parent.frame()),
-          file = file.path(temp_dir, paste0(nm, ".Rds"))
-        )
-      },
-      obj = args,
-      temp_dir = temp_dir,
-      nm = names(args)
-    )
-  })
+  serialize_args(args, temp_dir)
 
   # if necessary, run a `nix-build` (eventually check artefacts linked to nix
   # store) to make sure nix-shell corresponds to the build
@@ -827,7 +814,66 @@ with_nix <- function(expr,
   codetools::checkUsage(fun = expr)
   cat("\n")
   
-  rnix_deparsed <- switch(program,
+  # main code to be run in nix R session
+  rnix_deparsed <- get_rnix_deparsed(
+    expr, program, args_vec, temp_dir, rnix_file
+  )
+  writeLines(text = rnix_deparsed, file(rnix_file))
+  
+  cat(paste0("==> Running deparsed expression via `nix-shell`", " in ",
+    exec_mode, " mode:\n\n",
+    paste0(rnix_deparsed, collapse = " ")))
+  
+  # command to run deparsed R expression via nix-shell
+  cmd_rnix_deparsed <- c(
+    file.path(project_path, "default.nix"),
+    "--pure",
+    "--run",
+    sprintf(
+      "Rscript --vanilla %s",
+      rnix_file
+    )
+  )
+  
+  proc <- switch(exec_mode,
+    "blocking" = sys::exec_internal(cmd = "nix-shell", cmd_rnix_deparsed),
+    "non-blocking" = sys::exec_background(cmd = "nix-shell", cmd_rnix_deparsed),
+    stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
+  )
+  
+  if (exec_mode == "non-blocking") {
+    poll_sys_proc_nonblocking(cmd = cmd_rnix_deparsed, proc, what = "expr")
+  } else if (exec_mode == "blocking") {
+    poll_sys_proc_blocking(cmd = cmd_rnix_deparsed, proc, what = "expr")
+  }
+  
+  on.exit(close(file(rnix_file)))
+  
+  return(invisible(proc))
+}
+
+serialize_args <- function(args, temp_dir) {
+  invisible({
+      Map(
+        function(obj, temp_dir, nm) {
+          saveRDS(
+            object = eval(expr = obj, envir = parent.frame()),
+            file = file.path(temp_dir, paste0(nm, ".Rds"))
+          )
+        },
+        obj = args,
+        temp_dir = temp_dir,
+        nm = names(args)
+      )
+    })
+}
+
+get_rnix_deparsed <- function(expr,
+                              program,
+                              args_vec,
+                              temp_dir,
+                              rnix_file) {
+  switch(program,
   # do 2), 3), 4) in nix-shell-R session (check how to deal with shellHook)
     "R" = sprintf(
 '# -----------------------------------------------------------------------------
@@ -866,39 +912,6 @@ capture.output(sessionInfo())
     "shell" = expr, # this has to be properly composed/decomposed
     stop('invalid `where` to evaluate `expr`. Either use "R" or "shell".')
   )
-  
-  # write deparsed expressions of step 2) into R script.
-  writeLines(text = rnix_deparsed, file(rnix_file))
-  close(file(rnix_file))
-  
-  cat(paste0("==> Running deparsed expression via `nix-shell`", " in ",
-    exec_mode, " mode:\n\n",
-    paste0(rnix_deparsed, collapse = " ")))
-  
-  # command to run deparsed R expression via nix-shell
-  cmd_rnix_deparsed <- c(
-    file.path(project_path, "default.nix"),
-    "--pure",
-    "--run",
-    sprintf(
-      "Rscript --vanilla %s",
-      rnix_file
-    )
-  )
-  
-  proc <- switch(exec_mode,
-    "blocking" = sys::exec_internal(cmd = "nix-shell", cmd_rnix_deparsed),
-    "non-blocking" = sys::exec_background(cmd = "nix-shell", cmd_rnix_deparsed),
-    stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
-  )
-  
-  if (exec_mode == "non-blocking") {
-    poll_sys_proc_nonblocking(cmd = cmd_rnix_deparsed, proc, what = "expr")
-  } else if (exec_mode == "blocking") {
-    poll_sys_proc_blocking(cmd = cmd_rnix_deparsed, proc, what = "expr")
-  }
-  
-  return(invisible(proc))
 }
 
 is_empty <- function(x) identical(x, emptyenv())
