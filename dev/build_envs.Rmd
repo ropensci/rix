@@ -856,14 +856,10 @@ with_nix <- function(expr,
   # get the function arguments as a pairlist;
   # save formal arguments of pairlist via `tag = value`; e.g., if we have a
   # `expr = function(p = p_root) dir(path = p)`, the input object
-  # to be serialized will be serialized under `"path.Rds"`  in a tmp dir, and
+  # to be serialized will be serialized under `"p.Rds"`  in a tmp dir, and
   # will contain object `p_root`, which is defined in the global environment
   # and bound to `"."` (project root)
   args <- as.list(formals(expr))
-  
-  # tbd: also text with alternative expression
-  # with_nix(expr = function(m = mtcars) nrow(mtcars),
-  # exec_mode = "non-blocking", project_path = "inst/extdata/with_nix")
 
   temp_dir <- tempdir()
   
@@ -999,10 +995,6 @@ capture.output(sessionInfo())
 \n',
     rnix_file,
     temp_dir,
-    # `args_vec` needs to be assigned, too, some combination of quoting
-    # to make a call and also making use of some substitution tricks
-    # args_vec <- c(p = "p_root"); maybe use list2env() and separate env
-    # with reconstructed symbols bound to objects
     with_assign_args_vec(args_vec),
     with_deserialize_args_deparse(args_vec, temp_dir), # step 2
     with_expr_deparse(expr)
@@ -1027,6 +1019,7 @@ where <- function(name, env = parent.frame()) {
 # https://github.com/cran/codetools/blob/master/R/codetools.R
 # finding global variables
 
+# reconstruct argument vector (character) in Nix R
 with_assign_args_vec <- function(args_vec) {
   vec_nms <- vapply(
     names(args_vec), function(x) paste0('"', x, '"'), FUN.VALUE = character(1L)
@@ -1034,17 +1027,7 @@ with_assign_args_vec <- function(args_vec) {
   paste0("c(", paste0(vec_nms, collapse = ", "), ")")
 }
 
-with_multiassign_args_vec <- function(args_vec) {
-  paste0(unlist(
-    Map(
-      function(x, value) paste0(x, " <- ", '"', value, '"'),
-      names(args_vec),
-      args_vec
-    )
-  ), collapse = "\n")
-}
-
-# here we do some computing on the language
+# deparsing code that reads args from disk
 with_deserialize_args_deparse <- function(args_vec, temp_dir) {
     deparse_chr1(
       expr = quote(for (i in seq_len(length(args_vec))) {
