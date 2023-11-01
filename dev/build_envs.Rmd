@@ -892,12 +892,13 @@ with_nix <- function(expr,
   # => locate all global variables used by function
   # https://github.com/cran/codetools/blob/master/R/codetools.R
   # http://adv-r.had.co.nz/Expressions.html#ast-funs
+  
   globals_expr <- codetools::findGlobals(fun = expr)
   
   # for now only level 1; recursion will be necessary
   extra_pkgs_call1 <- get_expr_extra_pkgs(globals_expr)
   
-  envs_check <- setNames(lapply(globals_expr, where), globals_expr)
+  envs_check <- lapply(globals_expr, where)
   names(envs_check) <- globals_expr
   
   vec_envs_check <- vapply(envs_check, environmentName, character(1L))
