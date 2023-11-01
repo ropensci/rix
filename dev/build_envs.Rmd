@@ -893,47 +893,59 @@ with_nix <- function(expr,
   # https://github.com/cran/codetools/blob/master/R/codetools.R
   # http://adv-r.had.co.nz/Expressions.html#ast-funs
   
+  cat("* checking code in `expr` for potential problems:\n",
+   "`codetools::checkUsage(fun = expr)`\n")
+  codetools::checkUsage(fun = expr)
+  cat("\n")
+  
   globals_expr <- codetools::findGlobals(fun = expr)
   
-  # for now only level 1; recursion will be necessary
-  extra_pkgs_call1 <- get_expr_extra_pkgs(globals_expr)
-  
-  envs_check <- lapply(globals_expr, where)
-  names(envs_check) <- globals_expr
-  
-  vec_envs_check <- vapply(envs_check, environmentName, character(1L))
-  default_pkgnames <- paste0("package:", getOption("defaultPackages"))
-  
-  pkgenvs_attached <- setdiff(
-     grep("^package:", vec_envs_check, value = TRUE), 
-    c(default_pkgnames, "base")
-  )
-  pkgenvs_attached <- vec_envs_check[vec_envs_check %in% pkgenvs_attached]
-  
-  if (!length(pkgenvs_attached) == 0L) {
-    pkgs_to_attach <- gsub("^package:", "", pkgenvs_attached)
-    return(pkgs_to_attach)
-  } else {
-    pkgs_to_attach <- NULL
-  }
-  
-  pkg <- grepl("^package:", vec_envs_check)
-  base <- grepl("^base$", vec_envs_check)
-  globals_nopkg <- globals_expr[! (pkg | base)]
-
-  # codetools::findGlobals(fun = "nrow_impl")
-  
-  # also check if is function when global in "R_GlobalEnv", otherwise throw
-  # an informative warning if "". specifically attach packages for "package:..."
+  # check if is function when global in "R_GlobalEnv", otherwise throw
+  # an informative message if "". specifically attach packages for "package:..."
   # entries in Nix R session; if globals of `expr` are functions, again 
   # recursively deparse and assign functions in nix R script. Warn if objects
   # are not defined in function environment/provided as args to function 
   # in `expr`
   
-  cat("* checking code in `expr` for potential problems:\n",
-   "`codetools::checkUsage(fun = expr)`\n")
-  codetools::checkUsage(fun = expr)
-  cat("\n")
+  # extra_pkgs_call1 <- get_expr_extra_pkgs(globals_expr)
+  envs_check <- lapply(globals_expr, where)
+  names(envs_check) <- globals_expr
+  
+  vec_envs_check <- vapply(envs_check, environmentName, character(1L))
+  # directly remove formals
+  vec_envs_check <- vec_envs_check[!names(vec_envs_check) %in% args_vec]
+  globs_pkg <- grep("^package:", vec_envs_check, value = TRUE)
+  globs_base <- grep("^base$", vec_envs_check, value = TRUE)
+  globs_globalenv <- grep("^R_GlobalEnv$", vec_envs_check, value = TRUE)
+  globs_empty <- vec_envs_check[!nzchar(vec_envs_check)]
+  globs_other <- vec_envs_check[!names(vec_envs_check) %in% 
+    names(c(globs_pkg, globs_base, globs_globalenv, globs_empty))]
+  if (length(globs_other) == 0L) {
+    globs_other <- NULL
+  }
+  
+  default_pkgnames <- paste0("package:", getOption("defaultPackages"))
+  
+  pkgenvs_attached <- setdiff(globs_pkg, c(default_pkgnames, "base"))
+  
+  if (!length(pkgenvs_attached) == 0L) {
+    pkgs_to_attach <- gsub("^package:", "", pkgenvs_attached)
+  } else {
+    pkgs_to_attach <- NULL
+  }
+  
+  # check objects in global environment that are functions, to get the
+  # function call stack produced when evaluating; this way we can get
+  # downstream functions we need to export
+  is_globalenv_funs <- vapply(
+    names(globs_globalenv), function(x) is.function(get(x)),
+    FUN.VALUE = logical(1L)
+  )
+  globs_globalenv_fun <- globs_globalenv[is_globalenv_funs]
+  globs_globalenv_other <- globs_globalenv[!is_globalenv_funs]
+  
+  # now find all recursive functions in the call stack
+  # find_fstack() does not work here
   
   # main code to be run in nix R session
   rnix_deparsed <- get_rnix_deparsed(
