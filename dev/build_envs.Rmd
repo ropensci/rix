@@ -897,6 +897,31 @@ with_nix <- function(expr,
   # for now only level 1; recursion will be necessary
   extra_pkgs_call1 <- get_expr_extra_pkgs(globals_expr)
   
+  envs_check <- setNames(lapply(globals_expr, where), globals_expr)
+  names(envs_check) <- globals_expr
+  
+  vec_envs_check <- vapply(envs_check, environmentName, character(1L))
+  default_pkgnames <- paste0("package:", getOption("defaultPackages"))
+  
+  pkgenvs_attached <- setdiff(
+     grep("^package:", vec_envs_check, value = TRUE), 
+    c(default_pkgnames, "base")
+  )
+  pkgenvs_attached <- vec_envs_check[vec_envs_check %in% pkgenvs_attached]
+  
+  if (!length(pkgenvs_attached) == 0L) {
+    pkgs_to_attach <- gsub("^package:", "", pkgenvs_attached)
+    return(pkgs_to_attach)
+  } else {
+    pkgs_to_attach <- NULL
+  }
+  
+  pkg <- grepl("^package:", vec_envs_check)
+  base <- grepl("^base$", vec_envs_check)
+  globals_nopkg <- globals_expr[! (pkg | base)]
+
+  # codetools::findGlobals(fun = "nrow_impl")
+  
   # also check if is function when global in "R_GlobalEnv", otherwise throw
   # an informative warning if "". specifically attach packages for "package:..."
   # entries in Nix R session; if globals of `expr` are functions, again 
