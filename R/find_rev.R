@@ -762,7 +762,7 @@ with_nix <- function(expr,
   # will contain object `p_root`, which is defined in the global environment
   # and bound to `"."` (project root)
   args <- as.list(formals(expr))
-
+  
   temp_dir <- tempdir()
   
   # 1) save all function args onto a temporary folder each with
@@ -849,10 +849,16 @@ with_nix <- function(expr,
   # now find all recursive functions in the call stack
   # find_fstack() does not work here
   
+  # for matching calls, use match.call()
+  
   # main code to be run in nix R session
-  rnix_deparsed <- get_rnix_deparsed(
+  # tbd: program needs control flow like `switch()`, to quote either
+  # the required set of R-nix expressions, or return shell code in bash
+  rnix_quoted <- quote_rnix(
     expr, program, args_vec, temp_dir, rnix_file
   )
+  rnix_deparsed <- deparse_chr1(expr = rnix_quoted, collapse = "\n")
+  
   writeLines(text = rnix_deparsed, file(rnix_file))
   
   cat(paste0("==> Running deparsed expression via `nix-shell`", " in ",
@@ -890,18 +896,21 @@ with_nix <- function(expr,
 
 serialize_args <- function(args, temp_dir) {
   invisible({
-      Map(
-        function(obj, temp_dir, nm) {
-          saveRDS(
-            object = eval(expr = obj, envir = parent.frame()),
-            file = file.path(temp_dir, paste0(nm, ".Rds"))
-          )
-        },
-        obj = args,
-        temp_dir = temp_dir,
-        nm = names(args)
+    
+    for (i in seq_along(args)) {
+      if (!nzchar(deparse(args[[i]]))) {
+        # for unnamed arguments like `expr = function(x) print(x)`
+      # x would be an empty symbol, see also ; i.e. arguments without 
+      # default expressions; i.e. tagged arguments with no value
+      # https://stackoverflow.com/questions/3892580/create-missing-objects-aka-empty-symbols-empty-objects-needed-for-f
+        args[[i]] <- as.symbol(names(args)[i])
+      }
+      saveRDS(
+        object = args[[i]],
+        file = file.path(temp_dir, paste0(names(args)[i], ".Rds"))
       )
-    })
+    }
+  })
 }
 
 # to determine which extra packages to load in Nix R prior evaluating `expr`
@@ -935,74 +944,62 @@ where <- function(name, env = parent.frame()) {
   }
 }
 
-get_rnix_deparsed <- function(expr,
-                              program,
-                              args_vec,
-                              temp_dir,
-                              rnix_file) {
-  switch(program,
-  # do 2), 3), 4) in nix-shell-R session (check how to deal with shellHook)
-    "R" = sprintf(
-'# -----------------------------------------------------------------------------
-cat("\n* wrote R script evaluated via `Rscript` in `nix-shell`:", \"%s\")
-temp_dir <- \"%s\"
-r_version_num <- paste0(R.version$major, ".", R.version$minor)
-cat("\n* using Nix with R version", r_version_num, "\n")
-# assign `args_vec` as in c(...) form.
-args_vec <- %s
-# deserialize arguments from disk
-%s
-# deparse and run function given in `expr` arg
-%s
-# execute function call in `expr` with list of correct args
-lst <- as.list(args_vec)
-names(lst) <- args_vec
-lst <- lapply(lst, as.name)
-nix_out <- do.call(run_expr, lst)
-cat(paste("\n* called `expr` with args", args_vec)) 
-cat("\n* the following objects are in the global environment:\n")
-cat(ls())
-cat("\n* `sessionInfo()` output:\n")
-capture.output(sessionInfo())
-# ------------------------------------------------------------------------------
-\n',
-    rnix_file,
-    temp_dir,
-    with_assign_args_vec(args_vec),
-    with_deserialize_args_deparse(args_vec, temp_dir), # step 2
-    with_expr_deparse(expr)
-    ),
-    "shell" = expr, # this has to be properly composed/decomposed
-    stop('invalid `where` to evaluate `expr`. Either use "R" or "shell".')
-  )
+# build deparsed script via language objects; 
+# reads like R code and avoids code injection
+quote_rnix <- function(expr,
+                       program,
+                       args_vec,
+                       temp_dir,
+                       rnix_file) {
+  expr_quoted <- bquote( {
+    cat("\n* wrote R script evaluated via `Rscript` in `nix-shell`:",
+      .(rnix_file))
+    temp_dir <- .(temp_dir)
+    r_version_num <- paste0(R.version$major, ".", R.version$minor)
+    cat("\n* using Nix with R version", r_version_num, "\n\n")
+    # assign `args_vec` as in c(...) form.
+    args_vec <- .(with_assign_argnames_call(args_vec))
+    # deserialize arguments from disk
+    for (i in seq_along(args_vec)) {
+      nm <- args_vec[i]
+      obj <- args_vec[i]
+      assign(
+        x = nm,
+        value = readRDS(file = file.path(temp_dir, paste0(obj, ".Rds")))
+      )
+      cat(
+        paste0("  => reading ", obj, ".Rds", " for argument named `",
+          obj, "`\n")
+      )
+    }
+    # execute function call in `expr` with list of correct args
+    lst <- as.list(args_vec)
+    names(lst) <- args_vec
+    lst <- lapply(lst, as.name)
+    rnix_out <- do.call(.(expr), lst)
+    typeof(rnix_out)
+    cat("\n* called `expr` with args", args_vec, ":")
+    cat("\n", deparse(.(expr)))
+    cat("\n\n* the following objects are in the global environment:\n")
+    cat(ls())
+    cat("\n* `sessionInfo()` output:\n")
+    cat(capture.output(sessionInfo()), sep = "\n")
+  } )
+  
+  return(expr_quoted)
 }
 
 # https://github.com/cran/codetools/blob/master/R/codetools.R
 # finding global variables
 
-# reconstruct argument vector (character) in Nix R
-with_assign_args_vec <- function(args_vec) {
-  vec_nms <- vapply(
-    names(args_vec), function(x) paste0('"', x, '"'), FUN.VALUE = character(1L)
-  )
-  paste0("c(", paste0(vec_nms, collapse = ", "), ")")
-}
-
-# deparsing code that reads args from disk
-with_deserialize_args_deparse <- function(args_vec, temp_dir) {
-    deparse_chr1(
-      expr = quote(for (i in seq_len(length(args_vec))) {
-        nm <- args_vec[i]
-        obj <- args_vec[i]
-        assign(
-          x = nm,
-          value = readRDS(file = file.path(
-          temp_dir, paste0(obj, ".Rds"))
-        ))
-        cat(paste0("* reading ", obj, ".Rds"))
-      }), 
-      collapse = "\n"
-    )
+# reconstruct argument vector (character) in Nix R;
+# build call to generate `args_vec`
+with_assign_argnames_call <- function(args_vec) {
+  cl <- call("c")
+  for (i in seq_along(args_vec)) {
+    cl[[i + 1L]] <- names(args_vec[i])
+  }
+  return(cl)
 }
 
 # this is what `deparse1()` does, however, it is only since 4.0.0
