@@ -898,28 +898,7 @@ with_nix <- function(expr,
   codetools::checkUsage(fun = expr)
   cat("\n")
   
-  # globals_expr <- codetools::findGlobals(fun = expr)
-  
   globals_expr <- recurse_find_check_globals(expr, args_vec)
-  
-  # check if is function when global in "R_GlobalEnv", otherwise throw
-  # an informative message if "". specifically attach packages for "package:..."
-  # entries in Nix R session; if globals of `expr` are functions, again 
-  # recursively deparse and assign functions in nix R script. Warn if objects
-  # are not defined in function environment/provided as args to function 
-  # in `expr`
-  
-  # extra_pkgs_call1 <- get_expr_extra_pkgs(globals_expr)
-  
-  # check objects in global environment that are functions, to get the
-  # function call stack produced when evaluating; this way we can get
-  # downstream functions we need to export
-  
-  
-  # now find all recursive functions in the call stack
-  # find_fstack() does not work here
-  
-  # for matching calls, use match.call()
   
   # main code to be run in nix R session
   # tbd: program needs control flow like `switch()`, to quote either
@@ -1022,21 +1001,22 @@ recurse_find_check_globals <- function(expr, args_vec) {
     
     globals_expr <- codetools::findGlobals(fun = expr)
     globals_lst <- classify_globals(globals_expr, args_vec)
+    
+    round_i <- 1L
       
     repeat {
-      # first round
-      names_globals <- names(globals_lst) %in%
-        c("globalenv_fun", "globalenv_other", "env_other", "env_fun", "pkgs")
-      first_globals <- all(names_globals) && length(names_globals) != 0L
+      
       get_globals_exprs <- function(globals_lst) {
         globals_exprs <- names(unlist(Filter(function(x) !is.null(x), 
           unname(globals_lst[c("globalenv_fun", "env_fun")]))))
         return(globals_exprs)
       }
-      if (first_globals) {
+      
+      if (round_i == 1L) {
+        # first round
         globals_exprs <- get_globals_exprs(globals_lst)
       } else {
-        # starting from second round of repeat
+        # successive rounds
         globals_exprs <- unlist(lapply(globals_lst, get_globals_exprs))
       }
       
@@ -1058,12 +1038,17 @@ recurse_find_check_globals <- function(expr, args_vec) {
         function(x) classify_globals(globals_expr = x, args_vec)
       )
       
-      result_list <- c(list(globals_lst), globals_lst_new) # list(globals_lst)
+      if (round_i == 1L) {
+        result_list <- c(list(globals_lst), globals_lst_new)
+      } else {
+        result_list <- c(result_list, globals_lst_new)
+      }
       
       globals_lst <- globals_lst_new
       
       globals_lst <- lapply(globals_lst, function(x) lapply(x, unlist))
       
+      # packages can be excluded for getting more globals
       globals_lst <- lapply(
         globals_lst,
         function(x) {
@@ -1071,23 +1056,58 @@ recurse_find_check_globals <- function(expr, args_vec) {
         }
       )
       
-      globals_null <- vapply(globals_lst, function(x) all(is.null(x)), 
-        FUN.VALUE = logical(1L))
+      globals_null <- all(is.null(unlist(globals_lst)))
       
       ## to be fixed
       all_non_pkgs_null <- all(globals_null)
+      
+      round_i <- round_i + 1L
       
       if (is.null(globals_lst) || all_non_pkgs_null) break
     }
   
     # order exports
-    # lapply(result_list, "")
+    result_list <- Filter(function(x) !is.null(x), result_list)
+    result_list <- lapply(
+      result_list, 
+      function(x) Filter(function(x) !is.null(x), x)
+    )
     
-    # globals_export <- list(
-    #   globals_export = 
-    #   pkgs = 
+    pkgs <- unlist(lapply(result_list, "[", "pkgs"))
     
-    return(result_list)
+    unlist_unname <- function(x) {
+      unlist(
+        lapply(x,  function(x) unlist(unname(x)))
+      )
+    }
+    
+    globalenv_fun = lapply(result_list, "[", "globalenv_fun")
+    globalenv_fun <- unlist_unname(globalenv_fun)
+    
+    globalenv_other = lapply(result_list, "[", "globalenv_other")
+    globalenv_other <- unlist_unname(globalenv_other)
+    
+    env_other = lapply(result_list, "[", "env_other")
+    env_other <- unlist_unname(globalenv_other)
+    
+    env_fun = lapply(result_list, "[", "env_fun")
+    env_fun <- unlist_unname(env_fun)
+    
+    exports <- list(
+      pkgs = pkgs,
+      globalenv_fun = globalenv_fun,
+      globalenv_other = globalenv_other,
+      env_other = env_other,
+      env_fun = env_fun
+    )
+    
+    return(exports)
+}
+
+length_0_to_null <- function(x) {
+  if (length(x) == 0L) {
+    assign(x, NULL, pos = parent.frame(n = 1L))
+  }
 }
 
 classify_globals <- function(globals_expr, args_vec) {
