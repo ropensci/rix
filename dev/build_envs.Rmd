@@ -1104,12 +1104,6 @@ recurse_find_check_globals <- function(expr, args_vec) {
     return(exports)
 }
 
-length_0_to_null <- function(x) {
-  if (length(x) == 0L) {
-    assign(x, NULL, pos = parent.frame(n = 1L))
-  }
-}
-
 classify_globals <- function(globals_expr, args_vec) {
   envs_check <- lapply(globals_expr, where)
   names(envs_check) <- globals_expr
