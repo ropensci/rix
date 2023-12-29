@@ -898,7 +898,9 @@ with_nix <- function(expr,
   codetools::checkUsage(fun = expr)
   cat("\n")
   
-  globals_expr <- codetools::findGlobals(fun = expr)
+  # globals_expr <- codetools::findGlobals(fun = expr)
+  
+  globals_expr <- recurse_find_check_globals(expr, args_vec)
   
   # check if is function when global in "R_GlobalEnv", otherwise throw
   # an informative message if "". specifically attach packages for "package:..."
@@ -908,41 +910,11 @@ with_nix <- function(expr,
   # in `expr`
   
   # extra_pkgs_call1 <- get_expr_extra_pkgs(globals_expr)
-  envs_check <- lapply(globals_expr, where)
-  names(envs_check) <- globals_expr
-  
-  vec_envs_check <- vapply(envs_check, environmentName, character(1L))
-  # directly remove formals
-  vec_envs_check <- vec_envs_check[!names(vec_envs_check) %in% args_vec]
-  globs_pkg <- grep("^package:", vec_envs_check, value = TRUE)
-  globs_base <- grep("^base$", vec_envs_check, value = TRUE)
-  globs_globalenv <- grep("^R_GlobalEnv$", vec_envs_check, value = TRUE)
-  globs_empty <- vec_envs_check[!nzchar(vec_envs_check)]
-  globs_other <- vec_envs_check[!names(vec_envs_check) %in% 
-    names(c(globs_pkg, globs_base, globs_globalenv, globs_empty))]
-  if (length(globs_other) == 0L) {
-    globs_other <- NULL
-  }
-  
-  default_pkgnames <- paste0("package:", getOption("defaultPackages"))
-  
-  pkgenvs_attached <- setdiff(globs_pkg, c(default_pkgnames, "base"))
-  
-  if (!length(pkgenvs_attached) == 0L) {
-    pkgs_to_attach <- gsub("^package:", "", pkgenvs_attached)
-  } else {
-    pkgs_to_attach <- NULL
-  }
   
   # check objects in global environment that are functions, to get the
   # function call stack produced when evaluating; this way we can get
   # downstream functions we need to export
-  is_globalenv_funs <- vapply(
-    names(globs_globalenv), function(x) is.function(get(x)),
-    FUN.VALUE = logical(1L)
-  )
-  globs_globalenv_fun <- globs_globalenv[is_globalenv_funs]
-  globs_globalenv_other <- globs_globalenv[!is_globalenv_funs]
+  
   
   # now find all recursive functions in the call stack
   # find_fstack() does not work here
@@ -994,7 +966,6 @@ with_nix <- function(expr,
 
 serialize_args <- function(args, temp_dir) {
   invisible({
-    
     for (i in seq_along(args)) {
       if (!nzchar(deparse(args[[i]]))) {
         # for unnamed arguments like `expr = function(x) print(x)`
@@ -1040,6 +1011,167 @@ where <- function(name, env = parent.frame()) {
     # inspect parent
     env <- parent.env(env)
   }
+}
+
+recurse_find_check_globals <- function(expr, args_vec) {
+    
+    cat("* checking code in `expr` for potential problems:\n",
+     "`codetools::checkUsage(fun = expr)`\n")
+    codetools::checkUsage(fun = expr)
+    cat("\n")
+    
+    globals_expr <- codetools::findGlobals(fun = expr)
+    globals_lst <- classify_globals(globals_expr, args_vec)
+      
+    repeat {
+      # first round
+      names_globals <- names(globals_lst) %in%
+        c("globalenv_fun", "globalenv_other", "env_other", "env_fun", "pkgs")
+      first_globals <- all(names_globals) && length(names_globals) != 0L
+      get_globals_exprs <- function(globals_lst) {
+        globals_exprs <- names(unlist(Filter(function(x) !is.null(x), 
+          unname(globals_lst[c("globalenv_fun", "env_fun")]))))
+        return(globals_exprs)
+      }
+      if (first_globals) {
+        globals_exprs <- get_globals_exprs(globals_lst)
+      } else {
+        # starting from second round of repeat
+        globals_exprs <- unlist(lapply(globals_lst, get_globals_exprs))
+      }
+      
+      cat("* checking code in `globals_exprs` for potential problems:\n",
+        "`codetools::checkUsage(fun = globals_exprs)`\n")
+      lapply(
+        globals_exprs,
+        codetools::checkUsage
+      )
+      cat("\n")
+    
+      globals_new <- lapply(
+        globals_exprs,
+        function(x) codetools::findGlobals(fun = x)
+      )
+      
+      globals_lst_new <- lapply(
+        globals_new,
+        function(x) classify_globals(globals_expr = x, args_vec)
+      )
+      
+      result_list <- c(list(globals_lst), globals_lst_new) # list(globals_lst)
+      
+      globals_lst <- globals_lst_new
+      
+      globals_lst <- lapply(globals_lst, function(x) lapply(x, unlist))
+      
+      globals_lst <- lapply(
+        globals_lst,
+        function(x) {
+          x[c("globalenv_fun", "globalenv_other", "env_other", "env_fun")]
+        }
+      )
+      
+      globals_null <- vapply(globals_lst, function(x) all(is.null(x)), 
+        FUN.VALUE = logical(1L))
+      
+      ## to be fixed
+      all_non_pkgs_null <- all(globals_null)
+      
+      if (is.null(globals_lst) || all_non_pkgs_null) break
+    }
+  
+    # order exports
+    # lapply(result_list, "")
+    
+    # globals_export <- list(
+    #   globals_export = 
+    #   pkgs = 
+    
+    return(result_list)
+}
+
+classify_globals <- function(globals_expr, args_vec) {
+  envs_check <- lapply(globals_expr, where)
+  names(envs_check) <- globals_expr
+  
+  vec_envs_check <- vapply(envs_check, environmentName, character(1L))
+  # directly remove formals
+  vec_envs_check <- vec_envs_check[!names(vec_envs_check) %in% args_vec]
+  if (length(vec_envs_check) == 0L) {
+    vec_envs_check <- NULL
+  }
+  
+  if (!is.null(vec_envs_check)) {
+    globs_pkg <- grep("^package:", vec_envs_check, value = TRUE)
+    if (length(globs_pkg) == 0L) {
+      globs_pkg <- NULL
+    }
+    # globs base can be ignored
+    globs_base <- grep("^base$", vec_envs_check, value = TRUE)
+    globs_globalenv <- grep("^R_GlobalEnv$", vec_envs_check, value = TRUE)
+    globs_globalenv <- Filter(nzchar, globs_globalenv)
+    # empty globs; can be ignored for now
+    globs_empty <- Filter(function(x) !nzchar(x), vec_envs_check)
+    if (length(globs_empty) == 0L) {
+      globs_empty <- NULL
+    }
+    globs_other <- vec_envs_check[!names(vec_envs_check) %in% 
+      names(c(globs_pkg, globs_globalenv, globs_empty, globs_base))]
+    if (length(globs_other) == 0L)
+      globs_other <- NULL
+    if (length(globs_other) == 0L) {
+      globs_other <- NULL
+    }
+  }
+  
+  is_globalenv_funs <- vapply(
+    names(globs_globalenv), function(x) is.function(get(x)),
+    FUN.VALUE = logical(1L)
+  )
+  
+  is_otherenv_funs <- vapply(
+    names(globs_other), function(x) is.function(get(x)),
+    FUN.VALUE = logical(1L)
+  )
+  
+  globs_globalenv_fun <- globs_globalenv[is_globalenv_funs]
+  if (length(globs_globalenv_fun) == 0L) {
+    globs_globalenv_fun <- NULL
+  }
+  globs_globalenv_other <- globs_globalenv[!is_globalenv_funs]
+  if (length(globs_globalenv_other) == 0L) {
+    globs_globalenv_other <- NULL
+  }
+  
+  globs_otherenv_fun <- globs_other[is_otherenv_funs]
+  if (length(globs_otherenv_fun) == 0L) {
+    globs_otherenv_fun <- NULL
+  }
+  globs_otherenv_other <- globs_other[!is_otherenv_funs]
+  if (length(globs_otherenv_other) == 0L) {
+    globs_otherenv_other <- NULL
+  }
+  
+  default_pkgnames <- paste0("package:", getOption("defaultPackages"))
+  pkgenvs_attached <- setdiff(globs_pkg, c(default_pkgnames, "base"))
+  
+  if (!length(pkgenvs_attached) == 0L) {
+    pkgs_to_attach <- gsub("^package:", "", pkgenvs_attached)
+  } else {
+    pkgs_to_attach <- NULL
+  }
+  
+  globs_classified <- list(
+    globalenv_fun = globs_globalenv_fun,
+    globalenv_other = globs_globalenv_other,
+    env_other = globs_otherenv_other,
+    env_fun = globs_otherenv_fun,
+    pkgs = pkgs_to_attach
+  )
+  globs_null <- all(vapply(globs_classified, is.null, logical(1L)))
+  if (globs_null) globs_classified <- NULL
+  
+  return(globs_classified)
 }
 
 # build deparsed script via language objects; 
