@@ -152,5 +152,5 @@ zzz.Rmd:
     vignette_name: .na
     open_vignette: true
     check: true
-    document: true
+    document: false
     overwrite: 'yes'
