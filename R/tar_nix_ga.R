@@ -7,8 +7,8 @@
 #' Github Actions and will then run the projects {targets} pipeline. Make
 #' sure to give read and write permissions to the Github Actions bot.
 #' @return Nothing, copies file to a diretory.
+#' @export
 #'
-#' @noRd
 tar_nix_ga <- function(){
   # Add an empty .gitignore file if there isn’t any
 

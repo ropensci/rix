@@ -3,6 +3,7 @@
 export(available_r)
 export(nix_build)
 export(rix)
+export(tar_nix_ga)
 importFrom(httr,GET)
 importFrom(httr,content)
 importFrom(httr,stop_for_status)
