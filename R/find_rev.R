@@ -766,13 +766,11 @@ with_nix <- function(expr,
   temp_dir <- tempdir()
   
   # 1) save all function args onto a temporary folder each with
-  # `<tag.Rds>` and `value` as serialized objects from RAM
-  serialize_args(args, temp_dir)
+  # `<tag.Rds>` and `value` as serialized objects from RAM ---------------------
+  serialize_lobjs(lobjs = args, temp_dir)
 
   # if necessary, run a `nix-build` (eventually check artefacts linked to nix
   # store) to make sure nix-shell corresponds to the build
-  
-  # 2) deserialize formals in nix session
   
   # 3) run expression in nix session using formals/input args;
   #    mostly metaprogramming
@@ -786,30 +784,38 @@ with_nix <- function(expr,
   # deparsed version (string) of deserializing arguments from disk;
   # elements of args for now should be of type "symbol" or "language"
   args_vec <- vapply(args, deparse, FUN.VALUE = character(1L))
-
-  r_version_file <- file.path(temp_dir, "nix-r-version.txt")
-  rnix_file <- file.path(temp_dir, "with_nix_r.R")
   
   # todo in `rnix_deparsed`:
   # => locate all global variables used by function
   # https://github.com/cran/codetools/blob/master/R/codetools.R
   # http://adv-r.had.co.nz/Expressions.html#ast-funs
   
-  cat("* checking code in `expr` for potential problems:\n",
-   "`codetools::checkUsage(fun = expr)`\n")
-  codetools::checkUsage(fun = expr)
-  cat("\n")
+  # code inspection: generates messages with potential problems
+  check_expr(expr)
   
   globals_expr <- recurse_find_check_globals(expr, args_vec)
+  
+  # wrapper around `serialize_lobjs()`
+  globals <- serialize_globals(globals_expr, temp_dir)
+  
+  # extract addtional packages to export
+  
+  
+  # 2) deserialize formals in nix session --------------------------------------
   
   # main code to be run in nix R session
   # tbd: program needs control flow like `switch()`, to quote either
   # the required set of R-nix expressions, or return shell code in bash
+  rnix_file <- file.path(temp_dir, "with_nix_r.R")
+  
   rnix_quoted <- quote_rnix(
-    expr, program, args_vec, temp_dir, rnix_file
+    expr, program, args_vec, globals, temp_dir, rnix_file
   )
   rnix_deparsed <- deparse_chr1(expr = rnix_quoted, collapse = "\n")
   
+  # write script to disk, to run later via `Rscript` from `nix-shell` 
+  # environment
+  r_version_file <- file.path(temp_dir, "nix-r-version.txt")
   writeLines(text = rnix_deparsed, file(rnix_file))
   
   cat(paste0("==> Running deparsed expression via `nix-shell`", " in ",
@@ -845,24 +851,37 @@ with_nix <- function(expr,
 }
 
 
-serialize_args <- function(args, temp_dir) {
+#' @noRd
+#' serialize language objects
+serialize_lobjs <- function(lobjs, temp_dir) {
   invisible({
-    for (i in seq_along(args)) {
-      if (!nzchar(deparse(args[[i]]))) {
+    for (i in seq_along(lobjs)) {
+      if (!any(nzchar(deparse(lobjs[[i]])))) {
         # for unnamed arguments like `expr = function(x) print(x)`
-      # x would be an empty symbol, see also ; i.e. arguments without 
-      # default expressions; i.e. tagged arguments with no value
-      # https://stackoverflow.com/questions/3892580/create-missing-objects-aka-empty-symbols-empty-objects-needed-for-f
-        args[[i]] <- as.symbol(names(args)[i])
+        # x would be an empty symbol, see also ; i.e. arguments without 
+        # default expressions; i.e. tagged arguments with no value
+        # https://stackoverflow.com/questions/3892580/create-missing-objects-aka-empty-symbols-empty-objects-needed-for-f
+        lobjs[[i]] <- as.symbol(names(lobjs)[i])
       }
       saveRDS(
-        object = args[[i]],
-        file = file.path(temp_dir, paste0(names(args)[i], ".Rds"))
+        object = lobjs[[i]],
+        file = file.path(temp_dir, paste0(names(lobjs)[i], ".Rds"))
       )
     }
   })
 }
 
+
+#' @noRd
+check_expr <- function(expr) {
+    cat("* checking code in `expr` for potential problems:\n",
+      "`codetools::checkUsage(fun = expr)`\n")
+    codetools::checkUsage(fun = expr)
+    cat("\n")
+  }
+
+
+#' @noRd
 # to determine which extra packages to load in Nix R prior evaluating `expr`
 get_expr_extra_pkgs <- function(globals_expr) {
   envs_check <- lapply(globals_expr, where)
@@ -881,9 +900,12 @@ get_expr_extra_pkgs <- function(globals_expr) {
   }
 }
 
+
+#' @noRd
 is_empty <- function(x) identical(x, emptyenv())
 
 
+#' @noRd
 where <- function(name, env = parent.frame()) {
   while(!is_empty(env)) {
     if (exists(name, envir = env, inherits = FALSE)) {
@@ -894,6 +916,7 @@ where <- function(name, env = parent.frame()) {
   }
 }
 
+#' @noRd
 recurse_find_check_globals <- function(expr, args_vec) {
     
     cat("* checking code in `expr` for potential problems:\n",
@@ -983,14 +1006,14 @@ recurse_find_check_globals <- function(expr, args_vec) {
       )
     }
     
-    globalenv_fun = lapply(result_list, "[", "globalenv_fun")
+    globalenv_fun <- lapply(result_list, "[", "globalenv_fun")
     globalenv_fun <- unlist_unname(globalenv_fun)
     
-    globalenv_other = lapply(result_list, "[", "globalenv_other")
+    globalenv_other <- lapply(result_list, "[", "globalenv_other")
     globalenv_other <- unlist_unname(globalenv_other)
     
-    env_other = lapply(result_list, "[", "env_other")
-    env_other <- unlist_unname(globalenv_other)
+    env_other <- lapply(result_list, "[", "env_other")
+    env_other <- unlist_unname(env_other)
     
     env_fun = lapply(result_list, "[", "env_fun")
     env_fun <- unlist_unname(env_fun)
@@ -1006,6 +1029,7 @@ recurse_find_check_globals <- function(expr, args_vec) {
     return(exports)
 }
 
+#' @noRd
 classify_globals <- function(globals_expr, args_vec) {
   envs_check <- lapply(globals_expr, where)
   names(envs_check) <- globals_expr
@@ -1033,8 +1057,6 @@ classify_globals <- function(globals_expr, args_vec) {
     }
     globs_other <- vec_envs_check[!names(vec_envs_check) %in% 
       names(c(globs_pkg, globs_globalenv, globs_empty, globs_base))]
-    if (length(globs_other) == 0L)
-      globs_other <- NULL
     if (length(globs_other) == 0L) {
       globs_other <- NULL
     }
@@ -1090,11 +1112,66 @@ classify_globals <- function(globals_expr, args_vec) {
   return(globs_classified)
 }
 
+
+#' @noRd
+# wrapper to serialize global objects found
+serialize_globals <- function(globals_expr, temp_dir) {
+  funs <- globals_expr$globalenv_fun
+  if (!is.null(funs)) {
+    cat("=> Serializing global functions:", paste(names(funs)), "\n")
+    globalenv_funs <- lapply(
+      names(funs),
+      function(x) get(x = x, envir = .GlobalEnv)
+    )
+    names(globalenv_funs) <- names(globals_expr$globalenv_fun)
+    serialize_lobjs(lobjs = globalenv_funs, temp_dir)
+  }
+  others <- globals_expr$globalenv_other
+  if (!is.null(others)) {
+    cat("=> Serializing non-function object(s):",
+      paste(names(others), sep = ","), "\n"
+    )
+    globalenv_others <- lapply(
+      names(others),
+      function(x) get(x = x, envir = .GlobalEnv)
+    )
+    names(globalenv_others) <- names(globals_expr$globalenv_other)
+    serialize_lobjs(lobjs = globalenv_others, temp_dir)
+  }
+  env_funs <- globals_expr$env_fun
+  if (!is.null(env_funs)) {
+    cat("=> Serializing function(s) from custom environment(s):",
+      paste(names(env_funs)), "\n")
+    env_funs <- lapply(
+      names(env_funs),
+      function(x) get(x = x) # tbd: need to add specific environment;
+      # use `base::Map` and `get(x, envir)`
+    )
+    names(env_funs) <- names(globals_expr$env_fun)
+    serialize_lobjs(lobjs = env_funs, temp_dir)
+  }
+  env_others <- globals_expr$env_other
+  if (!is.null(env_others)) {
+    cat("=> Serializing non-function object(s) from custom environment(s)::",
+      paste(names(env_others), sep = ","), "\n"
+    )
+    env_others <- lapply(
+      names(env_others),
+      function(x) get(x = x) # tbd: need to add specific environment;
+      # use `base::Map` and `get(x, envir)`
+    )
+    names(env_others) <- names(globals_expr$env_other)
+    serialize_lobjs(lobjs = env_others, temp_dir)
+  }
+  return(c(funs, others, env_funs, env_others))
+}
+
 # build deparsed script via language objects; 
-# reads like R code and avoids code injection
+# reads like R code, and avoids code injection
 quote_rnix <- function(expr,
                        program,
                        args_vec,
+                       globals,
                        temp_dir,
                        rnix_file) {
   expr_quoted <- bquote( {
@@ -1104,7 +1181,7 @@ quote_rnix <- function(expr,
     r_version_num <- paste0(R.version$major, ".", R.version$minor)
     cat("\n* using Nix with R version", r_version_num, "\n\n")
     # assign `args_vec` as in c(...) form.
-    args_vec <- .(with_assign_argnames_call(args_vec))
+    args_vec <- .(with_assign_vecnames_call(vec = args_vec))
     # deserialize arguments from disk
     for (i in seq_along(args_vec)) {
       nm <- args_vec[i]
@@ -1114,8 +1191,21 @@ quote_rnix <- function(expr,
         value = readRDS(file = file.path(temp_dir, paste0(obj, ".Rds")))
       )
       cat(
-        paste0("  => reading ", obj, ".Rds", " for argument named `",
-          obj, "`\n")
+        paste0("  => reading file ", "'", obj, "'", ".Rds",
+          " for argument named `", obj, "`\n")
+      )
+    }
+    globals <- .(with_assign_vecnames_call(vec = globals))
+    for (i in seq_along(globals)) {
+      nm <- globals[i]
+      obj <- globals[i]
+      assign(
+        x = nm,
+        value = readRDS(file = file.path(temp_dir, paste0(obj, ".Rds")))
+      )
+      cat(
+        paste0("  => reading file ", "'", obj, "'", ".Rds", 
+          " for global object named `", obj, "`\n")
       )
     }
     # execute function call in `expr` with list of correct args
@@ -1138,21 +1228,24 @@ quote_rnix <- function(expr,
 # https://github.com/cran/codetools/blob/master/R/codetools.R
 # finding global variables
 
+#' @noRd
 # reconstruct argument vector (character) in Nix R;
 # build call to generate `args_vec`
-with_assign_argnames_call <- function(args_vec) {
+with_assign_vecnames_call <- function(vec) {
   cl <- call("c")
-  for (i in seq_along(args_vec)) {
-    cl[[i + 1L]] <- names(args_vec[i])
+  for (i in seq_along(vec)) {
+    cl[[i + 1L]] <- names(vec[i])
   }
   return(cl)
 }
 
+#' @noRd
 # this is what `deparse1()` does, however, it is only since 4.0.0
 deparse_chr1 <- function(expr, width.cutoff = 500L, collapse = " ", ...) {
   paste(deparse(expr, width.cutoff, ...), collapse = collapse)
 }
 
+#' @noRd
 with_expr_deparse <- function(expr) {
   sprintf(
     'run_expr <- %s\n',
@@ -1170,6 +1263,7 @@ nix_shell_installed <- function() {
   }
 }
 
+#' @noRd
 create_shell_nix <- function(path = file.path("inst", "extdata", 
                               "with_nix", "default.nix")) {
   if (!dir.exists(dirname(path))) {
