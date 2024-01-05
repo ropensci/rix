@@ -13,3 +13,5 @@
 ^default.nix$
 ^doc$
 ^Meta$
+^default.nix$
+^_debug_with_nix.R$
