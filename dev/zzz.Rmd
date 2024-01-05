@@ -8,9 +8,8 @@ editor_options:
 ## zzz
 
 ```{r function-zzz, eval = F}
-#' zzz
-#'
-#' Global imports
+#' zzz Global imports
+#' @noRd
 #' @importFrom utils data
 utils::globalVariables(c("r_nix_revs"))
 ```
