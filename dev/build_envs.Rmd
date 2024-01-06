@@ -922,7 +922,7 @@ with_nix <- function(expr,
   # command to run deparsed R expression via nix-shell
   cmd_rnix_deparsed <- c(
     file.path(project_path, "default.nix"),
-    # "--pure", # gives permission error on macOS
+    "--pure", # required for to have nix glibc
     "--run",
     sprintf(
       "Rscript --vanilla '%s'",
