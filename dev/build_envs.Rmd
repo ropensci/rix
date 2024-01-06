@@ -1378,6 +1378,7 @@ quote_rnix <- function(expr,
     cat("\n* Saved output to", file.path(temp_dir, "_out.Rds"))
     cat("\n\n* the following objects are in the global environment:\n")
     cat(ls())
+    cat("\n")
     cat("\n* `sessionInfo()` output:\n")
     cat(capture.output(sessionInfo()), sep = "\n")
   } ) # end of `bquote()`
