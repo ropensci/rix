@@ -1224,6 +1224,11 @@ quote_rnix <- function(expr,
       .(rnix_file))
     temp_dir <- .(temp_dir)
     cat("\n", Sys.getenv("NIX_PATH"))
+    # fix library paths for nix R on macOS; avoid permission issue
+    current_paths <- .libPaths()
+    user_dir <- grep("/Users/", current_paths)
+    new_paths <- current_paths[-user_dir]
+    .libPaths(new_paths)
     r_version_num <- paste0(R.version$major, ".", R.version$minor)
     cat("\n* using Nix with R version", r_version_num, "\n\n")
     # assign `args_vec` as in c(...) form.
