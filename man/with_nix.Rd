@@ -8,7 +8,8 @@ with_nix(
   expr,
   program = c("R", "shell"),
   exec_mode = c("blocking", "non-blocking"),
-  project_path = "."
+  project_path = ".",
+  message_type = c("simple", "verbose")
 )
 }
 \arguments{
@@ -26,6 +27,10 @@ executed, or run \code{nix-build} in the background ("non-blocking").}
 \item{project_path}{Path to the folder where the \code{default.nix} file resides.
 The default is \code{"."}, which is the working directory in the current R
 session.}
+
+\item{message_type}{String how detailed output is. Currently, there is
+either \code{"simple"} (default) or \code{"verbose"}, which shows the script that runs
+via \code{nix-shell}.}
 }
 \description{
 Evaluate expression in R or default shell

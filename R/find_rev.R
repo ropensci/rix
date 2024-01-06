@@ -732,6 +732,9 @@ nix_build_exit_msg <- function(x) {
 #' @param program String stating where to evaluate the expression. Either `"R"`,
 #' the default, or `"shell"`. `where = "R"` will evaluate the expression via
 #' `RScript` and `where = "shell"` will run in the standard shell.
+#' @param message_type String how detailed output is. Currently, there is 
+#' either `"simple"` (default) or `"verbose"`, which shows the script that runs
+#' via `nix-shell`.
 #' @inheritParams nix_build
 #' @return
 #' @importFrom codetools findGlobals checkUsage
@@ -739,7 +742,8 @@ nix_build_exit_msg <- function(x) {
 with_nix <- function(expr,
                      program = c("R", "shell"),
                      exec_mode = c("blocking", "non-blocking"),
-                     project_path = ".") {
+                     project_path = ".",
+                     message_type = c("simple", "verbose")) {
   has_nix_shell <- nix_shell_installed() # TRUE if yes, FALSE if no
   nix_file <- file.path(project_path, "default.nix")
   
@@ -748,12 +752,14 @@ with_nix <- function(expr,
       is.character(project_path) && length(project_path) == 1L,
     "`project_path` has no `default.nix` file. Use one that contains `default.nix`" =
       file.exists(nix_file),
+    "`message_type` must be character." = is.character(message_type),
     "`nix-shell` not available. To install, we suggest you follow https://zero-to-nix.com/start/install ." =
       isTRUE(has_nix_shell),
     "`expr` needs to be a call or function" = is.function(expr) || is.call(expr)
   )
   program <- match.arg(program)
   exec_mode <- match.arg(exec_mode)
+  message_type <- match.arg(message_type)
   
   # get the function arguments as a pairlist;
   # save formal arguments of pairlist via `tag = value`; e.g., if we have a
@@ -763,22 +769,13 @@ with_nix <- function(expr,
   # and bound to `"."` (project root)
   args <- as.list(formals(expr))
   
-  temp_dir <- tempdir()
+  cat("\n### Prepare to exchange arguments and globals for `expr`",
+    "between the host and Nix R sessions ###\n")
   
   # 1) save all function args onto a temporary folder each with
   # `<tag.Rds>` and `value` as serialized objects from RAM ---------------------
-  serialize_lobjs(lobjs = args, temp_dir)
-
-  # if necessary, run a `nix-build` (eventually check artefacts linked to nix
-  # store) to make sure nix-shell corresponds to the build
-  
-  # 3) run expression in nix session using formals/input args;
-  #    mostly metaprogramming
-  
-  # 4) serialize resulted output from evaluating function in `expr`
-  
-  # 5) deserialize final output of `expr` evaluated in nix-shell
-  #    into host R session
+  temp_dir <- tempdir()
+  serialize_args(args, temp_dir)
   
   # cast list of symbols/names and calls to list of strings; this is to prepare
   # deparsed version (string) of deserializing arguments from disk;
@@ -798,37 +795,40 @@ with_nix <- function(expr,
   # wrapper around `serialize_lobjs()`
   globals <- serialize_globals(globals_expr, temp_dir)
   
-  # extract addtional packages to export
+  # extract additional packages to export
+  pkgs <- serialize_pkgs(globals_expr, temp_dir)
   
-  
-  # 2) deserialize formals in nix session --------------------------------------
+  # 2) deserialize formal arguments of `expr` in nix session
+  # and necessary global objects -----------------------------------------------
+  # 3) serialize resulting output from evaluating function given as `expr`
   
   # main code to be run in nix R session
-  # tbd: program needs control flow like `switch()`, to quote either
-  # the required set of R-nix expressions, or return shell code in bash
   rnix_file <- file.path(temp_dir, "with_nix_r.R")
   
   rnix_quoted <- quote_rnix(
-    expr, program, args_vec, globals, temp_dir, rnix_file
+    expr, program, message_type, args_vec, globals, pkgs, temp_dir, rnix_file
   )
   rnix_deparsed <- deparse_chr1(expr = rnix_quoted, collapse = "\n")
   
-  # write script to disk, to run later via `Rscript` from `nix-shell` 
+  # 4): for 2) and 3) write script to disk, to run later via `Rscript` from
+  # `nix-shell` 
   # environment
   r_version_file <- file.path(temp_dir, "nix-r-version.txt")
   writeLines(text = rnix_deparsed, file(rnix_file))
   
+  # 3) run expression in nix session, based on temporary script
   cat(paste0("==> Running deparsed expression via `nix-shell`", " in ",
-    exec_mode, " mode:\n\n",
-    paste0(rnix_deparsed, collapse = " ")))
+    exec_mode, " mode:\n\n"#,
+    # paste0(rnix_deparsed, collapse = " ")
+  ))
   
   # command to run deparsed R expression via nix-shell
   cmd_rnix_deparsed <- c(
     file.path(project_path, "default.nix"),
-    "--pure",
+    # "--pure", # gives permission error on macOS
     "--run",
     sprintf(
-      "Rscript --vanilla %s",
+      "Rscript --vanilla '%s'",
       rnix_file
     )
   )
@@ -845,14 +845,23 @@ with_nix <- function(expr,
     poll_sys_proc_blocking(cmd = cmd_rnix_deparsed, proc, what = "expr")
   }
   
+  cat("\n### Finished code evaluation in `nix-shell` ###\n")
+  
+  # 5) deserialize final output of `expr` evaluated in nix-shell
+  # into host R session
+  out <- readRDS(file = file.path(temp_dir, "_out.Rds"))
+  
   on.exit(close(file(rnix_file)))
   
-  return(invisible(proc))
+  # return output from evaluated function
+  cat("\n* Evaluating `expr` in `nix-shell` returns:\n")
+  print(out)
+  return(out)
 }
 
 
-#' @noRd
 #' serialize language objects
+#' @noRd
 serialize_lobjs <- function(lobjs, temp_dir) {
   invisible({
     for (i in seq_along(lobjs)) {
@@ -866,6 +875,25 @@ serialize_lobjs <- function(lobjs, temp_dir) {
       saveRDS(
         object = lobjs[[i]],
         file = file.path(temp_dir, paste0(names(lobjs)[i], ".Rds"))
+      )
+    }
+  })
+}
+
+serialize_args <- function(args, temp_dir) {
+  invisible({
+    for (i in seq_along(args)) {
+      if (!nzchar(deparse(args[[i]]))) {
+        # for unnamed arguments like `expr = function(x) print(x)`
+        # x would be an empty symbol, see also ; i.e. arguments without 
+        # default expressions; i.e., tagged arguments with no value
+        # https://stackoverflow.com/questions/3892580/create-missing-objects-aka-empty-symbols-empty-objects-needed-for-f
+        args[[i]] <- as.symbol(names(args)[i])
+      }
+      args[[i]] <- get(as.character(args[[i]]))
+      saveRDS(
+        object = args[[i]],
+        file = file.path(temp_dir, paste0(names(args)[i], ".Rds"))
       )
     }
   })
@@ -916,11 +944,12 @@ where <- function(name, env = parent.frame()) {
   }
 }
 
+#' Finds and checks global functions and variables recursively for closure
+#' `expr`
 #' @noRd
 recurse_find_check_globals <- function(expr, args_vec) {
     
-    cat("* checking code in `expr` for potential problems:\n",
-     "`codetools::checkUsage(fun = expr)`\n")
+    cat("* checking code in `expr` for potential problems:\n")
     codetools::checkUsage(fun = expr)
     cat("\n")
     
@@ -945,8 +974,7 @@ recurse_find_check_globals <- function(expr, args_vec) {
         globals_exprs <- unlist(lapply(globals_lst, get_globals_exprs))
       }
       
-      cat("* checking code in `globals_exprs` for potential problems:\n",
-        "`codetools::checkUsage(fun = globals_exprs)`\n")
+      cat("* checking code in `globals_exprs` for potential problems:\n")
       lapply(
         globals_exprs,
         codetools::checkUsage
@@ -969,11 +997,13 @@ recurse_find_check_globals <- function(expr, args_vec) {
         result_list <- c(result_list, globals_lst_new)
       }
       
+      # prepare current globals to find new globals one recursion level deeper
+      # in the call stack in the next repeat
       globals_lst <- globals_lst_new
       
       globals_lst <- lapply(globals_lst, function(x) lapply(x, unlist))
       
-      # packages can be excluded for getting more globals
+      # packages need to be excluded for getting more globals
       globals_lst <- lapply(
         globals_lst,
         function(x) {
@@ -982,8 +1012,7 @@ recurse_find_check_globals <- function(expr, args_vec) {
       )
       
       globals_null <- all(is.null(unlist(globals_lst)))
-      
-      ## to be fixed
+      # TRUE if no more candidate global values
       all_non_pkgs_null <- all(globals_null)
       
       round_i <- round_i + 1L
@@ -991,7 +1020,6 @@ recurse_find_check_globals <- function(expr, args_vec) {
       if (is.null(globals_lst) || all_non_pkgs_null) break
     }
   
-    # order exports
     result_list <- Filter(function(x) !is.null(x), result_list)
     result_list <- lapply(
       result_list, 
@@ -1092,7 +1120,7 @@ classify_globals <- function(globals_expr, args_vec) {
   
   default_pkgnames <- paste0("package:", getOption("defaultPackages"))
   pkgenvs_attached <- setdiff(globs_pkg, c(default_pkgnames, "base"))
-  
+
   if (!length(pkgenvs_attached) == 0L) {
     pkgs_to_attach <- gsub("^package:", "", pkgenvs_attached)
   } else {
@@ -1113,12 +1141,12 @@ classify_globals <- function(globals_expr, args_vec) {
 }
 
 
+# wrapper to serialize expressions of all global objects found
 #' @noRd
-# wrapper to serialize global objects found
 serialize_globals <- function(globals_expr, temp_dir) {
   funs <- globals_expr$globalenv_fun
   if (!is.null(funs)) {
-    cat("=> Serializing global functions:", paste(names(funs)), "\n")
+    cat("=> Saving global functions to disk:", paste(names(funs)), "\n")
     globalenv_funs <- lapply(
       names(funs),
       function(x) get(x = x, envir = .GlobalEnv)
@@ -1128,8 +1156,8 @@ serialize_globals <- function(globals_expr, temp_dir) {
   }
   others <- globals_expr$globalenv_other
   if (!is.null(others)) {
-    cat("=> Serializing non-function object(s):",
-      paste(names(others), sep = ","), "\n"
+    cat("=> Saving non-function object(s), e.g. other environments:",
+      paste(names(others)), "\n"
     )
     globalenv_others <- lapply(
       names(others),
@@ -1140,12 +1168,11 @@ serialize_globals <- function(globals_expr, temp_dir) {
   }
   env_funs <- globals_expr$env_fun
   if (!is.null(env_funs)) {
-    cat("=> Serializing function(s) from custom environment(s):",
+    cat("=> Serializing function(s) from other environment(s):",
       paste(names(env_funs)), "\n")
     env_funs <- lapply(
       names(env_funs),
-      function(x) get(x = x) # tbd: need to add specific environment;
-      # use `base::Map` and `get(x, envir)`
+      function(x) get(x = x)
     )
     names(env_funs) <- names(globals_expr$env_fun)
     serialize_lobjs(lobjs = env_funs, temp_dir)
@@ -1153,31 +1180,51 @@ serialize_globals <- function(globals_expr, temp_dir) {
   env_others <- globals_expr$env_other
   if (!is.null(env_others)) {
     cat("=> Serializing non-function object(s) from custom environment(s)::",
-      paste(names(env_others), sep = ","), "\n"
+      paste(names(env_others)), "\n"
     )
     env_others <- lapply(
       names(env_others),
-      function(x) get(x = x) # tbd: need to add specific environment;
-      # use `base::Map` and `get(x, envir)`
+      function(x) get(x = x)
     )
     names(env_others) <- names(globals_expr$env_other)
     serialize_lobjs(lobjs = env_others, temp_dir)
   }
+  
   return(c(funs, others, env_funs, env_others))
 }
 
-# build deparsed script via language objects; 
+
+#' @noRd
+serialize_pkgs <- function(globals_expr, temp_dir) {
+  pkgs <- globals_expr$pkgs
+  if (!is.null(pkgs)) {
+    cat("=> Serializing package(s) required to run `expr`:\n",
+      paste(pkgs), "\n"
+    )
+  }
+  saveRDS(
+    object = pkgs,
+    file = file.path(temp_dir, "_pkgs.Rds")
+  )
+  return(pkgs)
+}
+
+# build deparsed script via language objects;
 # reads like R code, and avoids code injection
 quote_rnix <- function(expr,
                        program,
+                       message_type,
                        args_vec,
                        globals,
+                       pkgs,
                        temp_dir,
                        rnix_file) {
   expr_quoted <- bquote( {
+    cat("### Start evaluating `expr` in `nix-shell` ###")
     cat("\n* wrote R script evaluated via `Rscript` in `nix-shell`:",
       .(rnix_file))
     temp_dir <- .(temp_dir)
+    cat("\n", Sys.getenv("NIX_PATH"))
     r_version_num <- paste0(R.version$major, ".", R.version$minor)
     cat("\n* using Nix with R version", r_version_num, "\n\n")
     # assign `args_vec` as in c(...) form.
@@ -1191,10 +1238,11 @@ quote_rnix <- function(expr,
         value = readRDS(file = file.path(temp_dir, paste0(obj, ".Rds")))
       )
       cat(
-        paste0("  => reading file ", "'", obj, "'", ".Rds",
+        paste0("  => reading file ", "'", obj, ".Rds", "'",
           " for argument named `", obj, "`\n")
       )
     }
+    
     globals <- .(with_assign_vecnames_call(vec = globals))
     for (i in seq_along(globals)) {
       nm <- globals[i]
@@ -1204,23 +1252,37 @@ quote_rnix <- function(expr,
         value = readRDS(file = file.path(temp_dir, paste0(obj, ".Rds")))
       )
       cat(
-        paste0("  => reading file ", "'", obj, "'", ".Rds", 
+        paste0("  => reading file ", "'", obj, ".Rds", "'",
           " for global object named `", obj, "`\n")
       )
     }
+    
+    # for now name of character vector containing packages is hard-coded
+    # pkgs <- .(with_assign_vecnames_call(vec = pkgs))
+    # pkgs <- .(pkgs)
+    pkgs <- .(with_assign_vec_call(vec = pkgs))
+    lapply(pkgs, library, character.only = TRUE)
+    
     # execute function call in `expr` with list of correct args
     lst <- as.list(args_vec)
     names(lst) <- args_vec
     lst <- lapply(lst, as.name)
     rnix_out <- do.call(.(expr), lst)
-    typeof(rnix_out)
-    cat("\n* called `expr` with args", args_vec, ":")
-    cat("\n", deparse(.(expr)))
+    cat("\n* called `expr` with args", args_vec, ":\n")
+    message_type <- .(message_type)
+    if (message_type == "verbose") {
+    # cat("\n", deparse(.(expr))) # not nicely formatted, use print
+      # print(.(expr))
+    }
+    cat("\n* The type of the output object returned by `expr` is",
+      typeof(rnix_out))
+    saveRDS(object = rnix_out, file = file.path(temp_dir, "_out.Rds"))
+    cat("\n* Saved output to", file.path(temp_dir, "_out.Rds"))
     cat("\n\n* the following objects are in the global environment:\n")
     cat(ls())
     cat("\n* `sessionInfo()` output:\n")
     cat(capture.output(sessionInfo()), sep = "\n")
-  } )
+  } ) # end of `bquote()`
   
   return(expr_quoted)
 }
@@ -1228,9 +1290,9 @@ quote_rnix <- function(expr,
 # https://github.com/cran/codetools/blob/master/R/codetools.R
 # finding global variables
 
-#' @noRd
 # reconstruct argument vector (character) in Nix R;
 # build call to generate `args_vec`
+#' @noRd
 with_assign_vecnames_call <- function(vec) {
   cl <- call("c")
   for (i in seq_along(vec)) {
@@ -1240,7 +1302,16 @@ with_assign_vecnames_call <- function(vec) {
 }
 
 #' @noRd
+with_assign_vec_call <- function(vec) {
+  cl <- call("c")
+  for (i in seq_along(vec)) {
+    cl[[i + 1L]] <- vec[i]
+  }
+  return(cl)
+}
+
 # this is what `deparse1()` does, however, it is only since 4.0.0
+#' @noRd
 deparse_chr1 <- function(expr, width.cutoff = 500L, collapse = " ", ...) {
   paste(deparse(expr, width.cutoff, ...), collapse = collapse)
 }
