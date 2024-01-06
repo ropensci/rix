@@ -725,7 +725,7 @@ nix_build_exit_msg <- function(x) {
 }
 
 
-#' Evaluate expression in R or shell command via `nix-shell` environment
+#' Evaluate function in R or shell command via `nix-shell` environment
 #'
 #' @param expr Single R function or call, shell command, or list of them.
 #' @param program String stating where to evaluate the expression. Either `"R"`,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/find_rev.R
 \name{with_nix}
 \alias{with_nix}
-\title{Evaluate expression in R or shell command via \code{nix-shell} environment}
+\title{Evaluate function in R or shell command via \code{nix-shell} environment}
 \usage{
 with_nix(
   expr,
@@ -32,5 +32,5 @@ either \code{"simple"} (default) or \code{"verbose"}, which shows the script tha
 via \code{nix-shell}.}
 }
 \description{
-Evaluate expression in R or shell command via \code{nix-shell} environment
+Evaluate function in R or shell command via \code{nix-shell} environment
 }
