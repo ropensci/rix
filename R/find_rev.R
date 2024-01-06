@@ -730,7 +730,7 @@ nix_build_exit_msg <- function(x) {
 #' @param expr Single R function or call, shell command, or list of them.
 #' @param program String stating where to evaluate the expression. Either `"R"`,
 #' the default, or `"shell"`. `where = "R"` will evaluate the expression via
-#' `RScript` and `where = "shell"` will run in the standard shell.
+#' `RScript` and `where = "shell"` will run in `nix-shell`.
 #' @param message_type String how detailed output is. Currently, there is 
 #' either `"simple"` (default) or `"verbose"`, which shows the script that runs
 #' via `nix-shell`.

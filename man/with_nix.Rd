@@ -17,7 +17,7 @@ with_nix(
 
 \item{program}{String stating where to evaluate the expression. Either \code{"R"},
 the default, or \code{"shell"}. \code{where = "R"} will evaluate the expression via
-\code{RScript} and \code{where = "shell"} will run in the standard shell.}
+\code{RScript} and \code{where = "shell"} will run in \code{nix-shell}.}
 
 \item{exec_mode}{Either \code{"blocking"} (default) or \verb{"non-blocking}. This
 will either block the R session while the \code{nix-build} shell command is
