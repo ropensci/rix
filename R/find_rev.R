@@ -1224,9 +1224,10 @@ quote_rnix <- function(expr,
       .(rnix_file))
     temp_dir <- .(temp_dir)
     cat("\n", Sys.getenv("NIX_PATH"))
-    # fix library paths for nix R on macOS; avoid permission issue
+    # fix library paths for nix R on macOS and linux; avoid permission issue
     current_paths <- .libPaths()
-    user_dir <- grep("/Users/", current_paths)
+    userlib_pats <- c("/Users/", "/home/")
+    user_dir <- grep(paste(userlib_paths, collapse = "|"), current_paths)
     new_paths <- current_paths[-user_dir]
     .libPaths(new_paths)
     r_version_num <- paste0(R.version$major, ".", R.version$minor)
