@@ -2,7 +2,7 @@
 
 # rix 0.4.1 (2023-10-06)
 
-# Bug fixes
+## Bug fixes
 
 - `rix::rix()`: fix missing `pkgs.mkShell` when `shell_hook = NULL`.
   Both `shell_hook = ""` and `shell_hook = NULL` are now producing valid nix
