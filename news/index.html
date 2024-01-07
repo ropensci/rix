@@ -130,9 +130,20 @@
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.2" id="rix-012-2023-08-14">rix 0.1.2 (2023-08-14)<a class="anchor" aria-label="anchor" href="#rix-012-2023-08-14"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-0-1-2">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-1-2"></a></h3>
+<ul><li>Patch <code>inst/exdata/default.nix</code> so that <code>LOCALE_ARCHIVE</code> shellHook that was set to glibc locale does not fail on MacOS anymore (<a href="https://github.com/b-rodrigues/rix/issues/48" class="external-link">#40</a>; fixed with <a href="https://github.com/b-rodrigues/rix/commit/37f7ab84e5423721bdf05e41816dbc99353481e7" class="external-link">37f7ab8</a>).</li>
+<li>
+<code><a href="../reference/nix_build.html">nix_build()</a></code>: fix defensive check so the error message is referring to <code>project_path</code> instead of <code>nix_file</code>. The patch does not change correct behavior of <code><a href="../reference/nix_build.html">nix_build()</a></code>, hence it is only of cosmetic nature.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.1" id="rix-011-2023-08-11">rix 0.1.1 (2023-08-11)<a class="anchor" aria-label="anchor" href="#rix-011-2023-08-11"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-0-1-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-1-1"></a></h3>
+<ul><li>
+<code><a href="../reference/nix_build.html">nix_build()</a></code> now correctly checks presence of <code>nix-build</code>. (<a href="https://github.com/b-rodrigues/rix/commit/4be69b2c438276a1f636f3b407a124555bb12c9b" class="external-link">4be69b2</a>)</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="rix-010-2023-08-11">rix 0.1.0 (2023-08-11)<a class="anchor" aria-label="anchor" href="#rix-010-2023-08-11"></a></h2>
