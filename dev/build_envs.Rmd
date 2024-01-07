@@ -887,10 +887,10 @@ init <- function(project_path = ".",
 is_nix_rsession <- function() {
   is_nixr <- nzchar(Sys.getenv("NIX_STORE"))
   if (is_nixr) {
-    cat("==> R session running via Nix (nixpkgs)")
+    cat("==> R session running via Nix (nixpkgs)\n")
     return(TRUE)
   } else {
-    cat("\n==> R session running via host operating system or docker")
+    cat("\n==> R session running via host operating system or docker\n")
     return(FALSE)
   }
 }
