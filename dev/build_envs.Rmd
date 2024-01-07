@@ -853,7 +853,7 @@ with_nix <- function(expr,
         variable of this R session (mostly necessary in RStudio).\n",
         "* If you ran `with_nix()` from R launched in a `nix-shell`, you need
         to make sure that `pkgs.nix` is in the `buildInput` for ",
-        "`pkgs.mkShell`. If you used `rix::rix()` to generate your main nix
+        "`pkgs.mkShell`.\nIf you used `rix::rix()` to generate your main nix
         configuration of this session, just regenerate it with the additonal
         argument `system_pkgs = 'nix'."),
       call. = FALSE
