@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rix</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,6 +49,14 @@
       
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.0" id="rix-050-2024-01-07">rix 0.5.0 (2024-01-07)<a class="anchor" aria-label="anchor" href="#rix-050-2024-01-07"></a></h2>
+<div class="section level3">
+<h3 id="features-0-5-0">Features<a class="anchor" aria-label="anchor" href="#features-0-5-0"></a></h3>
+<ul><li><p>Added <code><a href="../reference/with_nix.html">with_nix()</a></code>, which can evaluate a function in R or shell command via <code>nix-shell</code> environment, and return the output into the current R session. This works for both evaluating R code from a nix-R session within an other nix-R session, or also from a host R session (i.e., on macOS or linux) within a specific nix-R session. This feature is useful to test dependencies and specific setups of software in controlled environments.</p></li>
+<li><p>Added <code><a href="../reference/tar_nix_ga.html">tar_nix_ga()</a></code>, a function to run targets pipelines on Github Actions using a Nix expression.</p></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.1" id="rix-041-2023-10-06">rix 0.4.1 (2023-10-06)<a class="anchor" aria-label="anchor" href="#rix-041-2023-10-06"></a></h2>
 <div class="section level3">
