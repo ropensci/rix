@@ -841,7 +841,24 @@ with_nix <- function(expr,
                      exec_mode = c("blocking", "non-blocking"),
                      project_path = ".",
                      message_type = c("simple", "verbose")) {
-  has_nix_shell <- nix_shell_installed() # TRUE if yes, FALSE if no
+  has_nix_shell <- nix_shell_available() # TRUE if yes, FALSE if no
+  if (!has_nix_shell) {
+    stop(
+      paste0("`nix-shell` is needed but is not available in your current ",
+        "shell environment.\n",
+        "* If you are in an R session of your host operating system, you
+        either\n1a) need to install Nix first, or if you have already done so ",
+        "\n",
+        "1b) make sure that the location of the nix store is in the `PATH`
+        variable of this R session (mostly necessary in RStudio).\n",
+        "* If you ran `with_nix()` from R launched in a `nix-shell`, you need
+        to make sure that `pkgs.nix` is in the `buildInput` for ",
+        "`pkgs.mkShell`. If you used `rix::rix()` to generate your main nix
+        configuration of this session, just regenerate it with the additonal
+        argument `system_pkgs = 'nix'."),
+      call. = FALSE
+    )
+  }
   nix_file <- file.path(project_path, "default.nix")
   
   stopifnot(
@@ -1429,12 +1446,12 @@ with_expr_deparse <- function(expr) {
 }
 
 #' @noRd
-nix_shell_installed <- function() {
-  exit_code <- system2("command", "-v", "nix-shell")
-  if (exit_code == 0L) {
-    return(invisible(TRUE))
+nix_shell_available <- function() {
+  which_nix_shell <- Sys.which("nix-shell")
+  if (nzchar(which_nix_shell)) {
+    return(TRUE)
   } else {
-    return(invisible(FALSE))
+    return(FALSE)
   }
 }
 
