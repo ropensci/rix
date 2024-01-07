@@ -753,7 +753,7 @@ init <- function(project_path = ".",
     cat("==> Created isolated nix-R project folder:\n", project_path, "\n")
   } else {
     project_path <- normalizePath(path = project_path)
-    cat("==> Using existing isolated nix-R project folder:\n", project_path,
+    cat("==> Existing isolated nix-R project folder:\n", project_path,
       "\n")
   }
   # check if RStudio session is running.
@@ -765,7 +765,7 @@ init <- function(project_path = ".",
       paste0("\n==> Added `.Rprofile` entry for new R sessions in:\n", 
         project_path),
       "\n* Adding the location of the Nix store to `PATH`",
-      "environmental variable for new R sessions", 
+      "environmental variable for new R sessions on host/docker Rstudio", 
       "\n\n==> Also adjusting the same path via `Sys.setenv()`, so that system",
       "commands can invoke key Nix commands like `nix-build` in this RStudio",
       "session on the host operating system.\n"
