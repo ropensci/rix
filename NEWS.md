@@ -103,7 +103,7 @@
 
 # rix 0.1.1 (2023-08-11)
 
-# Bug fixes
+## Bug fixes
 
 - `nix_build()` now correctly checks presence of `nix-build`. ([4be69b2](https://github.com/b-rodrigues/rix/commit/4be69b2c438276a1f636f3b407a124555bb12c9b))
 
