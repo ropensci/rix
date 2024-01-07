@@ -746,7 +746,7 @@ nix_build_exit_msg <- function(x) {
 init <- function(project_path = ".",
                  message_type = c("simple", "verbose")) {
   message_type <- match.arg(message_type)
-  cat("\n### Initiating isolated, project-specific R setup via Nix ###\n\n")
+  cat("\n### Bootstrapping isolated, project-specific R setup via Nix ###\n\n")
   if (!dir.exists(project_path)) {
     dir.create(path = project_path, recursive = TRUE)
     project_path <- normalizePath(path = project_path)
@@ -759,6 +759,14 @@ init <- function(project_path = ".",
   # check if RStudio session is running.
   is_nixr <- is_nix_rsession()
   is_rstudio <- is_rstudio_session()
+  
+  # create project-local `.Rprofile` with pure settings
+  # first create the call, deparse it, and write it to .Rprofile
+  rprofile_quoted <- nix_rprofile()
+  rprofile_deparsed <- deparse_chr1(expr = rprofile_quoted, collapse = "\n")
+  rprofile_file <- file.path(project_path, ".Rprofile")
+  writeLines(text = rprofile_deparsed, file(rprofile_file))
+  
   if (!is_nixr && is_rstudio) {
     PATH <- set_nix_path()
     cat(
@@ -773,6 +781,7 @@ init <- function(project_path = ".",
     cat("\n* Current `PATH` variable available in R session is:\n\n")
     cat(PATH)
   }
+  on.exit(close(file(rprofile_file)))
 }
 
 #' @noRd
@@ -812,7 +821,39 @@ set_nix_path <- function() {
   return(Sys.getenv("PATH"))
 }
 
-
+#' @noRd
+nix_rprofile <- function() {
+  quote( {
+    is_rstudio <- Sys.getenv("RSTUDIO") == "1"
+    is_nixr <- nzchar(Sys.getenv("NIX_STORE"))
+    if (!is_nixr && is_rstudio) {
+      # Currently, RStudio does not propagate environmental variables defined in 
+      # `$HOME/.zshrc`, `$HOME/.bashrc` and alike. This is workaround to 
+      # make the path of the nix store and hence basic nix commands available
+      # in an RStudio session
+      old_path <- Sys.getenv("PATH")
+      nix_path <- "/nix/var/nix/profiles/default/bin"
+      has_nix_path <- any(grepl(nix_path, old_path))
+      if (!has_nix_path) {
+        Sys.setenv(
+          PATH = paste(
+            old_path, "/nix/var/nix/profiles/default/bin", sep = ":"
+          )
+        )
+      }
+    }
+    
+    if (is_nixr) {
+      current_paths <- .libPaths()
+      userlib_paths <- Sys.getenv("R_LIBS_USER")
+      user_dir <- grep(paste(userlib_paths, collapse = "|"), current_paths)
+      new_paths <- current_paths[-user_dir]
+      # sets new library path without user library, making nix-R pure at 
+      # run-time
+      .libPaths(new_paths)
+    }
+  } )
+}
 
 
 
