@@ -2,7 +2,7 @@
 % Please edit documentation in R/find_rev.R
 \name{init}
 \alias{init}
-\title{Inititate and maintain an isolated, project-specific R setup via Nix}
+\title{Inititate and maintain an isolated, project-specific and pure R setup via Nix}
 \usage{
 init(project_path = ".", message_type = c("simple", "verbose"))
 }

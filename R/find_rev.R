@@ -724,7 +724,7 @@ nix_build_exit_msg <- function(x) {
   return(err_msg)
 }
 
-#' Inititate and maintain an isolated, project-specific R setup via Nix
+#' Inititate and maintain an isolated, project-specific and pure R setup via Nix
 #' 
 #' Bootstraps an isolated project folder and adds sensible defaults to
 #' achieve reproducibiltiy and isolated software dependencies with highest
@@ -1334,7 +1334,7 @@ quote_rnix <- function(expr,
     cat("\n", Sys.getenv("NIX_PATH"))
     # fix library paths for nix R on macOS and linux; avoid permission issue
     current_paths <- .libPaths()
-    userlib_paths <- c("/Users/", "/home/")
+    userlib_paths <- Sys.getenv("R_LIBS_USER")
     user_dir <- grep(paste(userlib_paths, collapse = "|"), current_paths)
     new_paths <- current_paths[-user_dir]
     .libPaths(new_paths)
