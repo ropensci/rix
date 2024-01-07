@@ -1,4 +1,19 @@
-<!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
+<!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
+
+# rix 0.5.0 (2024-01-07)
+
+## Features
+
+- Added `with_nix()`, which can evaluate a function in R or shell command via
+  `nix-shell` environment, and return the output into the current R session.
+  This works for both evaluating R code from a nix-R session within an other
+  nix-R session, or also from a host R session (i.e., on macOS or linux) within
+  a specific nix-R session. This feature is useful to test dependencies and
+  specific setups of software in controlled environments.
+
+- Added `tar_nix_ga()`, a function to run targets pipelines on Github Actions
+  using a Nix expression.
+
 
 # rix 0.4.1 (2023-10-06)
 
