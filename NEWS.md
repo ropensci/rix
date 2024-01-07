@@ -91,7 +91,7 @@
 
 # rix 0.1.2 (2023-08-14)
 
-# Bug fixes
+## Bug fixes
 
 - Patch `inst/exdata/default.nix` so that `LOCALE_ARCHIVE` shellHook that was set to 
   glibc locale does not fail on MacOS anymore 
