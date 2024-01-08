@@ -844,7 +844,12 @@ via Nix
 #' @export
 init <- function(project_path = ".",
                  message_type = c("simple", "verbose")) {
-  message_type <- match.arg(message_type)
+  stopifnot(
+    "`project_path` needs to be character of length 1" =
+      is.character(project_path) && length(project_path) == 1L,
+    "`message_type` needs to be character" = is.character(project_path)
+  )
+  message_type <- match.arg(message_type, choices = c("simple", "verbose"))
   cat("\n### Bootstrapping isolated, project-specific R setup via Nix ###\n\n")
   if (!dir.exists(project_path)) {
     dir.create(path = project_path, recursive = TRUE)
