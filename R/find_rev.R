@@ -778,11 +778,8 @@ nix_build_exit_msg <- function(x) {
 #' code ran between two software environments with `rix::with_nix()`.
 #' 
 #' @param project_path Character with the folder path to the isolated nix-R project. 
-#' Defaults to `"."`, which is the current path in the working directory. If the folder 
+#' Defaults to `"."`, which is the current working directory path. If the folder 
 #' does not exist yet, it will be created.
-#' @param message_type Character. Message type, defaults to `"simple"`, which 
-#' gives minimal but sufficient feedback. Other values are currently 
-#' `"verbose"`, which provides more detailed diagnostics.
 #' @param rprofile_action Character. Action to take with `.Rprofile` file 
 #' destined for `project_path` folder. Possible values include 
 #' `"create_missing"`, which only writes `.Rprofile` if it
@@ -793,13 +790,15 @@ nix_build_exit_msg <- function(x) {
 #' `"overwrite"` overwrites the `.Rprofile` file if it does exist; `"append"` 
 #' appends the existing file with code that is tailored to an isolated Nix-R
 #' project setup.
-#'
+#' @param message_type Character. Message type, defaults to `"simple"`, which 
+#' gives minimal but sufficient feedback. Other values are currently 
+#' `"verbose"`, which provides more detailed diagnostics.
 #' @export
 #' @seealso [with_nix()]
 init <- function(project_path = ".",
-                 message_type = c("simple", "verbose"),
                  rprofile_action = c("create_missing", "create_backup",
-                   "overwrite", "append")) {
+                   "overwrite", "append"),
+                 message_type = c("simple", "verbose")) {
   message_type <- match.arg(message_type, choices = c("simple", "verbose"))
   rprofile_action <- match.arg(rprofile_action,
     choices = c("create_backup", "create_missing", "overwrite", "append"))

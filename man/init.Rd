@@ -7,18 +7,14 @@ setup via Nix.}
 \usage{
 init(
   project_path = ".",
-  message_type = c("simple", "verbose"),
-  rprofile_action = c("create_missing", "create_backup", "overwrite", "append")
+  rprofile_action = c("create_missing", "create_backup", "overwrite", "append"),
+  message_type = c("simple", "verbose")
 )
 }
 \arguments{
 \item{project_path}{Character with the folder path to the isolated nix-R project.
-Defaults to \code{"."}, which is the current path in the working directory. If the folder
+Defaults to \code{"."}, which is the current working directory path. If the folder
 does not exist yet, it will be created.}
-
-\item{message_type}{Character. Message type, defaults to \code{"simple"}, which
-gives minimal but sufficient feedback. Other values are currently
-\code{"verbose"}, which provides more detailed diagnostics.}
 
 \item{rprofile_action}{Character. Action to take with \code{.Rprofile} file
 destined for \code{project_path} folder. Possible values include
@@ -30,6 +26,10 @@ POSIXct-derived strings that include the time zone information. A new
 \code{"overwrite"} overwrites the \code{.Rprofile} file if it does exist; \code{"append"}
 appends the existing file with code that is tailored to an isolated Nix-R
 project setup.}
+
+\item{message_type}{Character. Message type, defaults to \code{"simple"}, which
+gives minimal but sufficient feedback. Other values are currently
+\code{"verbose"}, which provides more detailed diagnostics.}
 }
 \description{
 Creates an isolated project folder for a Nix-R configuration. \code{rix::init()}
