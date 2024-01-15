@@ -290,10 +290,7 @@ fetchpkgs  <- function(git_pkgs, archive_pkgs){
 #'   If there are good reasons to not stick to the default, you can set your
 #'   preferred locale variables via 
 #'   `options(rix.nix_locale_variables = list(LANG = "de_CH.UTF-8", <...>)`
-#'   and the aforementioned locale variable names. However, you should use 
-#'   UTF-8 locales since we import the `glibcLocalesUtf8` set only, to not 
-#'   download the full set of locales and thereby keep the size reasonably
-#'   small.
+#'   and the aforementioned locale variable names.
 #' @export
 rix <- function(r_ver = "latest",
                 r_pkgs = NULL,
@@ -467,7 +464,7 @@ tex_pkgs)
   # to add it.
   generate_system_pkgs <- function(system_pkgs){
     sprintf('system_packages = builtins.attrValues {
-  inherit (pkgs) R glibcLocalesUtf8 %s;
+  inherit (pkgs) R glibcLocales %s;
 };
 ',
 get_system_pkgs(system_pkgs))
