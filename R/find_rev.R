@@ -975,6 +975,7 @@ nix_rprofile <- function() {
       # `$HOME/.zshrc`, `$HOME/.bashrc` and alike. This is workaround to 
       # make the path of the nix store and hence basic nix commands available
       # in an RStudio session
+      cat("{rix} detected RStudio R session")
       old_path <- Sys.getenv("PATH")
       nix_path <- "/nix/var/nix/profiles/default/bin"
       has_nix_path <- any(grepl(nix_path, old_path))
@@ -985,6 +986,7 @@ nix_rprofile <- function() {
           )
         )
       }
+      rm(old_path, nix_path)
     }
     
     if (isTRUE(is_nixr)) {
@@ -995,7 +997,10 @@ nix_rprofile <- function() {
       # sets new library path without user library, making nix-R pure at 
       # run-time
       .libPaths(new_paths)
+      rm(current_paths, userlib_paths, user_dir, new_paths)
     }
+    
+    rm(is_rstudio, is_nixr)
   } )
 }
 
