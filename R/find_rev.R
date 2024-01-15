@@ -875,6 +875,22 @@ init <- function(project_path = ".",
         )
         set_message_session_PATH(message_type = message_type)
       }
+    },
+    overwrite = {
+      write_rprofile(rprofile_text, rprofile_file)
+      if (isTRUE(rprofile_exists)) {
+        message_rprofile(
+          action_string = "Overwrote", project_path = project_path
+        )
+      } else {
+        message_rprofile(
+          action_string = "Added", project_path = project_path
+        )
+      }
+      if (message_type == "verbose") {
+        cat("\n* Current lines of local `.Rprofile` are:\n\n")
+        cat(readLines(con = file(rprofile_file)), sep = "\n")
+      }
     }
   )
   
