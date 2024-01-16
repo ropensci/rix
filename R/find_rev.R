@@ -844,10 +844,6 @@ init <- function(project_path = ".",
           "\n* Keep existing `.Rprofile`. in `project_path`:\n",
           paste0(project_path, "/"), "\n"
         )
-        if (message_type == "verbose") {
-          cat("\n* Current lines of local `.Rprofile` are:\n\n")
-          cat(readLines(con = file(rprofile_file)), sep = "\n")
-        }
       } else {
         write_rprofile(rprofile_text, rprofile_file)
         message_rprofile(action_string = "Added", project_path = project_path)
@@ -856,10 +852,6 @@ init <- function(project_path = ".",
     },
     create_backup = {
       if (isTRUE(rprofile_exists)) {
-        if (message_type == "verbose") {
-          cat("\n* Current lines of local `.Rprofile` are\n:")
-          cat(readLines(con = file(rprofile_file)), sep = "\n")
-        }
         file.copy(from = rprofile_file, to = rprofile_backup)
         cat(
           "\n==> Backed up existing `.Rprofile` in file:\n", rprofile_backup,
@@ -870,6 +862,10 @@ init <- function(project_path = ".",
           action_string = "Overwrote",
           project_path = project_path
         )
+        if (message_type == "verbose") {
+          cat("\n* Current lines of local `.Rprofile` are\n:")
+          cat(readLines(con = file(rprofile_file)), sep = "\n")
+        }
         set_message_session_PATH(message_type = message_type)
       }
     },
@@ -884,12 +880,19 @@ init <- function(project_path = ".",
           action_string = "Added", project_path = project_path
         )
       }
-      if (message_type == "verbose") {
-        cat("\n* Current lines of local `.Rprofile` are:\n\n")
-        cat(readLines(con = file(rprofile_file)), sep = "\n")
-      }
+    },
+    append = {
+      cat(paste0(rprofile_text, "\n"), file = rprofile_file, append = TRUE)
+      message_rprofile(
+        action_string = "Appended", project_path = project_path
+      )
     }
   )
+      
+  if (message_type == "verbose") {
+    cat("\n* Current lines of local `.Rprofile` are:\n\n")
+    cat(readLines(con = file(rprofile_file)), sep = "\n")
+  }
   
   on.exit(close(file(rprofile_file)))
 }
@@ -909,7 +912,6 @@ get_rprofile_text <- function(rprofile_deparsed) {
     rprofile_deparsed
   )
 }
-
 
 #' @noRd
 message_rprofile <- function(action_string = "Added",
