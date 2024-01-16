@@ -1,5 +1,15 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# rix 0.5.1 (2024-01-16)
+
+## Bug fixes
+
+- `rix::rix()`: patch for nixpkgs revisions corresponding to R (`r_ver`)
+  <= 4.2.0; `nix-build` failed because attribute `glibcLocalesUtf8` was
+  not found. Fixed by importing `gibcLocales`. Thanks @motorlearner for 
+  reporting.
+
+
 # rix 0.5.0 (2024-01-07)
 
 ## Features
