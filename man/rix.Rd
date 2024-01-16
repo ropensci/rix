@@ -95,8 +95,5 @@ reproducibility by default in Nix environments created with \code{rix()}.
 If there are good reasons to not stick to the default, you can set your
 preferred locale variables via
 \verb{options(rix.nix_locale_variables = list(LANG = "de_CH.UTF-8", <...>)}
-and the aforementioned locale variable names. However, you should use
-UTF-8 locales since we import the \code{glibcLocalesUtf8} set only, to not
-download the full set of locales and thereby keep the size reasonably
-small.
+and the aforementioned locale variable names.
 }
