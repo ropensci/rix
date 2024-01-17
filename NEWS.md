@@ -1,5 +1,20 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# rix 0.5.1.9000 (2024-01-17)
+
+- Added `rix::init()` to initialize and maintain an isolated, project-specific,
+  and pure R setup via Nix. It accomplishes this by writing a custom `.Rprofile`
+  that guarantees R packages can only be attached from Nix paths, preventing
+  unnoticed loading from the system's R user library (`R_LIBS_USER` and ensuring
+  runtime purity regarding packages and linked libraries). Additionally, it
+  appends `/nix/var/nix/profiles/default/bin` to the `PATH`. Currently, this
+  modification only takes effect in the current R session and not in new R
+  sessions for RStudio on MacOS. This is because the default R session is not
+  started from a shell. The `PATH` will be modified by RStudio when starting the
+  R session, effectively after loading the local `.Rprofile`. Future versions
+  of RStudio will hopefully respect all environmental variables from a shell
+  environment.
+
 # rix 0.5.1 (2024-01-16)
 
 ## Bug fixes
