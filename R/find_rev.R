@@ -1023,6 +1023,8 @@ nix_rprofile <- function() {
 
 #' Evaluate function in R or shell command via `nix-shell` environment
 #' 
+#' This function needs an installation of Nix. `with_nix()` has two effects
+#' to run code in isolated and reproducible environments.
 #' 1. Evaluate a function in R or a shell command via the `nix-shell`
 #'   environment (Nix expression for custom software libraries; involving pinned
 #'   versions of R and R packages via Nixpkgs)
@@ -1057,12 +1059,27 @@ nix_rprofile <- function() {
 #' specific tools like {renv} to control complex software environments in R and
 #' any other language.
 #' 
+#' `with_nix()` can evaluate both R code from a nix-R session within
+#' another nix-R session, and also from a host R session (i.e., on macOS or
+#' Linux) within a specific nix-R session. This feature is useful for testing
+#' the reproducibility and compatibility of given code across different software
+#' environments. If testing of different sets of environments is necessary, you
+#' can easily do so by providing Nix expressions in custom `.nix` or
+#' `default.nix` files in different subfolders of the project.
+#' 
+#' This solution is very convenient because it gives direct feedback in 
+#' read-eval-print-loop style, which gives a direct interface to the very 
+#' reproducible infrastructure-as-code approach offered by Nix and Nixpkgs. You
+#' don't need extra efforts such as setting up DevOps tooling like Docker and
+#' domain specific tools like {renv} to control complex software environments in
+#' R and any other language.
+#' 
 #' To do its job, `with_nix()` heavily relies on patterns that manipulate
-#' language expressions (aka computing on the language) offered in base R as well as
-#' the {codetools} package by Luke Tierney. Some of the key steps that are
-#' done behind the scene:
-#' 1. recursively find and export global objects (globals) in the call
-#' stack of `expr` as well as propagate R package environments found.
+#' language expressions (aka computing on the language) offered in base R as
+#' well as the {codetools} package by Luke Tierney. Some of the key steps that 
+#' are done behind the scene:
+#' 1. recursively find, classify, and export global objects (globals) in the 
+#' call stack of `expr` as well as propagate R package environments found.
 #' 2. Serialize (save to disk) and deserialize (read from disk) dependent
 #'  data structures as `.Rds` with necessary function arguments provided,
 #'  any relevant globals in the call stack, packages, and `expr` outputs 
@@ -1072,10 +1089,11 @@ nix_rprofile <- function() {
 #'  like this via `{sys}` by Jeroen Ooms:
 #'  `nix-shell --pure --run "Rscript --vanilla"`.
 #'
-#' @param expr Single R function or call, shell command, or list of them.
+#' @param expr Single R function or call, or character vector with shell command
+#' element optionally followed by command arguments (one flag per element).
 #' @param program String stating where to evaluate the expression. Either `"R"`,
 #' the default, or `"shell"`. `where = "R"` will evaluate the expression via
-#' `RScript` and `where = "shell"` will run in `nix-shell`.
+#' `RScript` and `where = "shell"` will run the system command in `nix-shell`.
 #' @param message_type String how detailed output is. Currently, there is 
 #' either `"simple"` (default) or `"verbose"`, which shows the script that runs
 #' via `nix-shell`.
@@ -1083,6 +1101,36 @@ nix_rprofile <- function() {
 #' @return
 #' @importFrom codetools findGlobals checkUsage
 #' @export
+#' @return 
+#' - if `program = "R"`, R object returned by function given in `expr`
+#' when evaluated via the R environment in `nix-shell` defined by Nix 
+#' expression.
+#' - if `program = "shell"`, character vector of standard output (stdout)
+#' of `expr` command sent to a command line interface provided by a Nix package.
+#' @examples
+#' \dontrun{
+#' # create an isolated, runtime-pure R setup via Nix
+#' project_path <- "./sub_shell"
+#' init(
+#'   project_path = project_path,
+#'   rprofile_action = "create_missing"
+#' )
+#' # generate nix environment in `default.nix`
+#' rix(
+#'   r_ver = "4.2.0",
+#'   project_path = project_path
+#' )
+#' # evaluate function in Nix-R environment via `nix-shell` and `Rscript`,
+#' # stream messages, and bring output back to current R session
+#' out <- with_nix(
+#'   expr = function(mtcars) nrow(mtcars),
+#'   program = "R", exec_mode = "non-blocking", project_path = project_path,
+#'   message_type = "simple"
+#' )
+#' 
+#' # There no limit in the complexity of function call stacks that `with_nix()`
+#' # can possibly handle
+#' }
 with_nix <- function(expr,
                      program = c("R", "shell"),
                      exec_mode = c("blocking", "non-blocking"),

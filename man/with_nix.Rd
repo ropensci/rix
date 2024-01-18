@@ -13,11 +13,12 @@ with_nix(
 )
 }
 \arguments{
-\item{expr}{Single R function or call, shell command, or list of them.}
+\item{expr}{Single R function or call, or character vector with shell command
+element optionally followed by command arguments (one flag per element).}
 
 \item{program}{String stating where to evaluate the expression. Either \code{"R"},
 the default, or \code{"shell"}. \code{where = "R"} will evaluate the expression via
-\code{RScript} and \code{where = "shell"} will run in \code{nix-shell}.}
+\code{RScript} and \code{where = "shell"} will run the system command in \code{nix-shell}.}
 
 \item{exec_mode}{Either \code{"blocking"} (default) or \verb{"non-blocking}. This
 will either block the R session while the \code{nix-build} shell command is
@@ -31,7 +32,18 @@ session.}
 either \code{"simple"} (default) or \code{"verbose"}, which shows the script that runs
 via \code{nix-shell}.}
 }
+\value{
+\itemize{
+\item if \code{program = "R"}, R object returned by function given in \code{expr}
+when evaluated via the R environment in \code{nix-shell} defined by Nix
+expression.
+\item if \code{program = "shell"}, character vector of standard output (stdout)
+of \code{expr} command sent to a command line interface provided by a Nix package.
+}
+}
 \description{
+This function needs an installation of Nix. \code{with_nix()} has two effects
+to run code in isolated and reproducible environments.
 \enumerate{
 \item Evaluate a function in R or a shell command via the \code{nix-shell}
 environment (Nix expression for custom software libraries; involving pinned
@@ -68,13 +80,28 @@ extra efforts such as setting up DevOps tooling like Docker and domain
 specific tools like {renv} to control complex software environments in R and
 any other language.
 
+\code{with_nix()} can evaluate both R code from a nix-R session within
+another nix-R session, and also from a host R session (i.e., on macOS or
+Linux) within a specific nix-R session. This feature is useful for testing
+the reproducibility and compatibility of given code across different software
+environments. If testing of different sets of environments is necessary, you
+can easily do so by providing Nix expressions in custom \code{.nix} or
+\code{default.nix} files in different subfolders of the project.
+
+This solution is very convenient because it gives direct feedback in
+read-eval-print-loop style, which gives a direct interface to the very
+reproducible infrastructure-as-code approach offered by Nix and Nixpkgs. You
+don't need extra efforts such as setting up DevOps tooling like Docker and
+domain specific tools like {renv} to control complex software environments in
+R and any other language.
+
 To do its job, \code{with_nix()} heavily relies on patterns that manipulate
-language expressions (aka computing on the language) offered in base R as well as
-the {codetools} package by Luke Tierney. Some of the key steps that are
-done behind the scene:
+language expressions (aka computing on the language) offered in base R as
+well as the {codetools} package by Luke Tierney. Some of the key steps that
+are done behind the scene:
 \enumerate{
-\item recursively find and export global objects (globals) in the call
-stack of \code{expr} as well as propagate R package environments found.
+\item recursively find, classify, and export global objects (globals) in the
+call stack of \code{expr} as well as propagate R package environments found.
 \item Serialize (save to disk) and deserialize (read from disk) dependent
 data structures as \code{.Rds} with necessary function arguments provided,
 any relevant globals in the call stack, packages, and \code{expr} outputs
@@ -83,5 +110,30 @@ returned in a temporary directory.
 reconstructed catching expressions with quoting; it is launched by commands
 like this via \code{{sys}} by Jeroen Ooms:
 \verb{nix-shell --pure --run "Rscript --vanilla"}.
+}
+}
+\examples{
+\dontrun{
+# create an isolated, runtime-pure R setup via Nix
+project_path <- "./sub_shell"
+init(
+  project_path = project_path,
+  rprofile_action = "create_missing"
+)
+# generate nix environment in `default.nix`
+rix(
+  r_ver = "4.2.0",
+  project_path = project_path
+)
+# evaluate function in Nix-R environment via `nix-shell` and `Rscript`,
+# stream messages, and bring output back to current R session
+out <- with_nix(
+  expr = function(mtcars) nrow(mtcars),
+  program = "R", exec_mode = "non-blocking", project_path = project_path,
+  message_type = "simple"
+)
+
+# There no limit in the complexity of function call stacks that `with_nix()`
+# can possibly handle
 }
 }
