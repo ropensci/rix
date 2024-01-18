@@ -1234,8 +1234,8 @@ with_nix <- function(expr,
     "`project_path` has no `default.nix` file. Use one that contains `default.nix`" =
       file.exists(nix_file),
     "`message_type` must be character." = is.character(message_type),
-    "`expr` needs to be a call or function for `program = R`, and character for `program = shell`" =
-      is.function(expr) || is.call(expr) || is.character(expr)
+    "`expr` needs to be a call or function for `program = R`, and character of length 1 for `program = shell`" =
+      is.function(expr) || is.call(expr) || (is.character(expr) && length(expr) == 1L)
   )
   
   # ad-hoc solution for RStudio's limitation that R sessions cannot yet inherit
