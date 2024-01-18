@@ -56,8 +56,15 @@ current R session.
 \code{with_nix()} gives you the power of evaluating a main function \code{expr}
 and its function call stack that are defined in the current R session
 in an encapsulated nix-R session defined by Nix expression (\code{default.nix}),
-which is located in at a distinct project path (\code{project_path}). It is for
-example useful for the following purposes.
+which is located in at a distinct project path (\code{project_path}).
+
+\code{with_nix()} is very convenient because it gives direct code feedback in
+read-eval-print-loop style, which gives a direct interface to the very
+reproducible infrastructure-as-code approach offered by Nix and Nixpkgs. You
+don't need extra efforts such as setting up DevOps tooling like Docker and
+domain specific tools like {renv} to control complex software environments in
+R and any other language. It is for example useful for the following
+purposes.
 \enumerate{
 \item test compatibility of custom R code and software/package dependencies in
 development and production environments
@@ -69,31 +76,11 @@ R code, and whether they give identical results or not.
 
 \code{with_nix()} can evaluate both R code from a nix-R session within
 another nix-R session, and also from a host R session (i.e., on macOS or
-Linux) within a specific nix-R  session. This feature is useful for testing
-the reproducibility and the compatibility of two and more sets (if repeatedly
-in isolated folders) of different software environments.
-
-This solution is very convenient because it gives direct feedback in
-read-eval-print-loop style, but from the very reproducible
-infrastructure-as-code approach offered by Nix and Nixpkgs. You don't need
-extra efforts such as setting up DevOps tooling like Docker and domain
-specific tools like {renv} to control complex software environments in R and
-any other language.
-
-\code{with_nix()} can evaluate both R code from a nix-R session within
-another nix-R session, and also from a host R session (i.e., on macOS or
 Linux) within a specific nix-R session. This feature is useful for testing
 the reproducibility and compatibility of given code across different software
 environments. If testing of different sets of environments is necessary, you
 can easily do so by providing Nix expressions in custom \code{.nix} or
 \code{default.nix} files in different subfolders of the project.
-
-This solution is very convenient because it gives direct feedback in
-read-eval-print-loop style, which gives a direct interface to the very
-reproducible infrastructure-as-code approach offered by Nix and Nixpkgs. You
-don't need extra efforts such as setting up DevOps tooling like Docker and
-domain specific tools like {renv} to control complex software environments in
-R and any other language.
 
 To do its job, \code{with_nix()} heavily relies on patterns that manipulate
 language expressions (aka computing on the language) offered in base R as
