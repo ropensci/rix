@@ -1022,6 +1022,55 @@ nix_rprofile <- function() {
 
 
 #' Evaluate function in R or shell command via `nix-shell` environment
+#' 
+#' 1. Evaluate a function in R or a shell command via the `nix-shell`
+#'   environment (Nix expression for custom software libraries; involving pinned
+#'   versions of R and R packages via Nixpkgs)
+#' 2. If no error, return the result object of `expr` in `with_nix()` into the
+#'   current R session.
+#'
+#'
+#'
+#' `with_nix()` gives you the power of evaluating a main function `expr` 
+#' and its function call stack that are defined in the current R session
+#' in an encapsulated nix-R session defined by Nix expression (`default.nix`),
+#' which is located in at a distinct project path (`project_path`). It is for 
+#' example useful for the following purposes.
+#' 
+#' 1. test compatibility of custom R code and software/package dependencies in
+#'   development and production environments
+#' 2. directly stream outputs (returned objects), messages and errors from any
+#'   command line tool offered in Nixpkgs into an R session.
+#' 3. Test if evolving R packages change their behavior for given unchanged
+#'   R code, and whether they give identical results or not.
+#' 
+#' `with_nix()` can evaluate both R code from a nix-R session within
+#' another nix-R session, and also from a host R session (i.e., on macOS or
+#' Linux) within a specific nix-R  session. This feature is useful for testing
+#' the reproducibility and the compatibility of two and more sets (if repeatedly
+#' in isolated folders) of different software environments.
+#' 
+#' This solution is very convenient because it gives direct feedback in 
+#' read-eval-print-loop style, but from the very reproducible
+#' infrastructure-as-code approach offered by Nix and Nixpkgs. You don't need
+#' extra efforts such as setting up DevOps tooling like Docker and domain
+#' specific tools like {renv} to control complex software environments in R and
+#' any other language.
+#' 
+#' To do its job, `with_nix()` heavily relies on patterns that manipulate
+#' language expressions (aka computing on the language) offered in base R as well as
+#' the {codetools} package by Luke Tierney. Some of the key steps that are
+#' done behind the scene:
+#' 1. recursively find and export global objects (globals) in the call
+#' stack of `expr` as well as propagate R package environments found.
+#' 2. Serialize (save to disk) and deserialize (read from disk) dependent
+#'  data structures as `.Rds` with necessary function arguments provided,
+#'  any relevant globals in the call stack, packages, and `expr` outputs 
+#'  returned in a temporary directory.
+#' 3. Use pure `nix-shell` environments to execute a R code script 
+#'   reconstructed catching expressions with quoting; it is launched by commands
+#'  like this via `{sys}` by Jeroen Ooms:
+#'  `nix-shell --pure --run "Rscript --vanilla"`.
 #'
 #' @param expr Single R function or call, shell command, or list of them.
 #' @param program String stating where to evaluate the expression. Either `"R"`,
@@ -1039,8 +1088,28 @@ with_nix <- function(expr,
                      exec_mode = c("blocking", "non-blocking"),
                      project_path = ".",
                      message_type = c("simple", "verbose")) {
+  nix_file <- file.path(project_path, "default.nix")
+  stopifnot(
+    "`project_path` must be character of length 1." =
+      is.character(project_path) && length(project_path) == 1L,
+    "`project_path` has no `default.nix` file. Use one that contains `default.nix`" =
+      file.exists(nix_file),
+    "`message_type` must be character." = is.character(message_type),
+    "`expr` needs to be a call or function" = is.function(expr) || is.call(expr)
+  )
+  
+  # ad-hoc solution for RStudio's limitation that R sessions cannot yet inherit
+  # proper `PATH` from custom `.Rprofile` on macOS (2023-01-17)
+  # adjust `PATH` to include `/nix/var/nix/profiles/default/bin`
+  if (isTRUE(is_rstudio_session()) && isFALSE(is_nix_rsession())) {
+    set_nix_path()
+  }
+  
   has_nix_shell <- nix_shell_available() # TRUE if yes, FALSE if no
-  if (!has_nix_shell) {
+  stopifnot("`nix-shell` not available. To install, we suggest you follow https://zero-to-nix.com/start/install ." =
+    isTRUE(has_nix_shell))
+  
+  if (isFALSE(has_nix_shell)) {
     stop(
       paste0("`nix-shell` is needed but is not available in your current ",
         "shell environment.\n",
@@ -1057,18 +1126,7 @@ with_nix <- function(expr,
       call. = FALSE
     )
   }
-  nix_file <- file.path(project_path, "default.nix")
   
-  stopifnot(
-    "`project_path` must be character of length 1." =
-      is.character(project_path) && length(project_path) == 1L,
-    "`project_path` has no `default.nix` file. Use one that contains `default.nix`" =
-      file.exists(nix_file),
-    "`message_type` must be character." = is.character(message_type),
-    "`nix-shell` not available. To install, we suggest you follow https://zero-to-nix.com/start/install ." =
-      isTRUE(has_nix_shell),
-    "`expr` needs to be a call or function" = is.function(expr) || is.call(expr)
-  )
   program <- match.arg(program)
   exec_mode <- match.arg(exec_mode)
   message_type <- match.arg(message_type)

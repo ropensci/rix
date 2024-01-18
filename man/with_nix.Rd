@@ -32,5 +32,56 @@ either \code{"simple"} (default) or \code{"verbose"}, which shows the script tha
 via \code{nix-shell}.}
 }
 \description{
-Evaluate function in R or shell command via \code{nix-shell} environment
+\enumerate{
+\item Evaluate a function in R or a shell command via the \code{nix-shell}
+environment (Nix expression for custom software libraries; involving pinned
+versions of R and R packages via Nixpkgs)
+\item If no error, return the result object of \code{expr} in \code{with_nix()} into the
+current R session.
+}
+}
+\details{
+\code{with_nix()} gives you the power of evaluating a main function \code{expr}
+and its function call stack that are defined in the current R session
+in an encapsulated nix-R session defined by Nix expression (\code{default.nix}),
+which is located in at a distinct project path (\code{project_path}). It is for
+example useful for the following purposes.
+\enumerate{
+\item test compatibility of custom R code and software/package dependencies in
+development and production environments
+\item directly stream outputs (returned objects), messages and errors from any
+command line tool offered in Nixpkgs into an R session.
+\item Test if evolving R packages change their behavior for given unchanged
+R code, and whether they give identical results or not.
+}
+
+\code{with_nix()} can evaluate both R code from a nix-R session within
+another nix-R session, and also from a host R session (i.e., on macOS or
+Linux) within a specific nix-R  session. This feature is useful for testing
+the reproducibility and the compatibility of two and more sets (if repeatedly
+in isolated folders) of different software environments.
+
+This solution is very convenient because it gives direct feedback in
+read-eval-print-loop style, but from the very reproducible
+infrastructure-as-code approach offered by Nix and Nixpkgs. You don't need
+extra efforts such as setting up DevOps tooling like Docker and domain
+specific tools like {renv} to control complex software environments in R and
+any other language.
+
+To do its job, \code{with_nix()} heavily relies on patterns that manipulate
+language expressions (aka computing on the language) offered in base R as well as
+the {codetools} package by Luke Tierney. Some of the key steps that are
+done behind the scene:
+\enumerate{
+\item recursively find and export global objects (globals) in the call
+stack of \code{expr} as well as propagate R package environments found.
+\item Serialize (save to disk) and deserialize (read from disk) dependent
+data structures as \code{.Rds} with necessary function arguments provided,
+any relevant globals in the call stack, packages, and \code{expr} outputs
+returned in a temporary directory.
+\item Use pure \code{nix-shell} environments to execute a R code script
+reconstructed catching expressions with quoting; it is launched by commands
+like this via \code{{sys}} by Jeroen Ooms:
+\verb{nix-shell --pure --run "Rscript --vanilla"}.
+}
 }
