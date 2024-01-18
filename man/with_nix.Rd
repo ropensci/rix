@@ -13,8 +13,8 @@ with_nix(
 )
 }
 \arguments{
-\item{expr}{Single R function or call, or character vector with shell command
-element optionally followed by command arguments (one flag per element).}
+\item{expr}{Single R function or call, or character vector of length one with
+shell command and optional arguments (flags).}
 
 \item{program}{String stating where to evaluate the expression. Either \code{"R"},
 the default, or \code{"shell"}. \code{where = "R"} will evaluate the expression via

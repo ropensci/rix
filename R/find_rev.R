@@ -1076,8 +1076,8 @@ nix_rprofile <- function() {
 #'  like this via `{sys}` by Jeroen Ooms:
 #'  `nix-shell --pure --run "Rscript --vanilla"`.
 #'
-#' @param expr Single R function or call, or character vector with shell command
-#' element optionally followed by command arguments (one flag per element).
+#' @param expr Single R function or call, or character vector of length one with
+#' shell command and optional arguments (flags).
 #' @param program String stating where to evaluate the expression. Either `"R"`,
 #' the default, or `"shell"`. `where = "R"` will evaluate the expression via
 #' `RScript` and `where = "shell"` will run the system command in `nix-shell`.
@@ -1130,7 +1130,8 @@ with_nix <- function(expr,
     "`project_path` has no `default.nix` file. Use one that contains `default.nix`" =
       file.exists(nix_file),
     "`message_type` must be character." = is.character(message_type),
-    "`expr` needs to be a call or function" = is.function(expr) || is.call(expr)
+    "`expr` needs to be a call or function for `program = R`, and character for `program = shell`" =
+      is.function(expr) || is.call(expr) || is.character(expr)
   )
   
   # ad-hoc solution for RStudio's limitation that R sessions cannot yet inherit
@@ -1166,101 +1167,125 @@ with_nix <- function(expr,
   exec_mode <- match.arg(exec_mode)
   message_type <- match.arg(message_type)
   
-  # get the function arguments as a pairlist;
-  # save formal arguments of pairlist via `tag = value`; e.g., if we have a
-  # `expr = function(p = p_root) dir(path = p)`, the input object
-  # to be serialized will be serialized under `"p.Rds"`  in a tmp dir, and
-  # will contain object `p_root`, which is defined in the global environment
-  # and bound to `"."` (project root)
-  args <- as.list(formals(expr))
+  if (program == "R") {
   
-  cat("\n### Prepare to exchange arguments and globals for `expr`",
-    "between the host and Nix R sessions ###\n")
-  
-  # 1) save all function args onto a temporary folder each with
-  # `<tag.Rds>` and `value` as serialized objects from RAM ---------------------
-  temp_dir <- tempdir()
-  serialize_args(args, temp_dir)
-  
-  # cast list of symbols/names and calls to list of strings; this is to prepare
-  # deparsed version (string) of deserializing arguments from disk;
-  # elements of args for now should be of type "symbol" or "language"
-  args_vec <- vapply(args, deparse, FUN.VALUE = character(1L))
-  
-  # todo in `rnix_deparsed`:
-  # => locate all global variables used by function
-  # https://github.com/cran/codetools/blob/master/R/codetools.R
-  # http://adv-r.had.co.nz/Expressions.html#ast-funs
-  
-  # code inspection: generates messages with potential problems
-  check_expr(expr)
-  
-  globals_expr <- recurse_find_check_globals(expr, args_vec)
-  
-  # wrapper around `serialize_lobjs()`
-  globals <- serialize_globals(globals_expr, temp_dir)
-  
-  # extract additional packages to export
-  pkgs <- serialize_pkgs(globals_expr, temp_dir)
-  
-  # 2) deserialize formal arguments of `expr` in nix session
-  # and necessary global objects -----------------------------------------------
-  # 3) serialize resulting output from evaluating function given as `expr`
-  
-  # main code to be run in nix R session
-  rnix_file <- file.path(temp_dir, "with_nix_r.R")
-  
-  rnix_quoted <- quote_rnix(
-    expr, program, message_type, args_vec, globals, pkgs, temp_dir, rnix_file
-  )
-  rnix_deparsed <- deparse_chr1(expr = rnix_quoted, collapse = "\n")
-  
-  # 4): for 2) and 3) write script to disk, to run later via `Rscript` from
-  # `nix-shell` 
-  # environment
-  r_version_file <- file.path(temp_dir, "nix-r-version.txt")
-  writeLines(text = rnix_deparsed, file(rnix_file))
-  
-  # 3) run expression in nix session, based on temporary script
-  cat(paste0("==> Running deparsed expression via `nix-shell`", " in ",
-    exec_mode, " mode:\n\n"#,
-    # paste0(rnix_deparsed, collapse = " ")
-  ))
-  
-  # command to run deparsed R expression via nix-shell
-  cmd_rnix_deparsed <- c(
-    file.path(project_path, "default.nix"),
-    "--pure", # required for to have nix glibc
-    "--run",
-    sprintf(
-      "Rscript --vanilla '%s'",
-      rnix_file
+    # get the function arguments as a pairlist;
+    # save formal arguments of pairlist via `tag = value`; e.g., if we have a
+    # `expr = function(p = p_root) dir(path = p)`, the input object
+    # to be serialized will be serialized under `"p.Rds"`  in a tmp dir, and
+    # will contain object `p_root`, which is defined in the global environment
+    # and bound to `"."` (project root)
+    args <- as.list(formals(expr))
+    
+    cat("\n### Prepare to exchange arguments and globals for `expr`",
+      "between the host and Nix R sessions ###\n")
+    
+    # 1) save all function args onto a temporary folder each with
+    # `<tag.Rds>` and `value` as serialized objects from RAM ---------------------
+    temp_dir <- tempdir()
+    serialize_args(args, temp_dir)
+    
+    # cast list of symbols/names and calls to list of strings; this is to prepare
+    # deparsed version (string) of deserializing arguments from disk;
+    # elements of args for now should be of type "symbol" or "language"
+    args_vec <- vapply(args, deparse, FUN.VALUE = character(1L))
+    
+    # todo in `rnix_deparsed`:
+    # => locate all global variables used by function
+    # https://github.com/cran/codetools/blob/master/R/codetools.R
+    # http://adv-r.had.co.nz/Expressions.html#ast-funs
+    
+    # code inspection: generates messages with potential problems
+    check_expr(expr)
+    
+    globals_expr <- recurse_find_check_globals(expr, args_vec)
+    
+    # wrapper around `serialize_lobjs()`
+    globals <- serialize_globals(globals_expr, temp_dir)
+    
+    # extract additional packages to export
+    pkgs <- serialize_pkgs(globals_expr, temp_dir)
+    
+    # 2) deserialize formal arguments of `expr` in nix session
+    # and necessary global objects ---------------------------------------------
+    # 3) serialize resulting output from evaluating function given as `expr`
+    
+    # main code to be run in nix R session
+    rnix_file <- file.path(temp_dir, "with_nix_r.R")
+    
+    rnix_quoted <- quote_rnix(
+      expr, program, message_type, args_vec, globals, pkgs, temp_dir, rnix_file
     )
-  )
-  
-  proc <- switch(exec_mode,
-    "blocking" = sys::exec_internal(cmd = "nix-shell", cmd_rnix_deparsed),
-    "non-blocking" = sys::exec_background(cmd = "nix-shell", cmd_rnix_deparsed),
-    stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
-  )
-  
-  if (exec_mode == "non-blocking") {
-    poll_sys_proc_nonblocking(cmd = cmd_rnix_deparsed, proc, what = "expr")
-  } else if (exec_mode == "blocking") {
-    poll_sys_proc_blocking(cmd = cmd_rnix_deparsed, proc, what = "expr")
+    rnix_deparsed <- deparse_chr1(expr = rnix_quoted, collapse = "\n")
+    
+    # 4): for 2) and 3) write script to disk, to run later via `Rscript` from
+    # `nix-shell` 
+    # environment
+    r_version_file <- file.path(temp_dir, "nix-r-version.txt")
+    writeLines(text = rnix_deparsed, file(rnix_file))
+    
+    # 3) run expression in nix session, based on temporary script
+    cat(paste0("==> Running deparsed expression via `nix-shell`", " in ",
+      exec_mode, " mode:\n\n"#,
+      # paste0(rnix_deparsed, collapse = " ")
+    ))
+    
+    # command to run deparsed R expression via nix-shell
+    cmd_rnix_deparsed <- c(
+      file.path(project_path, "default.nix"),
+      "--pure", # required for to have nix glibc
+      "--run",
+      sprintf(
+        "Rscript --vanilla '%s'",
+        rnix_file
+      )
+    )
+    
+    proc <- switch(exec_mode,
+      "blocking" = sys::exec_internal(cmd = "nix-shell", cmd_rnix_deparsed),
+      "non-blocking" = sys::exec_background(
+        cmd = "nix-shell", cmd_rnix_deparsed),
+      stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
+    )
+    if (exec_mode == "non-blocking") {
+      poll_sys_proc_nonblocking(cmd = cmd_rnix_deparsed, proc, what = "expr")
+    } else if (exec_mode == "blocking") {
+      poll_sys_proc_blocking(cmd = cmd_rnix_deparsed, proc, what = "expr")
+    }
+  } else if (program == "shell") { # end of `if (program == "R")`
+    shell_cmd <- c(
+      file.path(project_path, "default.nix"),
+      "--pure",
+      "--run",
+      expr
+    )
+    proc <- switch(exec_mode,
+      "blocking" = sys::exec_internal(cmd = "nix-shell", shell_cmd),
+      "non-blocking" = sys::exec_background(
+        cmd = "nix-shell", shell_cmd),
+      stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
+    )
   }
   
   cat("\n### Finished code evaluation in `nix-shell` ###\n")
   
   # 5) deserialize final output of `expr` evaluated in nix-shell
   # into host R session
-  out <- readRDS(file = file.path(temp_dir, "_out.Rds"))
-  
-  on.exit(close(file(rnix_file)))
+  if (program == "R") {
+    out <- readRDS(file = file.path(temp_dir, "_out.Rds"))
+    on.exit(close(file(rnix_file)))
+  } else if (program == "shell") {
+    if (exec_mode == "non-blocking") {
+      out <- TRUE
+    } else if (exec_mode == "blocking") {
+      out <- sys::as_text(proc$stdout)
+    }
+  }
   
   # return output from evaluated function
   cat("\n* Evaluating `expr` in `nix-shell` returns:\n")
   print(out)
+  cat("")
   return(out)
 }
 
