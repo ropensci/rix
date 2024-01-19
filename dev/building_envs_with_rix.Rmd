@@ -22,10 +22,10 @@ Nix, I suggest you use [Determinate System's
 installer](https://zero-to-nix.com/start/install). Nix can be installed on
 Linux, macOS and Windows (but on Windows WSL2 must be enabled).
 
-On Linux, once Nix is instaled, all the software that will be installed will be
+On Linux, once Nix is installed, all the software that will be installed will be
 saved to the `/nix` directory on the root partition. Complete development
 environments built with Nix can take up much space, so if the available space on
-your root parttion is limited, I advise you to mount the `/nix` folder on
+your root partition is limited, I advise you to mount the `/nix` folder on
 another partition with more space (for example, a secondary hard drive). For
 this, edit `/etc/fstab` and add the following line at the end:
 
@@ -40,7 +40,7 @@ instructions.
 ## Nix environments
 
 An environment built by Nix is not totally isolated from the rest of the system.
-Suppose that you the program `sl` installed on your system, and suppose you
+Suppose that you have the program `sl` installed on your system, and suppose you
 build a Nix environment that also comes with `sl`. If you activate that
 environment, the version of `sl` that will run when called is the one included
 in the Nix environment. If, however, you start `sl` in a Nix environment that
@@ -52,6 +52,12 @@ will instead use the version installed on your machine. This means that if you
 use RStudio to work interactively with R, you will need to install RStudio
 inside that environment. `rix::rix()` can generate a `default.nix` file that
 does that.
+
+It is also possible to completely isolate an environment built with Nix using
+the provided `init()` function. It is also possible to run an arbitrary R
+function or shell command inside a *sub-shell* with a completely different environment
+right from an interactive R session. You can read more on this in the vignette
+titled [blal].
 
 ## Day-to-day use of {rix}
 
@@ -70,7 +76,7 @@ IDE. With the `rix::rix()` function, you can easily generate the right
 - `overwrite`: whether to overwrite the `default.nix` file or not.
 - `print`: whether to print the `default.nix` file to the console or not.
 
-In such a situation, you could create an environment with the following call to `rix()`:
+Run the following command to generate the right `default.nix` file:
 
 ```{r}
 path_default_nix <- tempdir()
@@ -85,7 +91,11 @@ rix(r_ver = "latest",
     print = TRUE)
 ```
 
-To start using this environment, open a console in the folder containing
+*It should be noted that as of now, RStudio isn't available for macOS through Nix. The
+`default.nix` generated with the above call won't build on macOS. If you're running
+macOS, you consider reading this [macOS-specific vignette]().*
+
+To start using this environment, open a terminal in the folder containing
 `default.nix` and use the following Nix command:
 
 ```
@@ -95,8 +105,14 @@ nix-build
 `nix-build` is a Nix command that builds an environment according to the
 specifications found in a `default.nix` file. Once the environment is done
 building, you should find a new file called `result` next to the `default.nix`
-file. This file is a symlink to the software installed by Nix. To now use the
-environment, type:
+file. This file is a symlink to the software installed by Nix. `{rix}` also
+provides a `nix_build()` function to build Nix environments from within an
+interactive R session, but it is not always guaranteed to succeed, due to
+differences in platforms. This is explained in more detail in the [following
+vignette](). In case of doubt, run `nix-build` from your usual terminal
+application.
+
+To now use the environment, type in the same terminal as before:
 
 ```
 nix-shell
@@ -122,7 +138,8 @@ rix(r_ver = "latest",
     overwrite = TRUE)
 ```
 
-(note the value provided to the `ide` argument).
+(note the value provided to the `ide` argument, this will work on any OS as long
+as you have VS Code installed on it).
 
 This generates the following `default.nix` file:
 
@@ -132,10 +149,10 @@ cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 
 As you can see, specifying `ide = "code"` adds the `{languageserver}` package to
 the list of packages that must be installed for this environment. This is
-because Visual Studio Code requires this package to interact with R. This will
-not install a Nix environment-specific version of Visual Studio Code. Now,
-instead of typing `rstudio` in the Nix shell of your environment, type `code`
-and this will start the Visual Studio Code you usually use.
+because VS Code requires this package to interact with R. This will not install
+a Nix environment-specific version of VS Code. Now, instead of typing `rstudio`
+in the Nix shell of your environment, type `code` and this will start the Visual
+Studio Code you usually use.
 
 If you use another editor, like Emacs, then use `ide = "other"`, and start that
 editor inside an activated Nix environment.
@@ -263,6 +280,11 @@ rix(r_ver = "4.2.1",
 cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```
 
-
 To learn more about using `{rix}` on a daily basis, read the [Interactive
 use](https://b-rodrigues.github.io/rix/articles/interactive-use.html) vignette.
+
+If you're on macOS, read the [macOS-specific vignette](). 
+
+If you want to keep using your main R environment, but wish to still be able
+to run specific functions with older packages or older versions of R for example,
+you might be interested in the `with_nix()` function.
