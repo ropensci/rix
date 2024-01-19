@@ -107,11 +107,6 @@ This approach guarantees reproducible side effects and effectively streams messa
 
 
 ```{r eval = FALSE}
-df_as_vector <- function(x) {
-  out <- as.vector(x = x, mode = "list")
-  return(out)
-}
-
 # now run it in `nix-shell`; `with_nix()` takes care
 # of exporting global objects of `df_as_vector` recursively
 out_nix <- with_nix(

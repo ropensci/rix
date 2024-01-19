@@ -84,11 +84,6 @@ Then, we will evaluate this test code through a `nix-shell` R session. This adds
 This approach guarantees reproducible side effects and effectively streams messages and errors into the R session. Thereby, the {sys} package facilitates capturing standard outputs and errors as text output messages.
 
 ```{r, eval=FALSE}
-df_as_vector <- function(x) {
-  out <- as.vector(x = x, mode = "list")
-  return(out)
-}
-
 # now run it in `nix-shell`; `with_nix()` takes care
 # of exporting global objects of `df_as_vector` recursively
 out_nix <- with_nix(
