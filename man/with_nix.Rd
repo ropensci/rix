@@ -9,6 +9,7 @@ with_nix(
   program = c("R", "shell"),
   exec_mode = c("blocking", "non-blocking"),
   project_path = ".",
+  nix_file = NULL,
   message_type = c("simple", "verbose")
 )
 }
@@ -30,7 +31,15 @@ blocking mode.}
 
 \item{project_path}{Path to the folder where the \code{default.nix} file resides.
 The default is \code{"."}, which is the working directory in the current R
-session.}
+session. This approach also useful when you have different subfolders
+with separate software environments defined in different \code{default.nix} files.
+If you prefer to run code in custom \code{.nix} files in the same directory
+using \code{with_nix()}, you can use the \code{nix_file} argument to specify paths
+to \code{.nix} files.}
+
+\item{nix_file}{Path to \code{.nix} file that contains the expressions defining
+the Nix software environment in which you want to run \code{expr}. See
+\code{project_path} argument as an alternative way to specify the environment.}
 
 \item{message_type}{String how detailed output is. Currently, there is
 either \code{"simple"} (default) or \code{"verbose"}, which shows the script that runs
