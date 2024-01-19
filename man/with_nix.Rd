@@ -14,15 +14,19 @@ with_nix(
 }
 \arguments{
 \item{expr}{Single R function or call, or character vector of length one with
-shell command and optional arguments (flags).}
+shell command and possibly options (flags) of the command to be invoked.}
 
 \item{program}{String stating where to evaluate the expression. Either \code{"R"},
 the default, or \code{"shell"}. \code{where = "R"} will evaluate the expression via
 \code{RScript} and \code{where = "shell"} will run the system command in \code{nix-shell}.}
 
 \item{exec_mode}{Either \code{"blocking"} (default) or \verb{"non-blocking}. This
-will either block the R session while the \code{nix-build} shell command is
-executed, or run \code{nix-build} in the background ("non-blocking").}
+will either block the R session while \code{expr} is running in a \code{nix-shell}
+environment, oor running it in the background ("non-blocking"). While
+\code{program = R} will yield identical results for foreground and background
+evaluation (R object), \code{program = "shell"} will return list of exit status,
+standard output and standard error of the system command and as text in
+blocking mode.}
 
 \item{project_path}{Path to the folder where the \code{default.nix} file resides.
 The default is \code{"."}, which is the working directory in the current R
@@ -37,8 +41,13 @@ via \code{nix-shell}.}
 \item if \code{program = "R"}, R object returned by function given in \code{expr}
 when evaluated via the R environment in \code{nix-shell} defined by Nix
 expression.
-\item if \code{program = "shell"}, character vector of standard output (stdout)
+\item if \code{program = "shell"}, list with the following elements:
+\itemize{
+\item \code{status}: exit code
+\item \code{stdout}: character vector with standard output
+\item \code{stderr}: character vector with standard error
 of \code{expr} command sent to a command line interface provided by a Nix package.
+}
 }
 }
 \description{

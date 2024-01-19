@@ -676,6 +676,7 @@ poll_sys_proc_blocking <- function(cmd, proc,
     msg <- nix_build_exit_msg()
     cat(paste0("`", cmd, "`", " failed with ", msg))
   }
+  return(invisible(status))
 }
 
 #' @noRd
@@ -688,6 +689,7 @@ poll_sys_proc_nonblocking <- function(cmd, proc,
   if (status == 0L) {
     cat(paste0("\n==> `", what, "` succeeded!"))
   }
+  return(invisible(status))
 }
 
 #' @noRd
@@ -1077,10 +1079,17 @@ nix_rprofile <- function() {
 #'  `nix-shell --pure --run "Rscript --vanilla"`.
 #'
 #' @param expr Single R function or call, or character vector of length one with
-#' shell command and optional arguments (flags).
+#' shell command and possibly options (flags) of the command to be invoked.
 #' @param program String stating where to evaluate the expression. Either `"R"`,
 #' the default, or `"shell"`. `where = "R"` will evaluate the expression via
 #' `RScript` and `where = "shell"` will run the system command in `nix-shell`.
+#' @param exec_mode Either `"blocking"` (default) or `"non-blocking`. This
+#' will either block the R session while `expr` is running in a `nix-shell`
+#' environment, oor running it in the background ("non-blocking"). While
+#' `program = R` will yield identical results for foreground and background
+#' evaluation (R object), `program = "shell"` will return list of exit status,
+#' standard output and standard error of the system command and as text in
+#' blocking mode.
 #' @param message_type String how detailed output is. Currently, there is 
 #' either `"simple"` (default) or `"verbose"`, which shows the script that runs
 #' via `nix-shell`.
@@ -1092,7 +1101,10 @@ nix_rprofile <- function() {
 #' - if `program = "R"`, R object returned by function given in `expr`
 #' when evaluated via the R environment in `nix-shell` defined by Nix 
 #' expression.
-#' - if `program = "shell"`, character vector of standard output (stdout)
+#' - if `program = "shell"`, list with the following elements:
+#'     - `status`: exit code
+#'     - `stdout`: character vector with standard output
+#'     - `stderr`: character vector with standard error
 #' of `expr` command sent to a command line interface provided by a Nix package.
 #' @examples
 #' \dontrun{
@@ -1267,8 +1279,6 @@ with_nix <- function(expr,
     )
   }
   
-  cat("\n### Finished code evaluation in `nix-shell` ###\n")
-  
   # 5) deserialize final output of `expr` evaluated in nix-shell
   # into host R session
   if (program == "R") {
@@ -1276,15 +1286,23 @@ with_nix <- function(expr,
     on.exit(close(file(rnix_file)))
   } else if (program == "shell") {
     if (exec_mode == "non-blocking") {
-      out <- TRUE
+      status <- poll_sys_proc_nonblocking(
+        cmd = shell_cmd, proc, what = "expr"
+      )
+      out <- status
     } else if (exec_mode == "blocking") {
-      out <- sys::as_text(proc$stdout)
+      poll_sys_proc_blocking(cmd = shell_cmd, proc, what = "expr")
+      out <- proc
+      out$stdout <- sys::as_text(out$stdout)
+      out$stderr <- sys::as_text(out$stderr)
     }
   }
+
+  cat("\n### Finished code evaluation in `nix-shell` ###\n")
   
   # return output from evaluated function
   cat("\n* Evaluating `expr` in `nix-shell` returns:\n")
-  print(out)
+  print(out$stdout)
   cat("")
   return(out)
 }
