@@ -90,7 +90,7 @@ interactive_use.Rmd:
     document: true
     overwrite: 'yes'
 run_code_in_nix_from_r.Rmd:
-  path: dev/run_code_in_nix_from_r.Rmd
+  path: dev/running_r_or_shell_code_in_nix_from_r.Rmd
   state: active
   R: []
   tests: []
