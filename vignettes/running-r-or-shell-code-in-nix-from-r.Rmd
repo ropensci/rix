@@ -72,13 +72,18 @@ rix(
 )
 ```
 
+<<<<<<< HEAD
 ### Defining and interactively testing custom R code with function(s)
 
 We know have set up the configuration for R 4.2.0 set up in a `default.nix` file in the folder `./_env_1_R-4-2-0`. Since you are sure you are using an R version higher 4.2.0 available on your system, you can check what that `as.vector.data.frame()` S3 method returns a list.
+=======
+We know have set up the configuration for R 4.2.0 set up in a `default.nix` file in the folder `./env-1R-4-2-0`. Since you are sure you are using an R version higher 4.2.0 available on your system, you can check what that `as.vector.data.frame()` S3 method returns a list.
+>>>>>>> d4dafd9 (WIP: vignette `with_nix()`)
 
 
 ```{r eval = FALSE}
 df <- data.frame(a = 1:3, b = 4:6)
+<<<<<<< HEAD
 (out <- as.vector(x = df, mode ="list"))
 ```
 
@@ -97,13 +102,36 @@ df_as_vector <- function(x) {
 
 Then, we will evaluate this test code through a `nix-shell` R session. This adds both build-time and run-time purity with the declarative Nix software configuration we have made above. with_nix leverages the following principles under the hood:
 
+=======
+(out_system <- as.vector(x = df, mode ="list"))
+```
+
+To formally confirm in a 'System-to-Nix' approach that the `out` object is identical since `R` \>= 4.2.0, we define a function that runs the computation above. Then, we will evaluate it through a `nix-shell` R session. This adds both build-time and run-time purity with the declarative Nix software configuration we have made above. with_nix leverages the following principles under the hood:
+
+>>>>>>> d4dafd9 (WIP: vignette `with_nix()`)
 -   **Computing on the language**: manipulate language objects using code
 
 -   **Static code analysis**: detect global objects and package environments in the function call stack of `expr`. For that, important {codetools} functionality is used, which is recursively iterated.
 
+<<<<<<< HEAD
 -   **Serializing** dependent **R objects** (save them to disk) and **deserializing** (read them back into RAM of R session) via a temporary folder. This creates isolation of two distinct computational environments, for both 'System-to-Nix' and 'Nix-to-Nix' computational modes. At the same time this allows to shuffle and input arguments of `expr` , dependencies across the call stack and as well its outputs back-and-forth between the Nix-R and the system's R sessions.
 
 This approach guarantees reproducible side effects, and effectively streams messages and errors into the R session. Thereby, the {sys} package facilitates capturing standard outputs and errors as text output messages.
+=======
+-   **Serializing** dependent **R objects** (save them to disk) and **deserializing** (read them back into RAM of R session) via a temporary folder. This creates isolation of two distince computational environments, for both 'System-to-Nix' and 'Nix-to-Nix' computational modes. At the same time this allows to shuffle and input arguments of `expr` , dependencies across the call stack and as well its outputs back-and-forth between the Nix-R and the system's R sessions.
+
+You will now experience that it does reproducible side effects and stream messages and errors into the R session, thanks to {sys} capturing standard outputs and errors as text output messages.
+
+To formally validate that the output of `expr` is identical since R version 4.2.0, we using a 'System-to-Nix' approach. We will define a function `df_as_vector()` that executes the specified computation. Subsequently, we evaluate this function within a `nix-shell` R session using `with_nix()`. This integration ensures both build-time and run-time purity, aligning with the declarative Nix software configuration outlined earlier. The `with_nix()` workhorse incorporates the following principles:
+
+1.  **Computing on the Language:** Manipulating language objects using code.
+
+2.  **Static Code Analysis:** Detecting global objects and package environments in the function call stack of 'expr'. This involves utilizing essential functionality from the 'codetools' package, which is recursively iterated.
+
+3.  **Serialization of Dependent R objects:** Saving them to disk and deserializing them back into the R session's RAM via a temporary folder. This process establishes isolation between two distinct computational environments, accommodating both 'System-to-Nix' and 'Nix-to-Nix' computational modes. Simultaneously, it facilitates the transfer of input arguments, dependencies across the call stack, and outputs of `expr` between the Nix-R and the system's R sessions.
+
+This approach guarantees reproducible side effects and effectively streams messages and errors into the R session. Thereby, the {sys} package facilitates capturing standard outputs and errors as text output messages.
+>>>>>>> d4dafd9 (WIP: vignette `with_nix()`)
 
 
 ```{r eval = FALSE}
