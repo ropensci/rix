@@ -247,12 +247,7 @@ streams messages and errors into the R session. Thereby, the {sys}
 package facilitates capturing standard outputs and errors as text output
 messages.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df_as_vector</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, mode <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># now run it in `nix-shell`; `with_nix()` takes care</span></span>
+<code class="sourceCode R"><span><span class="co"># now run it in `nix-shell`; `with_nix()` takes care</span></span>
 <span><span class="co"># of exporting global objects of `df_as_vector` recursively</span></span>
 <span><span class="va">out_nix</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/with_nix.html">with_nix</a></span><span class="op">(</span></span>
 <span>  expr <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu">df_as_vector</span><span class="op">(</span>x <span class="op">=</span> <span class="va">df</span><span class="op">)</span>, <span class="co"># wrap to avoid evaluation</span></span>
