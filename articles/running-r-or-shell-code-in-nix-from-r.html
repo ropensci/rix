@@ -96,9 +96,9 @@ new, potentially disruptive features present significant challenges in
 maintaining code functionality over time. This pertains not only to
 backward compatibility but also to future-proofing. When code handles
 critical production loads and relies on numerous external software
-libraries, it’s likely that these dependencies will evolve. While
-infrastructure-as-code and other DevOps principles shine in addressing
-these challenges, they may appear less approachable and more
+libraries, it’s likely that these dependencies will evolve.
+Infrastructure-as-code and other DevOps principles shine in addressing
+these challenges. However, they may appear less approachable and more
 labor-intensive for the average R developer.</p>
 <p>Are you ready to test your custom R functions and system commands in
 a a different environment with isolated software builds that are both
@@ -107,7 +107,66 @@ introduce <code><a href="../reference/with_nix.html">with_nix()</a></code>. <cod
 custom R code or shell commands with command line interfaces provided by
 Nixpkgs in a Nix environment, and thereby bring the read-eval-print-loop
 feeling.</p>
-  </main>
+<div class="section level2">
+<h2 id="case-study-1-evolution-of-base-r">Case study 1: Evolution of base R<a class="anchor" aria-label="anchor" href="#case-study-1-evolution-of-base-r"></a>
+</h2>
+<p>Carefully curated software improves over time, so does R. We pick an
+example from the R changelog, the following <a href="https://cran.r-project.org/doc/manuals/r-release/NEWS.html" class="external-link">literal
+entry in R 4.2.0</a>:</p>
+<ul>
+<li>“<code><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector()</a></code> gains a <code>data.frame</code> method
+which returns a simple named list, also clearing a long standing 'FIXME'
+to enable <code>as.vector(&lt;data.frame&gt;, mode="list")</code>. This
+breaks code relying on <code>as.vector(&lt;data.frame&gt;)</code> to
+return the unchanged data frame.”</li>
+</ul>
+<p>The goal is to illustrate this change.</p>
+<div class="section level3">
+<h3 id="setting-up-the-software-environment">Setting up the software environment<a class="anchor" aria-label="anchor" href="#setting-up-the-software-environment"></a>
+</h3>
+<p>We first create a isolated directory to prepare for a Nix
+environment, and write a custom <code>.Rprofile</code> file as well.
+Startup code written to this local <code>.Rprofile</code> will make sure
+that the system’s user library (R_LIBS_USER) is excluded from library
+paths to load packages from. The R derivation in Nixpkgs includes the
+user library at first position (returned by <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code>).
+This is nice to install packages from a Nix-R session environment in
+ad-hoc and interactive manner. However, this comes at the cost that one
+needs be aware of potential run-time pollution of packages outside the
+pool of paths per package from the nix store. On macOS, we experienced a
+high-chance of segmentation faults when accidentally loading packages
+and linked system libraries from the system’s user library, to give an
+example. rix::init() writes a configuration that takes care of
+runtime-pure R package libraries from declaratively defined Nix builds.
+Additionally, it modifies <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code> in the running R
+session.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st">"rix"</span><span class="op">)</span></span>
+<span><span class="va">path_env_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"."</span>, <span class="st">"_env-1_R4-2-0"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/init.html">init</a></span><span class="op">(</span></span>
+<span>  project_path <span class="op">=</span> <span class="va">path_env_1</span>,</span>
+<span>  rprofile_action <span class="op">=</span> <span class="st">"overwrite"</span>,</span>
+<span>  message_type <span class="op">=</span> <span class="st">"simple"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Next, we write a `default.nix` file containing Nix expressions that
+pin R version 4.2.0 from Nixpkgs.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span></span>
+<span>  r_version <span class="op">=</span> <span class="st">"4.2.0"</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  project_path <span class="op">=</span> <span class="va">path_env_1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, b <span class="op">=</span> <span class="fl">4</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">df</span>, mode <span class="op">=</span><span class="st">"list"</span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="case-study-2-breaking-changes-in-stringr-1-5-0">Case study 2: Breaking changes in {stringr} 1.5.0<a class="anchor" aria-label="anchor" href="#case-study-2-breaking-changes-in-stringr-1-5-0"></a>
+</h2>
+</div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
