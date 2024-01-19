@@ -92,7 +92,12 @@ current R session.</p></li>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>expr</dt>
 <dd><p>Single R function or call, or character vector of length one with
-shell command and possibly options (flags) of the command to be invoked.</p></dd>
+shell command and possibly options (flags) of the command to be invoked.
+For <code>program = R</code>, you can both use a named or an anonymous function.
+The function provided in <code>expr</code> should not evaluate when you pass arguments,
+hence you need to wrap your function call like
+<code>function() your_fun(arg_a = "a", arg_b = "b")</code>, to avoid evaluation and make
+sure <code>expr</code> is a function (see details and examples).</p></dd>
 
 
 <dt>program</dt>
@@ -173,8 +178,8 @@ can easily do so by providing Nix expressions in custom <code>.nix</code> or
 <code>default.nix</code> files in different subfolders of the project.</p>
 <p>To do its job, <code>with_nix()</code> heavily relies on patterns that manipulate
 language expressions (aka computing on the language) offered in base R as
-well as the codetools package by Luke Tierney. Some of the key steps that
-are done behind the scene:</p><ol><li><p>recursively find, classify, and export global objects (globals) in the
+well as the codetools package by Luke Tierney.</p>
+<p>Some of the key steps that are done behind the scene:</p><ol><li><p>recursively find, classify, and export global objects (globals) in the
 call stack of <code>expr</code> as well as propagate R package environments found.</p></li>
 <li><p>Serialize (save to disk) and deserialize (read from disk) dependent
 data structures as <code>.Rds</code> with necessary function arguments provided,
@@ -186,33 +191,6 @@ like this via <code>{sys}</code> by Jeroen Ooms:
 <code>nix-shell --pure --run "Rscript --vanilla"</code>.</p></li>
 </ol></div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="co"># create an isolated, runtime-pure R setup via Nix</span></span></span>
-<span class="r-in"><span><span class="va">project_path</span> <span class="op">&lt;-</span> <span class="st">"./sub_shell"</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="init.html">init</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  project_path <span class="op">=</span> <span class="va">project_path</span>,</span></span>
-<span class="r-in"><span>  rprofile_action <span class="op">=</span> <span class="st">"create_missing"</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># generate nix environment in `default.nix`</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="rix.html">rix</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  r_ver <span class="op">=</span> <span class="st">"4.2.0"</span>,</span></span>
-<span class="r-in"><span>  project_path <span class="op">=</span> <span class="va">project_path</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># evaluate function in Nix-R environment via `nix-shell` and `Rscript`,</span></span></span>
-<span class="r-in"><span><span class="co"># stream messages, and bring output back to current R session</span></span></span>
-<span class="r-in"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">with_nix</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  expr <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  program <span class="op">=</span> <span class="st">"R"</span>, exec_mode <span class="op">=</span> <span class="st">"non-blocking"</span>, project_path <span class="op">=</span> <span class="va">project_path</span>,</span></span>
-<span class="r-in"><span>  message_type <span class="op">=</span> <span class="st">"simple"</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># There no limit in the complexity of function call stacks that `with_nix()`</span></span></span>
-<span class="r-in"><span><span class="co"># can possibly handle</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
