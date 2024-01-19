@@ -15,7 +15,12 @@ with_nix(
 }
 \arguments{
 \item{expr}{Single R function or call, or character vector of length one with
-shell command and possibly options (flags) of the command to be invoked.}
+shell command and possibly options (flags) of the command to be invoked.
+For \code{program = R}, you can both use a named or an anonymous function.
+The function provided in \code{expr} should not evaluate when you pass arguments,
+hence you need to wrap your function call like
+\code{function() your_fun(arg_a = "a", arg_b = "b")}, to avoid evaluation and make
+sure \code{expr} is a function (see details and examples).}
 
 \item{program}{String stating where to evaluate the expression. Either \code{"R"},
 the default, or \code{"shell"}. \code{where = "R"} will evaluate the expression via
@@ -102,7 +107,10 @@ can easily do so by providing Nix expressions in custom \code{.nix} or
 
 To do its job, \code{with_nix()} heavily relies on patterns that manipulate
 language expressions (aka computing on the language) offered in base R as
-well as the {codetools} package by Luke Tierney. Some of the key steps that
+well as the {codetools} package by Luke Tierney.
+We have
+
+Some of the key steps that
 are done behind the scene:
 \enumerate{
 \item recursively find, classify, and export global objects (globals) in the
@@ -115,30 +123,5 @@ returned in a temporary directory.
 reconstructed catching expressions with quoting; it is launched by commands
 like this via \code{{sys}} by Jeroen Ooms:
 \verb{nix-shell --pure --run "Rscript --vanilla"}.
-}
-}
-\examples{
-\dontrun{
-# create an isolated, runtime-pure R setup via Nix
-project_path <- "./sub_shell"
-init(
-  project_path = project_path,
-  rprofile_action = "create_missing"
-)
-# generate nix environment in `default.nix`
-rix(
-  r_ver = "4.2.0",
-  project_path = project_path
-)
-# evaluate function in Nix-R environment via `nix-shell` and `Rscript`,
-# stream messages, and bring output back to current R session
-out <- with_nix(
-  expr = function(mtcars) nrow(mtcars),
-  program = "R", exec_mode = "non-blocking", project_path = project_path,
-  message_type = "simple"
-)
-
-# There no limit in the complexity of function call stacks that `with_nix()`
-# can possibly handle
 }
 }
