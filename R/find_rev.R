@@ -1146,7 +1146,7 @@ with_nix <- function(expr,
                      project_path = ".",
                      nix_file = NULL,
                      message_type = c("simple", "verbose")) {
-  if (!is.null(nix_file)) {
+  if (is.null(nix_file)) {
     nix_file <- file.path(project_path, "default.nix")
   }
   stopifnot(
@@ -1254,9 +1254,6 @@ with_nix <- function(expr,
       exec_mode, " mode:\n\n"#,
       # paste0(rnix_deparsed, collapse = " ")
     ))
-
-
-    if (isTRUE())
     
     # command to run deparsed R expression via nix-shell
     cmd_rnix_deparsed <- c(
@@ -1318,7 +1315,12 @@ with_nix <- function(expr,
   
   # return output from evaluated function
   cat("\n* Evaluating `expr` in `nix-shell` returns:\n")
-  print(out$stdout)
+  if (program == "R") {
+    print(out)
+  } else if (program == "shell") {
+    print(out$stdout)
+  }
+  
   cat("")
   return(out)
 }
