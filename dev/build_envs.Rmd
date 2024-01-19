@@ -1169,11 +1169,9 @@ environment.
 #' 
 #' To do its job, `with_nix()` heavily relies on patterns that manipulate
 #' language expressions (aka computing on the language) offered in base R as
-#' well as the {codetools} package by Luke Tierney. 
-#' We have 
+#' well as the {codetools} package by Luke Tierney.
 #' 
-#' Some of the key steps that 
-#' are done behind the scene:
+#' Some of the key steps that are done behind the scene:
 #' 1. recursively find, classify, and export global objects (globals) in the 
 #' call stack of `expr` as well as propagate R package environments found.
 #' 2. Serialize (save to disk) and deserialize (read from disk) dependent
@@ -1255,17 +1253,21 @@ environment.
 #' # a function with arguments, you can do like this
 #' get_sample <- function(seed, n) {
 #'   set.seed(seed)
-#'   sample(seq(1, 10), n)
-#'   set.seed(NULL)
+#'   out <- sample(seq(1, 10), n)
+#'   return(out)
 #' }
 #' 
 #' out <- with_nix(
-#'   expr = get_sample(1234, 5),
+#'   expr = get_sample(seed = 1234, n = 5),
 #'   program = "R", exec_mode = "non-blocking",
 #'   project_path = ".",
 #'   message_type = "simple"
 #' )
-#'
+#' }
+#' 
+#' ## You can also use packages, which will be exported to the nix-R session
+#' ## running through `nix-shell` environment
+#' R 4.2.2 
 with_nix <- function(expr,
                      program = c("R", "shell"),
                      exec_mode = c("blocking", "non-blocking"),

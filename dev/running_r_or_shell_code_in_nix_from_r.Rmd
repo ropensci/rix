@@ -1,0 +1,49 @@
+---
+title: "Running R or shell code in Nix from R"
+output: html_document
+editor_options:
+  chunk_output_type: console
+---
+
+Adhering to sound versioning practices is crucial for ensuring the reproducibility of software. Despite the expertise in software engineering, the ever-growing complexity and continuous development of new, potentially disruptive features present significant challenges in maintaining code functionality over time. This pertains not only to backward compatibility but also to future-proofing. When code handles critical production loads and relies on numerous external software libraries, it's likely that these dependencies will evolve. Infrastructure-as-code and other DevOps principles shine in addressing these challenges. However, they may appear less approachable and more labor-intensive for the average R developer.
+
+Are you ready to test your custom R functions and system commands in a a different environment with isolated software builds that are both pure at build and at runtime, without leaving the R console? Let's introduce `with_nix()`. `with_nix()` will evaluate custom R code or shell commands with command line interfaces provided by Nixpkgs in a Nix environment, and thereby bring the read-eval-print-loop feeling.
+
+## Case study 1: Evolution of base R
+
+Carefully curated software improves over time, so does R. We pick an example from the R changelog, the following [literal entry in R 4.2.0](https://cran.r-project.org/doc/manuals/r-release/NEWS.html):
+
+-   "`as.vector()` gains a `data.frame` method which returns a simple named list, also clearing a long standing 'FIXME' to enable `as.vector(<data.frame>, mode="list")`. This breaks code relying on `as.vector(<data.frame>)` to return the unchanged data frame."
+
+The goal is to illustrate this change.
+
+### Setting up the software environment
+
+We first create a isolated directory to prepare for a Nix environment, and write a custom `.Rprofile` file as well. Startup code written to this local `.Rprofile` will make sure that the system's user library (R_LIBS_USER) is excluded from library paths to load packages from. The R derivation in Nixpkgs includes the user library at first position (returned by `.libPaths()`). This is nice to install packages from a Nix-R session environment in ad-hoc and interactive manner. However, this comes at the cost that one needs be aware of potential run-time pollution of packages outside the pool of paths per package from the nix store. On macOS, we experienced a high-chance of segmentation faults when accidentally loading packages and linked system libraries from the system's user library, to give an example. rix::init() writes a configuration that takes care of runtime-pure R package libraries from declaratively defined Nix builds. Additionally, it modifies `.libPaths()` in the running R session.
+
+```{r, eval=FALSE}
+library("rix")
+path_env_1 <- file.path(".", "_env-1_R4-2-0")
+init(
+  project_path = path_env_1,
+  rprofile_action = "overwrite",
+  message_type = "simple"
+)
+```
+
+Next, we write a \`default.nix\` file containing Nix expressions that pin R version 4.2.0 from Nixpkgs.
+
+```{r, eval=FALSE}
+rix(
+  r_version = "4.2.0",
+  overwrite = TRUE,
+  project_path = path_env_1
+)
+```
+
+```{r, eval=FALSE}
+df <- data.frame(a = 1:3, b = 4:6)
+as.vector(x = df, mode ="list")
+```
+
+## Case study 2: Breaking changes in {stringr} 1.5.0

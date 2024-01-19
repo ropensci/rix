@@ -108,10 +108,8 @@ can easily do so by providing Nix expressions in custom \code{.nix} or
 To do its job, \code{with_nix()} heavily relies on patterns that manipulate
 language expressions (aka computing on the language) offered in base R as
 well as the {codetools} package by Luke Tierney.
-We have
 
-Some of the key steps that
-are done behind the scene:
+Some of the key steps that are done behind the scene:
 \enumerate{
 \item recursively find, classify, and export global objects (globals) in the
 call stack of \code{expr} as well as propagate R package environments found.
@@ -124,4 +122,47 @@ reconstructed catching expressions with quoting; it is launched by commands
 like this via \code{{sys}} by Jeroen Ooms:
 \verb{nix-shell --pure --run "Rscript --vanilla"}.
 }
+}
+\examples{
+\dontrun{
+# create an isolated, runtime-pure R setup via Nix
+project_path <- "./sub_shell"
+init(
+  project_path = project_path,
+  rprofile_action = "create_missing"
+)
+# generate nix environment in `default.nix`
+rix(
+  r_ver = "4.2.0",
+  project_path = project_path
+)
+# evaluate function in Nix-R environment via `nix-shell` and `Rscript`,
+# stream messages, and bring output back to current R session
+out <- with_nix(
+  expr = function(mtcars) nrow(mtcars),
+  program = "R", exec_mode = "non-blocking", project_path = project_path,
+  message_type = "simple"
+)
+
+# There no limit in the complexity of function call stacks that `with_nix()`
+# can possibly handle; however, `expr` should not evaluate and 
+# needs to be a function for `program = "R"`. If you want to pass the
+# a function with arguments, you can do like this
+get_sample <- function(seed, n) {
+  set.seed(seed)
+  out <- sample(seq(1, 10), n)
+  return(out)
+}
+
+out <- with_nix(
+  expr = get_sample(seed = 1234, n = 5),
+  program = "R", exec_mode = "non-blocking",
+  project_path = ".",
+  message_type = "simple"
+)
+}
+
+## You can also use packages, which will be exported to the nix-R session
+## running through `nix-shell` environment
+R 4.2.2 
 }

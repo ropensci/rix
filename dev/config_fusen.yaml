@@ -89,6 +89,19 @@ interactive_use.Rmd:
     check: true
     document: true
     overwrite: 'yes'
+run_code_in_nix_from_r.Rmd:
+  path: dev/running_r_or_shell_code_in_nix_from_r.Rmd
+  state: active
+  R: []
+  tests: []
+  vignettes: vignettes/running-r-or-shell-code-in-nix-from-r.Rmd
+  inflate:
+    flat_file: dev/running_r_or_shell_code_in_nix_from_r.Rmd
+    vignette_name: Running R or shell code in Nix from R
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: 'yes'
 literate_programming.Rmd:
   path: dev/literate_programming.Rmd
   state: active
