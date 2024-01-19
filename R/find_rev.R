@@ -1159,7 +1159,11 @@ nix_rprofile <- function() {
 #'   project_path = ".",
 #'   message_type = "simple"
 #' )
-#'
+#' }
+#' 
+#' ## You can also use packages, which will be exported to the nix-R session
+#' ## running through `nix-shell` environment
+#' R 4.2.2 
 with_nix <- function(expr,
                      program = c("R", "shell"),
                      exec_mode = c("blocking", "non-blocking"),
