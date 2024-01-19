@@ -94,9 +94,9 @@ run_code_in_nix_from_r.Rmd:
   state: active
   R: []
   tests: []
-  vignettes: vignettes/run-code-in-nix-from-r.Rmd
+  vignettes: vignettes/running-r-or-shell-code-in-nix-from-r.Rmd
   inflate:
-    flat_file: dev/run_code_in_nix_from_r.Rmd
+    flat_file: dev/running_r_or_shell_code_in_nix_from_r.Rmd
     vignette_name: Running R or shell code in Nix from R
     open_vignette: true
     check: true
