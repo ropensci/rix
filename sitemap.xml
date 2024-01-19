@@ -25,6 +25,9 @@
     <loc>/articles/reproducible-analytical-pipelines-with-nix.html</loc>
   </url>
   <url>
+    <loc>/articles/running-r-or-shell-code-in-nix-from-r.html</loc>
+  </url>
+  <url>
     <loc>/articles/save-the-nix-package-versions-data.html</loc>
   </url>
   <url>
