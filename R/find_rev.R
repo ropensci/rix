@@ -1109,7 +1109,6 @@ nix_rprofile <- function() {
 #' @param message_type String how detailed output is. Currently, there is 
 #' either `"simple"` (default) or `"verbose"`, which shows the script that runs
 #' via `nix-shell`.
-#' @inheritParams nix_build
 #' @return
 #' @importFrom codetools findGlobals checkUsage
 #' @export
@@ -1159,11 +1158,11 @@ nix_rprofile <- function() {
 #'   project_path = ".",
 #'   message_type = "simple"
 #' )
-#' }
 #' 
 #' ## You can also use packages, which will be exported to the nix-R session
 #' ## running through `nix-shell` environment
-#' R 4.2.2 
+#' R 4.2.2
+#' }
 with_nix <- function(expr,
                      program = c("R", "shell"),
                      exec_mode = c("blocking", "non-blocking"),

@@ -160,9 +160,9 @@ out <- with_nix(
   project_path = ".",
   message_type = "simple"
 )
-}
 
 ## You can also use packages, which will be exported to the nix-R session
 ## running through `nix-shell` environment
-R 4.2.2 
+R 4.2.2
+}
 }
