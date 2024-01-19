@@ -1,0 +1,26 @@
+---
+title: "Running R or shell code in Nix from R"
+output: html_document
+editor_options:
+  chunk_output_type: console
+---
+
+Adhering to sound versioning practices is crucial for ensuring the
+reproducibility of software. Despite the expertise in software engineering, the
+ever-growing complexity and continuous development of new, potentially
+disruptive features present significant challenges in maintaining code
+functionality over time. This pertains not only to backward compatibility but
+also to future-proofing. When code handles critical production loads and relie
+on numerous external software libraries, it's likely that these dependencies
+will evolve. While infrastructure-as-code and other DevOps principles shine in
+addressing these challenges, they may appear less approachable and more
+labor-intensive for the average R developer.
+
+Are you ready to test your custom R functions and system commands with pure,
+isolated software builds and runtimes directly from the R console
+
+Nix is the cake but the dessert comes at a price.
+
+```{r cars}
+summary(cars)
+```
