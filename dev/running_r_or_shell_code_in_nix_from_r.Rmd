@@ -9,12 +9,18 @@ Adhering to sound versioning practices is crucial for ensuring the reproducibili
 
 Are you ready to test your custom R functions and system commands in a a different environment with isolated software builds that are both pure at build and at runtime, without leaving the R console? Let's introduce `with_nix()`. `with_nix()` will evaluate custom R code or shell commands with command line interfaces provided by Nixpkgs in a Nix environment, and thereby bring the read-eval-print-loop feeling.
 
+## **Two Operational Modes of Computations in Environments: 'System-to-Nix' and 'Nix-to-Nix'**
+
+We aim to accommodate various use cases, considering a gradient of declarativity in individual or sets of software environments based on personal preferences. There are two main modes for defining and comparing code running through R and system commands (command line interfaces; CLIs)
+
+1.  'System-to-Nix' environments: We assume that you launch an R session with an R version defined on your host operating system, either from the terminal or an integrated development environment like RStudio. You need to make sure that you actively control and know where you installed R and R packages from, and at what versions. You may have interactively tested that your custom function pipeline worked for the current setup. Most importantly, you want to check whether you get your computations running and achieve identical results when going back to a Nix revision that represent either newer or also older versions of R and package sources.
+2.  'Nix-to-Nix' environments: Your goals of testing code are the same as in 1., but you want more fine-grained control in the source environment where you launch \`with_nix()\` from, too. You are probably on the way of getting a passionate Nix user.
+
 ## Case study 1: Evolution of base R
 
 Carefully curated software improves over time, so does R. We pick an example from the R changelog, the following [literal entry in R 4.2.0](https://cran.r-project.org/doc/manuals/r-release/NEWS.html):
 
--   "`as.vector()` gains a `data.frame` method which returns a simple named list, also clearing a long standing \'FIXME\' to enable `as.vector(<data.frame>, mode="list")`. This breaks code relying on
-    `as.vector(<data.frame>)` to return the unchanged data frame."
+-   "`as.vector()` gains a `data.frame` method which returns a simple named list, also clearing a long standing 'FIXME' to enable `as.vector(<data.frame>, mode="list")`. This breaks code relying on `as.vector(<data.frame>)` to return the unchanged data frame."
 
 The goal is to illustrate this change.
 
