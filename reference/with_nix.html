@@ -82,6 +82,7 @@ current R session.</p></li>
 <span>  program <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"R"</span>, <span class="st">"shell"</span><span class="op">)</span>,</span>
 <span>  exec_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blocking"</span>, <span class="st">"non-blocking"</span><span class="op">)</span>,</span>
 <span>  project_path <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  nix_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  message_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"simple"</span>, <span class="st">"verbose"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -112,7 +113,17 @@ blocking mode.</p></dd>
 <dt>project_path</dt>
 <dd><p>Path to the folder where the <code>default.nix</code> file resides.
 The default is <code>"."</code>, which is the working directory in the current R
-session.</p></dd>
+session. This approach also useful when you have different subfolders
+with separate software environments defined in different <code>default.nix</code> files.
+If you prefer to run code in custom <code>.nix</code> files in the same directory
+using <code>with_nix()</code>, you can use the <code>nix_file</code> argument to specify paths
+to <code>.nix</code> files.</p></dd>
+
+
+<dt>nix_file</dt>
+<dd><p>Path to <code>.nix</code> file that contains the expressions defining
+the Nix software environment in which you want to run <code>expr</code>. See
+<code>project_path</code> argument as an alternative way to specify the environment.</p></dd>
 
 
 <dt>message_type</dt>
