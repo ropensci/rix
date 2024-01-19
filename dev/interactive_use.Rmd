@@ -10,7 +10,7 @@ editor_options:
 ## Introduction
 
 This vignette describes interactive use of environments built with `{rix}` using
-a GUI editor like RStudio. I will discuss two scenarios: one in which you
+a GUI editor like RStudio. We will discuss two scenarios: one in which you
 already have R and RStudio installed on your operating system using the usual
 installation method for your operating system, and another in which you used Nix
 to install R and RStudio (or any other IDE).
