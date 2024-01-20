@@ -137,7 +137,7 @@ df_as_vector <- function(x = df) {
 Then, you just supply the name of the function to evaluate with default arguments.
 
 
-```{r}
+```{r eval = FALSE}
 out_nix_1_2 <- with_nix(
   expr = function() df_as_vector, # provide name of function
   program = "R", 
@@ -150,7 +150,7 @@ out_nix_1_2 <- with_nix(
 It yields the same results.
 
 
-```{r}
+```{r eval = FALSE}
 Reduce(f = identical, list(out_system_1, out_nix_1, out_nix_1_2))
 ```
 
