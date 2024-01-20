@@ -53,7 +53,7 @@ We first create a isolated directory to prepare for a Nix environment, and write
 
 ```{r eval = FALSE}
 library("rix")
-path_env_1 <- file.path(".", "_env_1_R4-2-0")
+path_env_1 <- file.path(".", "_env_1_R-4-2-0")
 init(
   project_path = path_env_1,
   rprofile_action = "overwrite",
@@ -92,10 +92,10 @@ df_as_vector <- function(x) {
   out <- as.vector(x = x, mode = "list")
   return(out)
 }
-(out_system <- as.vector(x = df, mode ="list"))
+(out_system <- df_as_vector(x = df))
 ```
 
-Then, we will evaluate this test code through a `nix-shell` R session. This adds both build-time and run-time purity with the declarative Nix software configuration we have made above. with_nix leverages the following principles under the hood:
+Then, we will evaluate this test code through a `nix-shell` R session. This adds both build-time and run-time purity with the declarative Nix software configuration we have made earlier. `with_nix()` leverages the following principles under the hood:
 
 1.  **Computing on the Language:** Manipulating language objects using code.
 
