@@ -181,7 +181,7 @@ Additionally, it modifies <code><a href="https://rdrr.io/r/base/libPaths.html" c
 session.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st">"rix"</span><span class="op">)</span></span>
-<span><span class="va">path_env_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"."</span>, <span class="st">"_env_1_R4-2-0"</span><span class="op">)</span></span>
+<span><span class="va">path_env_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"."</span>, <span class="st">"_env_1_R-4-2-0"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/init.html">init</a></span><span class="op">(</span></span>
 <span>  project_path <span class="op">=</span> <span class="va">path_env_1</span>,</span>
 <span>  rprofile_action <span class="op">=</span> <span class="st">"overwrite"</span>,</span>
@@ -221,11 +221,12 @@ we define a function that runs the computation above.</p>
 <span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, mode <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="op">(</span><span class="va">out_system</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">df</span>, mode <span class="op">=</span><span class="st">"list"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">(</span><span class="va">out_system</span> <span class="op">&lt;-</span> <span class="fu">df_as_vector</span><span class="op">(</span>x <span class="op">=</span> <span class="va">df</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Then, we will evaluate this test code through a
 <code>nix-shell</code> R session. This adds both build-time and run-time
 purity with the declarative Nix software configuration we have made
-above. with_nix leverages the following principles under the hood:</p>
+earlier. <code><a href="../reference/with_nix.html">with_nix()</a></code> leverages the following principles
+under the hood:</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>Computing on the Language:</strong> Manipulating language
 objects using code.</p></li>
