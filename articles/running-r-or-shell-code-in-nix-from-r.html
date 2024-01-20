@@ -140,8 +140,8 @@ also older versions of R and package sources.</li>
 <li>
 <strong>‘Nix-to-Nix’</strong> environments: Your goals of testing
 code are the same as in 1., but you want more fine-grained control in
-the source environment where you launch `with_nix()` from, too. You are
-probably on the way of getting a passionate Nix user.</li>
+the source environment where you launch <code><a href="../reference/with_nix.html">with_nix()</a></code> from,
+too. You are probably on the way of getting a passionate Nix user.</li>
 </ol>
 </div>
 <div class="section level2">
@@ -154,7 +154,7 @@ entry in R 4.2.0</a>:</p>
 <ul>
 <li>“<code><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector()</a></code> gains a <code>data.frame</code> method
 which returns a simple named list, also clearing a long standing ‘FIXME’
-to enable <code>as.vector(&lt;data.frame&gt;, mode="list")</code>. This
+to enable <code>as.vector(&lt;data.frame&gt;, mode ="list")</code>. This
 breaks code relying on <code>as.vector(&lt;data.frame&gt;)</code> to
 return the unchanged data frame.”</li>
 </ul>
@@ -164,21 +164,21 @@ version 4.2.0.</p>
 <h3 id="setting-up-the-software-environment-with-nix">Setting up the software environment with Nix<a class="anchor" aria-label="anchor" href="#setting-up-the-software-environment-with-nix"></a>
 </h3>
 <p>We first create a isolated directory to prepare for a Nix
-environment, and write a custom <code>.Rprofile</code> file as well.
-Startup code written to this local <code>.Rprofile</code> will make sure
-that the system’s user library (R_LIBS_USER) is excluded from library
-paths to load packages from. The R derivation in Nixpkgs includes the
-user library at first position (returned by <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code>).
-This is nice to install packages from a Nix-R session environment in
-ad-hoc and interactive manner. However, this comes at the cost that one
-needs be aware of potential run-time pollution of packages outside the
-pool of paths per package from the nix store. On macOS, we experienced a
-high-chance of segmentation faults when accidentally loading packages
-and linked system libraries from the system’s user library, to give an
-example. rix::init() writes a configuration that takes care of
-runtime-pure R package libraries from declaratively defined Nix builds.
-Additionally, it modifies <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code> in the running R
-session.</p>
+environment, and write a custom <code>.Rprofile</code> file as well. By
+default, the R derivation in Nixpkgs includes the user library at first
+position (returned by <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code>). Startup code written to
+this local <code>.Rprofile</code> will make sure that the system’s user
+library (R_LIBS_USER) is excluded from library paths to load packages
+from. This is nice to install packages from a Nix-R session environment
+in ad-hoc and interactive manner. However, this comes at the cost that
+one needs be aware of potential run-time pollution of packages outside
+the pool of paths per package from the nix store. On macOS, we
+experienced a high-chance of segmentation faults when accidentally
+loading packages and linked system libraries from the system’s user
+library, to give an example. rix::init() writes a configuration that
+takes care of runtime-pure R package libraries from declaratively
+defined Nix builds. Additionally, it modifies <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code>
+in the running R session.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st">"rix"</span><span class="op">)</span></span>
 <span><span class="va">path_env_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"."</span>, <span class="st">"_env_1_R-4-2-0"</span><span class="op">)</span></span>
@@ -221,7 +221,7 @@ we define a function that runs the computation above.</p>
 <span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, mode <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="op">(</span><span class="va">out_system</span> <span class="op">&lt;-</span> <span class="fu">df_as_vector</span><span class="op">(</span>x <span class="op">=</span> <span class="va">df</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">(</span><span class="va">out_system_1</span> <span class="op">&lt;-</span> <span class="fu">df_as_vector</span><span class="op">(</span>x <span class="op">=</span> <span class="va">df</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Then, we will evaluate this test code through a
 <code>nix-shell</code> R session. This adds both build-time and run-time
 purity with the declarative Nix software configuration we have made
@@ -250,7 +250,7 @@ messages.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># now run it in `nix-shell`; `with_nix()` takes care</span></span>
 <span><span class="co"># of exporting global objects of `df_as_vector` recursively</span></span>
-<span><span class="va">out_nix</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/with_nix.html">with_nix</a></span><span class="op">(</span></span>
+<span><span class="va">out_nix_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/with_nix.html">with_nix</a></span><span class="op">(</span></span>
 <span>  expr <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu">df_as_vector</span><span class="op">(</span>x <span class="op">=</span> <span class="va">df</span><span class="op">)</span>, <span class="co"># wrap to avoid evaluation</span></span>
 <span>  program <span class="op">=</span> <span class="st">"R"</span>, </span>
 <span>  exec_mode <span class="op">=</span> <span class="st">"non-blocking"</span>, <span class="co"># run as background process</span></span>
@@ -260,9 +260,31 @@ messages.</p>
 <span></span>
 <span><span class="co"># compare results of custom codebase with indentical </span></span>
 <span><span class="co"># inputs and different software environments</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">out_system</span>, <span class="va">out_nix</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">out_system_1</span>, <span class="va">out_nix_1</span><span class="op">)</span></span>
 <span><span class="co"># should return `TRUE` if your system's R versions in</span></span>
 <span><span class="co"># current interactive R session is R &gt;= 4.2.0</span></span></code></pre></div>
+<p>As an alternative to wrap your final function with input arguments
+that produces the results in <code>function()</code> or
+<code>function(){}</code>, you can also provide default arguments when
+assigning the function used as <code>expr</code> input like this:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df_as_vector</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span> <span class="op">=</span> <span class="va">df</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, mode <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>Then, you just supply the name of the function to evaluate with
+default arguments.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">out_nix_1_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/with_nix.html">with_nix</a></span><span class="op">(</span></span>
+<span>  expr <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="va">df_as_vector</span>, <span class="co"># provide name of function</span></span>
+<span>  program <span class="op">=</span> <span class="st">"R"</span>, </span>
+<span>  exec_mode <span class="op">=</span> <span class="st">"non-blocking"</span>, <span class="co"># run as background process</span></span>
+<span>  project_path <span class="op">=</span> <span class="va">path_env_1</span>, </span>
+<span>  message_type <span class="op">=</span> <span class="st">"simple"</span> <span class="co"># you can do `"verbose"`, too</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>It yields the same results.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/funprog.html" class="external-link">Reduce</a></span><span class="op">(</span>f <span class="op">=</span> <span class="va">identical</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">out_system_1</span>, <span class="va">out_nix_1</span>, <span class="va">out_nix_1_2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
