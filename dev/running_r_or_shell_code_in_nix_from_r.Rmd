@@ -18,19 +18,19 @@ Let's introduce `with_nix()`. `with_nix()` will evaluate custom R code or shell 
 We aim to accommodate various use cases, considering a gradient of declarativity in individual or sets of software environments based on personal preferences. There are two main modes for defining and comparing code running through R and system commands (command line interfaces; CLIs)
 
 1.  **'System-to-Nix'** environments: We assume that you launch an R session with an R version defined on your host operating system, either from the terminal or an integrated development environment like RStudio. You need to make sure that you actively control and know where you installed R and R packages from, and at what versions. You may have interactively tested that your custom function pipeline worked for the current setup. Most importantly, you want to check whether you get your computations running and achieve identical results when going back to a Nix revision that represent either newer or also older versions of R and package sources.
-2.  **'Nix-to-Nix'** environments: Your goals of testing code are the same as in 1., but you want more fine-grained control in the source environment where you launch \`with_nix()\` from, too. You are probably on the way of getting a passionate Nix user.
+2.  **'Nix-to-Nix'** environments: Your goals of testing code are the same as in 1., but you want more fine-grained control in the source environment where you launch `with_nix()` from, too. You are probably on the way of getting a passionate Nix user.
 
 ## **Case study 1: Evolution of base R**
 
 Carefully curated software improves over time, so does R. We pick an example from the R changelog, the following [literal entry in R 4.2.0](https://cran.r-project.org/doc/manuals/r-release/NEWS.html):
 
--   "`as.vector()` gains a `data.frame` method which returns a simple named list, also clearing a long standing 'FIXME' to enable `as.vector(<data.frame>, mode="list")`. This breaks code relying on `as.vector(<data.frame>)` to return the unchanged data frame."
+-   "`as.vector()` gains a `data.frame` method which returns a simple named list, also clearing a long standing 'FIXME' to enable `as.vector(<data.frame>, mode ="list")`. This breaks code relying on `as.vector(<data.frame>)` to return the unchanged data frame."
 
 The goal is to illustrate this change in behavior before and after R version 4.2.0.
 
 ### Setting up the software environment with Nix
 
-We first create a isolated directory to prepare for a Nix environment, and write a custom `.Rprofile` file as well. Startup code written to this local `.Rprofile` will make sure that the system's user library (R_LIBS_USER) is excluded from library paths to load packages from. The R derivation in Nixpkgs includes the user library at first position (returned by `.libPaths()`). This is nice to install packages from a Nix-R session environment in ad-hoc and interactive manner. However, this comes at the cost that one needs be aware of potential run-time pollution of packages outside the pool of paths per package from the nix store. On macOS, we experienced a high-chance of segmentation faults when accidentally loading packages and linked system libraries from the system's user library, to give an example. rix::init() writes a configuration that takes care of runtime-pure R package libraries from declaratively defined Nix builds. Additionally, it modifies `.libPaths()` in the running R session.
+We first create a isolated directory to prepare for a Nix environment, and write a custom `.Rprofile` file as well. By default, the R derivation in Nixpkgs includes the user library at first position (returned by `.libPaths()`). Startup code written to this local `.Rprofile` will make sure that the system's user library (R_LIBS_USER) is excluded from library paths to load packages from. This is nice to install packages from a Nix-R session environment in ad-hoc and interactive manner. However, this comes at the cost that one needs be aware of potential run-time pollution of packages outside the pool of paths per package from the nix store. On macOS, we experienced a high-chance of segmentation faults when accidentally loading packages and linked system libraries from the system's user library, to give an example. rix::init() writes a configuration that takes care of runtime-pure R package libraries from declaratively defined Nix builds. Additionally, it modifies `.libPaths()` in the running R session.
 
 ```{r, eval=FALSE}
 library("rix")
@@ -70,7 +70,7 @@ df_as_vector <- function(x) {
   out <- as.vector(x = x, mode = "list")
   return(out)
 }
-(out_system <- df_as_vector(x = df))
+(out_system_1 <- df_as_vector(x = df))
 ```
 
 Then, we will evaluate this test code through a `nix-shell` R session. This adds both build-time and run-time purity with the declarative Nix software configuration we have made earlier. `with_nix()` leverages the following principles under the hood:
@@ -86,7 +86,7 @@ This approach guarantees reproducible side effects and effectively streams messa
 ```{r, eval=FALSE}
 # now run it in `nix-shell`; `with_nix()` takes care
 # of exporting global objects of `df_as_vector` recursively
-out_nix <- with_nix(
+out_nix_1 <- with_nix(
   expr = function() df_as_vector(x = df), # wrap to avoid evaluation
   program = "R", 
   exec_mode = "non-blocking", # run as background process
@@ -96,9 +96,36 @@ out_nix <- with_nix(
 
 # compare results of custom codebase with indentical 
 # inputs and different software environments
-identical(out_system, out_nix)
+identical(out_system_1, out_nix_1)
 # should return `TRUE` if your system's R versions in
 # current interactive R session is R >= 4.2.0
+```
+
+As an alternative to wrap your final function with input arguments that produces the results in `function()` or `function(){}`, you can also provide default arguments when assigning the function used as `expr` input like this:
+
+```{r, eval=FALSE}
+df_as_vector <- function(x = df) {
+  out <- as.vector(x = x, mode = "list")
+  return(out)
+}
+```
+
+Then, you just supply the name of the function to evaluate with default arguments.
+
+```{r}
+out_nix_1_2 <- with_nix(
+  expr = function() df_as_vector, # provide name of function
+  program = "R", 
+  exec_mode = "non-blocking", # run as background process
+  project_path = path_env_1, 
+  message_type = "simple" # you can do `"verbose"`, too
+)
+```
+
+It yields the same results.
+
+```{r}
+Reduce(f = identical, list(out_system_1, out_nix_1, out_nix_1_2))
 ```
 
 ## **Case study 2: Breaking changes in {stringr} 1.5.0**
