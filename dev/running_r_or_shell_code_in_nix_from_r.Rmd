@@ -28,7 +28,7 @@ Carefully curated software improves over time, so does R. We pick an example fro
 
 The goal is to illustrate this change in behavior from R versions 4.1.3 and before to R versions 4.2.0 and later.
 
-### Setting up the software environment with Nix
+### Setting up the (R) software environment with Nix
 
 We first create a isolated directory to prepare for a Nix environment, and write a custom `.Rprofile` file as well. By default, the R derivation in Nixpkgs includes the user library at first position (returned by `.libPaths()`). Startup code written to this local `.Rprofile` will make sure that the system's user library (`R_LIBS_USER`) is excluded from library paths to load packages from. This is nice to install packages from a Nix-R session environment in ad-hoc and interactive manner. However, this comes at the cost that one needs be aware of potential run-time pollution of packages outside the pool of paths per package from the nix store. On macOS, we experienced a high-chance of segmentation faults when accidentally loading packages and linked system libraries from the system's user library, to give an example. `rix::init()` writes a configuration that takes care of runtime-pure R package libraries from declaratively defined Nix builds. Additionally, it modifies `.libPaths()` in the running R session.
 
@@ -40,6 +40,13 @@ init(
   rprofile_action = "overwrite",
   message_type = "simple"
 )
+list.files(path = path_env_1, all.files = TRUE)
+```
+
+This will generate the following `.Rprofile` file.
+
+```{r, echo=FALSE}
+cat(readLines(file.path(path_env_1, ".Rprofile")), sep = "\n")
 ```
 
 Next, we write a `default.nix` file containing Nix expressions that pin R version 4.2.0 from Nixpkgs.
@@ -52,20 +59,26 @@ rix(
 )
 ```
 
+The following expression is written to default.nix in the subfolder `./_env_1_R-4-1-3/`.
+
+```{r, echo=FALSE}
+cat(readLines(file.path(path_env_1, "default.nix")), sep = "\n")
+```
+
 ### Defining and interactively testing custom R code with function(s)
 
 We know have set up the configuration for R 4.1.3 set up in a `default.nix` file in the folder `./_env_1_R-4-1-3`. Since you are sure you are using an R version higher 4.2.0 available on your system, you can check what that `as.vector.data.frame()` S3 method returns a list.
 
 ```{r}
 df <- data.frame(a = 1:3, b = 4:6)
-(out <- as.vector(x = df, mode ="list"))
+as.vector(x = df, mode ="list")
 ```
 
 This is is different for R versions 4.1.3 and below, where you should get an identical data frame back.
 
 ### Run functioned up code and investigate results produced in pure Nix R software environments
 
-To formally validate in a 'System-to-Nix' approach that the `out` object is before `R` \< 4.2.0, we define a function that runs the computation above.
+To formally validate in a 'System-to-Nix' approach that the object returned from `as.vector.data.frame()` is before `R` \< 4.2.0, we define a function that runs the computation above.
 
 ```{r}
 df_as_vector <- function(x) {
@@ -105,7 +118,7 @@ identical(out_system_1, out_nix_1)
 
 ### Syntax option for specifying function in `expr` argument of `with_nix()`
 
-As an alternative to wrap your final function with input arguments that produces the results in `function()` or `function(){}`, you can also provide default arguments when assigning the function used as `expr` input like this:
+In the previous code snippet we wrapped the top-level `expr` function with `function()` or `function(){}`. As an alternative, you can also provide default arguments when assigning the function used as `expr` input like this:
 
 ```{r}
 df_as_vector <- function(x = df) {
@@ -118,7 +131,7 @@ Then, you just supply the name of the function to evaluate with default argument
 
 ```{r, eval=FALSE}
 out_nix_1_b <- with_nix(
-  expr = function() df_as_vector, # provide name of function
+  expr = df_as_vector, # provide name of function
   program = "R", 
   exec_mode = "non-blocking", # run as background process
   project_path = path_env_1, 
@@ -129,12 +142,66 @@ out_nix_1_b <- with_nix(
 It yields the same results.
 
 ```{r, eval=FALSE}
-Reduce(f = identical, list(out_system_1, out_nix_1, out_nix_1_b))
+Reduce(f = identical, list(out_nix_1, out_nix_1_b))
 ```
 
 ### Comparing `as.vector.data.frame()` for both R versions 4.1.3 and 4.2.0 from Nixpkgs
 
-Here follows an example a `Nix-to-Nix` solution with two subshells to track the evolution of base R in this specific case. We can verify the breaking changes in case study 1 in more declarative manner when we use both R 4.1.3 and R 4.2.0 from Nixpkgs. Since we already have defined R 4.1.3 in the *`env`*`_1_R-4-1-3` subshell, we can use it as a source environment where with_nix() is launched from. Accordingly, we define the R 4.2.0 environment in a *`env`*`_1_2_R-4-2-0`using Nix via `rix::rix()`. The latter environment will be the target environment where `df_as_vector()` will be evaluated in.
+Here follows an example a `Nix-to-Nix` solution, with two subshells to track the evolution of base R in this specific case. We can verify the breaking changes in case study 1 in more declarative manner when we use both R 4.1.3 and R 4.2.0 from Nixpkgs. Since we already have defined R 4.1.3 in the *`env`*`_1_R-4-1-3` subshell, we can use it as a source environment where with_nix() is launched from. Accordingly, we define the R 4.2.0 environment in a *`env`*`_1_2_R-4-2-0`using Nix via `rix::rix()`. The latter environment will be the target environment where `df_as_vector()` will be evaluated in.
+
+```{r}
+library("rix")
+path_env_1_2 <- file.path(".", "_env_1_2_R-4-2-0")
+
+init(
+  project_path = path_env_1_2,
+  rprofile_action = "overwrite",
+  message_type = "simple"
+)
+
+rix(
+  r_ver = "4.2.0",
+  overwrite = TRUE,
+  project_path = path_env_1_2,
+  shell_hook = "R"
+)
+
+list.files(path_env_1_2)
+```
+
+Now, initiate a new R session as development environment using `nix-shell`. Open a new terminal at the current working directory of your R session. The provided expression `default.nix`. defines R 4.1.3 in a "subfolder per subshell" approach. `nix-shell` will use the expression by `default.nix` and prefer it over any other `.nix` files, except when you put a `shell.nix` file in that folder, which takes precedence.
+
+```{sh, eval=FALSE}
+nix-shell --pure ./_env_1_R-4-1-3
+```
+
+After some time downloading caches and doing builds, you will enter an R console session with R 4.1.3. You did not need to type in R first, because we set up a R shell hook via `rix::rix()`. Next, we define again the target function to test in R 4.2.0, too.
+
+```{r, eval=FALSE}
+# current Nix-R session with R 4.1.3
+df_as_vector <- function(x) {
+  out <- as.vector(x = x, mode = "list")
+  return(out)
+}
+(out_nix_1 <- df_as_vector(x = df))
+```
+
+```{r, eval=FALSE}
+out_nix_1_2 <- with_nix(
+  expr = function() df_as_vector(x = df),
+  program = "R",
+  exec_mode = "non-blocking", # run as background process
+  project_path = path_env_1_2, 
+  message_type = "simple" # you can do `"verbose"`, too
+)
+```
+
+You can now formally compare the outputs of the computation of the same code in R 4.1.3 vs. R 4.2.0 environments controlled by Nix.
+
+```{r, eval=FALSE}
+identical(out_nix_1, out_nix_1_2)
+# yields FALSE
+```
 
 ## **Case study 2: Breaking changes in {stringr} 1.5.0**
 
