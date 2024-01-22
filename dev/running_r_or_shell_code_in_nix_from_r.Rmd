@@ -302,3 +302,66 @@ identical(out_nix_1, out_nix_1_2)
 We add one more layer to the reproducibility of the R ecosystem. User libraries
 from CRAN or GitHub, one thing that makes R shine is the huge collection of
 software packages available from the community.
+
+There was a change introduce in {stringr} 1.5.0; in earlier versions, this
+line of code:
+
+```{r, eval = F}
+stringr::str_subset(c("", "a"), "")
+```
+
+would return the character `"a"`. However, this behaviour is unexpected:
+it really should return an error. This was addressed in versions after
+1.5.0:
+
+```{r, eval = F}
+out_system_stringr <- tryCatch(
+  expr = {stringr::str_subset(c("", "a"), "")},
+  error = function(e)NULL)
+```
+
+Since the code returns an error, we wrap it inside `tryCatch()` and return
+`NULL` instead of an error (if we wouldn't do that, this vignette could not
+compile!).
+
+Let's build a sub-shell with the latest version of R, but an older version
+of `{stringr}`:
+
+
+```{r, eval = F}
+library("rix")
+path_env_stringr <- file.path(".", "_env_stringr_1.4.1")
+
+init(
+  project_path = path_env_stringr,
+  rprofile_action = "overwrite",
+  message_type = "simple"
+)
+
+list.files(path = path_env_strigr, all.files = TRUE)
+
+rix(
+  r_ver = "latest",
+  r_pkgs = "stringr@1.4.1",
+  overwrite = TRUE,
+  project_path = path_env_stringr
+)
+```
+
+```{r, eval = F}
+out_nix_stringr <- with_nix(
+  expr = function() stringr::str_subset(c("", "a"), ""), # wrap to avoid evaluation
+  program = "R",
+  exec_mode = "non-blocking", # run as background process
+  project_path = path_env_stringr, 
+  message_type = "simple" # you can do `"verbose"`, too
+)
+```
+
+Comparing the two results in `FALSE`:
+
+```{r, eval = F}
+identical(out_system_stringr, out_nix_stringr)
+```
+
+As expected, `out_nix_stringr` is `"a"`.
