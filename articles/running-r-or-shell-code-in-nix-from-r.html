@@ -293,8 +293,8 @@ version higher 4.2.0 available on your system, you can check what that
 get an identical data frame back.</p>
 </div>
 <div class="section level3">
-<h3 id="run-functioned-up-code-and-investigate-results-produced-in-pure-nix-r-software-environments">Run functioned up code and investigate results produced in pure Nix
-R software environments<a class="anchor" aria-label="anchor" href="#run-functioned-up-code-and-investigate-results-produced-in-pure-nix-r-software-environments"></a>
+<h3 id="run-functioned-up-code-and-investigate-results-produced-in-pure-nix-rsoftware-environments">Run functioned up code and investigate results produced in pure Nix
+Rsoftware environments<a class="anchor" aria-label="anchor" href="#run-functioned-up-code-and-investigate-results-produced-in-pure-nix-rsoftware-environments"></a>
 </h3>
 <p>To formally validate in a ‘System-to-Nix’ approach that the object
 returned from <code><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector.data.frame()</a></code> is before
@@ -530,12 +530,12 @@ subshell with the old version of <a href="https://stringr.tidyverse.org" class="
 
 * Evaluating `expr` in `nix-shell` returns:
 [1] "a"</code></pre>
-<p>Not only do we see the result of evaluating the code in the
-sub-shell, we also have access to it: <code>out_nix_stringr</code> holds
-this result.</p>
+<p>Not only do we see the result of evaluating the code in the subshell,
+we also have access to it: <code>out_nix_stringr</code> holds this
+result.</p>
 <p>We can now compare the two: the result of the code running in our
 main session with the latest version of <a href="https://stringr.tidyverse.org" class="external-link">stringr</a> and the
-result of the code running in the sub-shell with the old version of
+result of the code running in the subshell with the old version of
 <a href="https://stringr.tidyverse.org" class="external-link">stringr</a>:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">out_system_stringr</span>, <span class="va">out_nix_stringr</span><span class="op">)</span></span></code></pre></div>

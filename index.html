@@ -85,7 +85,7 @@
 <a href="#rix-workflow">rix workflow</a>
 <ul>
 <li><a href="#defaultnix">default.nix</a></li>
-<li><a href="#running-single-functions-in-a-sub-shell">Running single functions in a sub-shell</a></li>
+<li><a href="#running-single-functions-in-a-subshell">Running single functions in a subshell</a></li>
 <li><a href="#running-programs-from-an-environment">Running programs from an environment</a></li>
 </ul>
 </li>
@@ -206,9 +206,9 @@
 <p>For more details on how to use a Nix environment using an IDE interactively, read the <a href="https://b-rodrigues.github.io/rix/articles/interactive-use.html" class="external-link">Interactive use</a> vignette.</p>
 </div>
 <div class="section level3">
-<h3 id="running-single-functions-in-a-sub-shell">Running single functions in a sub-shell<a class="anchor" aria-label="anchor" href="#running-single-functions-in-a-sub-shell"></a>
+<h3 id="running-single-functions-in-a-subshell">Running single functions in a subshell<a class="anchor" aria-label="anchor" href="#running-single-functions-in-a-subshell"></a>
 </h3>
-<p>It is also possible to run single functions in an isolated environment from an active R session using <code><a href="reference/with_nix.html">with_nix()</a></code> and get the output of that function loaded into the current session. Refer to <a href="https://b-rodrigues.github.io/rix/articles/running-r-or-shell-code-in-nix-from-r.html" class="external-link">this vignette</a> for more details on how to achieve this. Concretely this means that you could be running R version 4.3.2 (installed via Nix, or not), and execute a function on R version 4.0.0 for example in a sub-shell (or execute a function that requires an old version of a package in that sub-shell), and get the result of the computation back into the main R session.</p>
+<p>It is also possible to run single functions in an isolated environment from an active R session using <code><a href="reference/with_nix.html">with_nix()</a></code> and get the output of that function loaded into the current session. Refer to <a href="https://b-rodrigues.github.io/rix/articles/running-r-or-shell-code-in-nix-from-r.html" class="external-link">this vignette</a> for more details on how to achieve this. Concretely this means that you could be running R version 4.3.2 (installed via Nix, or not), and execute a function on R version 4.0.0 for example in a subshell (or execute a function that requires an old version of a package in that subshell), and get the result of the computation back into the main R session.</p>
 </div>
 <div class="section level3">
 <h3 id="running-programs-from-an-environment">Running programs from an environment<a class="anchor" aria-label="anchor" href="#running-programs-from-an-environment"></a>
