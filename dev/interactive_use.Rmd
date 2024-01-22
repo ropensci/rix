@@ -21,7 +21,8 @@ IDE than RStudio, for example VS Code, Emacs, Vim...
 
 It is also possible to evaluate single functions inside a dedicated, separate,
 environment from another, main, interactive R session. For more details
-regarding this, refer to the [vignette discussing `with_nix()`]().
+regarding this, refer to the
+[vignette discussing `with_nix()`](https://b-rodrigues.github.io/rix/articles/running-r-or-shell-code-in-nix-from-r.html).
 
 ## Scenario 1: you installed R and RStudio using the usual installers
 
@@ -152,7 +153,7 @@ rix(r_ver = "latest",
 Notice the `ide = "code"` argument. This will not install VS Code from Nix,
 but will install the `languageserver` package that is needed for using R
 with VS Code. If you want to also install a project-specific version of
-VS Code, then use `system_pkgs = "vscode"` or `system_pkgs = "vscodium"` 
+VS Code, then use `system_pkgs = "vscode"` or `system_pkgs = "vscodium"`
 if you prefer VS Codium over VS Code. For any other editor such as Emacs
 or Vim, set `ide = "other"`. Also use "other" if you want to run scripts
 non-interactively, for example on a CI/CD service.

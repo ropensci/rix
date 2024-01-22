@@ -109,8 +109,8 @@ file. This file is a symlink to the software installed by Nix. `{rix}` also
 provides a `nix_build()` function to build Nix environments from within an
 interactive R session, but it is not always guaranteed to succeed, due to
 differences in platforms. This is explained in more detail in the [following
-vignette](). In case of doubt, run `nix-build` from your usual terminal
-application.
+vignette](https://b-rodrigues.github.io/rix/articles/running-r-or-shell-code-in-nix-from-r.html). 
+In case of doubt, run `nix-build` from your usual terminal application.
 
 To now use the environment, type in the same terminal as before:
 

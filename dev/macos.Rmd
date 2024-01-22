@@ -1,0 +1,44 @@
+---
+title: "Nix on macOS"
+output: html_document
+editor_options:
+  chunk_output_type: console
+  markdown: 
+    wrap: 80
+---
+
+*This vignette will discuss macOS-specific topics. If you're not using macOS, you
+can ignore this vignette.*
+
+## Introduction
+
+When it comes to Nix, there are really only two supported operating systems: macOS
+and Linux distributions. Windows is "supported" because it is actually running
+Linux thanks to WSL2. In practice this means that Linux distributions and Windows
+can be considered one system, and macOS another, separate, system, with its own
+idiosyncracies. This vignette details these.
+
+## RStudio
+
+As of writing, RStudio cannot be installed through `nixpkgs` for macOS, and this
+is likely the biggest difference that you will notice between the two systems.
+This means that when you try to generate an expression with `ide = "rstudio"`
+on macOS, this will raise a warning. Here are the options you have:
+
+- ignore the warning, because the environment will be built on a Linux distribution (even though you generated the expression on macOS) and used on a Linux distribution;
+- change the `ide =` argument to either `"other"` or `"code"`. Use `"code"` if
+  you want to use VS Code and `"other"` for any other editor, like Vim or Emacs.
+  These other editors don't need to be installed through `nixpkgs`;
+- if you're working on a pipeline with the `{targets}` package, you could run it
+  on Github Actions. See [this
+  vignette](https://b-rodrigues.github.io/rix/articles/reproducible-analytical-pipelines-with-nix.html)
+  for further details;
+- work on your project as usual, but generate a `default.nix` at the end with
+  `ide = "other"` with the right version of R for reproducibility purposes;
+- use sub-shells to execute only the code you need to run in a specific
+  environment. See [this
+  vignette](https://b-rodrigues.github.io/rix/articles/running-r-or-shell-code-in-nix-from-r.html);
+- help us package RStudio for macOS on `nixpgs`. See
+  [https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/rstudio/default.nix](the
+  expression for RStudio).
+
