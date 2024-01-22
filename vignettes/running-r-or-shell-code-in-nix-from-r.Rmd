@@ -340,7 +340,7 @@ There was a change introduce in {stringr} 1.5.0; in earlier versions, this
 line of code:
 
 
-```{r eval = F}
+```{r eval = FALSE}
 stringr::str_subset(c("", "a"), "")
 ```
 
@@ -349,7 +349,7 @@ it really should return an error. This was addressed in versions after
 1.5.0:
 
 
-```{r eval = F}
+```{r eval = FALSE}
 out_system_stringr <- tryCatch(
   expr = {stringr::str_subset(c("", "a"), "")},
   error = function(e)NULL)
@@ -359,12 +359,12 @@ Since the code returns an error, we wrap it inside `tryCatch()` and return
 `NULL` instead of an error (if we wouldn't do that, this vignette could not
 compile!).
 
-Let's build a sub-shell with the latest version of R, but an older version
+Let's build a subshell with the latest version of R, but an older version
 of `{stringr}`:
 
 
 
-```{r eval = F}
+```{r eval = FALSE}
 library("rix")
 path_env_stringr <- file.path(".", "_env_stringr_1.4.1")
 
@@ -377,11 +377,11 @@ init(
 list.files(path = path_env_stringr, all.files = TRUE)
 ```
 
-The call below generates a `default.nix` file for the sub-shell with the
+The call below generates a `default.nix` file for the subshell with the
 old version of `{stringr}`:
 
 
-```{r eval = F}
+```{r eval = FALSE}
 rix(
   r_ver = "latest",
   r_pkgs = "stringr@1.4.1",
@@ -390,10 +390,10 @@ rix(
 )
 ```
 
-We can now run the code in the sub-shell
+We can now run the code in the subshell
 
 
-```{r eval = F}
+```{r eval = FALSE}
 out_nix_stringr <- with_nix(
   expr = function() stringr::str_subset(c("", "a"), ""),
   program = "R",
@@ -422,7 +422,7 @@ with the latest version of `{stringr}` and the result of the code running in the
 sub-shell with the old version of `{stringr}`:
 
 
-```{r eval = F}
+```{r eval = FALSE}
 identical(out_system_stringr, out_nix_stringr)
 ```
 
