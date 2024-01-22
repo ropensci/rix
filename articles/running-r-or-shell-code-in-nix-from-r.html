@@ -504,26 +504,42 @@ version of <a href="https://stringr.tidyverse.org" class="external-link">stringr
 <span>  message_type <span class="op">=</span> <span class="st">"simple"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path_env_strigr</span>, all.files <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path_env_stringr</span>, all.files <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>The call below generates a <code>default.nix</code> file for the
+sub-shell with the old version of <a href="https://stringr.tidyverse.org" class="external-link">stringr</a>:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span></span>
 <span>  r_ver <span class="op">=</span> <span class="st">"latest"</span>,</span>
 <span>  r_pkgs <span class="op">=</span> <span class="st">"stringr@1.4.1"</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  project_path <span class="op">=</span> <span class="va">path_env_stringr</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">out_nix_stringr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/with_nix.html">with_nix</a></span><span class="op">(</span></span>
-<span>  expr <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_subset.html" class="external-link">str_subset</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"a"</span><span class="op">)</span>, <span class="st">""</span><span class="op">)</span>, <span class="co"># wrap to avoid evaluation</span></span>
-<span>  program <span class="op">=</span> <span class="st">"R"</span>,</span>
-<span>  exec_mode <span class="op">=</span> <span class="st">"non-blocking"</span>, <span class="co"># run as background process</span></span>
-<span>  project_path <span class="op">=</span> <span class="va">path_env_stringr</span>, </span>
-<span>  message_type <span class="op">=</span> <span class="st">"simple"</span> <span class="co"># you can do `"verbose"`, too</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>Comparing the two results in <code>FALSE</code>:</p>
+<p>We can now run the code in the sub-shell</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">out_nix_stringr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/with_nix.html">with_nix</a></span><span class="op">(</span></span>
+<span>  expr <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_subset.html" class="external-link">str_subset</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"a"</span><span class="op">)</span>, <span class="st">""</span><span class="op">)</span>,</span>
+<span>  program <span class="op">=</span> <span class="st">"R"</span>,</span>
+<span>  exec_mode <span class="op">=</span> <span class="st">"non-blocking"</span>,</span>
+<span>  project_path <span class="op">=</span> <span class="va">path_env_stringr</span>,</span>
+<span>  message_type <span class="op">=</span> <span class="st">"simple"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Here are the last few lines printed on screen:</p>
+<pre><code>==&gt; `expr` succeeded!
+
+### Finished code evaluation in `nix-shell` ###
+
+* Evaluating `expr` in `nix-shell` returns:
+[1] "a"</code></pre>
+<p>Not only do we see the result of evaluating the code in the
+sub-shell, we also have access to it: <code>out_nix_stringr</code> holds
+this result.</p>
+<p>We can now compare the two: the result of the code running in our
+main session with the latest version of <a href="https://stringr.tidyverse.org" class="external-link">stringr</a> and the
+result of the code running in the sub-shell with the old version of
+<a href="https://stringr.tidyverse.org" class="external-link">stringr</a>:</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">out_system_stringr</span>, <span class="va">out_nix_stringr</span><span class="op">)</span></span></code></pre></div>
-<p>As expected, <code>out_nix_stringr</code> is <code>"a"</code>.</p>
+<p>As expected, the result is <code>FALSE</code>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
