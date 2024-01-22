@@ -478,6 +478,52 @@ same code in R 4.1.3 vs. R 4.2.0 environments controlled by Nix.</p>
 <p>We add one more layer to the reproducibility of the R ecosystem. User
 libraries from CRAN or GitHub, one thing that makes R shine is the huge
 collection of software packages available from the community.</p>
+<p>There was a change introduce in {stringr} 1.5.0; in earlier versions,
+this line of code:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_subset.html" class="external-link">str_subset</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"a"</span><span class="op">)</span>, <span class="st">""</span><span class="op">)</span></span></code></pre></div>
+<p>would return the character <code>"a"</code>. However, this behaviour
+is unexpected: it really should return an error. This was addressed in
+versions after 1.5.0:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">out_system_stringr</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
+<span>  expr <span class="op">=</span> <span class="op">{</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_subset.html" class="external-link">str_subset</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"a"</span><span class="op">)</span>, <span class="st">""</span><span class="op">)</span><span class="op">}</span>,</span>
+<span>  error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span><span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<p>Since the code returns an error, we wrap it inside
+<code><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch()</a></code> and return <code>NULL</code> instead of an error
+(if we wouldn’t do that, this vignette could not compile!).</p>
+<p>Let’s build a sub-shell with the latest version of R, but an older
+version of <a href="https://stringr.tidyverse.org" class="external-link">stringr</a>:</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st">"rix"</span><span class="op">)</span></span>
+<span><span class="va">path_env_stringr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"."</span>, <span class="st">"_env_stringr_1.4.1"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/init.html">init</a></span><span class="op">(</span></span>
+<span>  project_path <span class="op">=</span> <span class="va">path_env_stringr</span>,</span>
+<span>  rprofile_action <span class="op">=</span> <span class="st">"overwrite"</span>,</span>
+<span>  message_type <span class="op">=</span> <span class="st">"simple"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path_env_strigr</span>, all.files <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span></span>
+<span>  r_ver <span class="op">=</span> <span class="st">"latest"</span>,</span>
+<span>  r_pkgs <span class="op">=</span> <span class="st">"stringr@1.4.1"</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  project_path <span class="op">=</span> <span class="va">path_env_stringr</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">out_nix_stringr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/with_nix.html">with_nix</a></span><span class="op">(</span></span>
+<span>  expr <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_subset.html" class="external-link">str_subset</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"a"</span><span class="op">)</span>, <span class="st">""</span><span class="op">)</span>, <span class="co"># wrap to avoid evaluation</span></span>
+<span>  program <span class="op">=</span> <span class="st">"R"</span>,</span>
+<span>  exec_mode <span class="op">=</span> <span class="st">"non-blocking"</span>, <span class="co"># run as background process</span></span>
+<span>  project_path <span class="op">=</span> <span class="va">path_env_stringr</span>, </span>
+<span>  message_type <span class="op">=</span> <span class="st">"simple"</span> <span class="co"># you can do `"verbose"`, too</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Comparing the two results in <code>FALSE</code>:</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">out_system_stringr</span>, <span class="va">out_nix_stringr</span><span class="op">)</span></span></code></pre></div>
+<p>As expected, <code>out_nix_stringr</code> is <code>"a"</code>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
