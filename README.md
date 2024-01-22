@@ -7,7 +7,7 @@
   - [rix workflow](#rix-workflow)
     - [default.nix](#defaultnix)
     - [Running single functions in a
-      sub-shell](#running-single-functions-in-a-sub-shell)
+      subshell](#running-single-functions-in-a-subshell)
     - [Running programs from an
       environment](#running-programs-from-an-environment)
   - [Installation](#installation)
@@ -283,7 +283,7 @@ interactively, read the [Interactive
 use](https://b-rodrigues.github.io/rix/articles/interactive-use.html)
 vignette.
 
-### Running single functions in a sub-shell
+### Running single functions in a subshell
 
 It is also possible to run single functions in an isolated environment
 from an active R session using `with_nix()` and get the output of that
@@ -291,9 +291,9 @@ function loaded into the current session. Refer to [this
 vignette](https://b-rodrigues.github.io/rix/articles/running-r-or-shell-code-in-nix-from-r.html)
 for more details on how to achieve this. Concretely this means that you
 could be running R version 4.3.2 (installed via Nix, or not), and
-execute a function on R version 4.0.0 for example in a sub-shell (or
+execute a function on R version 4.0.0 for example in a subshell (or
 execute a function that requires an old version of a package in that
-sub-shell), and get the result of the computation back into the main R
+subshell), and get the result of the computation back into the main R
 session.
 
 ### Running programs from an environment

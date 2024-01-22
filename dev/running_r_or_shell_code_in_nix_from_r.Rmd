@@ -375,12 +375,12 @@ Here are the last few lines printed on screen:
 [1] "a"
 ```
 
-Not only do we see the result of evaluating the code in the sub-shell, we also
+Not only do we see the result of evaluating the code in the subshell, we also
 have access to it: `out_nix_stringr` holds this result.
 
 We can now compare the two: the result of the code running in our main session
 with the latest version of `{stringr}` and the result of the code running in the
-sub-shell with the old version of `{stringr}`:
+subshell with the old version of `{stringr}`:
 
 ```{r, eval=FALSE}
 identical(out_system_stringr, out_nix_stringr)
