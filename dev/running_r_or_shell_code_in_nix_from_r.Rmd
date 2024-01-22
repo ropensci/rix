@@ -338,8 +338,13 @@ init(
   message_type = "simple"
 )
 
-list.files(path = path_env_strigr, all.files = TRUE)
+list.files(path = path_env_stringr, all.files = TRUE)
+```
 
+The call below generates a `default.nix` file for the sub-shell with the
+old version of `{stringr}`:
+
+```{r, eval = F}
 rix(
   r_ver = "latest",
   r_pkgs = "stringr@1.4.1",
@@ -348,20 +353,37 @@ rix(
 )
 ```
 
+We can now run the code in the sub-shell
+
 ```{r, eval = F}
 out_nix_stringr <- with_nix(
-  expr = function() stringr::str_subset(c("", "a"), ""), # wrap to avoid evaluation
+  expr = function() stringr::str_subset(c("", "a"), ""),
   program = "R",
-  exec_mode = "non-blocking", # run as background process
-  project_path = path_env_stringr, 
-  message_type = "simple" # you can do `"verbose"`, too
+  exec_mode = "non-blocking",
+  project_path = path_env_stringr,
+  message_type = "simple"
 )
 ```
 
-Comparing the two results in `FALSE`:
+Here are the last few lines printed on screen:
+
+```
+==> `expr` succeeded!
+### Finished code evaluation in `nix-shell` ###
+
+* Evaluating `expr` in `nix-shell` returns:
+[1] "a"
+```
+
+Not only do we see the result of evaluating the code in the sub-shell, we also
+have access to it: `out_nix_stringr` holds this result.
+
+We can now compare the two: the result of the code running in our main session
+with the latest version of `{stringr}` and the result of the code running in the
+sub-shell with the old version of `{stringr}`:
 
 ```{r, eval = F}
 identical(out_system_stringr, out_nix_stringr)
 ```
 
-As expected, `out_nix_stringr` is `"a"`.
+As expected, the result is `FALSE`.
