@@ -1,0 +1,143 @@
+---
+title: "2a - Setting up and using rix on Linux and Windows"
+output: html_document
+editor_options:
+  chunk_output_type: console
+  markdown: 
+    wrap: 80
+---
+
+*This vignette will discuss Linux and Windows-specific topics. If you're not
+using either of these systems, you can ignore this vignette, and read the
+[Setting up and using rix on macOS]() vignette instead.*
+
+## Introduction
+
+When it comes to Nix, there are really only two supported operating systems:
+macOS and Linux distributions. Windows is "supported" because it is actually
+running Linux thanks to WSL2. In practice this means that Linux distributions
+and Windows can be considered one system, and macOS another, separate, system.
+Because Windows is really running Linux under the hood thanks to WSL2, this
+means that WSL2 needs to be running on your Windows system before you attempt to
+install Nix. But it is important to know that you can run `{rix}` even if you
+don't have Nix installed, which means you can generate Nix expressions, you
+just can't build them.
+
+### Windows pre-requisites
+
+If you are on Windows, you need the Windows Subsystem for Linux 2 (WSL2) to run
+Nix. If you are on a recent version of Windows 10 or 11, you can simply run this
+as an administrator in PowerShell:
+
+```
+wsl --install
+```
+
+You can find further installation notes at [this official MS
+documentation](https://learn.microsoft.com/en-us/windows/wsl/install).
+
+We recommend to activate systemd in Ubuntu WSL2, mainly because this supports 
+other users than `root` running Nix. To set this up, please do as outlined
+[this official Ubuntu blog entry](https://ubuntu.com/blog/ubuntu-wsl-enable-systemd):
+
+```sh
+# in WSL2 Ubuntu shell
+sudo -i
+nano /etc/wsl.conf
+# add this entry
+[boot]
+systemd=true
+# then restart running instance from PowerShell
+wsl --shutdown
+# relaunch Ubuntu WSL2
+```
+
+Afterwards, you can install Nix like business as usual. You can proceed with the
+Determinate Systems installer.
+
+## Installing Nix
+
+You can use `{rix}` to generate Nix expressions even if you don't have Nix
+installed on your system, but obviously, you need to install Nix if you actually
+want to build the defined development environment and use them. Installing (and
+uninstalling) Nix is quite simple, thanks to the installer from [Determinate
+Systems](https://determinate.systems/posts/determinate-nix-installer), a company
+that provides services and tools built on Nix. Simply open a terminal and run
+the following line (on Windows, if you cannot or have decided not to activate
+systemd, then you have to append `--init none` to the command. More details
+about this you can find at [The Determinante Nix
+Installer](https://github.com/DeterminateSystems/nix-installer)):
+
+```{sh, eval=FALSE}
+curl --proto '=https' --tlsv1.2 -sSf \
+    -L https://install.determinate.systems/nix | \
+     sh -s -- install
+```
+
+Once you have Nix installed, you can build the expressions you generate with `{rix}`!
+
+## What if you don't have R already installed?
+
+If you have successfully installed Nix, but don't have yet R installed on your
+system, you could install R as you would usually do on your operating system,
+and then install the `{rix}` package, and from there, generated project-specific
+expressions and build them. But you could also install R using Nix. Running the
+following line in a terminal will drop you in an interactive R session that you
+can use to start generating expressions:
+
+```
+nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix)"
+```
+
+This should immediately start an R session inside your terminal. You can now run
+something like this:
+
+```
+rix(r_ver = "latest",
+    r_pkgs = c("dplyr", "ggplot2"),
+    system_pkgs = NULL,
+    git_pkgs = NULL,
+    ide = "other",
+    project_path = ".",
+    overwrite = TRUE)
+```
+
+to generate a `default.nix`, and then use that file to generate an environment
+with R, `{dplyr}` and `{ggplot2}`. If you need to add packages for your
+project, rerun the command above, but add the needed packages to `r_pkgs`.
+
+## Generating expressions
+
+Once you have R installed, either through the usual installer for your operating
+system, or through Nix as explained previously, you can now start building
+project-specific development environments.
+
+Start an R session, and install `{rix}` if that's not already done. Because
+`{rix}` is not yet on CRAN, the easiest way is to install it from its
+r-universe:
+
+```{r, eval=FALSE}
+install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
+  "https://cloud.r-project.org"))
+```
+
+You can then use the `{rix}` package to generate expressions. For example, here
+is how to generate an expression that installs version 4.2.1 of R and the
+`{dplyr}` and `{chronicler}` packages:
+
+```{r, eval=FALSE}
+library(rix)
+
+rix(r_ver = "4.2.1",
+    r_pkgs = c("dplyr", "chronicler"),
+    ide = "other")
+```
+
+If you need to install packages from GitHub or other tools, refer to the
+vignette [installing R packages in a Nix environment]() to learn how to install
+packages from Git or older packages from the CRAN archives, and also refer to
+the vignette [installing system tools and TexLive packages in a Nix
+environment]() to learn how to add tools other programs to your environment such
+as [Quarto](https://quarto.org/) and TexLive packages for writing documents
+using the LaTeX typesetting system.
+
