@@ -412,8 +412,23 @@ inflate the package using `fusen::inflate_all()`. If no errors are found
 In our development workflow, we use [semantic versioning](https://semver.org)
 via [{fledge}](https://fledge.cynkra.com).
 
+## Thanks
+
+Thanks to the [Nix community](https://nixos.org/community/) for making Nix
+possible, and thanks to the community of R users on Nix for their work
+packaging R and CRAN/Bioconductor packages for Nix (in particular [Justin
+Bedő](https://github.com/jbedo), [Rémi Nicole](https://github.com/minijackson),
+[nviets](https://github.com/nviets), [Chris
+Hammill](https://github.com/cfhammill), [László
+Kupcsik](https://github.com/Kupac), [Simon
+Lackerbauer](https://github.com/ciil),
+[MrTarantoga](https://github.com/MrTarantoga) and every other person from the
+[Matrix Nixpkgs R channel](https://matrix.to/#/#r:nixos.org)).
+
 ## Recommended reading
 
+- [NixOS’s website](https://nixos.org/)
+- [Nixpkgs’s GitHub repository](https://github.com/NixOS/nixpkgs)
 - [Nix for R series from Bruno's blog](https://www.brodrigues.co/tags/nix/). Or, in case you like video tutorials, watch [this one on Reproducible R development environments with Nix](https://www.youtube.com/watch?v=c1LhgeTTxaI)
 - [nix.dev tutorials](https://nix.dev/tutorials/first-steps/towards-reproducibility-pinning-nixpkgs#pinning-nixpkgs)
 - [INRIA's Nix tutorial](https://nix-tutorial.gitlabpages.inria.fr/nix-tutorial/installation.html)
