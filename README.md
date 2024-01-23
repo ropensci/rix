@@ -4,8 +4,10 @@
   - [Introduction](#introduction)
   - [Returning users](#returning-users)
   - [The Nix package manager](#the-nix-package-manager)
-  - [Rix workflow](#rix-workflow)
+  - [rix workflow](#rix-workflow)
     - [default.nix](#defaultnix)
+    - [Running single functions in a
+      subshell](#running-single-functions-in-a-subshell)
     - [Running programs from an
       environment](#running-programs-from-an-environment)
   - [Installation](#installation)
@@ -33,6 +35,15 @@ rix](https://b-rodrigues.r-universe.dev/badges/rix?scale=1&color=pink&style=roun
 
 ## Introduction
 
+Nix is a package manager focusing on declarative and reproducible
+builds. This makes Nix an incredibly useful piece of software for
+ensuring reproducibility of projects, in research or otherwise, or for
+running web applications like Shiny apps or `{plumber}` APIs in a
+controlled environment.
+
+Nix has quite a high entry cost though: this is because Nix is a complex
+piece of software trying to solve a complex problem.
+
 `{rix}` is an R package that provides functions to help you write Nix
 expressions: these expressions can then be used by the Nix package
 manager to build completely reproducible development environments. These
@@ -41,12 +52,15 @@ pipelines in a CI/CD environment. Environments built with Nix contain R
 and all the required packages that you need for your project: there are
 currently more than 80.000 pieces of software available through the Nix
 package manager, including the entirety of CRAN and Bioconductor
-packages. The Nix package manager is extremely powerful: not only it
-handles all the dependencies of any package extremely well, it is also
-possible with it to reproduce environments containing old releases of
-software. It is thus possible to build environments that contain R
-version 4.0.0 (for example) to run an old project originally developed
-on that version of R.
+packages. It is also possible to install older releases of packages, or
+install packages from GitHub.
+
+The Nix package manager is extremely powerful: not only it handles all
+the dependencies of any package extremely well, it is also possible with
+it to reproduce environments containing old releases of software. It is
+thus possible to build environments that contain R version 4.0.0 (for
+example) to run an old project originally developed on that version of
+R.
 
 With Nix, it is essentially possible to replace `{renv}` and Docker
 combined. If you need other tools or languages like Python or Julia,
@@ -80,8 +94,9 @@ library("rix")
 
 You can check that everything works well by trying to build the Nix
 expression that ships with `{rix}`. Nix expressions are typically saved
-into files with the name `default.nix`. This expression installs the
-latest version of R and `{rix}` in a separate, reproducible environment:
+into files with the name `default.nix` or `shell.nix`. This expression
+installs the latest version of R and `{rix}` in a separate, reproducible
+environment:
 
 ``` r
 file.copy(
@@ -138,7 +153,7 @@ from the user. The second advantage of Nix is that it is possible to
 package that Nix installs will always be at exactly the same versions,
 regardless of when in the future the packages get installed.
 
-## Rix workflow
+## rix workflow
 
 The idea of `{rix}` is for you to declare the environment you need,
 using the provided `rix()` function, which in turn writes the required
@@ -151,14 +166,14 @@ files, unlike with Docker where a volume must be mounted.
 The main function of `{rix}` is called `rix()`. `rix()` has several
 arguments:
 
-- the R version you need for your project
-- a list of R packages that your project needs
+- the R version you need for your project;
+- a list of R packages that your project needs;
 - an optional list of additional software (for example a Python
-  interpreter, or Quarto)
-- an optional list with packages to install from Github
-- an optional list of LaTeX packages
+  interpreter, or Quarto);
+- an optional list with packages to install from Github;
+- an optional list of LaTeX packages;
 - whether you want to use RStudio as an IDE for your project (or VS
-  Code, or another environment)
+  Code, or another environment);
 - a path to save a file called `default.nix`.
 
 For example:
@@ -180,7 +195,7 @@ other means with a Nix environment. This is because RStudio changes some
 default environment variables and a globally installed RStudio (the one
 you install normally) would not recognize the R version installed in the
 Nix environment. This is not the case for other IDEs such as VS code or
-Emacs. Another example:
+Emacs. For example:
 
 ``` r
 rix(r_ver = "4.2.2",
@@ -216,30 +231,27 @@ rix(r_ver = "latest",
 
 but usually it is better to build an environment using the version of R
 that was current at the time of the release of `{dplyr}` version 1.0.0,
-instead of using the current version of R and install an old package. It
-is also possible to specify software to install alongside R and R
-packages with `rix()`, read the [Building reproducible development
-environments with rix
-vignette](https://b-rodrigues.github.io/rix/articles/building-reproducible-development-environments-with-rix.html)
-for more details.
+instead of using the current version of R and install an old package.
+But depending on what you need, you might need to run an old package on
+a current version of R, so we offer this possibility as well.
 
-For more details on how to use a Nix environment using an IDE
-interactively, read the [Interactive
-use](https://b-rodrigues.github.io/rix/articles/interactive-use.html)
-vignette.
+After running `rix()`, a `default.nix` is generated and can be used to
+build an environment.
 
 ### default.nix
 
 The Nix package manager can be used to build reproducible development
 environments according to the specifications found in a file called
-`default.nix`, which contains an *expression*, in Nix jargon. To make it
-easier for R programmers to use Nix, `{rix}` can be used to write this
-file for you. `{rix}` does not require Nix to be installed, so you could
-generate expressions and use them on other machines. To actually build
-an environment using a `default.nix`, file, go to where you chose to
-write it (ideally in a new, empty folder that will be the root folder of
-your project) and use the Nix package manager to build the environment.
-Call the following function in a terminal:
+`default.nix`, which contains an *expression*. An *expression* is Nix
+jargon for a function with multiple inputs and one output, this output
+being our development environment. To make it easier for R programmers
+to use Nix, `{rix}` can be used to write this file for you. `{rix}` does
+not require Nix to be installed, so you could generate expressions and
+use them on other machines. To actually build an environment using a
+`default.nix`, file, go to where you chose to write it (ideally in a
+new, empty folder that will be the root folder of your project) and use
+the Nix package manager to build the environment. Call the following
+function in a terminal:
 
     nix-build
 
@@ -260,12 +272,36 @@ choice. For RStudio, simply call:
 This will start RStudio. RStudio will use the version of R and library
 of packages from that environment.
 
+It is also possible to specify software to install alongside R and R
+packages with `rix()`, read the [Building reproducible development
+environments with rix
+vignette](https://b-rodrigues.github.io/rix/articles/building-reproducible-development-environments-with-rix.html)
+for more details.
+
+For more details on how to use a Nix environment using an IDE
+interactively, read the [Interactive
+use](https://b-rodrigues.github.io/rix/articles/interactive-use.html)
+vignette.
+
+### Running single functions in a subshell
+
+It is also possible to run single functions in an isolated environment
+from an active R session using `with_nix()` and get the output of that
+function loaded into the current session. Refer to [this
+vignette](https://b-rodrigues.github.io/rix/articles/running-r-or-shell-code-in-nix-from-r.html)
+for more details on how to achieve this. Concretely this means that you
+could be running R version 4.3.2 (installed via Nix, or not), and
+execute a function on R version 4.0.0 for example in a subshell (or
+execute a function that requires an old version of a package in that
+subshell), and get the result of the computation back into the main R
+session.
+
 ### Running programs from an environment
 
-You could create a bash script that you put in the path to make this
-process more streamlined. For example, if your project is called
-`housing`, you could create this script and execute it to start your
-project:
+You could create a bash script that you put in the path to make the
+process of launching RStudio from that environment more streamlined. For
+example, if your project is called `housing`, you could create this
+script and execute it to start your project:
 
     !#/bin/bash
     nix-shell /absolute/path/to/housing/default.nix --run rstudio
@@ -390,10 +426,10 @@ versioning](https://semver.org) via
 
 ## Recommended reading
 
-- [Nix for R series from Bruno’s blog](https://www.brodrigues.co/). Or,
-  in case you like video tutorials, watch [this one on Reproducible R
-  development environments with
-  Nix](https://www.youtube.com/watch?v=c1LhgeTTxaI)
+- [Nix for R series from Bruno’s
+  blog](https://www.brodrigues.co/tags/nix/). Or, in case you like video
+  tutorials, watch [this one on Reproducible R development environments
+  with Nix](https://www.youtube.com/watch?v=c1LhgeTTxaI)
 - [nix.dev
   tutorials](https://nix.dev/tutorials/first-steps/towards-reproducibility-pinning-nixpkgs#pinning-nixpkgs)
 - [INRIA’s Nix

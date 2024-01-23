@@ -1109,7 +1109,6 @@ nix_rprofile <- function() {
 #' @param message_type String how detailed output is. Currently, there is 
 #' either `"simple"` (default) or `"verbose"`, which shows the script that runs
 #' via `nix-shell`.
-#' @return
 #' @importFrom codetools findGlobals checkUsage
 #' @export
 #' @return 
