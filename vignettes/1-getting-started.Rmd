@@ -88,7 +88,7 @@ This `default.nix` can in turn be used by Nix to build an environment containing
 the latest version of R, with the `{dplyr}` and `{chronicler}` packages.
 
 Take note of the `ide = "other"` argument: this argument, and the values it
-can take, are further discussed in the vignette `vignette("5-interactive_use")`
+can take, are further discussed in the vignette `vignette("5-interactive-use")`
 but continue reading this vignette and then vignettes numbered by a "4".
 
 

@@ -125,9 +125,10 @@ on macOS. When you try to generate an expression with `ide =
   version of R for reproducibility purposes;
 - use subshells to execute only the code you need to run in a specific
   environment. See this vignette `vignette("advanced-topic-running-r-or-shell-code-in-nix-from-r")`;
+
 - help us package RStudio for macOS on `nixpgs`. See
-  [https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/rstudio/default.nix](the
-  expression for RStudio).
+  [here](https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/rstudio/default.nix),
+  the Nix expression for RStudio.
   
 We recommend you continue with the next vignette before tackling the more advanced
 topics listed above: `vignette("3-using-rix-to-build-project-specific-environments")`.
