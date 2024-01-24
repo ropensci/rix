@@ -1,8 +1,8 @@
 ---
-title: "4a - Installing R packages in a Nix environment"
+title: "v4a - Installing R packages in a Nix environment"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{4a-installing-r-packages-in-a-nix-environment}
+  %\VignetteIndexEntry{v4a-installing-r-packages-in-a-nix-environment}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

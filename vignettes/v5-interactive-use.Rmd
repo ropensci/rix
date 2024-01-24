@@ -1,8 +1,8 @@
 ---
-title: "5 - Interactive use"
+title: "v5 - Interactive use"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{5-interactive-use}
+  %\VignetteIndexEntry{v5-interactive-use}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

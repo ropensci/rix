@@ -1,8 +1,8 @@
 ---
-title: "4b - Installing system tools and TexLive packages in a Nix environment"
+title: "v4b - Installing system tools and TexLive packages in a Nix environment"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{4b-installing-system-tools-and-texlive-packages-in-a-nix-environment}
+  %\VignetteIndexEntry{v4b-installing-system-tools-and-texlive-packages-in-a-nix-environment}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -109,5 +109,5 @@ literate programming, refer to the vignette
 Environments built with Nix are not completely cut off from the rest of your
 system, and as such, you should be able to use your usual IDE to interact with
 Nix environments. The only exception is RStudio. Everything will be explained in
-greater detail in the vignette `vignette("5-interactive_use")`.
+greater detail in the vignette `vignette("5-interactive-use")`.
 

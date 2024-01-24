@@ -1,8 +1,8 @@
 ---
-title: "2a - Setting up and using rix on Linux and Windows"
+title: "v 2a - Setting up and using rix on Linux and Windows"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{2a-setting-up-and-using-rix-on-linux-and-windows}
+  %\VignetteIndexEntry{v-2a-setting-up-and-using-rix-on-linux-and-windows}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

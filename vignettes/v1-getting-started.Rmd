@@ -1,8 +1,8 @@
 ---
-title: "1 - Getting started"
+title: "v1-getting-started"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{1-getting-started}
+  %\VignetteIndexEntry{v1-getting-started}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -3,10 +3,10 @@
   state: active
   R: []
   tests: []
-  vignettes: vignettes/1-getting-started.Rmd
+  vignettes: vignettes/v1-getting-started.Rmd
   inflate:
     flat_file: dev/1-getting_started.Rmd
-    vignette_name: 1 - Getting started
+    vignette_name: v1-getting-started
     open_vignette: true
     check: true
     document: true
@@ -16,10 +16,10 @@
   state: active
   R: []
   tests: []
-  vignettes: vignettes/2a-setting-up-and-using-rix-on-linux-and-windows.Rmd
+  vignettes: vignettes/v-2a-setting-up-and-using-rix-on-linux-and-windows.Rmd
   inflate:
     flat_file: dev/2a-linux_win.Rmd
-    vignette_name: 2a - Setting up and using rix on Linux and Windows
+    vignette_name: v 2a - Setting up and using rix on Linux and Windows
     open_vignette: true
     check: true
     document: true
@@ -29,10 +29,10 @@
   state: active
   R: []
   tests: []
-  vignettes: vignettes/2b-setting-up-and-using-rix-on-macos.Rmd
+  vignettes: vignettes/v2b-setting-up-and-using-rix-on-macos.Rmd
   inflate:
     flat_file: dev/2b-macos.Rmd
-    vignette_name: 2b - Setting up and using rix on macOS
+    vignette_name: v2b - Setting up and using rix on macOS
     open_vignette: true
     check: true
     document: true
@@ -42,10 +42,10 @@
   state: active
   R: []
   tests: []
-  vignettes: vignettes/3-using-rix-to-build-project-specific-environments.Rmd
+  vignettes: vignettes/v3-using-rix-to-build-project-specific-environments.Rmd
   inflate:
     flat_file: dev/3-building_envs_with_rix.Rmd
-    vignette_name: 3 - Using rix to build project specific environments
+    vignette_name: v3 - Using rix to build project specific environments
     open_vignette: true
     check: true
     document: true
@@ -55,10 +55,10 @@
   state: active
   R: []
   tests: []
-  vignettes: vignettes/4a-installing-r-packages-in-a-nix-environment.Rmd
+  vignettes: vignettes/v4a-installing-r-packages-in-a-nix-environment.Rmd
   inflate:
     flat_file: dev/4a-install_r_pkgs.Rmd
-    vignette_name: 4a - Installing R packages in a Nix environment
+    vignette_name: v4a - Installing R packages in a Nix environment
     open_vignette: true
     check: true
     document: true
@@ -68,10 +68,10 @@
   state: active
   R: []
   tests: []
-  vignettes: vignettes/4b-installing-system-tools-and-texlive-packages-in-a-nix-environment.Rmd
+  vignettes: vignettes/v4b-installing-system-tools-and-texlive-packages-in-a-nix-environment.Rmd
   inflate:
     flat_file: dev/4b-install_sys_pkgs.Rmd
-    vignette_name: 4b - Installing system tools and TexLive packages in a Nix environment
+    vignette_name: v4b - Installing system tools and TexLive packages in a Nix environment
     open_vignette: true
     check: true
     document: true
@@ -81,10 +81,10 @@
   state: active
   R: []
   tests: []
-  vignettes: vignettes/5-interactive-use.Rmd
+  vignettes: vignettes/v5-interactive-use.Rmd
   inflate:
     flat_file: dev/5-interactive_use.Rmd
-    vignette_name: 5 - Interactive use
+    vignette_name: v5 - Interactive use
     open_vignette: true
     check: true
     document: true

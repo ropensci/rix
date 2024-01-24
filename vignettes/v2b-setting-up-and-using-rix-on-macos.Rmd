@@ -1,8 +1,8 @@
 ---
-title: "2b - Setting up and using rix on macOS"
+title: "v2b - Setting up and using rix on macOS"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{2b-setting-up-and-using-rix-on-macos}
+  %\VignetteIndexEntry{v2b-setting-up-and-using-rix-on-macos}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -146,9 +146,10 @@ on macOS. When you try to generate an expression with `ide =
   version of R for reproducibility purposes;
 - use subshells to execute only the code you need to run in a specific
   environment. See this vignette `vignette("advanced-topic-running-r-or-shell-code-in-nix-from-r")`;
+
 - help us package RStudio for macOS on `nixpgs`. See
-  [https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/rstudio/default.nix](the
-  expression for RStudio).
+  [here](https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/rstudio/default.nix),
+  the Nix expression for RStudio.
   
 We recommend you continue with the next vignette before tackling the more advanced
 topics listed above: `vignette("3-using-rix-to-build-project-specific-environments")`.
