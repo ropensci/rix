@@ -7,43 +7,43 @@
     <loc>https://b-rodrigues.github.io/rix/LICENSE.html</loc>
   </url>
   <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/advanced-topic-building-an-environment-for-literate-programming.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/articles/a-getting-started.html</loc>
   </url>
   <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/advanced-topic-handling-packages-with-remote-dependencies.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/articles/b1-setting-up-and-using-rix-on-linux-and-windows.html</loc>
   </url>
   <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/advanced-topic-reproducible-analytical-pipelines-with-nix.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/articles/b2-setting-up-and-using-rix-on-macos.html</loc>
   </url>
   <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/advanced-topic-running-r-or-shell-code-in-nix-from-r.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/articles/c-using-rix-to-build-project-specific-environments.html</loc>
+  </url>
+  <url>
+    <loc>https://b-rodrigues.github.io/rix/articles/d1-installing-r-packages-in-a-nix-environment.html</loc>
+  </url>
+  <url>
+    <loc>https://b-rodrigues.github.io/rix/articles/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment.html</loc>
   </url>
   <url>
     <loc>https://b-rodrigues.github.io/rix/articles/developers-vignette-save-the-nix-package-versions-data.html</loc>
   </url>
   <url>
+    <loc>https://b-rodrigues.github.io/rix/articles/e-interactive-use.html</loc>
+  </url>
+  <url>
     <loc>https://b-rodrigues.github.io/rix/articles/index.html</loc>
   </url>
   <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/v-2a-setting-up-and-using-rix-on-linux-and-windows.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/articles/z-advanced-topic-building-an-environment-for-literate-programming.html</loc>
   </url>
   <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/v1-getting-started.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/articles/z-advanced-topic-handling-packages-with-remote-dependencies.html</loc>
   </url>
   <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/v2b-setting-up-and-using-rix-on-macos.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/articles/z-advanced-topic-reproducible-analytical-pipelines-with-nix.html</loc>
   </url>
   <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/v3-using-rix-to-build-project-specific-environments.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/v4a-installing-r-packages-in-a-nix-environment.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/v4b-installing-system-tools-and-texlive-packages-in-a-nix-environment.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/v5-interactive-use.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/articles/z-advanced-topic-running-r-or-shell-code-in-nix-from-r.html</loc>
   </url>
   <url>
     <loc>https://b-rodrigues.github.io/rix/authors.html</loc>
