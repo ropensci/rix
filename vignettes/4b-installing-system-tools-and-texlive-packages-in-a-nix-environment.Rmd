@@ -52,7 +52,7 @@ command line tool (required to edit Quarto documents from R using the `{quarto}`
 and git:
 
 
-```{r parsermd-chunk-1}
+```{r}
 path_default_nix <- tempdir()
 
 rix(r_ver = "latest",
@@ -64,7 +64,7 @@ rix(r_ver = "latest",
     overwrite = TRUE)
 ```
 
-```{r parsermd-chunk-2, echo = F}
+```{r echo = F}
 cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```
 
@@ -84,7 +84,7 @@ The basic use is to simply add a TexLive package to the `tex_pkgs` argument of `
 like this:
 
 
-```{r parsermd-chunk-3}
+```{r}
 path_default_nix <- tempdir()
 
 rix(r_ver = "latest",
@@ -100,7 +100,8 @@ rix(r_ver = "latest",
 
 This will automically add the *small* TexLive distribution available through `nixpkgs`
 with the `amsmath` LaTex package. To know more about setting up environments for
-literate programming, refer to the vignette `vignette("literate_programming")`.
+literate programming, refer to the vignette 
+`vignette("advanced-topic-building-an-environment-for-literate-programming")`.
 
 
 ## Installing IDEs

@@ -79,7 +79,7 @@ fusen::inflate(flat_file = "dev/flat_save_r_nix_revs.Rmd",
 
 ```{r}
 local({
-  knitr::knit("vignettes/save-the-nix-package-versions-data.Rmd",
+  knitr::knit("vignettes/developers-vignette-save-the-nix-package-versions-data.Rmd",
               output = tempfile())
   usethis::use_data(r_nix_revs,
                     overwrite = TRUE)

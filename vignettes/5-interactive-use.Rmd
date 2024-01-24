@@ -31,7 +31,7 @@ IDE than RStudio, for example VS Code, Emacs, Vim...
 
 It is also possible to evaluate single functions inside a dedicated, separate,
 environment from another, main, interactive R session. For more details
-regarding this, refer to the vignette `vignette("subshells")`.
+regarding this, refer to the vignette `vignette("advanced-topic-running-r-or-shell-code-in-nix-from-r")`.
 
 
 ## Scenario 1: you installed R and RStudio using the usual installers
@@ -46,10 +46,11 @@ these project-specific environments. This is because RStudio re-defines many
 environment variables and as such, a version of RStudio installed using the
 usual installer for your operating system will not be able "to see" an R
 interpreter installed with Nix. As stated in the macOS-specific vignette
-`vignette("2b-macOS")`, RStudio is not available on macOS through `nixpkgs`. The
-following instructions are thus only applicable to Linux and Windows. If you’re
-on macOS, read the macOS-specific vignette if that’s not done already, and then
-come back here and skip to the "scenario 3" of this vignette.
+`vignette("2b-setting-up-and-using-rix-on-macos")`, RStudio is not available on
+macOS through `nixpkgs`. The following instructions are thus only applicable to
+Linux and Windows. If you’re on macOS, read the macOS-specific vignette if
+that’s not done already, and then come back here and skip to the "scenario 3" of
+this vignette.
 
 To run a project-specific version of RStudio and R, you will first need to
 create a `default.nix` file and build the environment defined therein using Nix.
@@ -61,7 +62,7 @@ like `C:\Users\Billy\Documents\kmeans`). For example, here is how you could use
 `{rix}` to generate the `default.nix` for this environment:
 
 
-```{r parsermd-chunk-1, include = FALSE}
+```{r include = FALSE}
 path_default_nix <- tempdir()
 
 rix(r_ver = "latest",
@@ -74,7 +75,7 @@ rix(r_ver = "latest",
     print = TRUE)
 ```
 
-```{r parsermd-chunk-2, eval = FALSE}
+```{r eval = FALSE}
 library(rix)
 
 path_to_project <- ~/Documents/kmeans

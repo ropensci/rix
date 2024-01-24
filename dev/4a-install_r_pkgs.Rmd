@@ -19,6 +19,8 @@ It is possible to install an arbitrary version of a package that has been
 archived on CRAN:
 
 ```{r}
+path_default_nix <- tempdir()
+
 rix(r_ver = "4.2.1",
     r_pkgs = c("dplyr@0.8.0", "janitor@1.0.0"),
     system_pkgs = NULL,

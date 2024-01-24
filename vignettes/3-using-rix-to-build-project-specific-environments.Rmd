@@ -34,9 +34,9 @@ With the `rix::rix()` function, you can easily generate the right `default.nix`
 file. You need to provide the following inputs to `rix()`:
 
 - `r_ver`: the version of R required. Use "latest" for the latest version;
-- `r_pkgs`: the required R packages. For example "dplyr" (more on this in the vignette `vignette("4a-install_r_pkgs")`);
-- `system_pkgs`: the required system packages, if needed. For example "quarto", or a Python interpreter (more on this in the vignette `vignette("4b-install_sys_pkgs")`);
-- `git_pkgs`: list of git packages to add (more on this in the vignette `vignette("4a-install_r_pkgs")`);
+- `r_pkgs`: the required R packages. For example "dplyr" (more on this in the vignette `vignette("4a-installing-r-packages-in-a-nix-environment")`);
+- `system_pkgs`: the required system packages, if needed. For example "quarto", or a Python interpreter (more on this in the vignette `vignette("4b-installing-system-tools-and-texlive-packages-in-a-nix-environment")`);
+- `git_pkgs`: list of git packages to add (more on this in the vignette `vignette("4a-installing-r-packages-in-a-nix-environment")`);
 - `ide`: the integrated development editor to use (more on this in the vignette `vignette("5-interactive_use")`)
 - `path`: the path where to save the `default.nix` file.
 - `overwrite`: whether to overwrite the `default.nix` file or not.
@@ -45,7 +45,7 @@ file. You need to provide the following inputs to `rix()`:
 Run the following command to generate the right `default.nix` file:
 
 
-```{r parsermd-chunk-1}
+```{r}
 path_default_nix <- tempdir()
 
 rix(r_ver = "latest",
@@ -72,7 +72,7 @@ file. This file is a symlink to the software installed by Nix. `{rix}` also
 provides a `nix_build()` function to build Nix environments from within an
 interactive R session, but it is not always guaranteed to succeed, due to
 differences in platforms. This is explained in more detail in the following
-vignette `vignette("subshells")`. In case of doubt, run `nix-build` from your
+vignette `vignette("advanced-topic-running-r-or-shell-code-in-nix-from-r")`. In case of doubt, run `nix-build` from your
 usual terminal application.
 
 To now use the environment, type in the same terminal as before:
@@ -94,7 +94,7 @@ an environment with R version 4.2.1, the `{dplyr}` and `{janitor}` packages and
 no specific IDE:
 
 
-```{r parsermd-chunk-2}
+```{r}
 path_default_nix <- tempdir()
 
 rix(r_ver = "4.2.1",
@@ -110,7 +110,7 @@ rix(r_ver = "4.2.1",
 The file looks like this:
 
 
-```{r parsermd-chunk-3, echo = F}
+```{r echo = F}
 cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```
 
@@ -123,8 +123,9 @@ as well. This means that R versions and package versions are always coupled when
 using Nix. However, if you need a specific version of R, but also a specific
 version of a package that is not available in that particular Nix revision, one
 solution is to install that package from Github or fro the CRAN archives. Read
-the vignette `vignette("4a-install_r_pkgs")` to know more about this. To know
-which versions of R are available, read the documention of `available_r()`.
+the vignette `vignette("4a-installing-r-packages-in-a-nix-environment")` to know
+more about this. To know which versions of R are available, read the documention
+of `available_r()`.
 
 
 ## Running programs from an environment
@@ -151,7 +152,8 @@ cd /absolute/path/to/housing/ && nix-shell default.nix --run "Rscript -e 'target
 
 It is also possible to run single functions in an isolated environment from an
 active R session using `with_nix()` and get the output of that function loaded
-into the current session. Refer to this vignette `vignette("subshells")` for
+into the current session. Refer to this vignette 
+`vignette("advanced-topic-running-r-or-shell-code-in-nix-from-r")` for
 more details on how to achieve this. Concretely this means that you could be
 running R version 4.3.2 (installed via Nix, or not), and execute a function on R
 version 4.0.0 for example in a subshell (or execute a function that requires an

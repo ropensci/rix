@@ -77,7 +77,7 @@ time read through the vignettes and you should be fine.
 For example:
 
 
-```{r parsermd-chunk-1, eval = FALSE}
+```{r eval = FALSE}
 rix(r_ver = "latest",
     r_pkgs = c("dplyr", "chronicler"),
     ide = "other")

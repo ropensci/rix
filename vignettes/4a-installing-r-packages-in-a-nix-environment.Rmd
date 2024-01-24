@@ -33,7 +33,9 @@ It is possible to install an arbitrary version of a package that has been
 archived on CRAN:
 
 
-```{r parsermd-chunk-1}
+```{r}
+path_default_nix <- tempdir()
+
 rix(r_ver = "4.2.1",
     r_pkgs = c("dplyr@0.8.0", "janitor@1.0.0"),
     system_pkgs = NULL,
@@ -43,7 +45,7 @@ rix(r_ver = "4.2.1",
     overwrite = TRUE)
 ```
 
-```{r parsermd-chunk-2, echo = F}
+```{r echo = F}
 cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```
 
@@ -62,7 +64,7 @@ particular package.
 It is also possible to install packages from Github:
 
 
-```{r parsermd-chunk-3}
+```{r}
 rix(r_ver = "4.2.1",
     r_pkgs = c("dplyr", "janitor"),
     git_pkgs = list(
@@ -81,7 +83,7 @@ rix(r_ver = "4.2.1",
 
 ```
 
-```{r parsermd-chunk-4, echo = F}
+```{r echo = F}
 cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```
 
@@ -97,7 +99,7 @@ This example shows how to install packages from CRAN, from the CRAN archives and
 from GitHub:
 
 
-```{r parsermd-chunk-5}
+```{r}
 rix(r_ver = "4.2.1",
     r_pkgs = c("dplyr", "janitor", "AER@1.2-8"),
     git_pkgs = list(
@@ -116,11 +118,13 @@ rix(r_ver = "4.2.1",
 
 ```
 
-```{r parsermd-chunk-6, echo = F}
+```{r echo = F}
 cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```
 
-The next vignette, `vignette("4b-install_sys_pkgs")`, explains how you can
-install tools such as text editors, git, Quarto, TexLive packages, and any other
-tool available through `nixpkgs` for your development environments.
+The next vignette,
+`vignette("4b-installing-system-tools-and-texlive-packages-in-a-nix-environment")`,
+explains how you can install tools such as text editors, git, Quarto, TexLive
+packages, and any other tool available through `nixpkgs` for your development
+environments.
 

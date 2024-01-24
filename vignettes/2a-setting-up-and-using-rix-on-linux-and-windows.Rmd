@@ -90,11 +90,11 @@ Systems](https://determinate.systems/posts/determinate-nix-installer), a company
 that provides services and tools built on Nix. Simply open a terminal and run
 the following line (on Windows, if you cannot or have decided not to activate
 systemd, then you have to append `--init none` to the command. You can find more
-details about this on [The Determinante Nix
+details about this on [The Determinate Nix
 Installer page](https://github.com/DeterminateSystems/nix-installer)):
 
 
-```{sh parsermd-chunk-1, eval = FALSE}
+```{sh eval = FALSE}
 curl --proto '=https' --tlsv1.2 -sSf \
     -L https://install.determinate.systems/nix | \
      sh -s -- install
@@ -148,8 +148,8 @@ rix(r_ver = "latest",
 to generate a `default.nix`, and then use that file to generate an environment
 with R, `{dplyr}` and `{ggplot2}`. If you need to add packages for your project,
 rerun the command above, but add the needed packages to `r_pkgs`. This is
-detailled in the vignette `vignette("4a-install_r_pkgs")` and
-`vignette("4b-install_sys_pkgs")`.
+detailled in the vignette `vignette("4a-installing-r-packages-in-a-nix-environment")` and
+`vignette("4b-installing-system-tools-and-texlive-packages-in-a-nix-environment")`.
 
 
 ## Generating expressions
@@ -163,11 +163,11 @@ Start an R session, and install `{rix}` if that's not already done. Because
 r-universe:
 
 
-```{r parsermd-chunk-2, eval = FALSE}
+```{r eval = FALSE}
 install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
   "https://cloud.r-project.org"))
 ```
 
 You can then use the `{rix}` package to generate expressions. Consult the 
-next vignette `vignette("3-building_envs_with_rix")` to learn more.
+next vignette `vignette("3-using-rix-to-build-project-specific-environments")` to learn more.
 
