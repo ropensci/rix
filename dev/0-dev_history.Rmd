@@ -73,13 +73,13 @@ usethis::use_git()
 # Run but keep eval=FALSE to avoid infinite loop
 # Execute in the console directly
 fusen::inflate(flat_file = "dev/flat_save_r_nix_revs.Rmd",
-               vignette_name = "Developers Vignette: Save the Nix Package Versions data",
+               vignette_name = "z - Developers Vignette: Save the Nix Package Versions data",
                overwrite = TRUE)
 ```
 
 ```{r}
 local({
-  knitr::knit("vignettes/developers-vignette-save-the-nix-package-versions-data.Rmd",
+  knitr::knit("vignettes/z-developers-vignette-save-the-nix-package-versions-data.Rmd",
               output = tempfile())
   usethis::use_data(r_nix_revs,
                     overwrite = TRUE)

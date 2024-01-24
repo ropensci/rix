@@ -159,10 +159,10 @@ flat_save_r_nix_revs.Rmd:
   state: active
   R: []
   tests: []
-  vignettes: vignettes/developers-vignette-save-the-nix-package-versions-data.Rmd
+  vignettes: vignettes/z-developers-vignette-save-the-nix-package-versions-data.Rmd
   inflate:
     flat_file: dev/flat_save_r_nix_revs.Rmd
-    vignette_name: 'Developers Vignette: Save the Nix Package Versions data'
+    vignette_name: 'z - Developers Vignette: Save the Nix Package Versions data'
     open_vignette: true
     check: true
     document: true
