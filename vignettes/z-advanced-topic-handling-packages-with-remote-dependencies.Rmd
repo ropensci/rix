@@ -1,8 +1,8 @@
 ---
-title: "Advanced topic: Handling packages with remote dependencies"
+title: "z - Advanced topic: Handling packages with remote dependencies"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{advanced-topic-handling-packages-with-remote-dependencies}
+  %\VignetteIndexEntry{z-advanced-topic-handling-packages-with-remote-dependencies}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -3,10 +3,10 @@
   state: active
   R: []
   tests: []
-  vignettes: vignettes/v1-getting-started.Rmd
+  vignettes: vignettes/a-getting-started.Rmd
   inflate:
     flat_file: dev/1-getting_started.Rmd
-    vignette_name: v1-getting-started
+    vignette_name: a - Getting started
     open_vignette: true
     check: true
     document: true
@@ -16,10 +16,10 @@
   state: active
   R: []
   tests: []
-  vignettes: vignettes/v-2a-setting-up-and-using-rix-on-linux-and-windows.Rmd
+  vignettes: vignettes/b1-setting-up-and-using-rix-on-linux-and-windows.Rmd
   inflate:
     flat_file: dev/2a-linux_win.Rmd
-    vignette_name: v 2a - Setting up and using rix on Linux and Windows
+    vignette_name: b1 - Setting up and using rix on Linux and Windows
     open_vignette: true
     check: true
     document: true
@@ -29,10 +29,10 @@
   state: active
   R: []
   tests: []
-  vignettes: vignettes/v2b-setting-up-and-using-rix-on-macos.Rmd
+  vignettes: vignettes/b2-setting-up-and-using-rix-on-macos.Rmd
   inflate:
     flat_file: dev/2b-macos.Rmd
-    vignette_name: v2b - Setting up and using rix on macOS
+    vignette_name: b2 - Setting up and using rix on macOS
     open_vignette: true
     check: true
     document: true
@@ -42,10 +42,10 @@
   state: active
   R: []
   tests: []
-  vignettes: vignettes/v3-using-rix-to-build-project-specific-environments.Rmd
+  vignettes: vignettes/c-using-rix-to-build-project-specific-environments.Rmd
   inflate:
     flat_file: dev/3-building_envs_with_rix.Rmd
-    vignette_name: v3 - Using rix to build project specific environments
+    vignette_name: c - Using rix to build project specific environments
     open_vignette: true
     check: true
     document: true
@@ -55,10 +55,10 @@
   state: active
   R: []
   tests: []
-  vignettes: vignettes/v4a-installing-r-packages-in-a-nix-environment.Rmd
+  vignettes: vignettes/d1-installing-r-packages-in-a-nix-environment.Rmd
   inflate:
     flat_file: dev/4a-install_r_pkgs.Rmd
-    vignette_name: v4a - Installing R packages in a Nix environment
+    vignette_name: d1 - Installing R packages in a Nix environment
     open_vignette: true
     check: true
     document: true
@@ -68,10 +68,10 @@
   state: active
   R: []
   tests: []
-  vignettes: vignettes/v4b-installing-system-tools-and-texlive-packages-in-a-nix-environment.Rmd
+  vignettes: vignettes/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment.Rmd
   inflate:
     flat_file: dev/4b-install_sys_pkgs.Rmd
-    vignette_name: v4b - Installing system tools and TexLive packages in a Nix environment
+    vignette_name: d2 - Installing system tools and TexLive packages in a Nix environment
     open_vignette: true
     check: true
     document: true
@@ -81,10 +81,10 @@
   state: active
   R: []
   tests: []
-  vignettes: vignettes/v5-interactive-use.Rmd
+  vignettes: vignettes/e-interactive-use.Rmd
   inflate:
     flat_file: dev/5-interactive_use.Rmd
-    vignette_name: v5 - Interactive use
+    vignette_name: e - Interactive use
     open_vignette: true
     check: true
     document: true
@@ -185,10 +185,10 @@ literate_programming.Rmd:
   state: active
   R: []
   tests: []
-  vignettes: vignettes/advanced-topic-building-an-environment-for-literate-programming.Rmd
+  vignettes: vignettes/z-advanced-topic-building-an-environment-for-literate-programming.Rmd
   inflate:
     flat_file: dev/literate_programming.Rmd
-    vignette_name: 'Advanced topic: Building an environment for literate programming'
+    vignette_name: 'z - Advanced topic: Building an environment for literate programming'
     open_vignette: true
     check: true
     document: true
@@ -198,10 +198,10 @@ pkgs_with_remotes.Rmd:
   state: active
   R: []
   tests: []
-  vignettes: vignettes/advanced-topic-handling-packages-with-remote-dependencies.Rmd
+  vignettes: vignettes/z-advanced-topic-handling-packages-with-remote-dependencies.Rmd
   inflate:
     flat_file: dev/pkgs_with_remotes.Rmd
-    vignette_name: 'Advanced topic: Handling packages with remote dependencies'
+    vignette_name: 'z - Advanced topic: Handling packages with remote dependencies'
     open_vignette: true
     check: true
     document: true
@@ -211,10 +211,10 @@ raps_with_nix.Rmd:
   state: active
   R: []
   tests: []
-  vignettes: vignettes/advanced-topic-reproducible-analytical-pipelines-with-nix.Rmd
+  vignettes: vignettes/z-advanced-topic-reproducible-analytical-pipelines-with-nix.Rmd
   inflate:
     flat_file: dev/raps_with_nix.Rmd
-    vignette_name: 'Advanced topic: Reproducible Analytical Pipelines with Nix'
+    vignette_name: 'z - Advanced topic: Reproducible Analytical Pipelines with Nix'
     open_vignette: true
     check: true
     document: true
@@ -224,10 +224,10 @@ subshells.Rmd:
   state: active
   R: []
   tests: []
-  vignettes: vignettes/advanced-topic-running-r-or-shell-code-in-nix-from-r.Rmd
+  vignettes: vignettes/z-advanced-topic-running-r-or-shell-code-in-nix-from-r.Rmd
   inflate:
     flat_file: dev/subshells.Rmd
-    vignette_name: 'Advanced topic: Running R or Shell Code in Nix from R'
+    vignette_name: 'z - Advanced topic: Running R or Shell Code in Nix from R'
     open_vignette: true
     check: true
     document: true

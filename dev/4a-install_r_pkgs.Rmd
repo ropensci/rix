@@ -104,7 +104,7 @@ cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```
 
 The next vignette,
-`vignette("4b-installing-system-tools-and-texlive-packages-in-a-nix-environment")`,
+`vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")`,
 explains how you can install tools such as text editors, git, Quarto, TexLive
 packages, and any other tool available through `nixpkgs` for your development
 environments.

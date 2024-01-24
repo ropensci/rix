@@ -1,8 +1,8 @@
 ---
-title: "Advanced topic: Running R or Shell Code in Nix from R"
+title: "z - Advanced topic: Running R or Shell Code in Nix from R"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{advanced-topic-running-r-or-shell-code-in-nix-from-r}
+  %\VignetteIndexEntry{z-advanced-topic-running-r-or-shell-code-in-nix-from-r}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

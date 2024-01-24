@@ -138,7 +138,7 @@ start using them.
 ## Getting started for new users
 
 To get started with `{rix}` and Nix, you should read the following vignette
-`vignette("1-getting-started")`. The vignettes are numbered to get you to learn
+`vignette("a-getting-started")`. The vignettes are numbered to get you to learn
 how to use `{rix}` and Nix smoothly. There’s a lot of info, so take your time
 reading the vignettes. Don’t hesitate to open an issue if something is not
 clear.

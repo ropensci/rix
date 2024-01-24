@@ -128,68 +128,68 @@ fusen::inflate(flat_file = "dev/flat_cran_archive.Rmd",
 
 ```{r}
 fusen::inflate(flat_file = "dev/1-getting_started.Rmd",
-               vignette_name = "v1-getting-started",
+               vignette_name = "a - Getting started",
                overwrite = TRUE)
 ```
 
 ```{r}
 fusen::inflate(flat_file = "dev/2a-linux_win.Rmd",
-               vignette_name = "v 2a - Setting up and using rix on Linux and Windows",
+               vignette_name = "b1 - Setting up and using rix on Linux and Windows",
                overwrite = TRUE)
 ```
 
 ```{r}
 fusen::inflate(flat_file = "dev/2b-macos.Rmd",
-               vignette_name = "v2b - Setting up and using rix on macOS",
+               vignette_name = "b2 - Setting up and using rix on macOS",
                overwrite = TRUE)
 ```
 
 ```{r}
 fusen::inflate(flat_file = "dev/3-building_envs_with_rix.Rmd",
-               vignette_name = "v3 - Using rix to build project specific environments",
+               vignette_name = "c - Using rix to build project specific environments",
                overwrite = TRUE)
 ```
 
 ```{r}
 fusen::inflate(flat_file = "dev/4a-install_r_pkgs.Rmd",
-               vignette_name = "v4a - Installing R packages in a Nix environment",
+               vignette_name = "d1 - Installing R packages in a Nix environment",
                overwrite = TRUE)
 ```
 
 ```{r}
 fusen::inflate(flat_file = "dev/4b-install_sys_pkgs.Rmd",
-               vignette_name = "v4b - Installing system tools and TexLive packages in a Nix environment",
+               vignette_name = "d2 - Installing system tools and TexLive packages in a Nix environment",
                overwrite = TRUE)
 ```
 
 ```{r}
 fusen::inflate(flat_file = "dev/5-interactive_use.Rmd",
-               vignette_name = "v5 - Interactive use",
+               vignette_name = "e - Interactive use",
                overwrite = TRUE)
 ```
 
 
 ```{r}
 fusen::inflate(flat_file = "dev/literate_programming.Rmd",
-               vignette_name = "Advanced topic: Building an environment for literate programming",
+               vignette_name = "z - Advanced topic: Building an environment for literate programming",
                overwrite = TRUE)
 ```
 
 ```{r}
 fusen::inflate(flat_file = "dev/pkgs_with_remotes.Rmd",
-               vignette_name = "Advanced topic: Handling packages with remote dependencies",
+               vignette_name = "z - Advanced topic: Handling packages with remote dependencies",
                overwrite = TRUE)
 ```
 
 ```{r}
 fusen::inflate(flat_file = "dev/raps_with_nix.Rmd",
-               vignette_name = "Advanced topic: Reproducible Analytical Pipelines with Nix",
+               vignette_name = "z - Advanced topic: Reproducible Analytical Pipelines with Nix",
                overwrite = TRUE)
 ```
 
 ```{r}
 fusen::inflate(flat_file = "dev/subshells.Rmd",
-               vignette_name = "Advanced topic: Running R or Shell Code in Nix from R",
+               vignette_name = "z - Advanced topic: Running R or Shell Code in Nix from R",
                overwrite = TRUE)
 ```
 

@@ -1,8 +1,8 @@
 ---
-title: "v4a - Installing R packages in a Nix environment"
+title: "d1 - Installing R packages in a Nix environment"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{v4a-installing-r-packages-in-a-nix-environment}
+  %\VignetteIndexEntry{d1-installing-r-packages-in-a-nix-environment}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -123,7 +123,7 @@ cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```
 
 The next vignette,
-`vignette("4b-installing-system-tools-and-texlive-packages-in-a-nix-environment")`,
+`vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")`,
 explains how you can install tools such as text editors, git, Quarto, TexLive
 packages, and any other tool available through `nixpkgs` for your development
 environments.

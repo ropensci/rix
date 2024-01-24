@@ -1,8 +1,8 @@
 ---
-title: "Advanced topic: Reproducible Analytical Pipelines with Nix"
+title: "z - Advanced topic: Reproducible Analytical Pipelines with Nix"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{advanced-topic-reproducible-analytical-pipelines-with-nix}
+  %\VignetteIndexEntry{z-advanced-topic-reproducible-analytical-pipelines-with-nix}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

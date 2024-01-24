@@ -1,8 +1,8 @@
 ---
-title: "v2b - Setting up and using rix on macOS"
+title: "b2 - Setting up and using rix on macOS"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{v2b-setting-up-and-using-rix-on-macos}
+  %\VignetteIndexEntry{b2-setting-up-and-using-rix-on-macos}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

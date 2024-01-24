@@ -1,8 +1,8 @@
 ---
-title: "v5 - Interactive use"
+title: "e - Interactive use"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{v5-interactive-use}
+  %\VignetteIndexEntry{e-interactive-use}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -31,7 +31,7 @@ IDE than RStudio, for example VS Code, Emacs, Vim...
 
 It is also possible to evaluate single functions inside a dedicated, separate,
 environment from another, main, interactive R session. For more details
-regarding this, refer to the vignette `vignette("advanced-topic-running-r-or-shell-code-in-nix-from-r")`.
+regarding this, refer to the vignette `vignette("z-advanced-topic-running-r-or-shell-code-in-nix-from-r")`.
 
 
 ## Scenario 1: you installed R and RStudio using the usual installers
@@ -46,7 +46,7 @@ these project-specific environments. This is because RStudio re-defines many
 environment variables and as such, a version of RStudio installed using the
 usual installer for your operating system will not be able "to see" an R
 interpreter installed with Nix. As stated in the macOS-specific vignette
-`vignette("2b-setting-up-and-using-rix-on-macos")`, RStudio is not available on
+`vignette("b1-setting-up-and-using-rix-on-macos")`, RStudio is not available on
 macOS through `nixpkgs`. The following instructions are thus only applicable to
 Linux and Windows. If you’re on macOS, read the macOS-specific vignette if
 that’s not done already, and then come back here and skip to the "scenario 3" of

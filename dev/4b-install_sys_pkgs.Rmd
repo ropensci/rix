@@ -84,11 +84,11 @@ rix(r_ver = "latest",
 This will automically add the *small* TexLive distribution available through `nixpkgs`
 with the `amsmath` LaTex package. To know more about setting up environments for
 literate programming, refer to the vignette 
-`vignette("advanced-topic-building-an-environment-for-literate-programming")`.
+`vignette("z-advanced-topic-building-an-environment-for-literate-programming")`.
 
 ## Installing IDEs
 
 Environments built with Nix are not completely cut off from the rest of your
 system, and as such, you should be able to use your usual IDE to interact with
 Nix environments. The only exception is RStudio. Everything will be explained in
-greater detail in the vignette `vignette("5-interactive-use")`.
+greater detail in the vignette `vignette("e-interactive-use")`.
