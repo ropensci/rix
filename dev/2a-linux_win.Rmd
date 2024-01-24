@@ -9,7 +9,8 @@ editor_options:
 
 *This vignette will discuss Linux and Windows-specific topics. If you're not
 using either of these systems, you can ignore this vignette, and read the
-[Setting up and using rix on macOS]() vignette instead.*
+`vignette("2b-setting-up-and-using-rix-on-macos")`
+vignette instead.*
 
 ## Introduction
 
@@ -64,9 +65,9 @@ uninstalling) Nix is quite simple, thanks to the installer from [Determinate
 Systems](https://determinate.systems/posts/determinate-nix-installer), a company
 that provides services and tools built on Nix. Simply open a terminal and run
 the following line (on Windows, if you cannot or have decided not to activate
-systemd, then you have to append `--init none` to the command. More details
-about this you can find at [The Determinante Nix
-Installer](https://github.com/DeterminateSystems/nix-installer)):
+systemd, then you have to append `--init none` to the command. You can find more
+details about this on [The Determinate Nix
+Installer page](https://github.com/DeterminateSystems/nix-installer)):
 
 ```{sh, eval=FALSE}
 curl --proto '=https' --tlsv1.2 -sSf \
@@ -75,6 +76,22 @@ curl --proto '=https' --tlsv1.2 -sSf \
 ```
 
 Once you have Nix installed, you can build the expressions you generate with `{rix}`!
+
+On Linux, once Nix is installed, all the software that will be installed through
+Nix will be saved to the `/nix` directory on the root partition. It is common
+for Linux users to have a separate partition for `/`, which may be small.
+Complete development environments built with Nix can take up much space, so if
+the available space on your root partition is limited, we advise you to mount the
+`/nix` folder on another partition with more space (for example, a secondary
+hard drive). For this, edit `/etc/fstab` and add the following line at the end:
+
+```
+/home/path_to/nix /nix none bind 0 0
+```
+
+This will map `/nix` to `/home/path_to/nix` which can be on a larger partition.
+If you have enough space on your root partition, you can ignore the above
+instructions.
 
 ## What if you don't have R already installed?
 
@@ -103,8 +120,10 @@ rix(r_ver = "latest",
 ```
 
 to generate a `default.nix`, and then use that file to generate an environment
-with R, `{dplyr}` and `{ggplot2}`. If you need to add packages for your
-project, rerun the command above, but add the needed packages to `r_pkgs`.
+with R, `{dplyr}` and `{ggplot2}`. If you need to add packages for your project,
+rerun the command above, but add the needed packages to `r_pkgs`. This is
+detailled in the vignette `vignette("4a-installing-r-packages-in-a-nix-environment")` and
+`vignette("4b-installing-system-tools-and-texlive-packages-in-a-nix-environment")`.
 
 ## Generating expressions
 
@@ -121,23 +140,5 @@ install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
   "https://cloud.r-project.org"))
 ```
 
-You can then use the `{rix}` package to generate expressions. For example, here
-is how to generate an expression that installs version 4.2.1 of R and the
-`{dplyr}` and `{chronicler}` packages:
-
-```{r, eval=FALSE}
-library(rix)
-
-rix(r_ver = "4.2.1",
-    r_pkgs = c("dplyr", "chronicler"),
-    ide = "other")
-```
-
-If you need to install packages from GitHub or other tools, refer to the
-vignette [installing R packages in a Nix environment]() to learn how to install
-packages from Git or older packages from the CRAN archives, and also refer to
-the vignette [installing system tools and TexLive packages in a Nix
-environment]() to learn how to add tools other programs to your environment such
-as [Quarto](https://quarto.org/) and TexLive packages for writing documents
-using the LaTeX typesetting system.
-
+You can then use the `{rix}` package to generate expressions. Consult the 
+next vignette `vignette("3-using-rix-to-build-project-specific-environments")` to learn more.

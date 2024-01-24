@@ -18,6 +18,8 @@ You need to run the 'description' chunk in the '0-dev_history.Rmd' file before c
 pkgload::load_all(export_all = FALSE)
 ```
 
+# Main functions
+
 This function takes an R version as an input and returns the Nix revision that provides it:
 
 ```{r function-find_rev}

@@ -10,8 +10,8 @@ Authors@R: c(
 Description: Provides helper functions to create reproducible development
     environments using the Nix package manager.
 License: GPL (>= 3)
-Depends: 
-    R (>= 2.10)
+URL: https://b-rodrigues.github.io/rix/
+BugReports: https://github.com/b-rodrigues/rix
 Imports: 
     codetools,
     httr,
@@ -26,6 +26,5 @@ VignetteBuilder:
     knitr
 Config/fusen/version: 0.5.2
 Encoding: UTF-8
-LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3

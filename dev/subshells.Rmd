@@ -1,5 +1,5 @@
 ---
-title: "Running R or Shell Code in Nix from R"
+title: "Advanced topic: Running R or Shell Code in Nix from R"
 output: html_document
 editor_options:
   chunk_output_type: console

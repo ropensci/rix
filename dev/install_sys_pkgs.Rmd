@@ -1,8 +1,0 @@
----
-title: "installing system tools and TexLive packages in a Nix environment"
-output: html_document
-editor_options:
-  chunk_output_type: console
-  markdown: 
-    wrap: 80
----

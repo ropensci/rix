@@ -1,5 +1,5 @@
 ---
-title: "Handling packages with remote dependencies"
+title: "Advanced topic: Handling packages with remote dependencies"
 output: html_document
 editor_options:
   chunk_output_type: console

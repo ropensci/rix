@@ -1,103 +1,181 @@
-build_envs.Rmd:
-  path: dev/build_envs.Rmd
+1-getting_started.Rmd:
+  path: dev/1-getting_started.Rmd
+  state: active
+  R: []
+  tests: []
+  vignettes: vignettes/1-getting-started.Rmd
+  inflate:
+    flat_file: dev/1-getting_started.Rmd
+    vignette_name: 1 - Getting started
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: 'yes'
+2a-linux_win.Rmd:
+  path: dev/2a-linux_win.Rmd
+  state: active
+  R: []
+  tests: []
+  vignettes: vignettes/2a-setting-up-and-using-rix-on-linux-and-windows.Rmd
+  inflate:
+    flat_file: dev/2a-linux_win.Rmd
+    vignette_name: 2a - Setting up and using rix on Linux and Windows
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: 'yes'
+2b-macos.Rmd:
+  path: dev/2b-macos.Rmd
+  state: active
+  R: []
+  tests: []
+  vignettes: vignettes/2b-setting-up-and-using-rix-on-macos.Rmd
+  inflate:
+    flat_file: dev/2b-macos.Rmd
+    vignette_name: 2b - Setting up and using rix on macOS
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: 'yes'
+3-building_envs_with_rix.Rmd:
+  path: dev/3-building_envs_with_rix.Rmd
+  state: active
+  R: []
+  tests: []
+  vignettes: vignettes/3-using-rix-to-build-project-specific-environments.Rmd
+  inflate:
+    flat_file: dev/3-building_envs_with_rix.Rmd
+    vignette_name: 3 - Using rix to build project specific environments
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: 'yes'
+4a-install_r_pkgs.Rmd:
+  path: dev/4a-install_r_pkgs.Rmd
+  state: active
+  R: []
+  tests: []
+  vignettes: vignettes/4a-installing-r-packages-in-a-nix-environment.Rmd
+  inflate:
+    flat_file: dev/4a-install_r_pkgs.Rmd
+    vignette_name: 4a - Installing R packages in a Nix environment
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: 'yes'
+4b-install_sys_pkgs.Rmd:
+  path: dev/4b-install_sys_pkgs.Rmd
+  state: active
+  R: []
+  tests: []
+  vignettes: vignettes/4b-installing-system-tools-and-texlive-packages-in-a-nix-environment.Rmd
+  inflate:
+    flat_file: dev/4b-install_sys_pkgs.Rmd
+    vignette_name: 4b - Installing system tools and TexLive packages in a Nix environment
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: 'yes'
+5-interactive_use.Rmd:
+  path: dev/5-interactive_use.Rmd
+  state: active
+  R: []
+  tests: []
+  vignettes: vignettes/5-interactive-use.Rmd
+  inflate:
+    flat_file: dev/5-interactive_use.Rmd
+    vignette_name: 5 - Interactive use
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: 'yes'
+flat_build_envs.Rmd:
+  path: dev/flat_build_envs.Rmd
   state: active
   R: R/find_rev.R
   tests: tests/testthat/test-find_rev.R
   vignettes: []
   inflate:
-    flat_file: dev/build_envs.Rmd
+    flat_file: dev/flat_build_envs.Rmd
     vignette_name: .na
     open_vignette: true
     check: true
     document: true
     overwrite: 'yes'
-building_envs_with_rix.Rmd:
-  path: dev/building_envs_with_rix.Rmd
-  state: active
-  R: []
-  tests: []
-  vignettes: vignettes/building-reproducible-development-environments-with-rix.Rmd
-  inflate:
-    flat_file: dev/building_envs_with_rix.Rmd
-    vignette_name: Building reproducible development environments with rix
-    open_vignette: true
-    check: true
-    document: true
-    overwrite: 'yes'
-cicd.Rmd:
-  path: dev/cicd.Rmd
+flat_cicd.Rmd:
+  path: dev/flat_cicd.Rmd
   state: active
   R: R/tar_nix_ga.R
   tests: []
   vignettes: []
   inflate:
-    flat_file: dev/cicd.Rmd
+    flat_file: dev/flat_cicd.Rmd
     vignette_name: .na
     open_vignette: true
     check: true
     document: true
     overwrite: 'yes'
-cran_archive.Rmd:
-  path: dev/cran_archive.Rmd
+flat_cran_archive.Rmd:
+  path: dev/flat_cran_archive.Rmd
   state: active
   R: R/detect_versions.R
   tests: tests/testthat/test-detect_versions.R
   vignettes: []
   inflate:
-    flat_file: dev/cran_archive.Rmd
+    flat_file: dev/flat_cran_archive.Rmd
     vignette_name: .na
     open_vignette: true
     check: true
     document: true
     overwrite: 'yes'
-data_doc.Rmd:
-  path: dev/data_doc.Rmd
+flat_data_doc.Rmd:
+  path: dev/flat_data_doc.Rmd
   state: active
   R: R/included-datasets.R
   tests: []
   vignettes: []
   inflate:
-    flat_file: dev/data_doc.Rmd
+    flat_file: dev/flat_data_doc.Rmd
     vignette_name: .na
     open_vignette: true
     check: true
     document: true
     overwrite: 'yes'
-get_os.Rmd:
-  path: dev/get_os.Rmd
+flat_get_os.Rmd:
+  path: dev/flat_get_os.Rmd
   state: active
   R: R/detect_os.R
   tests: []
   vignettes: []
   inflate:
-    flat_file: dev/get_os.Rmd
+    flat_file: dev/flat_get_os.Rmd
     vignette_name: .na
     open_vignette: true
     check: true
     document: true
     overwrite: 'yes'
-interactive_use.Rmd:
-  path: dev/interactive_use.Rmd
+flat_save_r_nix_revs.Rmd:
+  path: dev/flat_save_r_nix_revs.Rmd
   state: active
   R: []
   tests: []
-  vignettes: vignettes/interactive-use.Rmd
+  vignettes: vignettes/developers-vignette-save-the-nix-package-versions-data.Rmd
   inflate:
-    flat_file: dev/interactive_use.Rmd
-    vignette_name: Interactive use
+    flat_file: dev/flat_save_r_nix_revs.Rmd
+    vignette_name: 'Developers Vignette: Save the Nix Package Versions data'
     open_vignette: true
     check: true
     document: true
     overwrite: 'yes'
-run_code_in_nix_from_r.Rmd:
-  path: dev/running_r_or_shell_code_in_nix_from_r.Rmd
+flat_zzz.Rmd:
+  path: dev/flat_zzz.Rmd
   state: active
-  R: []
+  R: R/zzz.R
   tests: []
-  vignettes: vignettes/running-r-or-shell-code-in-nix-from-r.Rmd
+  vignettes: []
   inflate:
-    flat_file: dev/running_r_or_shell_code_in_nix_from_r.Rmd
-    vignette_name: Running R or shell code in Nix from R
+    flat_file: dev/flat_zzz.Rmd
+    vignette_name: .na
     open_vignette: true
     check: true
     document: true
@@ -107,10 +185,10 @@ literate_programming.Rmd:
   state: active
   R: []
   tests: []
-  vignettes: vignettes/building-an-environment-for-literate-programming.Rmd
+  vignettes: vignettes/advanced-topic-building-an-environment-for-literate-programming.Rmd
   inflate:
     flat_file: dev/literate_programming.Rmd
-    vignette_name: Building an environment for literate programming
+    vignette_name: 'Advanced topic: Building an environment for literate programming'
     open_vignette: true
     check: true
     document: true
@@ -120,50 +198,37 @@ pkgs_with_remotes.Rmd:
   state: active
   R: []
   tests: []
-  vignettes: vignettes/handling-packages-with-remote-dependencies.Rmd
+  vignettes: vignettes/advanced-topic-handling-packages-with-remote-dependencies.Rmd
   inflate:
     flat_file: dev/pkgs_with_remotes.Rmd
-    vignette_name: Handling packages with remote dependencies
+    vignette_name: 'Advanced topic: Handling packages with remote dependencies'
     open_vignette: true
     check: true
     document: true
-    overwrite: ask
+    overwrite: 'yes'
 raps_with_nix.Rmd:
   path: dev/raps_with_nix.Rmd
   state: active
   R: []
   tests: []
-  vignettes: vignettes/reproducible-analytical-pipelines-with-nix.Rmd
+  vignettes: vignettes/advanced-topic-reproducible-analytical-pipelines-with-nix.Rmd
   inflate:
     flat_file: dev/raps_with_nix.Rmd
-    vignette_name: Reproducible Analytical Pipelines with Nix
+    vignette_name: 'Advanced topic: Reproducible Analytical Pipelines with Nix'
     open_vignette: true
     check: true
     document: true
     overwrite: 'yes'
-save_r_nix_revs.Rmd:
-  path: dev/save_r_nix_revs.Rmd
+subshells.Rmd:
+  path: dev/subshells.Rmd
   state: active
   R: []
   tests: []
-  vignettes: vignettes/save-the-nix-package-versions-data.Rmd
+  vignettes: vignettes/advanced-topic-running-r-or-shell-code-in-nix-from-r.Rmd
   inflate:
-    flat_file: dev/save_r_nix_revs.Rmd
-    vignette_name: Save the Nix Package Versions data
+    flat_file: dev/subshells.Rmd
+    vignette_name: 'Advanced topic: Running R or Shell Code in Nix from R'
     open_vignette: true
     check: true
     document: true
-    overwrite: 'yes'
-zzz.Rmd:
-  path: dev/zzz.Rmd
-  state: active
-  R: R/zzz.R
-  tests: []
-  vignettes: []
-  inflate:
-    flat_file: dev/zzz.Rmd
-    vignette_name: .na
-    open_vignette: true
-    check: true
-    document: false
     overwrite: 'yes'

@@ -1,8 +1,8 @@
 ---
-title: "Building an environment for literate programming"
+title: "Advanced topic: Building an environment for literate programming"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{building-an-environment-for-literate-programming}
+  %\VignetteIndexEntry{advanced-topic-building-an-environment-for-literate-programming}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -45,7 +45,7 @@ Because we want to compile a PDF, we also need to have `texlive` installed, as
 well as some LaTeX packages. For this, we use the `tex_pkgs` argument:
 
 
-```{r}
+```{r parsermd-chunk-1}
 path_default_nix <- tempdir()
 
 rix(r_ver = "4.3.1",
@@ -69,10 +69,11 @@ with this small version, you can click
 [here](https://search.nixos.org/packages?channel=unstable&show=texlive.combined.scheme-small&from=0&size=50&sort=relevance&type=packages&query=scheme-small).
 We start by adding the `amsmath` package then build the environment using:
 
-
-```{r eval = F}
-nix_build()
 ```
+nix-build
+```
+
+from a terminal, or `nix_build()` from an interactive R session.
 
 Then, drop into the Nix shell with `nix-shell`, and run `quarto add
 quarto-journals/jss`. This will install the template linked above. Then, in the
@@ -108,7 +109,7 @@ So there's an R chunk in `template.qmd` that uses the `{MASS}` package. Change
 the environment when built:
 
 
-```{r}
+```{r parsermd-chunk-2}
 rix(r_ver = "4.3.1",
     r_pkgs = c("quarto", "MASS"),
     system_pkgs = "quarto",
@@ -144,7 +145,7 @@ easier way to list the dependencies and requirements of a LaTeX document.
 This is what the final script to build the environment looks like:
 
 
-```{r}
+```{r parsermd-chunk-3}
 rix(r_ver = "4.3.1",
     r_pkgs = c("quarto", "MASS"),
     system_pkgs = "quarto",
@@ -272,7 +273,7 @@ document. This is in contrast to before where we used `quarto add
 quarto-journals/jss` to install the template. Doing this interactively makes our
 project not reproducible because if we compile our Quarto doc today, we would be
 using the template as it is today, but if we compile the document in 6 months,
-then we would be using the template as it would be in 6 months (I should say
+then we would be using the template as it would be in 6 months (we should say
 that it is possible to install specific releases of Quarto templates using
 following notation: `quarto add quarto-journals/jss@v0.9.2` so this problem can
 be mitigated).
@@ -360,6 +361,5 @@ This vignette showed two approaches, both have their merits: the first approach
 that is more interactive is useful while writing the document. You get access to
 a shell and can work on the document and compile it quickly. The second approach
 is more useful once the document is ready and you want to have a way of quickly
-rebuilding it for reproducibility purposes. This approach should also be quite
-useful in a CI/CD environment.
+rebuilding it for reproducibility purposes.
 
