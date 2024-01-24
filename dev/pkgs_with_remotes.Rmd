@@ -1,5 +1,5 @@
 ---
-title: "Handling packages with remote dependencies"
+title: "Advanced topic: Handling packages with remote dependencies"
 output: html_document
 editor_options:
   chunk_output_type: console
@@ -7,21 +7,22 @@ editor_options:
 
 ## Introduction
 
-Packages on CRAN must have their dependencies on either CRAN or Bioconductor,
-but not on Github. However, there are many packages available on Github that
-never get published on CRAN, and some of these packages may even depend on other
-packages that are also only available on Github. `{rix}` makes it possible to
-install packages from Github, but in case one of the package's dependencies has
-also only been released on Github, building the Nix environment will fail. This
-is because Nix will be looking for these packages on `nixpkgs`, but only
-packages released on CRAN and Bioconductor are available through `nixpkgs`. This
-vignette explains how to install such a packages with dependencies on Github.
+Packages published on CRAN must have their dependencies on either CRAN or
+Bioconductor, but not on GitHub. However, there are many packages available on
+GitHub that never get published on CRAN, and some of these packages may even
+depend on other packages that are also only available on GitHub. `{rix}` makes
+it possible to install packages from GitHub, but in case one of the package's
+dependencies has also only been released on GitHub, building the Nix environment
+will fail. This is because Nix will be looking for these packages on `nixpkgs`,
+but only packages released on CRAN and Bioconductor are available through
+`nixpkgs`. This vignette explains how to install such a packages that have
+dependencies only available on GitHub.
 
 ## The {lookup} package
 
 As an example we are going to use the
 [{lookup}](https://github.com/jimhester/lookup) package which has only been
-released on Github. [Here is the
+released on GitHub. [Here is the
 repository](https://github.com/jimhester/lookup). This package comes with the
 `lookup()` function which makes it possible to check the source code of any
 function from a loaded package, even if the source of that function is in C or
@@ -55,7 +56,7 @@ error: attribute 'highlite' missing
 ## Building remote dependencies
 
 `{highlite}` is a dependency of [{lookup}](https://github.com/jimhester/lookup)
-that is only available on CRAN. This can be checked by looking at the
+that is only available on GitHub. This can be checked by looking at the
 `DESCRIPTION` file of [{lookup}](https://github.com/jimhester/lookup):
 
 ```
@@ -65,11 +66,11 @@ Remotes:
     hadley/memoise
 ```
 
-We see that there are actually three packages that come from Github: but
-`{gh}` and `{memoise}` have in the meantime been released on CRAN, which means
-that they are also available through `nixpkgs`. We have to deal with `{highlite}`
-however. Doing so is fairly easy: first, create a new expression using `{rix}`
-to install `{highlite}`:
+We see that there are actually three packages that come from GitHub: but `{gh}`
+and `{memoise}` have in the meantime been released on CRAN, which means that
+they are also available through `nixpkgs`. We have to deal with `{highlite}`
+however, because it never got released on CRAN. Doing so is fairly easy: first,
+create a new expression using `{rix}` to install `{highlite}`:
 
 ```
 rix(r_ver = "latest",
@@ -166,8 +167,8 @@ propagatedBuildInputs = builtins.attrValues {
 
 Building the expression now succeeds.
 
-We know that this is quite tedious, but at the moment there are no plans to
-make `{rix}` handle remote dependencies automatically. This is for mainly three
+We know that this is quite tedious, but at the moment there are no plans to make
+`{rix}` handle remote dependencies automatically. This is for mainly three
 reasons:
 
 - packages with remote dependencies are rare, and never on CRAN on Bioconductor;

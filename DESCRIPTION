@@ -10,6 +10,8 @@ Authors@R: c(
 Description: Provides helper functions to create reproducible development
     environments using the Nix package manager.
 License: GPL (>= 3)
+URL: https://b-rodrigues.github.io/rix/
+BugReports: https://github.com/b-rodrigues/rix
 Depends: 
     R (>= 2.10)
 Imports: 
