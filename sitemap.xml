@@ -1,66 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>/404.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/404.html</loc>
   </url>
   <url>
-    <loc>/LICENSE.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/LICENSE.html</loc>
   </url>
   <url>
-    <loc>/articles/building-an-environment-for-literate-programming.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/articles/1-getting-started.html</loc>
   </url>
   <url>
-    <loc>/articles/building-reproducible-development-environments-with-rix.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/articles/2a-setting-up-and-using-rix-on-linux-and-windows.html</loc>
   </url>
   <url>
-    <loc>/articles/handling-packages-with-remote-dependencies.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/articles/2b-setting-up-and-using-rix-on-macos.html</loc>
   </url>
   <url>
-    <loc>/articles/index.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/articles/3-using-rix-to-build-project-specific-environments.html</loc>
   </url>
   <url>
-    <loc>/articles/interactive-use.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/articles/4a-installing-r-packages-in-a-nix-environment.html</loc>
   </url>
   <url>
-    <loc>/articles/reproducible-analytical-pipelines-with-nix.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/articles/4b-installing-system-tools-and-texlive-packages-in-a-nix-environment.html</loc>
   </url>
   <url>
-    <loc>/articles/running-r-or-shell-code-in-nix-from-r.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/articles/5-interactive-use.html</loc>
   </url>
   <url>
-    <loc>/articles/save-the-nix-package-versions-data.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/articles/advanced-topic-building-an-environment-for-literate-programming.html</loc>
   </url>
   <url>
-    <loc>/authors.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/articles/advanced-topic-handling-packages-with-remote-dependencies.html</loc>
   </url>
   <url>
-    <loc>/index.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/articles/advanced-topic-reproducible-analytical-pipelines-with-nix.html</loc>
   </url>
   <url>
-    <loc>/news/index.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/articles/advanced-topic-running-r-or-shell-code-in-nix-from-r.html</loc>
   </url>
   <url>
-    <loc>/reference/available_r.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/articles/developers-vignette-save-the-nix-package-versions-data.html</loc>
   </url>
   <url>
-    <loc>/reference/index.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/articles/index.html</loc>
   </url>
   <url>
-    <loc>/reference/init.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/authors.html</loc>
   </url>
   <url>
-    <loc>/reference/nix_build.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/index.html</loc>
   </url>
   <url>
-    <loc>/reference/r_nix_revs.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/news/index.html</loc>
   </url>
   <url>
-    <loc>/reference/rix.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/reference/available_r.html</loc>
   </url>
   <url>
-    <loc>/reference/tar_nix_ga.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/with_nix.html</loc>
+    <loc>https://b-rodrigues.github.io/rix/reference/init.html</loc>
+  </url>
+  <url>
+    <loc>https://b-rodrigues.github.io/rix/reference/nix_build.html</loc>
+  </url>
+  <url>
+    <loc>https://b-rodrigues.github.io/rix/reference/r_nix_revs.html</loc>
+  </url>
+  <url>
+    <loc>https://b-rodrigues.github.io/rix/reference/rix.html</loc>
+  </url>
+  <url>
+    <loc>https://b-rodrigues.github.io/rix/reference/tar_nix_ga.html</loc>
+  </url>
+  <url>
+    <loc>https://b-rodrigues.github.io/rix/reference/with_nix.html</loc>
   </url>
 </urlset>
