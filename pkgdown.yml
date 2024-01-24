@@ -2,19 +2,19 @@ pandoc: 2.19.2
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
-  1-getting-started: 1-getting-started.html
-  2a-setting-up-and-using-rix-on-linux-and-windows: 2a-setting-up-and-using-rix-on-linux-and-windows.html
-  2b-setting-up-and-using-rix-on-macos: 2b-setting-up-and-using-rix-on-macos.html
-  3-using-rix-to-build-project-specific-environments: 3-using-rix-to-build-project-specific-environments.html
-  4a-installing-r-packages-in-a-nix-environment: 4a-installing-r-packages-in-a-nix-environment.html
-  4b-installing-system-tools-and-texlive-packages-in-a-nix-environment: 4b-installing-system-tools-and-texlive-packages-in-a-nix-environment.html
-  5-interactive-use: 5-interactive-use.html
   advanced-topic-building-an-environment-for-literate-programming: advanced-topic-building-an-environment-for-literate-programming.html
   advanced-topic-handling-packages-with-remote-dependencies: advanced-topic-handling-packages-with-remote-dependencies.html
   advanced-topic-reproducible-analytical-pipelines-with-nix: advanced-topic-reproducible-analytical-pipelines-with-nix.html
   advanced-topic-running-r-or-shell-code-in-nix-from-r: advanced-topic-running-r-or-shell-code-in-nix-from-r.html
   developers-vignette-save-the-nix-package-versions-data: developers-vignette-save-the-nix-package-versions-data.html
-last_built: 2024-01-24T17:42Z
+  v-2a-setting-up-and-using-rix-on-linux-and-windows: v-2a-setting-up-and-using-rix-on-linux-and-windows.html
+  v1-getting-started: v1-getting-started.html
+  v2b-setting-up-and-using-rix-on-macos: v2b-setting-up-and-using-rix-on-macos.html
+  v3-using-rix-to-build-project-specific-environments: v3-using-rix-to-build-project-specific-environments.html
+  v4a-installing-r-packages-in-a-nix-environment: v4a-installing-r-packages-in-a-nix-environment.html
+  v4b-installing-system-tools-and-texlive-packages-in-a-nix-environment: v4b-installing-system-tools-and-texlive-packages-in-a-nix-environment.html
+  v5-interactive-use: v5-interactive-use.html
+last_built: 2024-01-24T19:41Z
 urls:
   reference: https://b-rodrigues.github.io/rix/reference
   article: https://b-rodrigues.github.io/rix/articles

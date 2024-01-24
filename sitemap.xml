@@ -7,27 +7,6 @@
     <loc>https://b-rodrigues.github.io/rix/LICENSE.html</loc>
   </url>
   <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/1-getting-started.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/2a-setting-up-and-using-rix-on-linux-and-windows.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/2b-setting-up-and-using-rix-on-macos.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/3-using-rix-to-build-project-specific-environments.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/4a-installing-r-packages-in-a-nix-environment.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/4b-installing-system-tools-and-texlive-packages-in-a-nix-environment.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/5-interactive-use.html</loc>
-  </url>
-  <url>
     <loc>https://b-rodrigues.github.io/rix/articles/advanced-topic-building-an-environment-for-literate-programming.html</loc>
   </url>
   <url>
@@ -44,6 +23,27 @@
   </url>
   <url>
     <loc>https://b-rodrigues.github.io/rix/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://b-rodrigues.github.io/rix/articles/v-2a-setting-up-and-using-rix-on-linux-and-windows.html</loc>
+  </url>
+  <url>
+    <loc>https://b-rodrigues.github.io/rix/articles/v1-getting-started.html</loc>
+  </url>
+  <url>
+    <loc>https://b-rodrigues.github.io/rix/articles/v2b-setting-up-and-using-rix-on-macos.html</loc>
+  </url>
+  <url>
+    <loc>https://b-rodrigues.github.io/rix/articles/v3-using-rix-to-build-project-specific-environments.html</loc>
+  </url>
+  <url>
+    <loc>https://b-rodrigues.github.io/rix/articles/v4a-installing-r-packages-in-a-nix-environment.html</loc>
+  </url>
+  <url>
+    <loc>https://b-rodrigues.github.io/rix/articles/v4b-installing-system-tools-and-texlive-packages-in-a-nix-environment.html</loc>
+  </url>
+  <url>
+    <loc>https://b-rodrigues.github.io/rix/articles/v5-interactive-use.html</loc>
   </url>
   <url>
     <loc>https://b-rodrigues.github.io/rix/authors.html</loc>
