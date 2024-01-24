@@ -1,14 +1,13 @@
 
--   [Reproducible Environments with
-    Nix](#reproducible-environments-with-nix)
-    -   [Introduction](#introduction)
-    -   [Quick start for returning
-        users](#quick-start-for-returning-users)
-    -   [Getting started for new users](#getting-started-for-new-users)
-        -   [Docker](#docker)
-    -   [Contributing](#contributing)
-    -   [Thanks](#thanks)
-    -   [Recommended reading](#recommended-reading)
+- [Reproducible Environments with
+  Nix](#reproducible-environments-with-nix)
+  - [Introduction](#introduction)
+  - [Quick start for returning users](#quick-start-for-returning-users)
+  - [Getting started for new users](#getting-started-for-new-users)
+    - [Docker](#docker)
+  - [Contributing](#contributing)
+  - [Thanks](#thanks)
+  - [Recommended reading](#recommended-reading)
 
 <!-- badges: start -->
 
@@ -16,6 +15,7 @@
 [![runiverse-package
 rix](https://b-rodrigues.r-universe.dev/badges/rix?scale=1&color=pink&style=round)](https://b-rodrigues.r-universe.dev/rix)
 [![Docs](https://img.shields.io/badge/docs-release-blue.svg)](https://b-rodrigues.github.io/rix)
+[![pkgcheck](https://github.com/b-rodrigues/rix/workflows/pkgcheck/badge.svg)](https://github.com/b-rodrigues/rix/actions?query=workflow%3Apkgcheck)
 <!-- badges: end -->
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -65,14 +65,14 @@ Python or Julia, this can also be done easily. Nix is available for
 Linux, macOS and Windows (via WSL2) and `{rix}` comes with the following
 features:
 
--   install any version of R and R packages for specific projects;
--   have several versions of R and R packages installed at the same time
-    on the same system;
--   define complete development environments as code and use them
-    anywhere;
--   run single function in a different environment (potentially with a
-    different R version and R packages) for an interactive R session and
-    get back the output of that function using `with_nix()`;
+- install any version of R and R packages for specific projects;
+- have several versions of R and R packages installed at the same time
+  on the same system;
+- define complete development environments as code and use them
+  anywhere;
+- run single function in a different environment (potentially with a
+  different R version and R packages) for an interactive R session and
+  get back the output of that function using `with_nix()`;
 
 `{rix}` does not require Nix to be installed on your system to generate
 expressions. This means that you can generate expressions on a system on
@@ -139,7 +139,7 @@ and start using them.
 ## Getting started for new users
 
 To get started with `{rix}` and Nix, you should read the following
-vignette `vignette("1-getting_started")`. The vignettes are numbered to
+vignette `vignette("a-getting-started")`. The vignettes are numbered to
 get you to learn how to use `{rix}` and Nix smoothly. There’s a lot of
 info, so take your time reading the vignettes. Don’t hesitate to open an
 issue if something is not clear.
@@ -179,24 +179,24 @@ from the [Matrix Nixpkgs R channel](https://matrix.to/#/#r:nixos.org)).
 
 ## Recommended reading
 
--   [NixOS’s website](https://nixos.org/)
--   [Nixpkgs’s GitHub repository](https://github.com/NixOS/nixpkgs)
--   [Nix for R series from Bruno’s
-    blog](https://www.brodrigues.co/tags/nix/). Or, in case you like
-    video tutorials, watch [this one on Reproducible R development
-    environments with Nix](https://www.youtube.com/watch?v=c1LhgeTTxaI)
--   [nix.dev
-    tutorials](https://nix.dev/tutorials/first-steps/towards-reproducibility-pinning-nixpkgs#pinning-nixpkgs)
--   [INRIA’s Nix
-    tutorial](https://nix-tutorial.gitlabpages.inria.fr/nix-tutorial/installation.html)
--   [Nix pills](https://nixos.org/guides/nix-pills/)
--   [Nix for Data
-    Science](https://github.com/nix-community/nix-data-science)
--   [NixOS explained](https://christitus.com/nixos-explained/): NixOS is
-    an entire Linux distribution that uses Nix as its package manager.
--   [Blog post: Nix with R and
-    devtools](https://rgoswami.me/posts/nix-r-devtools/)
--   [Blog post: Statistical Rethinking and
-    Nix](https://rgoswami.me/posts/rethinking-r-nix/)
--   [Blog post: Searching and installing old versions of Nix
-    packages](https://lazamar.github.io/download-specific-package-version-with-nix/)
+- [NixOS’s website](https://nixos.org/)
+- [Nixpkgs’s GitHub repository](https://github.com/NixOS/nixpkgs)
+- [Nix for R series from Bruno’s
+  blog](https://www.brodrigues.co/tags/nix/). Or, in case you like video
+  tutorials, watch [this one on Reproducible R development environments
+  with Nix](https://www.youtube.com/watch?v=c1LhgeTTxaI)
+- [nix.dev
+  tutorials](https://nix.dev/tutorials/first-steps/towards-reproducibility-pinning-nixpkgs#pinning-nixpkgs)
+- [INRIA’s Nix
+  tutorial](https://nix-tutorial.gitlabpages.inria.fr/nix-tutorial/installation.html)
+- [Nix pills](https://nixos.org/guides/nix-pills/)
+- [Nix for Data
+  Science](https://github.com/nix-community/nix-data-science)
+- [NixOS explained](https://christitus.com/nixos-explained/): NixOS is
+  an entire Linux distribution that uses Nix as its package manager.
+- [Blog post: Nix with R and
+  devtools](https://rgoswami.me/posts/nix-r-devtools/)
+- [Blog post: Statistical Rethinking and
+  Nix](https://rgoswami.me/posts/rethinking-r-nix/)
+- [Blog post: Searching and installing old versions of Nix
+  packages](https://lazamar.github.io/download-specific-package-version-with-nix/)
