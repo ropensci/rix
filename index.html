@@ -124,23 +124,34 @@
 <li>run single function in a different environment (potentially with a different R version and R packages) for an interactive R session and get back the output of that function using <code><a href="reference/with_nix.html">with_nix()</a></code>;</li>
 </ul>
 <p><a href="https://b-rodrigues.github.io/rix/">rix</a> does not require Nix to be installed on your system to generate expressions. This means that you can generate expressions on a system on which you cannot easily install software, and then use these expressions on the cloud or on a CI/CD environment to build the project there.</p>
+<p>Here is an example of how to define an environment “as code” using <code><a href="reference/rix.html">rix()</a></code>:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"latest"</span>,</span>
+<span>    r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span><span class="op">)</span>,</span>
+<span>    system_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    git_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    ide <span class="op">=</span> <span class="st">"code"</span>,</span>
+<span>    project_path <span class="op">=</span> <span class="va">path_default_nix</span>,</span>
+<span>    overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    print <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>This generates a file called <code>default.nix</code> in the path <code>path_default_nix</code> with the correct expression to build this environment. To build the environment, the Nix package manager must be installed.</p>
 </div>
 <div class="section level2">
 <h2 id="quick-start-for-returning-users">Quick start for returning users<a class="anchor" aria-label="anchor" href="#quick-start-for-returning-users"></a>
 </h2>
 <p><em>If you are not familiar with Nix or <a href="https://b-rodrigues.github.io/rix/">rix</a> skip to the next section.</em></p>
 <p>If you are already familiar with Nix and R, and simply want to get started as quickly as possible, you can start by installing Nix using the installer from <a href="https://determinate.systems/posts/determinate-nix-installer" class="external-link">Determinate Systems</a> a company that provides services and tools built on Nix:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">--proto</span> <span class="st">'=https'</span> <span class="at">--tlsv1.2</span> <span class="at">-sSf</span> <span class="dt">\</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">-L</span> https://install.determinate.systems/nix <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>     <span class="fu">sh</span> <span class="at">-s</span> <span class="at">--</span> install</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">--proto</span> <span class="st">'=https'</span> <span class="at">--tlsv1.2</span> <span class="at">-sSf</span> <span class="dt">\</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">-L</span> https://install.determinate.systems/nix <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>     <span class="fu">sh</span> <span class="at">-s</span> <span class="at">--</span> install</span></code></pre></div>
 <p>If you have R installed, you can start straight away from your R session by first installing <a href="https://b-rodrigues.github.io/rix/">rix</a>:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"rix"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://b-rodrigues.r-universe.dev"</span>,</span>
 <span>  <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://b-rodrigues.github.io/rix/">"rix"</a></span><span class="op">)</span></span></code></pre></div>
 <p>You can check that everything works well by trying to build the Nix expression that ships with <a href="https://b-rodrigues.github.io/rix/">rix</a>. Nix expressions are typically saved into files with the name <code>default.nix</code> or <code>shell.nix</code>. This expression installs the latest version of R and <a href="https://b-rodrigues.github.io/rix/">rix</a> in a separate, reproducible environment:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span></span>
 <span>  <span class="co"># default.nix is the file containing the Nix expression</span></span>
 <span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"default.nix"</span>, package <span class="op">=</span> <span class="st">"rix"</span><span class="op">)</span>,</span>
@@ -151,7 +162,7 @@
 <span><span class="fu"><a href="reference/nix_build.html">nix_build</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="st">"."</span><span class="op">)</span></span></code></pre></div>
 <p>If everything worked well, you should see a file called <code>result</code> next to <code>default.nix</code>. You can now enter this newly built development environment by opening a terminal in that folder and typing <code>nix-shell</code>. You should be immediately dropped into an interactive R session.</p>
 <p>If you don’t have R installed, but have the Nix package manager installed, you can run a temporary R session with R using this command (it will build the same environment as the one above):</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>shell <span class="sc">--</span>expr <span class="st">"$(curl -sl https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix)"</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>shell <span class="sc">--</span>expr <span class="st">"$(curl -sl https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix)"</span></span></code></pre></div>
 <p>You can then create new development environment definitions, build them, and start using them.</p>
 </div>
 <div class="section level2">
@@ -212,6 +223,12 @@
 </ul>
 </div>
 
+<div class="community">
+<h2 data-toc-skip>Community</h2>
+<ul class="list-unstyled">
+<li><a href="CONTRIBUTING.html">Contributing guide</a></li>
+</ul>
+</div>
 
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>
