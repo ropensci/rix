@@ -26,38 +26,39 @@ rix](https://b-rodrigues.r-universe.dev/badges/rix?scale=1&color=pink&style=roun
 
 ## Introduction
 
-`{rix}` is an R package that leverages Nix, a powerful package manager
-focusing on reproducible builds. With Nix, it is possible to create
-project-specific environments that contain a project-specific version of
-R and R packages (as well as other tools or languages, if needed). You
-can use `{rix}` and Nix to replace `{renv}` and Docker with one single
-tool. Nix is an incredibly useful piece of software for ensuring
-reproducibility of projects, in research or otherwise. For example, it
-allows you run web applications like Shiny apps or `{plumber}` APIs in a
-controlled environment.
+`{rix}` is an R package that leverages [Nix](https://nixos.org/), a
+powerful package manager focusing on reproducible builds. With Nix, it
+is possible to create project-specific environments that contain a
+project-specific version of R and R packages (as well as other tools or
+languages, if needed). You can use `{rix}` and Nix to replace `{renv}`
+and Docker with one single tool. Nix is an incredibly useful piece of
+software for ensuring reproducibility of projects, in research or
+otherwise. For example, it allows you run web applications like Shiny
+apps or `{plumber}` APIs in a controlled environment.
 
 Nix has a fairly high entry cost though. Nix is a complex piece of
-software that comes with its own programming language, which also called
-Nix. Its purpose is to solve a complex problem: defining instructions
-how to build software packages and manage configurations in declarative
-way. This makes sure that software gets installed in fully reproducible
-manner, on any operating system or hardware.
+software that comes with its own programming language, which is also
+called Nix. Its purpose is to solve a complex problem: defining
+instructions how to build software packages and manage configurations in
+declarative way. This makes sure that software gets installed in fully
+reproducible manner, on any operating system or hardware.
 
 `{rix}` provides functions to help you write and deploy Nix expressions
 (written in the Nix language). These expressions will be the inputs for
 the Nix package manager, to build sets of software packages and provide
 them in a reproducible development environment. These environments can
 be used for interactive data analysis, or reproduced when running
-pipelines in CI/CD systems. On the Nixpkgs collection, there are
-currently more than 80.000 pieces of software available through the Nix
-package manager. Using {rix}, you can define and build isolated R
-environments through Nix package manager with ease. Like this,
-environments contain R and all the required packages that you need for
-your project. You can also add any other software tool available. The
-Nix R ecosystem currently includes the entirety of CRAN and Bioconductor
-packages. Like with any other programming language and software, it is
-also possible to install older releases of R packages, or install
-packages from GitHub.
+pipelines in CI/CD systems. On the [Nixpkgs
+collection](https://github.com/nixos/nixpkgs), there are currently more
+than 80.000 pieces of software available through the Nix package
+manager. Using {rix}, you can define and build isolated R environments
+through Nix package manager with ease. Like this, environments contain R
+and all the required packages that you need for your project. You can
+also add any other software tool available. The Nix R ecosystem
+currently includes the entirety of CRAN and Bioconductor packages. Like
+with any other programming language and software, it is also possible to
+install older releases of R packages, or install packages from GitHub at
+defined states.
 
 The Nix package manager is extremely powerful. Not only does it handle
 all the dependencies their builds extremely well in deterministic
@@ -109,6 +110,11 @@ installed.
 ## Quick start for returning users
 
 *If you are not familiar with Nix or `{rix}` skip to the next section.*
+
+<details>
+<summary>
+Click to exand
+</summary>
 
 If you are already familiar with Nix and R, and simply want to get
 started as quickly as possible, you can start by installing Nix using
@@ -162,14 +168,16 @@ installed, you can run a temporary R session with R using this command
 
 You can then create new development environment definitions, build them,
 and start using them.
+</details>
 
 ## Getting started for new users
 
 To get started with `{rix}` and Nix, you should read the following
-vignette `vignette("a-getting-started")`. The vignettes are numbered to
-get you to learn how to use `{rix}` and Nix smoothly. There’s a lot of
-info, so take your time reading the vignettes. Don’t hesitate to open an
-issue if something is not clear.
+vignette `vignette("a-getting-started")` ([online
+documentation](https://b-rodrigues.github.io/rix/articles/a-getting-started.html)).
+The vignettes are numbered to get you to learn how to use `{rix}` and
+Nix smoothly. There’s a lot of info, so take your time reading the
+vignettes. Don’t hesitate to open an issue if something is not clear.
 
 ### Docker
 
