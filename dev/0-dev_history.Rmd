@@ -33,6 +33,13 @@ usethis::use_gpl3_license()
 
 ```
 
+Add codemeta file:
+
+```{r, eval = F}
+codemetar::write_codemeta()
+
+```
+
 # All-in-one function to deploy publicly on GitHub
 
 Either use this GitHub all-in-one function or choose the steps one-by-one in the following sections.
