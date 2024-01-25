@@ -36,3 +36,8 @@ with \verb{options(rix.nix_build_max_jobs = <integer>)}. Once you call
 \code{nix_build()} the flag will be propagated to the call of \code{nix-build}.
 }
 }
+\examples{
+\dontrun{
+  nix_build()
+}
+}

@@ -97,3 +97,17 @@ preferred locale variables via
 \verb{options(rix.nix_locale_variables = list(LANG = "de_CH.UTF-8", <...>)}
 and the aforementioned locale variable names.
 }
+\examples{
+\dontrun{
+# Build an environment with the latest version of R
+# and the dplyr and ggplot2 packages
+rix(r_ver = "latest",
+    r_pkgs = c("dplyr", "ggplot2"),
+    system_pkgs = NULL,
+    git_pkgs = NULL,
+    ide = "code",
+    project_path = path_default_nix,
+    overwrite = TRUE,
+    print = TRUE)
+}
+}

@@ -31,6 +31,10 @@ project setup.}
 gives minimal but sufficient feedback. Other values are currently
 \code{"verbose"}, which provides more detailed diagnostics.}
 }
+\value{
+Nothing, this function only has the side-effect of writing a file
+called ".Rprofile" to the specified path.
+}
 \description{
 Creates an isolated project folder for a Nix-R configuration. \code{rix::init()}
 also adds, appends, or updates with or without backup a custom \code{.Rprofile}
@@ -82,6 +86,16 @@ environments. This init configuration is considered pivotal to enhance the
 adoption of Nix in the R community, particularly until RStudio in Nixpkgs is
 packaged for macOS. We recommend calling \code{rix::init()} prior to comparing R
 code ran between two software environments with \code{rix::with_nix()}.
+}
+\examples{
+\dontrun{
+# create an isolated, runtime-pure R setup via Nix
+project_path <- "./sub_shell"
+init(
+  project_path = project_path,
+  rprofile_action = "create_missing"
+)
+}
 }
 \seealso{
 \code{\link[=with_nix]{with_nix()}}
