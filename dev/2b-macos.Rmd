@@ -9,7 +9,7 @@ editor_options:
 
 *This vignette will discuss macOS-specific topics. If you're not using macOS, you
 can ignore this vignette, and read the 
-`vignette("2a-setting-up-and-using-rix-on-linux-and-windows")`
+`vignette("b1-setting-up-and-using-rix-on-linux-and-windows")`
 vignette instead.*
 
 ## Introduction
@@ -68,8 +68,8 @@ rix(r_ver = "latest",
 to generate a `default.nix`, and then use that file to generate an environment
 with R, `{dplyr}` and `{ggplot2}`. If you need to add packages for your project,
 rerun the command above, but add the needed packages to `r_pkgs`. This is
-detailled in the vignette `vignette("4a-installing-r-packages-in-a-nix-environment")` and
-`vignette("4b-installing-system-tools-and-texlive-packages-in-a-nix-environment")`.
+detailled in the vignette `vignette("d1-installing-r-packages-in-a-nix-environment")` and
+`vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")`.
 
 ## Generating expressions
 
@@ -87,7 +87,7 @@ install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
 ```
 
 You can then use the `{rix}` package to generate expressions. Consult the
-next vignette `vignette("3-using-rix-to-build-project-specific-environments")` to learn more.
+next vignette `vignette("c-using-rix-to-build-project-specific-environments")` to learn more.
 
 ## More macOS specificities
 
@@ -119,16 +119,16 @@ on macOS. When you try to generate an expression with `ide =
 - if you're working on a pipeline with the `{targets}` package, you could run it
   on Github Actions. This means you could work on the code on RStudio outside
   of the Nix environment, as the code will only be executed on Github Actions runners. See this
-  vignette `vignette("advanced-topic-reproducible-analytical-pipelines-with-nix")` for further details;
+  vignette `vignette("z-advanced-topic-reproducible-analytical-pipelines-with-nix")` for further details;
 - work on your project as usual, using your usual installation of R and RStudio,
   but generate a `default.nix` at the end with `ide = "other"` with the right
   version of R for reproducibility purposes;
 - use subshells to execute only the code you need to run in a specific
-  environment. See this vignette `vignette("advanced-topic-running-r-or-shell-code-in-nix-from-r")`;
+  environment. See this vignette `vignette("z-advanced-topic-running-r-or-shell-code-in-nix-from-r")`;
 
 - help us package RStudio for macOS on `nixpgs`. See
   [here](https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/rstudio/default.nix),
   the Nix expression for RStudio.
   
 We recommend you continue with the next vignette before tackling the more advanced
-topics listed above: `vignette("3-using-rix-to-build-project-specific-environments")`.
+topics listed above: `vignette("c-using-rix-to-build-project-specific-environments")`.
