@@ -22,7 +22,7 @@ library(rix)
 
 *This vignette will discuss Linux and Windows-specific topics. If you're not
 using either of these systems, you can ignore this vignette, and read the
-`vignette("2b-setting-up-and-using-rix-on-macos")`
+`vignette("b2-setting-up-and-using-rix-on-macos")`
 vignette instead.*
 
 
@@ -148,8 +148,8 @@ rix(r_ver = "latest",
 to generate a `default.nix`, and then use that file to generate an environment
 with R, `{dplyr}` and `{ggplot2}`. If you need to add packages for your project,
 rerun the command above, but add the needed packages to `r_pkgs`. This is
-detailled in the vignette `vignette("4a-installing-r-packages-in-a-nix-environment")` and
-`vignette("4b-installing-system-tools-and-texlive-packages-in-a-nix-environment")`.
+detailled in the vignette `vignette("d1-installing-r-packages-in-a-nix-environment")` and
+`vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")`.
 
 
 ## Generating expressions
@@ -169,5 +169,5 @@ install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
 ```
 
 You can then use the `{rix}` package to generate expressions. Consult the 
-next vignette `vignette("3-using-rix-to-build-project-specific-environments")` to learn more.
+next vignette `vignette("c-using-rix-to-build-project-specific-environments")` to learn more.
 
