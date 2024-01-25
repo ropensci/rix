@@ -19,3 +19,8 @@ projects \code{default.nix} file to generate the development environment on
 Github Actions and will then run the projects {targets} pipeline. Make
 sure to give read and write permissions to the Github Actions bot.
 }
+\examples{
+\dontrun{
+  tar_nix_ga()
+}
+}

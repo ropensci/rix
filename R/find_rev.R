@@ -292,6 +292,19 @@ fetchpkgs  <- function(git_pkgs, archive_pkgs){
 #'   `options(rix.nix_locale_variables = list(LANG = "de_CH.UTF-8", <...>)`
 #'   and the aforementioned locale variable names.
 #' @export
+#' @examples
+#' \dontrun{
+#' # Build an environment with the latest version of R
+#' # and the dplyr and ggplot2 packages
+#' rix(r_ver = "latest",
+#'     r_pkgs = c("dplyr", "ggplot2"),
+#'     system_pkgs = NULL,
+#'     git_pkgs = NULL,
+#'     ide = "code",
+#'     project_path = path_default_nix,
+#'     overwrite = TRUE,
+#'     print = TRUE)
+#' }
 rix <- function(r_ver = "latest",
                 r_pkgs = NULL,
                 system_pkgs = NULL,
@@ -618,11 +631,15 @@ create_default_nix <- function(path = file.path("inst", "extdata",
 #'   with `options(rix.nix_build_max_jobs = <integer>)`. Once you call
 #'   `nix_build()` the flag will be propagated to the call of `nix-build`.
 #' @export
+#' @examples
+#' \dontrun{
+#'   nix_build()
+#' }
 nix_build <- function(project_path = ".",
                       exec_mode = c("blocking", "non-blocking")) {
   has_nix_build <- nix_build_installed() # TRUE if yes, FALSE if no
   nix_file <- file.path(project_path, "default.nix")
-  
+
   stopifnot(
     "`project_path` must be character of length 1." =
       is.character(project_path) && length(project_path) == 1L,
@@ -775,7 +792,7 @@ nix_build_exit_msg <- function(x) {
 #' adoption of Nix in the R community, particularly until RStudio in Nixpkgs is
 #' packaged for macOS. We recommend calling `rix::init()` prior to comparing R
 #' code ran between two software environments with `rix::with_nix()`.
-#' 
+#'
 #' @param project_path Character with the folder path to the isolated nix-R project. 
 #' Defaults to `"."`, which is the current working directory path. If the folder 
 #' does not exist yet, it will be created.
@@ -794,6 +811,17 @@ nix_build_exit_msg <- function(x) {
 #' `"verbose"`, which provides more detailed diagnostics.
 #' @export
 #' @seealso [with_nix()]
+#' @return Nothing, this function only has the side-effect of writing a file
+#'   called ".Rprofile" to the specified path.
+#' @examples
+#' \dontrun{
+#' # create an isolated, runtime-pure R setup via Nix
+#' project_path <- "./sub_shell"
+#' init(
+#'   project_path = project_path,
+#'   rprofile_action = "create_missing"
+#' )
+#' }
 init <- function(project_path = ".",
                  rprofile_action = c("create_missing", "create_backup",
                    "overwrite", "append"),

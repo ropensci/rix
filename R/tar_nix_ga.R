@@ -8,6 +8,10 @@
 #' sure to give read and write permissions to the Github Actions bot.
 #' @return Nothing, copies file to a diretory.
 #' @export
+#' @examples
+#' \dontrun{
+#'   tar_nix_ga()
+#' }
 tar_nix_ga <- function(){
   # Add an empty .gitignore file if there isn’t any
 
