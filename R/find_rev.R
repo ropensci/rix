@@ -433,7 +433,7 @@ rPackages)
   # Texlive packages
   generate_tex_pkgs <- function(tex_pkgs) {
     if (!is.null(tex_pkgs)) {
-      
+
       tex_pkgs <- paste(tex_pkgs, collapse = ' ')
 
     sprintf('tex = (pkgs.texlive.combine {
@@ -482,7 +482,7 @@ tex_pkgs)
 ',
 get_system_pkgs(system_pkgs))
   }
-  
+
   generate_locale_variables <- function() {
     locale_defaults <- list(
       LANG = "en_US.UTF-8",
@@ -583,8 +583,6 @@ flag_rpkgs
 
 }
 
-
-
 #' @noRd
 create_default_nix <- function(path = file.path("inst", "extdata",
                                  "default.nix")) {
@@ -654,30 +652,30 @@ nix_build <- function(project_path = ".",
   stopifnot("option `rix.nix_build_max_jobs` is not integerish" =
     is_integerish(max_jobs))
   max_jobs <- as.integer(max_jobs)
-  
+
   if (max_jobs == 1L) {
     cmd <- c("nix-build", nix_file)
   } else {
     cmd <- c("nix-build", "--max-jobs", as.character(max_jobs), nix_file)
   }
-  
+
   cat(paste0("Launching `", paste0(cmd, collapse = " "), "`", " in ",
     exec_mode, " mode\n"))
-  
+
   proc <- switch(exec_mode,
     "blocking" = sys::exec_internal(cmd = cmd),
     "non-blocking" = sys::exec_background(cmd = cmd),
     stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
   )
-  
+
   if (exec_mode == "non-blocking") {
     poll_sys_proc_nonblocking(cmd, proc, what = "nix-build")
   } else if (exec_mode == "blocking") {
     poll_sys_proc_blocking(cmd, proc, what = "nix-build")
   }
-  
+
   # todo (?): clean zombies for background/non-blocking mode
-  
+
   return(invisible(proc))
 }
 

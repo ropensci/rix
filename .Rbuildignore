@@ -16,3 +16,4 @@
 ^default.nix$
 ^_debug_with_nix.R$
 ^codemeta\.json$
+^CONTRIBUTING.md$

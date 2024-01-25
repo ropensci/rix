@@ -11,6 +11,17 @@ testthat::expect_equal(
           )
 
 testthat::expect_equal(
+            available_r(),
+            c("latest", "3.0.2",  "3.0.3",  "3.1.0",  "3.1.2",  "3.1.3",  "3.2.0",  "3.2.1",
+              "3.2.2",  "3.2.3",  "3.2.4",  "3.3.3",  "3.4.0",  "3.4.1",  "3.4.2",  "3.4.3",
+              "3.4.4",  "3.5.0",  "3.5.1",  "3.5.2",  "3.5.3",  "3.6.0",  "3.6.1",  "3.6.2",
+              "3.6.3",  "4.0.0",  "4.0.2",  "4.0.3",  "4.0.4",  "4.1.1",  "4.1.2",  "4.1.3",
+              "4.2.0",  "4.2.1",  "4.2.2",  "4.2.3",  "4.3.1"
+              )
+          )
+
+
+testthat::expect_equal(
             get_sri_hash_deps("https://github.com/rap4all/housing/",
                          "fusen",
                         "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
@@ -20,3 +31,30 @@ testthat::expect_equal(
             )
           )
 
+
+save_default_nix_test <- function() {
+
+  path_default_nix <- tempdir()
+
+  rix(r_ver = "4.3.1",
+      r_pkgs = c("dplyr", "janitor", "AER@1.2-8", "quarto"),
+      system_pkgs = c("quarto"),
+      tex_pkgs = c("amsmath"),
+      git_pkgs = list(
+        list(package_name = "housing",
+             repo_url = "https://github.com/rap4all/housing/",
+             branch_name = "fusen",
+             commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
+        list(package_name = "fusen",
+             repo_url = "https://github.com/ThinkR-open/fusen",
+             branch_name = "main",
+             commit = "d617172447d2947efb20ad6a4463742b8a5d79dc")
+      ),
+      ide = "rstudio",
+      project_path = path_default_nix,
+      overwrite = TRUE)
+
+  paste0(path_default_nix, "/default.nix")
+
+}
+testthat::expect_snapshot_file(save_default_nix_test(), "default.nix")
