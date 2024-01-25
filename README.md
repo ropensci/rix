@@ -32,32 +32,39 @@ project-specific environments that contain a project-specific version of
 R and R packages (as well as other tools or languages, if needed). You
 can use `{rix}` and Nix to replace `{renv}` and Docker with one single
 tool. Nix is an incredibly useful piece of software for ensuring
-reproducibility of projects, in research or otherwise, or for running
-web applications like Shiny apps or `{plumber}` APIs in a controlled
-environment.
+reproducibility of projects, in research or otherwise. For example, it
+allows you run web applications like Shiny apps or `{plumber}` APIs in a
+controlled environment.
 
-Nix has quite a high entry cost though, because Nix is a complex piece
-of software that comes with its own programming language (also called
-Nix) whose purpose is to solve a complex problem: installing software in
-a reproducible manner, on any operating system or hardware.
+Nix has a fairly high entry cost though. Nix is a complex piece of
+software that comes with its own programming language, which also called
+Nix. Its purpose is to solve a complex problem: defining instructions
+how to build software packages and manage configurations in declarative
+way. This makes sure that software gets installed in fully reproducible
+manner, on any operating system or hardware.
 
-`{rix}` provides functions to help you write Nix expressions (written in
-the Nix language): these expressions can then be used by the Nix package
-manager to build completely reproducible development environments. These
-environments can be used for interactive data analysis or running
-pipelines in a CI/CD environment. Environments built with Nix contain R
-and all the required packages that you need for your project: there are
+`{rix}` provides functions to help you write and deploy Nix expressions
+(written in the Nix language). These expressions will be the inputs for
+the Nix package manager, to build sets of software packages and provide
+them in a reproducible development environment. These environments can
+be used for interactive data analysis, or reproduced when running
+pipelines in CI/CD systems. On the Nixpkgs collection, there are
 currently more than 80.000 pieces of software available through the Nix
-package manager, including the entirety of CRAN and Bioconductor
-packages. It is also possible to install older releases of packages, or
-install packages from GitHub.
+package manager. Using {rix}, you can define and build isolated R
+environments through Nix package manager with ease. Like this,
+environments contain R and all the required packages that you need for
+your project. You can also add any other software tool available. The
+Nix R ecosystem currently includes the entirety of CRAN and Bioconductor
+packages. Like with any other programming language and software, it is
+also possible to install older releases of R packages, or install
+packages from GitHub.
 
-The Nix package manager is extremely powerful: not only it handles all
-the dependencies of any package extremely well, it is also possible with
-it to reproduce environments containing old releases of software. It is
-thus possible to build environments that contain R version 4.0.0 (for
-example) to run an old project originally developed on that version of
-R.
+The Nix package manager is extremely powerful. Not only does it handle
+all the dependencies their builds extremely well in deterministic
+manner. It is also possible with it to reproduce environments containing
+old releases of software. It is thus possible to build environments
+containing R version 4.0.0 (for example) to run an old project that was
+originally developed on that version of R.
 
 As stated above, with Nix, it is essentially possible to replace
 `{renv}` and Docker combined. If you need other tools or languages like
@@ -70,9 +77,10 @@ features:
   on the same system;
 - define complete development environments as code and use them
   anywhere;
-- run single function in a different environment (potentially with a
-  different R version and R packages) for an interactive R session and
-  get back the output of that function using `with_nix()`;
+- run single R function (and objects in the call stack) in a different
+  environment (potentially with a different R version and R packages)
+  for an interactive R session, and get back the output of that function
+  using `with_nix()`;
 
 `{rix}` does not require Nix to be installed on your system to generate
 expressions. This means that you can generate expressions on a system on

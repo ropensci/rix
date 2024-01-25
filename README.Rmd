@@ -45,10 +45,10 @@ and manage configurations in declarative way. This makes sure that software gets
 installed in fully reproducible manner, on any operating system or hardware.
 
 `{rix}` provides functions to help you write and deploy Nix expressions (written
-in the Nix language). These expressions can then be used by the Nix package
-manager to build sets of software packages and provide them in a reproducible
+in the Nix language). These expressions will be the inputs for the Nix package
+manager, to build sets of software packages and provide them in a reproducible
 development environment. These environments can be used for interactive data
-analysis or reproduced when running pipelines in CI/CD systems. On the Nixpkgs
+analysis, or reproduced when running pipelines in CI/CD systems. On the Nixpkgs
 collection, there are currently more than 80.000 pieces of software available
 through the Nix package manager. Using {rix}, you can define and build isolated
 R environments through Nix package manager with ease. Like this, environments
