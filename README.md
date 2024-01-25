@@ -79,6 +79,25 @@ expressions. This means that you can generate expressions on a system on
 which you cannot easily install software, and then use these expressions
 on the cloud or on a CI/CD environment to build the project there.
 
+Here is an example of how to define an environment “as code” using
+`rix()`:
+
+``` r
+rix(r_ver = "latest",
+    r_pkgs = c("dplyr", "ggplot2"),
+    system_pkgs = NULL,
+    git_pkgs = NULL,
+    ide = "code",
+    project_path = path_default_nix,
+    overwrite = TRUE,
+    print = TRUE)
+```
+
+This generates a file called `default.nix` in the path
+`path_default_nix` with the correct expression to build this
+environment. To build the environment, the Nix package manager must be
+installed.
+
 ## Quick start for returning users
 
 *If you are not familiar with Nix or `{rix}` skip to the next section.*
