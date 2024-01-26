@@ -40,6 +40,8 @@ testthat::test_that("get_sri_hash_deps returns correct sri hash and dependencies
 
 
 testthat::test_that("Snapshot test of rix()", {
+
+
   save_default_nix_test <- function(ide) {
 
     path_default_nix <- tempdir()
@@ -91,6 +93,9 @@ testthat::test_that("Snapshot test of rix()", {
 
 
 testthat::test_that("Snapshot test of rix_init()", {
+
+  skip_on_covr()
+
   save_rix_init_test <- function() {
 
     path_env_nix <- tempdir()
@@ -112,3 +117,45 @@ testthat::test_that("Snapshot test of rix_init()", {
               name = "golden_Rprofile.txt",
               )
 })
+
+testthat::test_that("Testing with_nix() if Nix is installed", {
+
+  skip_if_not(nix_shell_available())
+
+  skip_on_covr()
+
+  path_env_stringr <- file.path(".", "_env_stringr_1.4.1")
+
+  rix_init(
+    project_path = path_env_stringr,
+    rprofile_action = "overwrite",
+    message_type = "simple"
+  )
+
+  rix(
+    r_ver = "latest",
+    r_pkgs = "stringr@1.4.1",
+    overwrite = TRUE,
+    project_path = path_env_stringr
+  )
+
+  out_nix_stringr <- with_nix(
+    expr = function() stringr::str_subset(c("", "a"), ""),
+    program = "R",
+    exec_mode = "non-blocking",
+    project_path = path_env_stringr,
+    message_type = "simple"
+  )
+
+  # on a recent version of stringr, stringr::str_subset(c("", "a"), "")
+  # should result in an error, but older versions would return "a"
+  # to avoid having a dependency on stringr just for this test,
+  # we see if the old version still returns "a"
+  testthat::expect_true(
+              identical("a", out_nix_stringr)
+            )
+
+  on.exit(unlink(path_env_stringr, recursive = TRUE, force = TRUE))
+
+})
+
