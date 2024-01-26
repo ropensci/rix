@@ -127,7 +127,7 @@ like this via \code{{sys}} by Jeroen Ooms:
 \dontrun{
 # create an isolated, runtime-pure R setup via Nix
 project_path <- "./sub_shell"
-init(
+rix_init(
   project_path = project_path,
   rprofile_action = "create_missing"
 )
