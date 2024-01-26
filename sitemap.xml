@@ -64,9 +64,6 @@
     <loc>https://b-rodrigues.github.io/rix/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://b-rodrigues.github.io/rix/reference/init.html</loc>
-  </url>
-  <url>
     <loc>https://b-rodrigues.github.io/rix/reference/nix_build.html</loc>
   </url>
   <url>
@@ -74,6 +71,9 @@
   </url>
   <url>
     <loc>https://b-rodrigues.github.io/rix/reference/rix.html</loc>
+  </url>
+  <url>
+    <loc>https://b-rodrigues.github.io/rix/reference/rix_init.html</loc>
   </url>
   <url>
     <loc>https://b-rodrigues.github.io/rix/reference/tar_nix_ga.html</loc>
