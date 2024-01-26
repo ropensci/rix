@@ -39,8 +39,8 @@ testthat::test_that("get_sri_hash_deps returns correct sri hash and dependencies
 })
 
 
-testthat::test_that("Snapshot test of all features of rix", {
-  save_default_nix_test <- function() {
+testthat::test_that("Snapshot test of rix()", {
+  save_default_nix_test <- function(ide) {
 
     path_default_nix <- tempdir()
 
@@ -58,7 +58,7 @@ testthat::test_that("Snapshot test of all features of rix", {
                branch_name = "main",
                commit = "d617172447d2947efb20ad6a4463742b8a5d79dc")
         ),
-        ide = "rstudio",
+        ide = ide,
         project_path = path_default_nix,
         overwrite = TRUE)
 
@@ -66,13 +66,49 @@ testthat::test_that("Snapshot test of all features of rix", {
 
   }
 
-  testthat::announce_snapshot_file("find_rev/default.nix")
+  testthat::announce_snapshot_file("find_rev/rstudio_default.nix")
 
-  testthat::expect_snapshot_file(path = save_default_nix_test(),
-                                 name = "default.nix",
-                                 #compare = compare_file_text(
-                                 #  new = "find_rev/default.nix",
-                                 #  old = "target_default.nix")
-                                 )
+  testthat::expect_snapshot_file(
+              path = save_default_nix_test(ide = "rstudio"),
+              name = "rstudio_default.nix",
+              )
+
+  testthat::announce_snapshot_file("find_rev/other_default.nix")
+
+  testthat::expect_snapshot_file(
+              path = save_default_nix_test(ide = "other"),
+              name = "other_default.nix"
+            )
+
+  testthat::announce_snapshot_file("find_rev/code_default.nix")
+
+  testthat::expect_snapshot_file(
+              path = save_default_nix_test(ide = "code"),
+              name = "code_default.nix"
+              )
 
 })
+
+
+testthat::test_that("Snapshot test of rix_init()", {
+  save_rix_init_test <- function() {
+
+    path_env_nix <- tempdir()
+
+    rix_init(
+      project_path = path_env_nix,
+      rprofile_action = "overwrite",
+      message_type = "simple"
+    )
+
+    paste0(path_env_nix, "/.Rprofile")
+
+  }
+
+  testthat::announce_snapshot_file("find_rev/.Rprofile")
+
+  testthat::expect_snapshot_file(
+              path = save_rix_init_test(),
+              name = ".Rprofile",
+              )
+  })
