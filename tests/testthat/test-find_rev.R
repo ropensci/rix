@@ -105,10 +105,10 @@ testthat::test_that("Snapshot test of rix_init()", {
 
   }
 
-  testthat::announce_snapshot_file("find_rev/.Rprofile")
+  testthat::announce_snapshot_file("find_rev/golden_Rprofile.txt")
 
   testthat::expect_snapshot_file(
               path = save_rix_init_test(),
-              name = ".Rprofile",
+              name = "golden_Rprofile.txt",
               )
-  })
+})
