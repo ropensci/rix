@@ -13,22 +13,33 @@
 #'   tar_nix_ga()
 #' }
 tar_nix_ga <- function(){
-  # Add an empty .gitignore file if there isn’t any
 
-  if(file.exists(".gitignore")){
-    NULL
+  # is this being tested? If no, set the path to ".github/workflows"
+  # if yes, set it to a temporary directory
+  if(!identical(Sys.getenv("TESTTHAT"), "true")){
+
+    # Add an empty .gitignore file if there isn’t any
+
+    if(file.exists(".gitignore")){
+      NULL
+    } else {
+      file.create(".gitignore")
+    }
+
+    path <- ".github/workflows"
+
+    dir.create(path, recursive = TRUE)
   } else {
-    file.create(".gitignore")
+    path <- tempdir()
   }
 
-  path <- ".github/workflows"
-
-  dir.create(path, recursive = TRUE)
   source <- system.file(
-    file.path("extdata", "run-pipeline.yaml"),
-    package = "rix",
+        file.path("extdata", "run-pipeline.yaml"),
+        package = "rix",
     mustWork = TRUE
   )
+
   file.copy(source, path, overwrite = TRUE)
-  invisible()
-}
+  message("GitHub Actions workflow file save to: ", path)
+  if(identical(Sys.getenv("TESTTHAT"), "true")) paste0(path, "/run-pipeline.yaml")
+  }

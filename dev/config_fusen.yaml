@@ -106,7 +106,7 @@ flat_cicd.Rmd:
   path: dev/flat_cicd.Rmd
   state: active
   R: R/tar_nix_ga.R
-  tests: []
+  tests: tests/testthat/test-tar_nix_ga.R
   vignettes: []
   inflate:
     flat_file: dev/flat_cicd.Rmd

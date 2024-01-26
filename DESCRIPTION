@@ -23,10 +23,12 @@ Imports:
 Suggests: 
     knitr,
     rmarkdown,
+    stringr,
     testthat
 VignetteBuilder: 
     knitr
 Config/fusen/version: 0.5.2
+Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
