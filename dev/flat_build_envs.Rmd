@@ -152,6 +152,7 @@ by `nix hash path --sri path_to_repo`.
 #' @param repo_url A character. The URL to the package's Github repository or to the `.tar.gz` package hosted on CRAN.
 #' @param branch_name A character. The branch of interest, NULL for archived CRAN packages.
 #' @param commit A character. The commit hash of interest, for reproducibility's sake, NULL for archived CRAN packages.
+#' @importFrom httr content GET http_error
 #' @return The SRI hash as a character
 get_sri_hash_deps <- function(repo_url, branch_name, commit){
   result <- httr::GET(paste0("http://git2nixsha.dev:1506/hash?repo_url=",
@@ -161,7 +162,7 @@ get_sri_hash_deps <- function(repo_url, branch_name, commit){
                              "&commit=",
                              commit))
 
-  if(httr::http_error(result)){
+  if(http_error(result)){
     stop(paste0("Error in pulling URL: ", repo_url, ". If it's a Github repo, check the url, branch name and commit. Are these correct? If it's an archived CRAN package, check the name of the package and the version number."))
   }
 
@@ -182,6 +183,23 @@ testthat::test_that("get_sri_hash_deps returns correct sri hash and dependencies
                 "deps" = "dplyr ggplot2 janitor purrr readxl rlang rvest stringr tidyr"
               )
             )
+})
+
+testthat::test_that("Internet is out for fetchgit()", {
+
+  testthat::local_mocked_bindings(
+    http_error = function(...) TRUE
+    )
+
+  expect_error(
+    get_sri_hash_deps(
+      "https://github.com/rap4all/housing/",
+      "fusen",
+      "1c860959310b80e67c41f7bbdc3e84cef00df18e"
+    ),
+    'Error in pulling',
+    )
+
 })
 
 ```
@@ -1238,7 +1256,7 @@ nix_rprofile <- function() {
 ```{r, tests-rix_init}
 testthat::test_that("Snapshot test of rix_init()", {
 
-  skip_on_covr()
+  #skip_on_covr()
 
   save_rix_init_test <- function() {
 
@@ -2099,40 +2117,43 @@ testthat::test_that("Testing with_nix() if Nix is installed", {
 
   skip_if_not(nix_shell_available())
 
-  skip_on_covr()
+  #skip_on_covr()
 
-  path_env_stringr <- file.path(".", "_env_stringr_1.4.1")
+  path_subshell <- file.path(".", "_env_R_3_5_3")
 
   rix_init(
-    project_path = path_env_stringr,
+    project_path = path_subshell,
     rprofile_action = "overwrite",
     message_type = "simple"
   )
 
   rix(
-    r_ver = "latest",
-    r_pkgs = "stringr@1.4.1",
+    r_ver = "3.5.3",
     overwrite = TRUE,
-    project_path = path_env_stringr
+    project_path = path_subshell
   )
 
-  out_nix_stringr <- with_nix(
-    expr = function() stringr::str_subset(c("", "a"), ""),
+  out_subshell <- with_nix(
+    expr = function(){
+      set.seed(1234)
+      a <- sample(seq(1, 10), 5)
+      set.seed(NULL)
+      return(a)
+    },
     program = "R",
     exec_mode = "non-blocking",
-    project_path = path_env_stringr,
+    project_path = path_subshell,
     message_type = "simple"
   )
 
-  # on a recent version of stringr, stringr::str_subset(c("", "a"), "")
-  # should result in an error, but older versions would return "a"
-  # to avoid having a dependency on stringr just for this test,
-  # we see if the old version still returns "a"
+  # On a recent version of R, set.seed(1234);sample(seq(1,10), 5)
+  # returns c(10, 6, 5, 4, 1)
+  # but not on versions prior to 3.6
   testthat::expect_true(
-              identical("a", out_nix_stringr)
-            )
+    all(c(2, 6, 5, 8, 9) == out_subshell)
+  )
 
-  on.exit(unlink(path_env_stringr, recursive = TRUE, force = TRUE))
+  on.exit(unlink(path_subshell, recursive = TRUE, force = TRUE))
 
 })
 

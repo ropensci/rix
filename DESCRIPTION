@@ -23,7 +23,6 @@ Imports:
 Suggests: 
     knitr,
     rmarkdown,
-    stringr,
     testthat
 VignetteBuilder: 
     knitr

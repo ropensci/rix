@@ -38,9 +38,25 @@ testthat::test_that("get_sri_hash_deps returns correct sri hash and dependencies
             )
 })
 
+testthat::test_that("Internet is out for fetchgit()", {
+
+  testthat::local_mocked_bindings(
+    http_error = function(...) TRUE
+    )
+
+  expect_error(
+    get_sri_hash_deps(
+      "https://github.com/rap4all/housing/",
+      "fusen",
+      "1c860959310b80e67c41f7bbdc3e84cef00df18e"
+    ),
+    'Error in pulling',
+    )
+
+})
+
 
 testthat::test_that("Snapshot test of rix()", {
-
 
   save_default_nix_test <- function(ide) {
 
@@ -94,7 +110,7 @@ testthat::test_that("Snapshot test of rix()", {
 
 testthat::test_that("Snapshot test of rix_init()", {
 
-  skip_on_covr()
+  #skip_on_covr()
 
   save_rix_init_test <- function() {
 
@@ -122,40 +138,43 @@ testthat::test_that("Testing with_nix() if Nix is installed", {
 
   skip_if_not(nix_shell_available())
 
-  skip_on_covr()
+  #skip_on_covr()
 
-  path_env_stringr <- file.path(".", "_env_stringr_1.4.1")
+  path_subshell <- file.path(".", "_env_R_3_5_3")
 
   rix_init(
-    project_path = path_env_stringr,
+    project_path = path_subshell,
     rprofile_action = "overwrite",
     message_type = "simple"
   )
 
   rix(
-    r_ver = "latest",
-    r_pkgs = "stringr@1.4.1",
+    r_ver = "3.5.3",
     overwrite = TRUE,
-    project_path = path_env_stringr
+    project_path = path_subshell
   )
 
-  out_nix_stringr <- with_nix(
-    expr = function() stringr::str_subset(c("", "a"), ""),
+  out_subshell <- with_nix(
+    expr = function(){
+      set.seed(1234)
+      a <- sample(seq(1, 10), 5)
+      set.seed(NULL)
+      return(a)
+    },
     program = "R",
     exec_mode = "non-blocking",
-    project_path = path_env_stringr,
+    project_path = path_subshell,
     message_type = "simple"
   )
 
-  # on a recent version of stringr, stringr::str_subset(c("", "a"), "")
-  # should result in an error, but older versions would return "a"
-  # to avoid having a dependency on stringr just for this test,
-  # we see if the old version still returns "a"
+  # On a recent version of R, set.seed(1234);sample(seq(1,10), 5)
+  # returns c(10, 6, 5, 4, 1)
+  # but not on versions prior to 3.6
   testthat::expect_true(
-              identical("a", out_nix_stringr)
-            )
+    all(c(2, 6, 5, 8, 9) == out_subshell)
+  )
 
-  on.exit(unlink(path_env_stringr, recursive = TRUE, force = TRUE))
+  on.exit(unlink(path_subshell, recursive = TRUE, force = TRUE))
 
 })
 
