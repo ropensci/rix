@@ -96,8 +96,9 @@ next vignette `vignette("c-using-rix-to-build-project-specific-environments")` t
 When using environments built with Nix on macOS, you might get crashes 
 (segmentation faults) refering to "shared libraries". These indicate that your
 user library of R packages is interfering with the project-specific Nix
-environment. The system's user library that Nix by default includes appears in
-the search paths (check `libPaths()`). For macOS, the user library is at
+environment. The system's user library that Nix packaged R by default includes 
+appears in the search paths (check `libPaths()`). For macOS, the user library is
+at
 `/Library/Frameworks/R.framework/Versions/<major>.<minor>-<arch>/Resources/library`;
 we have observed crashes with R packages that depend on system libraries, such
 as {data.table} or {dplyr}, and their (reverse) dependencies. Because user
