@@ -584,7 +584,14 @@ tex_pkgs)
                    }
 
   # system packages
-  get_system_pkgs <- function(system_pkgs){
+  get_system_pkgs <- function(system_pkgs, r_pkgs){
+
+    system_pkgs <- if(any(grepl("quarto", r_pkgs))){
+                unique(c(system_pkgs, "quarto"))
+              } else {
+                system_pkgs
+              }
+
     paste(system_pkgs, collapse = ' ')
   }
 
@@ -608,12 +615,12 @@ tex_pkgs)
   # `R` needs to be added. If we were using the rWrapper
   # this wouldn't be needed, but we're not so we need
   # to add it.
-  generate_system_pkgs <- function(system_pkgs){
+  generate_system_pkgs <- function(system_pkgs, r_pkgs){
     sprintf('system_packages = builtins.attrValues {
   inherit (pkgs) R glibcLocales %s;
 };
 ',
-get_system_pkgs(system_pkgs))
+get_system_pkgs(system_pkgs, r_pkgs))
   }
 
   generate_locale_variables <- function() {
@@ -694,7 +701,7 @@ flag_rpkgs
     generate_rpkgs(cran_pkgs$rPackages),
     generate_git_archived_packages(git_pkgs, cran_pkgs$archive_pkgs),
     generate_tex_pkgs(tex_pkgs),
-    generate_system_pkgs(system_pkgs),
+    generate_system_pkgs(system_pkgs, r_pkgs),
     generate_rstudio_pkgs(ide, flag_git_archive, flag_rpkgs),
     generate_shell(flag_git_archive, flag_rpkgs),
     collapse = "\n"
@@ -717,7 +724,7 @@ flag_rpkgs
 }
 ```
 
-```{r tests-rix}
+```{r, tests-rix}
 testthat::test_that("Snapshot test of rix()", {
 
   save_default_nix_test <- function(ide) {
@@ -726,7 +733,6 @@ testthat::test_that("Snapshot test of rix()", {
 
     rix(r_ver = "4.3.1",
         r_pkgs = c("dplyr", "janitor", "AER@1.2-8", "quarto"),
-        system_pkgs = c("quarto"),
         tex_pkgs = c("amsmath"),
         git_pkgs = list(
           list(package_name = "housing",
@@ -771,6 +777,40 @@ testthat::test_that("Snapshot test of rix()", {
 
 ```
 
+```{r, tests-add_quarto_to_sys_pkgs}
+testthat::test_that("Quarto gets added to sys packages", {
+
+  save_default_nix_test <- function(pkgs) {
+
+    path_default_nix <- tempdir()
+
+    rix(r_ver = "4.3.1",
+        r_pkgs = pkgs,
+        ide = "other",
+        project_path = path_default_nix,
+        overwrite = TRUE)
+
+    paste0(path_default_nix, "/default.nix")
+
+  }
+
+  testthat::announce_snapshot_file("find_rev/no_quarto_default.nix")
+
+  testthat::expect_snapshot_file(
+              path = save_default_nix_test(pkgs = "dplyr"),
+              name = "no_quarto_default.nix",
+              )
+
+  testthat::announce_snapshot_file("find_rev/yes_quarto_default.nix")
+
+  testthat::expect_snapshot_file(
+              path = save_default_nix_test(pkgs = c("dplyr", "quarto")),
+              name = "yes_quarto_default.nix"
+            )
+
+})
+
+```
 
 
 This is a helper to create `./inst/extadata/default.nix`.
@@ -2121,6 +2161,8 @@ testthat::test_that("Testing with_nix() if Nix is installed", {
 
   path_subshell <- file.path(".", "_env_R_3_5_3")
 
+  on.exit(unlink(path_subshell, recursive = TRUE, force = TRUE))
+
   rix_init(
     project_path = path_subshell,
     rprofile_action = "overwrite",
@@ -2153,7 +2195,6 @@ testthat::test_that("Testing with_nix() if Nix is installed", {
     all(c(2, 6, 5, 8, 9) == out_subshell)
   )
 
-  on.exit(unlink(path_subshell, recursive = TRUE, force = TRUE))
 
 })
 
