@@ -724,7 +724,7 @@ flag_rpkgs
 }
 ```
 
-```{r tests-rix}
+```{r, tests-rix}
 testthat::test_that("Snapshot test of rix()", {
 
   save_default_nix_test <- function(ide) {
@@ -777,6 +777,40 @@ testthat::test_that("Snapshot test of rix()", {
 
 ```
 
+```{r, tests-add_quarto_to_sys_pkgs}
+testthat::test_that("Quarto gets added to sys packages", {
+
+  save_default_nix_test <- function(pkgs) {
+
+    path_default_nix <- tempdir()
+
+    rix(r_ver = "4.3.1",
+        r_pkgs = pkgs,
+        ide = "other",
+        project_path = path_default_nix,
+        overwrite = TRUE)
+
+    paste0(path_default_nix, "/default.nix")
+
+  }
+
+  testthat::announce_snapshot_file("find_rev/no_quarto_default.nix")
+
+  testthat::expect_snapshot_file(
+              path = save_default_nix_test(pkgs = "dplyr"),
+              name = "no_quarto_default.nix",
+              )
+
+  testthat::announce_snapshot_file("find_rev/yes_quarto_default.nix")
+
+  testthat::expect_snapshot_file(
+              path = save_default_nix_test(pkgs = c("dplyr", "quarto")),
+              name = "yes_quarto_default.nix"
+            )
+
+})
+
+```
 
 
 This is a helper to create `./inst/extadata/default.nix`.
@@ -2127,6 +2161,8 @@ testthat::test_that("Testing with_nix() if Nix is installed", {
 
   path_subshell <- file.path(".", "_env_R_3_5_3")
 
+  on.exit(unlink(path_subshell, recursive = TRUE, force = TRUE))
+
   rix_init(
     project_path = path_subshell,
     rprofile_action = "overwrite",
@@ -2159,7 +2195,6 @@ testthat::test_that("Testing with_nix() if Nix is installed", {
     all(c(2, 6, 5, 8, 9) == out_subshell)
   )
 
-  on.exit(unlink(path_subshell, recursive = TRUE, force = TRUE))
 
 })
 

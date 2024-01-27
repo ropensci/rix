@@ -64,7 +64,6 @@ testthat::test_that("Snapshot test of rix()", {
 
     rix(r_ver = "4.3.1",
         r_pkgs = c("dplyr", "janitor", "AER@1.2-8", "quarto"),
-        #system_pkgs = c("quarto"),
         tex_pkgs = c("amsmath"),
         git_pkgs = list(
           list(package_name = "housing",
@@ -104,6 +103,39 @@ testthat::test_that("Snapshot test of rix()", {
               path = save_default_nix_test(ide = "code"),
               name = "code_default.nix"
               )
+
+})
+
+
+testthat::test_that("Quarto gets added to sys packages", {
+
+  save_default_nix_test <- function(pkgs) {
+
+    path_default_nix <- tempdir()
+
+    rix(r_ver = "4.3.1",
+        r_pkgs = pkgs,
+        ide = "other",
+        project_path = path_default_nix,
+        overwrite = TRUE)
+
+    paste0(path_default_nix, "/default.nix")
+
+  }
+
+  testthat::announce_snapshot_file("find_rev/no_quarto_default.nix")
+
+  testthat::expect_snapshot_file(
+              path = save_default_nix_test(pkgs = "dplyr"),
+              name = "no_quarto_default.nix",
+              )
+
+  testthat::announce_snapshot_file("find_rev/yes_quarto_default.nix")
+
+  testthat::expect_snapshot_file(
+              path = save_default_nix_test(pkgs = c("dplyr", "quarto")),
+              name = "yes_quarto_default.nix"
+            )
 
 })
 
