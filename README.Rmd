@@ -86,6 +86,16 @@ expressions. This means that you can generate expressions on a system on which
 you cannot easily install software, and then use these expressions on the cloud
 or on a CI/CD environment to build the project there.
 
+If you have R installed, you can start straight away from your R session by
+first installing `{rix}`:
+
+```{r, eval=FALSE}
+install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
+  "https://cloud.r-project.org"))
+
+library("rix")
+```
+
 Here is an example of how to define an environment "as code" using `rix()`:
 
 ```{r, eval = F}
@@ -120,16 +130,6 @@ that provides services and tools built on Nix:
 curl --proto '=https' --tlsv1.2 -sSf \
     -L https://install.determinate.systems/nix | \
      sh -s -- install
-```
-
-If you have R installed, you can start straight away from your R session by first
-installing `{rix}`:
-
-```{r, eval=FALSE}
-install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
-  "https://cloud.r-project.org"))
-
-library("rix")
 ```
 
 You can check that everything works well by trying to build the Nix expression
