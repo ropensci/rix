@@ -93,13 +93,31 @@ next vignette `vignette("c-using-rix-to-build-project-specific-environments")` t
 
 ### Shared libraries issue
 
-When using environments built with Nix on macOS, you might get error messages
-refering to "shared libraries", which indicate that your user library of R
-packages is interfering with the project-specific Nix environment. In this case,
-you might want to set up a project-specific `.Rprofile` using `rix::rix_init()`.
-This function generates an `.Rprofile` file on the root of your project and
-ensures that the Nix environment only loads R packages from its own
-project-specific library. This should solve the issue.
+When using environments built with Nix on macOS, you might get crashes 
+(segmentation faults) refering to "shared libraries". These indicate that your
+user library of R packages is interfering with the project-specific Nix
+environment. The system's user library that Nix by default includes appears in
+the search paths (check `libPaths()`). For macOS, the user library is at
+`/Library/Frameworks/R.framework/Versions/<major>.<minor>-<arch>/Resources/library`;
+we have observed crashes with R packages that depend on system libraries, such
+as {data.table} or {dplyr}, and their (reverse) dependencies. Because user
+libraries from the system would also appear on the search path in R from 
+`nixpkgs` for Linux, we think its a good idea to force isolation of R packages
+by making them behave in a runtime-pure manner. To make this happen, we
+recommend that you set up a project-specific `.Rprofile` using 
+`rix::rix_init()`. This way, only packages declaratively defined in your
+`default.nix` and built to be part of the Nix store (one R package is one
+separate derivation listed in a unique Nix path) appear on the R library path.
+
+As an example, call `rix::rix()` like this.
+
+``` r
+# see ?rix_init for more details
+rix_init(
+  project_path = "./rix_darwin",
+  profile_action = "create_missing"
+)
+```
 
 ### RStudio and other development interfaces on macOS
 
