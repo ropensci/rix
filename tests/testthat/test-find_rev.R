@@ -110,7 +110,7 @@ testthat::test_that("Snapshot test of rix()", {
 
 testthat::test_that("Snapshot test of rix_init()", {
 
-  #skip_on_covr()
+  skip_on_covr()
 
   save_rix_init_test <- function() {
 
@@ -138,7 +138,7 @@ testthat::test_that("Testing with_nix() if Nix is installed", {
 
   skip_if_not(nix_shell_available())
 
-  #skip_on_covr()
+  skip_on_covr()
 
   path_subshell <- file.path(".", "_env_R_3_5_3")
 
