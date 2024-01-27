@@ -39,9 +39,9 @@ apps or `{plumber}` APIs in a controlled environment.
 Nix has a fairly high entry cost though. Nix is a complex piece of
 software that comes with its own programming language, which is also
 called Nix. Its purpose is to solve a complex problem: defining
-instructions how to build software packages and manage configurations in
-declarative way. This makes sure that software gets installed in fully
-reproducible manner, on any operating system or hardware.
+instructions on how to build software packages and manage configurations
+in a declarative way. This makes sure that software gets installed in
+fully reproducible manner, on any operating system or hardware.
 
 `{rix}` provides functions to help you write and deploy Nix expressions
 (written in the Nix language). These expressions will be the inputs for
@@ -51,7 +51,7 @@ be used for interactive data analysis, or reproduced when running
 pipelines in CI/CD systems. On the [Nixpkgs
 collection](https://github.com/nixos/nixpkgs), there are currently more
 than 80.000 pieces of software available through the Nix package
-manager. Using {rix}, you can define and build isolated R environments
+manager. Through {rix}, you can define and build isolated R environments
 through Nix package manager with ease. Like this, environments contain R
 and all the required packages that you need for your project. You can
 also add any other software tool available. The Nix R ecosystem
@@ -61,8 +61,8 @@ install older releases of R packages, or install packages from GitHub at
 defined states.
 
 The Nix package manager is extremely powerful. Not only does it handle
-all the dependencies their builds extremely well in deterministic
-manner. It is also possible with it to reproduce environments containing
+all the dependencies of any package extremely well in a deterministic
+manner, it is also possible with it to reproduce environments containing
 old releases of software. It is thus possible to build environments
 containing R version 4.0.0 (for example) to run an old project that was
 originally developed on that version of R.
@@ -78,7 +78,7 @@ features:
   on the same system;
 - define complete development environments as code and use them
   anywhere;
-- run single R function (and objects in the call stack) in a different
+- run single R functions (and objects in the call stack) in a different
   environment (potentially with a different R version and R packages)
   for an interactive R session, and get back the output of that function
   using `with_nix()`;
@@ -113,7 +113,7 @@ installed.
 
 <details>
 <summary>
-Click to exand
+Click to expand
 </summary>
 
 If you are already familiar with Nix and R, and simply want to get
