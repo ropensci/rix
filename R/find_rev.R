@@ -461,7 +461,14 @@ tex_pkgs)
                    }
 
   # system packages
-  get_system_pkgs <- function(system_pkgs){
+  get_system_pkgs <- function(system_pkgs, r_pkgs){
+
+    system_pkgs <- if(any(grepl("quarto", r_pkgs))){
+                unique(c(system_pkgs, "quarto"))
+              } else {
+                system_pkgs
+              }
+
     paste(system_pkgs, collapse = ' ')
   }
 
@@ -485,12 +492,12 @@ tex_pkgs)
   # `R` needs to be added. If we were using the rWrapper
   # this wouldn't be needed, but we're not so we need
   # to add it.
-  generate_system_pkgs <- function(system_pkgs){
+  generate_system_pkgs <- function(system_pkgs, r_pkgs){
     sprintf('system_packages = builtins.attrValues {
   inherit (pkgs) R glibcLocales %s;
 };
 ',
-get_system_pkgs(system_pkgs))
+get_system_pkgs(system_pkgs, r_pkgs))
   }
 
   generate_locale_variables <- function() {
@@ -571,7 +578,7 @@ flag_rpkgs
     generate_rpkgs(cran_pkgs$rPackages),
     generate_git_archived_packages(git_pkgs, cran_pkgs$archive_pkgs),
     generate_tex_pkgs(tex_pkgs),
-    generate_system_pkgs(system_pkgs),
+    generate_system_pkgs(system_pkgs, r_pkgs),
     generate_rstudio_pkgs(ide, flag_git_archive, flag_rpkgs),
     generate_shell(flag_git_archive, flag_rpkgs),
     collapse = "\n"

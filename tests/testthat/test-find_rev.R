@@ -64,7 +64,7 @@ testthat::test_that("Snapshot test of rix()", {
 
     rix(r_ver = "4.3.1",
         r_pkgs = c("dplyr", "janitor", "AER@1.2-8", "quarto"),
-        system_pkgs = c("quarto"),
+        #system_pkgs = c("quarto"),
         tex_pkgs = c("amsmath"),
         git_pkgs = list(
           list(package_name = "housing",
