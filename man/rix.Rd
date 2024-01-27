@@ -14,7 +14,7 @@ rix(
   project_path = ".",
   overwrite = FALSE,
   print = FALSE,
-  shell_hook = "R --vanilla"
+  shell_hook = "R"
 )
 }
 \arguments{
@@ -47,9 +47,9 @@ file in the specified path.}
 
 \item{print}{Logical, defaults to FALSE. If TRUE, print \code{default.nix} to console.}
 
-\item{shell_hook}{Character, defaults to \code{"R --vanilla"}. Commands added to the shell_hook get
+\item{shell_hook}{Character, defaults to \code{"R"}. Commands added to the shell_hook get
 executed when the Nix shell starts (via \code{shellHook}). So by default, using \verb{nix-shell default.nix} will
-start R. Set to NULL if you want bash to be started instead.}
+start R. Set to \code{NULL} if you want bash to be started instead.}
 }
 \value{
 Nothing, this function only has the side-effect of writing a file

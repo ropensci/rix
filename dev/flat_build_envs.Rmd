@@ -359,9 +359,9 @@ you use another IDE, you can leave the "ide" argument blank:
 #' @param overwrite Logical, defaults to FALSE. If TRUE, overwrite the `default.nix`
 #'   file in the specified path.
 #' @param print Logical, defaults to FALSE. If TRUE, print `default.nix` to console.
-#' @param shell_hook Character, defaults to `"R --vanilla"`. Commands added to the shell_hook get
+#' @param shell_hook Character, defaults to `"R"`. Commands added to the shell_hook get
 #'   executed when the Nix shell starts (via `shellHook`). So by default, using `nix-shell default.nix` will
-#'   start R. Set to NULL if you want bash to be started instead.
+#'   start R. Set to `NULL` if you want bash to be started instead.
 #' @details This function will write a `default.nix` in the chosen path. Using
 #'   the Nix package manager, it is then possible to build a reproducible
 #'   development environment using the `nix-build` command in the path. This
@@ -420,7 +420,7 @@ rix <- function(r_ver = "latest",
                 project_path = ".",
                 overwrite = FALSE,
                 print = FALSE,
-                shell_hook = "R --vanilla"){
+                shell_hook = "R"){
 
   stopifnot("'ide' has to be one of 'other', 'rstudio' or 'code'" = (ide %in% c("other", "rstudio", "code")))
 
@@ -780,7 +780,7 @@ create_default_nix <- function(path = file.path("inst", "extdata",
     ide = "other",
     project_path = dirname(path),
     overwrite = TRUE,
-    shell_hook = "R --vanilla"
+    shell_hook = "R"
   )
 }
 ```
