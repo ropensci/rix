@@ -21,14 +21,7 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@main
 
       - name: Test coverage
-        run: >
-        nix-shell -p R rPackages.covr --run '
-          covr::codecov(
-            quiet = FALSE,
-            clean = FALSE,
-            install_path = file.path(Sys.getenv("RUNNER_TEMP"), "package")
-          )
-        '
+        run: nix-shell -p R rPackages.covr --run covr::codecov(quiet = FALSE, clean = FALSE, install_path = file.path(Sys.getenv("RUNNER_TEMP"), "package"))
 
       - name: Show testthat output
         if: always()
