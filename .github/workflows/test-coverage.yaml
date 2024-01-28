@@ -21,7 +21,7 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@main
 
       - name: Test coverage
-        run: |
+        run: >
         nix-shell -p R rPackages.covr --run '
           covr::codecov(
             quiet = FALSE,
