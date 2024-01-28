@@ -176,7 +176,7 @@ testthat::test_that("Testing with_nix() if Nix is installed", {
   # CI diagnostics
   cat("Current temporary directory", path_subshell)
   f_tempdir <- dir(path = path_subshell, all.files = TRUE)
-  cat("Current files in", path_subhell, ":", f_tempdir)
+  cat("Current files in", path_subshell, ":", f_tempdir)
 
   rix_init(
     project_path = path_subshell,
