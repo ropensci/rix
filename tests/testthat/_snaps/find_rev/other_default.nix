@@ -41,7 +41,7 @@ let
   inherit (pkgs.texlive) scheme-small amsmath;
 });
  system_packages = builtins.attrValues {
-  inherit (pkgs) R glibcLocales quarto;
+  inherit (pkgs) R glibcLocales nix quarto;
 };
   in
   pkgs.mkShell {

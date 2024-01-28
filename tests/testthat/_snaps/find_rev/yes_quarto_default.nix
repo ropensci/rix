@@ -5,7 +5,7 @@ let
   inherit (pkgs.rPackages) dplyr quarto;
 };
    system_packages = builtins.attrValues {
-  inherit (pkgs) R glibcLocales quarto;
+  inherit (pkgs) R glibcLocales nix quarto;
 };
   in
   pkgs.mkShell {

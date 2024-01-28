@@ -494,7 +494,7 @@ tex_pkgs)
   # to add it.
   generate_system_pkgs <- function(system_pkgs, r_pkgs){
     sprintf('system_packages = builtins.attrValues {
-  inherit (pkgs) R glibcLocales %s;
+  inherit (pkgs) R glibcLocales nix %s;
 };
 ',
 get_system_pkgs(system_pkgs, r_pkgs))
