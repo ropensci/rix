@@ -2157,7 +2157,7 @@ testthat::test_that("Testing with_nix() if Nix is installed", {
 
   skip_if_not(nix_shell_available())
 
-  skip_on_covr()
+  #skip_on_covr()
 
   path_subshell <- file.path(".", "_env_R_3_5_3")
 

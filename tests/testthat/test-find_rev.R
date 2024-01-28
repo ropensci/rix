@@ -170,9 +170,11 @@ testthat::test_that("Testing with_nix() if Nix is installed", {
 
   skip_if_not(nix_shell_available())
 
-  skip_on_covr()
+  #skip_on_covr()
 
   path_subshell <- file.path(".", "_env_R_3_5_3")
+
+  on.exit(unlink(path_subshell, recursive = TRUE, force = TRUE))
 
   rix_init(
     project_path = path_subshell,
@@ -206,7 +208,6 @@ testthat::test_that("Testing with_nix() if Nix is installed", {
     all(c(2, 6, 5, 8, 9) == out_subshell)
   )
 
-  on.exit(unlink(path_subshell, recursive = TRUE, force = TRUE))
 
 })
 
