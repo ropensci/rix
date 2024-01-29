@@ -104,18 +104,19 @@
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>More than 80’000 pieces of software are available through the Nix
-package managers. Nix’s repository of packages is called
+package manager. Nix’s repository of packages is called
 <code>nixpkgs</code> and it includes the entirety of CRAN and
 Bioconductor. <code>nixpkgs</code> is actually “just” a Github
 repository containing thousands upon thousands of Nix expressions. When
 installing a package, these expressions get evaluated, and the package
-in question gets installed. What installed means can vary: sometimes the
-package gets built from source, sometimes a pre-compiled binary package
-for your operating system gets downloaded and made available.</p>
+in question gets installed. What “installed” means can vary: sometimes
+the package gets built from source, sometimes a pre-compiled binary
+package for your operating system gets downloaded and made
+available.</p>
 <p>For example, <a href="https://github.com/NixOS/nixpkgs/blob/dce218f4f35440622d2056f93ddc335351763bb4/pkgs/development/libraries/quarto/default.nix" class="external-link">here</a>
 is the Nix expression that downloads and installs <a href="https://quarto.org/" class="external-link">Quarto</a>. This is an example of an
-expression that downloads the pre-compiled Quarto binary from Quarto’s
-own Github repository, and then installs it. The installation process in
+expression that downloads the pre-compiled binary from Quarto’s own
+Github repository, and then installs it. The installation process in
 this case is essentially making sure that Quarto is able to find its
 dependencies, which also get installed from Nix, and some R and Python
 packages to make Quarto work well with both languages also get
