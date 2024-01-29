@@ -10,18 +10,18 @@ editor_options:
 ## Introduction
 
 More than 80'000 pieces of software are available through the Nix package
-managers. Nix’s repository of packages is called `nixpkgs` and it includes the
+manager. Nix’s repository of packages is called `nixpkgs` and it includes the
 entirety of CRAN and Bioconductor. `nixpkgs` is actually "just" a Github
 repository containing thousands upon thousands of Nix expressions. When
 installing a package, these expressions get evaluated, and the package in
-question gets installed. What installed means can vary: sometimes the package
+question gets installed. What "installed" means can vary: sometimes the package
 gets built from source, sometimes a pre-compiled binary package for your
 operating system gets downloaded and made available.
 
 For example,
 [here](https://github.com/NixOS/nixpkgs/blob/dce218f4f35440622d2056f93ddc335351763bb4/pkgs/development/libraries/quarto/default.nix)
 is the Nix expression that downloads and installs [Quarto](https://quarto.org/).
-This is an example of an expression that downloads the pre-compiled Quarto
+This is an example of an expression that downloads the pre-compiled
 binary from Quarto’s own Github repository, and then installs it. The
 installation process in this case is essentially making sure that Quarto is able
 to find its dependencies, which also get installed from Nix, and some R and
@@ -32,10 +32,10 @@ explains how.
 
 ## Adding tools to an environment
 
-The call below generates a `default.nix` that defines an environment with the latest
-version of R. The R `{quarto}` package is also installed, as well as the `quarto`
-command line tool (required to edit Quarto documents from R using the `{quarto}` package)
-and git:
+The call below generates a `default.nix` that defines an environment with the
+latest version of R. The R `{quarto}` package is also installed, as well as the
+`quarto` command line tool (required to edit Quarto documents from R using the
+`{quarto}` package) and git:
 
 ```{r}
 path_default_nix <- tempdir()
@@ -61,11 +61,11 @@ of `rix()`. If you have trouble finding something, don’t hesitate to
 
 ## Installing TexLive packages
 
-Whether you use Quarto, Rmarkdown, or Sweave, literate programming with R requires
-a TexLive distribution to be installed. You can use `rix()` to install a minimalist
-TexLive distribution and then add the packages that you require as you go.
-The basic use is to simply add a TexLive package to the `tex_pkgs` argument of `rix()`
-like this:
+Whether you use Quarto, Rmarkdown, or Sweave, literate programming with R
+requires a TexLive distribution to be installed. You can use `rix()` to install
+a minimalist TexLive distribution and then add the packages that you require as
+you go. The basic use is to simply add a TexLive package to the `tex_pkgs`
+argument of `rix()` like this:
 
 ```{r}
 path_default_nix <- tempdir()
@@ -81,9 +81,9 @@ rix(r_ver = "latest",
 
 ```
 
-This will automically add the *small* TexLive distribution available through `nixpkgs`
-with the `amsmath` LaTex package. To know more about setting up environments for
-literate programming, refer to the vignette 
+This will automically add the *small* TexLive distribution available through
+`nixpkgs` with the `amsmath` LaTex package. To know more about setting up
+environments for literate programming, refer to the vignette
 `vignette("z-advanced-topic-building-an-environment-for-literate-programming")`.
 
 ## Installing IDEs

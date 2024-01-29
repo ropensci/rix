@@ -9,9 +9,9 @@ editor_options:
 
 ## Introduction
 
-You now know how to declare and build reproducible development environments using `{rix}`
-and Nix. This vignette will explain how to install specific versions of CRAN packages
-and how to install packages from GitHub.
+You now know how to declare and build reproducible development environments
+using `{rix}` and Nix. This vignette will explain how to install specific
+versions of CRAN packages and how to install packages from GitHub.
 
 ## Installing old packages archived on CRAN
 

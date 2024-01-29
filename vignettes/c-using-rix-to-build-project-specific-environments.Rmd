@@ -34,10 +34,15 @@ With the `rix::rix()` function, you can easily generate the right `default.nix`
 file. You need to provide the following inputs to `rix()`:
 
 - `r_ver`: the version of R required. Use "latest" for the latest version;
-- `r_pkgs`: the required R packages. For example "dplyr" (more on this in the vignette `vignette("d1-installing-r-packages-in-a-nix-environment")`);
-- `system_pkgs`: the required system packages, if needed. For example "quarto", or a Python interpreter (more on this in the vignette `vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")`);
-- `git_pkgs`: list of git packages to add (more on this in the vignette `vignette("d1-installing-r-packages-in-a-nix-environment")`);
-- `ide`: the integrated development editor to use (more on this in the vignette `vignette("e-interactive-use")`)
+- `r_pkgs`: the required R packages. For example "dplyr" (more on this in the
+  vignette `vignette("d1-installing-r-packages-in-a-nix-environment")`);
+- `system_pkgs`: the required system packages, if needed. For example "quarto",
+  or a Python interpreter (more on this in the vignette
+  `vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")`);
+- `git_pkgs`: list of git packages to add (more on this in the vignette
+  `vignette("d1-installing-r-packages-in-a-nix-environment")`);
+- `ide`: the integrated development editor to use (more on this in the vignette
+  `vignette("e-interactive-use")`)
 - `path`: the path where to save the `default.nix` file.
 - `overwrite`: whether to overwrite the `default.nix` file or not.
 - `print`: whether to print the `default.nix` file to the console or not.
@@ -81,9 +86,9 @@ To now use the environment, type in the same terminal as before:
 nix-shell
 ```
 
-This will activate the environment. If you have VS Code installed you can
-start it from this environment and VS Code will use this specific R version
-library of packages. We will explore this in greater detail in the vignette
+This will activate the environment. If you have VS Code installed you can start
+it from this environment and VS Code will use this specific R version library of
+packages. We will explore this in greater detail in the vignette
 `vignette("e-interactive-use")`.
 
 
