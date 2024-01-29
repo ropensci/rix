@@ -1,5 +1,5 @@
 ---
-title: "3 - Using rix to build project specific environments"
+title: "c - Using rix to build project specific environments"
 output: html_document
 editor_options:
   chunk_output_type: console

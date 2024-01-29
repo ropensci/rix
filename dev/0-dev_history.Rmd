@@ -101,10 +101,11 @@ fusen::inflate(flat_file = "dev/flat_data_doc.Rmd",
 ```
 
 ```{r}
-fusen::inflate(flat_file = "dev/flat_build_envs.Rmd",
+fusen::inflate(flat_file = "dev/flat_available_R.Rmd",
                vignette_name = NA,
                overwrite = TRUE)
 ```
+
 
 ```{r}
 fusen::inflate(flat_file = "dev/flat_cicd.Rmd",
@@ -112,9 +113,32 @@ fusen::inflate(flat_file = "dev/flat_cicd.Rmd",
                overwrite = TRUE)
 ```
 
+```{r}
+fusen::inflate(flat_file = "dev/flat_cran_archive.Rmd",
+               vignette_name = NA,
+               overwrite = TRUE)
+```
 
 ```{r}
-fusen::inflate(flat_file = "dev/flat_zzz.Rmd",
+fusen::inflate(flat_file = "dev/flat_data_doc.Rmd",
+               vignette_name = NA,
+               overwrite = TRUE)
+```
+
+```{r}
+fusen::inflate(flat_file = "dev/flat_fetchers.Rmd",
+               vignette_name = NA,
+               overwrite = TRUE)
+```
+
+```{r}
+fusen::inflate(flat_file = "dev/flat_find_rev.Rmd",
+               vignette_name = NA,
+               overwrite = TRUE)
+```
+
+```{r}
+fusen::inflate(flat_file = "dev/flat_get_latest.Rmd",
                vignette_name = NA,
                overwrite = TRUE)
 ```
@@ -126,7 +150,38 @@ fusen::inflate(flat_file = "dev/flat_get_os.Rmd",
 ```
 
 ```{r}
-fusen::inflate(flat_file = "dev/flat_cran_archive.Rmd",
+fusen::inflate(flat_file = "dev/flat_get_sri_hash_deps.Rmd",
+               vignette_name = NA,
+               overwrite = TRUE)
+```
+
+```{r}
+fusen::inflate(flat_file = "dev/flat_nix_build.Rmd",
+               vignette_name = NA,
+               overwrite = TRUE)
+```
+
+```{r}
+fusen::inflate(flat_file = "dev/flat_rix_init.Rmd",
+               vignette_name = NA,
+               overwrite = TRUE)
+```
+
+```{r}
+fusen::inflate(flat_file = "dev/flat_with_nix.Rmd",
+               vignette_name = NA,
+               overwrite = TRUE)
+```
+
+
+```{r}
+fusen::inflate(flat_file = "dev/flat_rix.Rmd",
+               vignette_name = NA,
+               overwrite = TRUE)
+```
+
+```{r}
+fusen::inflate(flat_file = "dev/flat_zzz.Rmd",
                vignette_name = NA,
                overwrite = TRUE)
 ```
@@ -134,68 +189,68 @@ fusen::inflate(flat_file = "dev/flat_cran_archive.Rmd",
 # Vignettes for users
 
 ```{r}
-fusen::inflate(flat_file = "dev/1-getting_started.Rmd",
+fusen::inflate(flat_file = "dev/a-getting_started.Rmd",
                vignette_name = "a - Getting started",
                overwrite = TRUE)
 ```
 
 ```{r}
-fusen::inflate(flat_file = "dev/2a-linux_win.Rmd",
+fusen::inflate(flat_file = "dev/b1-linux_win.Rmd",
                vignette_name = "b1 - Setting up and using rix on Linux and Windows",
                overwrite = TRUE)
 ```
 
 ```{r}
-fusen::inflate(flat_file = "dev/2b-macos.Rmd",
+fusen::inflate(flat_file = "dev/b2-macos.Rmd",
                vignette_name = "b2 - Setting up and using rix on macOS",
                overwrite = TRUE)
 ```
 
 ```{r}
-fusen::inflate(flat_file = "dev/3-building_envs_with_rix.Rmd",
+fusen::inflate(flat_file = "dev/c-building_envs_with_rix.Rmd",
                vignette_name = "c - Using rix to build project specific environments",
                overwrite = TRUE)
 ```
 
 ```{r}
-fusen::inflate(flat_file = "dev/4a-install_r_pkgs.Rmd",
+fusen::inflate(flat_file = "dev/d1-install_r_pkgs.Rmd",
                vignette_name = "d1 - Installing R packages in a Nix environment",
                overwrite = TRUE)
 ```
 
 ```{r}
-fusen::inflate(flat_file = "dev/4b-install_sys_pkgs.Rmd",
+fusen::inflate(flat_file = "dev/d2-install_sys_pkgs.Rmd",
                vignette_name = "d2 - Installing system tools and TexLive packages in a Nix environment",
                overwrite = TRUE)
 ```
 
 ```{r}
-fusen::inflate(flat_file = "dev/5-interactive_use.Rmd",
+fusen::inflate(flat_file = "dev/e-interactive_use.Rmd",
                vignette_name = "e - Interactive use",
                overwrite = TRUE)
 ```
 
 
 ```{r}
-fusen::inflate(flat_file = "dev/literate_programming.Rmd",
+fusen::inflate(flat_file = "dev/z-literate_programming.Rmd",
                vignette_name = "z - Advanced topic: Building an environment for literate programming",
                overwrite = TRUE)
 ```
 
 ```{r}
-fusen::inflate(flat_file = "dev/pkgs_with_remotes.Rmd",
+fusen::inflate(flat_file = "dev/z-pkgs_with_remotes.Rmd",
                vignette_name = "z - Advanced topic: Handling packages with remote dependencies",
                overwrite = TRUE)
 ```
 
 ```{r}
-fusen::inflate(flat_file = "dev/raps_with_nix.Rmd",
+fusen::inflate(flat_file = "dev/z-raps_with_nix.Rmd",
                vignette_name = "z - Advanced topic: Reproducible Analytical Pipelines with Nix",
                overwrite = TRUE)
 ```
 
 ```{r}
-fusen::inflate(flat_file = "dev/subshells.Rmd",
+fusen::inflate(flat_file = "dev/z-subshells.Rmd",
                vignette_name = "z - Advanced topic: Running R or Shell Code in Nix from R",
                overwrite = TRUE)
 ```
@@ -203,14 +258,14 @@ fusen::inflate(flat_file = "dev/subshells.Rmd",
 # Generating the inst/extdata/default.nix
 
 ```{r, eval = FALSE}
-rix(r_ver = "976fa3369d722e76f37c77493d99829540d43845",
+rix(r_ver = "latest",
     r_pkgs = NULL,
     system_pkgs = NULL,
     git_pkgs = list(
       package_name = "rix",
       repo_url = "https://github.com/b-rodrigues/rix/",
       branch_name = "master",
-      commit = "ae39d2142461688b1be41db800752a949ebb3c7b"
+      commit = "11f6898fde38a4793a7f53900c88d2fd930e882f"
     ),
     ide = "other",
     project_path = "inst/extdata",

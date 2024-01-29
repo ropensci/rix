@@ -1,5 +1,5 @@
 ---
-title: "5 - Interactive use"
+title: "e - Interactive use"
 output: html_document
 editor_options:
   chunk_output_type: console

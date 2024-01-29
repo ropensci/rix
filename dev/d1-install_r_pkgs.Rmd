@@ -1,5 +1,5 @@
 ---
-title: "4a - Installing R packages in a Nix environment"
+title: "d1 - Installing R packages in a Nix environment"
 output: html_document
 editor_options:
   chunk_output_type: console

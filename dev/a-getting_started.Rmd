@@ -1,5 +1,5 @@
 ---
-title: "1 - Getting started"
+title: "a - Getting started"
 output: html_document
 editor_options:
   chunk_output_type: console
