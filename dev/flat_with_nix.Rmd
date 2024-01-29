@@ -844,11 +844,48 @@ create_shell_nix <- function(path = file.path("inst", "extdata",
 ```
 
 ```{r, tests-with_nix}
+testthat::test_that("Test 2 for with_nix() if Nix is installed", {
+  
+  skip_if_not(nix_shell_available())
+  
+  path_subshell <- tempdir()
+  
+  rix_init(
+    project_path = path_subshell,
+    rprofile_action = "overwrite",
+    message_type = "simple"
+  )
+  
+  rix(
+    r_ver = "4.2.0",
+    overwrite = TRUE,
+    project_path = path_subshell
+  )
+  
+  df <- data.frame(a = 1:3, b = 4:6)
+  
+  df_as_vector <- function(x) {
+    out <- as.vector(x = x, mode = "list")
+    return(out)
+  }
+  
+  out_subshell <- with_nix(
+    expr = function() df_as_vector(x = df),
+    program = "R",
+    exec_mode = "non-blocking",
+    project_path = path_subshell,
+    message_type = "verbose"
+  )
+  
+  testthat::expect_false(
+    inherits(out_subshell, "data.frame")
+  )
+})
+
+
 testthat::test_that("Testing with_nix() if Nix is installed", {
 
   skip_if_not(nix_shell_available())
-
-  skip_on_covr()
 
   path_subshell <- tempdir()
 
