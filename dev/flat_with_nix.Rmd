@@ -808,6 +808,13 @@ with_expr_deparse <- function(expr) {
 
 #' @noRd
 nix_shell_available <- function() {
+  # for local tests via `devtools::test()` in RStudio
+  old_path <- Sys.getenv("PATH")
+  nix_path <- "/nix/var/nix/profiles/default/bin"
+  has_nix_path <- any(grepl(nix_path, old_path))
+  if (isFALSE(has_nix_path)) {
+    Sys.setenv(PATH = paste(old_path, nix_path, sep = ":"))
+  }
   which_nix_shell <- Sys.which("nix-shell")
   if (nzchar(which_nix_shell)) {
     return(TRUE)
