@@ -1,5 +1,5 @@
 ---
-title: "2b - Setting up and using rix on macOS"
+title: "b2 - Setting up and using rix on macOS"
 output: html_document
 editor_options:
   chunk_output_type: console
@@ -22,14 +22,13 @@ idiosyncracies. This vignette details these.
 
 ## Installing Nix
 
-You can use `{rix}` to generate Nix expressions even if you don't have Nix installed
-on your system, but obviously, you need to install Nix if you actually want to
-build the defined development environment and use them. Installing (and uninstalling)
-Nix is quite simple, thanks to the installer from
-[Determinate
+You can use `{rix}` to generate Nix expressions even if you don't have Nix
+installed on your system, but obviously, you need to install Nix if you actually
+want to build the defined development environment and use them. Installing (and
+uninstalling) Nix is quite simple, thanks to the installer from [Determinate
 Systems](https://determinate.systems/posts/determinate-nix-installer), a company
-that provides services and tools built on Nix. Simply open a terminal and run the following
-line:
+that provides services and tools built on Nix. Simply open a terminal and run
+the following line:
 
 ```{sh, eval=FALSE}
 curl --proto '=https' --tlsv1.2 -sSf \
@@ -37,7 +36,8 @@ curl --proto '=https' --tlsv1.2 -sSf \
      sh -s -- install
 ```
 
-Once you have Nix installed, you can build the expressions you generate with `{rix}`!
+Once you have Nix installed, you can build the expressions you generate with
+`{rix}`!
 
 ## What if you don't have R already installed?
 
@@ -68,7 +68,8 @@ rix(r_ver = "latest",
 to generate a `default.nix`, and then use that file to generate an environment
 with R, `{dplyr}` and `{ggplot2}`. If you need to add packages for your project,
 rerun the command above, but add the needed packages to `r_pkgs`. This is
-detailled in the vignette `vignette("d1-installing-r-packages-in-a-nix-environment")` and
+detailled in the vignette
+`vignette("d1-installing-r-packages-in-a-nix-environment")` and
 `vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")`.
 
 ## Generating expressions

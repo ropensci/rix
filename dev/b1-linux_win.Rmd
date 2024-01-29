@@ -1,5 +1,5 @@
 ---
-title: "2a - Setting up and using rix on Linux and Windows"
+title: "b1 - Setting up and using rix on Linux and Windows"
 output: html_document
 editor_options:
   chunk_output_type: console

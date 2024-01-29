@@ -1,0 +1,75 @@
+---
+title: "Get SRI hash and dependencies"
+output: html_document
+editor_options:
+  chunk_output_type: console
+---
+
+```{r development, include=FALSE}
+library(testthat)
+```
+
+
+`get_sri_hash_deps()` returns the SRI hash of a NAR serialized path to a cloned
+Github repository, or package source downloaded from the CRAN archives, alongside
+that packages' build dependencies. These hashes are used by Nix for security purposes. In
+order to get the hash, a GET to a service I've made gets made. This request
+gets handled by a server with Nix installed, and so the SRI hash can get computed`
+by `nix hash path --sri path_to_repo`.
+
+```{r function-get_sri_hash_deps}
+#' get_sri_hash_deps Get the SRI hash of the NAR serialization of a Github repo
+#' @param repo_url A character. The URL to the package's Github repository or to the `.tar.gz` package hosted on CRAN.
+#' @param branch_name A character. The branch of interest, NULL for archived CRAN packages.
+#' @param commit A character. The commit hash of interest, for reproducibility's sake, NULL for archived CRAN packages.
+#' @importFrom httr content GET http_error
+#' @return The SRI hash as a character
+get_sri_hash_deps <- function(repo_url, branch_name, commit){
+  result <- httr::GET(paste0("http://git2nixsha.dev:1506/hash?repo_url=",
+                             repo_url,
+                             "&branchName=",
+                             branch_name,
+                             "&commit=",
+                             commit))
+
+  if(http_error(result)){
+    stop(paste0("Error in pulling URL: ", repo_url, ". If it's a Github repo, check the url, branch name and commit. Are these correct? If it's an archived CRAN package, check the name of the package and the version number."))
+  }
+
+
+  lapply(httr::content(result), unlist)
+
+}
+```
+
+```{r tests-get_sri_hash_deps}
+testthat::test_that("get_sri_hash_deps returns correct sri hash and dependencies of R packages", {
+  testthat::expect_equal(
+              get_sri_hash_deps("https://github.com/rap4all/housing/",
+                                "fusen",
+                                "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
+              list(
+                "sri_hash" = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=",
+                "deps" = "dplyr ggplot2 janitor purrr readxl rlang rvest stringr tidyr"
+              )
+            )
+})
+
+testthat::test_that("Internet is out for fetchgit()", {
+
+  testthat::local_mocked_bindings(
+    http_error = function(...) TRUE
+    )
+
+  expect_error(
+    get_sri_hash_deps(
+      "https://github.com/rap4all/housing/",
+      "fusen",
+      "1c860959310b80e67c41f7bbdc3e84cef00df18e"
+    ),
+    'Error in pulling',
+    )
+
+})
+
+```
