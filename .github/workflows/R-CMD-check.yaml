@@ -48,6 +48,9 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           args: 'c("--as-cran")'
