@@ -52,6 +52,7 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@main
 
       - uses: r-lib/actions/check-r-package@v2
+        if: always()
         with:
           args: 'c("--as-cran")'
           upload-snapshots: true
