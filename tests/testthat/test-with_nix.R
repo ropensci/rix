@@ -4,7 +4,7 @@ testthat::test_that("Test 2 for with_nix() if Nix is installed", {
   
   skip_if_not(nix_shell_available())
   
-  path_subshell <- tempdir()
+  path_subshell <- "."
   
   rix_init(
     project_path = path_subshell,
@@ -25,7 +25,7 @@ testthat::test_that("Test 2 for with_nix() if Nix is installed", {
       as.vector(x = data.frame(a = 1:3, b = 4:6), mode = "list")
     },
     program = "R",
-    exec_mode = "non-blocking",
+    exec_mode = "blocking",
     project_path = path_subshell,
     message_type = "verbose"
   )
@@ -40,7 +40,7 @@ testthat::test_that("Testing with_nix() if Nix is installed", {
 
   skip_if_not(nix_shell_available())
 
-  path_subshell <- tempdir()
+  path_subshell <- "."
 
   rix_init(
     project_path = path_subshell,
@@ -62,7 +62,7 @@ testthat::test_that("Testing with_nix() if Nix is installed", {
       return(a)
     },
     program = "R",
-    exec_mode = "non-blocking",
+    exec_mode = "blocking",
     project_path = path_subshell,
     message_type = "simple"
   )
