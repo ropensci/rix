@@ -85,7 +85,7 @@ which is located in at a distinct project path (\code{project_path}).
 read-eval-print-loop style, which gives a direct interface to the very
 reproducible infrastructure-as-code approach offered by Nix and Nixpkgs. You
 don't need extra efforts such as setting up DevOps tooling like Docker and
-domain specific tools like {renv} to control complex software environments in
+domain specific tools like \{renv\} to control complex software environments in
 R and any other language. It is for example useful for the following
 purposes.
 \enumerate{
@@ -107,7 +107,7 @@ can easily do so by providing Nix expressions in custom \code{.nix} or
 
 To do its job, \code{with_nix()} heavily relies on patterns that manipulate
 language expressions (aka computing on the language) offered in base R as
-well as the {codetools} package by Luke Tierney.
+well as the \{codetools\} package by Luke Tierney.
 
 Some of the key steps that are done behind the scene:
 \enumerate{
