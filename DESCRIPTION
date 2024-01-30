@@ -23,8 +23,7 @@ Imports:
 Suggests: 
     knitr,
     rmarkdown,
-    testthat,
-    withr
+    testthat
 VignetteBuilder: 
     knitr
 Config/fusen/version: 0.5.2

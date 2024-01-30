@@ -2,9 +2,9 @@
 
 testthat::test_that("Snapshot test of rix()", {
 
-  save_default_nix_test <- function(ide) {
+  path_default_nix <- tempdir()
 
-    path_default_nix <- tempdir()
+  save_default_nix_test <- function(ide, path_default_nix) {
 
     rix(r_ver = "4.3.1",
         r_pkgs = c("dplyr", "janitor", "AER@1.2-8", "quarto"),
@@ -30,21 +30,24 @@ testthat::test_that("Snapshot test of rix()", {
   testthat::announce_snapshot_file("find_rev/rstudio_default.nix")
 
   testthat::expect_snapshot_file(
-              path = save_default_nix_test(ide = "rstudio"),
+              path = save_default_nix_test(ide = "rstudio",
+                                           path_default_nix),
               name = "rstudio_default.nix",
               )
 
   testthat::announce_snapshot_file("find_rev/other_default.nix")
 
   testthat::expect_snapshot_file(
-              path = save_default_nix_test(ide = "other"),
+              path = save_default_nix_test(ide = "other",
+                                           path_default_nix),
               name = "other_default.nix"
             )
 
   testthat::announce_snapshot_file("find_rev/code_default.nix")
 
   testthat::expect_snapshot_file(
-              path = save_default_nix_test(ide = "code"),
+              path = save_default_nix_test(ide = "code",
+                                           path_default_nix),
               name = "code_default.nix"
               )
 
@@ -53,9 +56,9 @@ testthat::test_that("Snapshot test of rix()", {
 
 testthat::test_that("Quarto gets added to sys packages", {
 
-  save_default_nix_test <- function(pkgs) {
+  path_default_nix <- tempdir()
 
-    path_default_nix <- tempdir()
+  save_default_nix_test <- function(pkgs, path_default_nix) {
 
     rix(r_ver = "4.3.1",
         r_pkgs = pkgs,
@@ -70,14 +73,15 @@ testthat::test_that("Quarto gets added to sys packages", {
   testthat::announce_snapshot_file("find_rev/no_quarto_default.nix")
 
   testthat::expect_snapshot_file(
-              path = save_default_nix_test(pkgs = "dplyr"),
+              path = save_default_nix_test(pkgs = "dplyr", path_default_nix),
               name = "no_quarto_default.nix",
               )
 
   testthat::announce_snapshot_file("find_rev/yes_quarto_default.nix")
 
   testthat::expect_snapshot_file(
-              path = save_default_nix_test(pkgs = c("dplyr", "quarto")),
+              path = save_default_nix_test(pkgs = c("dplyr", "quarto"),
+                                           path_default_nix),
               name = "yes_quarto_default.nix"
             )
 

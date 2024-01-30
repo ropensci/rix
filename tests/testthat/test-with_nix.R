@@ -6,9 +6,9 @@ testthat::test_that("Testing `with_nix()` if Nix is installed", {
   # R version 3.5.3 on Nixpkgs does not build for aarch64-darwin (ARM macOS)
   skip_if(Sys.info()["sysname"] == "Darwin")
 
-  skip_on_covr()
+  #skip_on_covr()
 
-  path_subshell <- withr::local_tempdir()
+  path_subshell <- tempdir()
 
   rix_init(
     project_path = path_subshell,
@@ -47,7 +47,7 @@ testthat::test_that("Test `with_nix()` if Nix is installed on R 4.2.0", {
   
   skip_if_not(nix_shell_available())
   
-  path_subshell <- withr::local_tempdir()
+  path_subshell <- tempdir()
   
   rix_init(
     project_path = path_subshell,

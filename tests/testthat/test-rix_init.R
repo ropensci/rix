@@ -2,9 +2,9 @@
 
 testthat::test_that("Snapshot test of rix_init()", {
 
-  save_rix_init_test <- function() {
+  path_env_nix <- tempdir()
 
-    path_env_nix <- tempdir()
+  save_rix_init_test <- function(path_env_nix) {
 
     rix_init(
       project_path = path_env_nix,
@@ -19,7 +19,7 @@ testthat::test_that("Snapshot test of rix_init()", {
   testthat::announce_snapshot_file("find_rev/golden_Rprofile.txt")
 
   testthat::expect_snapshot_file(
-              path = save_rix_init_test(),
+              path = save_rix_init_test(path_env_nix),
               name = "golden_Rprofile.txt",
               )
 })
