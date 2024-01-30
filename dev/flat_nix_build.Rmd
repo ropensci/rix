@@ -41,6 +41,9 @@ nix_build <- function(project_path = ".",
                       exec_mode = c("blocking", "non-blocking")) {
   # if nix store is not PATH variable; e.g. on macOS (system's) RStudio
   PATH <- set_nix_path()
+  if (isTRUE(nzchar(Sys.getenv("NIX_STORE")))) {
+    remove_r_libs_user()
+  }
   has_nix_build <- nix_build_installed() # TRUE if yes, FALSE if no
   nix_file <- file.path(project_path, "default.nix")
 
@@ -83,6 +86,17 @@ nix_build <- function(project_path = ".",
   # todo (?): clean zombies for background/non-blocking mode
 
   return(invisible(proc))
+}
+
+#' @noRd
+remove_r_libs_user <- function() {
+  current_paths <- .libPaths()
+  userlib_paths <- Sys.getenv("R_LIBS_USER")
+  user_dir <- grep(paste(userlib_paths, collapse = "|"), current_paths)
+  new_paths <- current_paths[-user_dir]
+  # sets new library path without user library, making nix-R pure at 
+  # run-time
+  invisible(.libPaths(new_paths))
 }
 
 #' @noRd
@@ -153,7 +167,7 @@ testthat::test_that("Testing that `nix_build()` builds derivation", {
   
   skip_on_covr()
 
-  path_subshell <- "."
+  path_subshell <- tempdir()
 
   rix_init(
     project_path = path_subshell,
