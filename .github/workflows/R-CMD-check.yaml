@@ -50,6 +50,7 @@ jobs:
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
+        continue-on-error: true
 
       - uses: r-lib/actions/check-r-package@v2
         if: always()
