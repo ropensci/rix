@@ -39,6 +39,7 @@ session.
 #' }
 nix_build <- function(project_path = ".",
                       exec_mode = c("blocking", "non-blocking")) {
+  PATH <- set_nix_path()
   has_nix_build <- nix_build_installed() # TRUE if yes, FALSE if no
   nix_file <- file.path(project_path, "default.nix")
 
@@ -141,4 +142,37 @@ nix_build_exit_msg <- function(x) {
   
   return(err_msg)
 }
+```
+
+```{r, tests-nix_build}
+testthat::test_that("Testing that `nix_build()` builds derivation", {
+  
+  skip_if_not(nix_shell_available())
+  
+  path_subshell <- tempdir()
+  
+  rix_init(
+    project_path = path_subshell,
+    rprofile_action = "overwrite",
+    message_type = "simple"
+  )
+  
+  rix(
+    r_ver = "latest",
+    overwrite = TRUE,
+    project_path = path_subshell
+  )
+  
+  out <- nix_build(
+    project_path = path_subshell,
+    exec_mode = "blocking"
+  )
+  
+  # exit status 0L is success
+  testthat::expect_true(
+    out$status == 0L
+  )
+  
+  
+})
 ```
