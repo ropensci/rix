@@ -1,5 +1,5 @@
 Package: rix
-Title: Rix: Reproducible Environments With Nix
+Title: Rix: Reproducible Environments with Nix
 Version: 0.5.1.9000
 Authors@R: c(
     person("Bruno", "Rodrigues", , "bruno@brodrigues.co", role = c("aut", "cre"),

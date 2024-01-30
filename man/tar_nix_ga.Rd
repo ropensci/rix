@@ -2,7 +2,7 @@
 % Please edit documentation in R/tar_nix_ga.R
 \name{tar_nix_ga}
 \alias{tar_nix_ga}
-\title{tar_nix_ga Run a targets pipeline on Github Actions.}
+\title{tar_nix_ga Run a \{targets\}  pipeline on Github Actions.}
 \usage{
 tar_nix_ga()
 }
@@ -10,13 +10,13 @@ tar_nix_ga()
 Nothing, copies file to a diretory.
 }
 \description{
-tar_nix_ga Run a targets pipeline on Github Actions.
+tar_nix_ga Run a \{targets\}  pipeline on Github Actions.
 }
 \details{
 This function puts a \code{.yaml} file inside the \verb{.github/workflows/}
 folders on the root of your project. This workflow file will use the
 projects \code{default.nix} file to generate the development environment on
-Github Actions and will then run the projects {targets} pipeline. Make
+Github Actions and will then run the projects \{targets\} pipeline. Make
 sure to give read and write permissions to the Github Actions bot.
 }
 \examples{
