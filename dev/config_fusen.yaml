@@ -210,7 +210,7 @@ flat_nix_build.Rmd:
   path: dev/flat_nix_build.Rmd
   state: active
   R: R/nix_build.R
-  tests: [tests/testthat/test-nix_build.R]
+  tests: tests/testthat/test-nix_build.R
   vignettes: []
   inflate:
     flat_file: dev/flat_nix_build.Rmd
