@@ -172,7 +172,7 @@ which is located in at a distinct project path (<code>project_path</code>).</p>
 read-eval-print-loop style, which gives a direct interface to the very
 reproducible infrastructure-as-code approach offered by Nix and Nixpkgs. You
 don't need extra efforts such as setting up DevOps tooling like Docker and
-domain specific tools like renv to control complex software environments in
+domain specific tools like {renv} to control complex software environments in
 R and any other language. It is for example useful for the following
 purposes.</p><ol><li><p>test compatibility of custom R code and software/package dependencies in
 development and production environments</p></li>
@@ -189,7 +189,7 @@ can easily do so by providing Nix expressions in custom <code>.nix</code> or
 <code>default.nix</code> files in different subfolders of the project.</p>
 <p>To do its job, <code>with_nix()</code> heavily relies on patterns that manipulate
 language expressions (aka computing on the language) offered in base R as
-well as the codetools package by Luke Tierney.</p>
+well as the {codetools} package by Luke Tierney.</p>
 <p>Some of the key steps that are done behind the scene:</p><ol><li><p>recursively find, classify, and export global objects (globals) in the
 call stack of <code>expr</code> as well as propagate R package environments found.</p></li>
 <li><p>Serialize (save to disk) and deserialize (read from disk) dependent
