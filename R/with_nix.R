@@ -321,6 +321,8 @@ with_nix <- function(expr,
     print(out$stdout)
   }
   
+  unlink(file.path(temp_dir, "_out.Rds"), force = TRUE)
+  
   cat("")
   return(out)
 }
