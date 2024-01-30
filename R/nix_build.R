@@ -26,6 +26,8 @@
 #' }
 nix_build <- function(project_path = ".",
                       exec_mode = c("blocking", "non-blocking")) {
+  # if nix store is not PATH variable; e.g. on macOS (system's) RStudio
+  PATH <- set_nix_path()
   has_nix_build <- nix_build_installed() # TRUE if yes, FALSE if no
   nix_file <- file.path(project_path, "default.nix")
 

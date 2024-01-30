@@ -19,9 +19,11 @@ jobs:
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
-
-      - name: Test coverage
-        run: nix-shell -p R rPackages.covr rPackages.codetools rPackages.testthat --run "Rscript -e 'covr::codecov(quiet = FALSE, clean = FALSE, install_path = file.path(Sys.getenv(\"RUNNER_TEMP\"), \"package\"))' "
+      
+      - name: devtools::test() via nix-shell
+        run: nix-shell --pure -p cacert nix R rPackages.covr rPackages.codetools rPackages.xml2 rPackages.sys rPackages.devtools --run "Rscript -e 'devtools::test()'"
+      # - name: Test coverage
+      #   run: nix-shell -p R rPackages.covr rPackages.codetools rPackages.testthat --run "Rscript -e 'covr::codecov(quiet = FALSE, clean = FALSE, install_path = file.path(Sys.getenv(\"RUNNER_TEMP\"), \"package\"))' "
 
       - name: Show testthat output
         if: always()
