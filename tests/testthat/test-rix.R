@@ -2,7 +2,7 @@
 
 testthat::test_that("Snapshot test of rix()", {
 
-  path_default_nix <- withr::local_tempdir()
+  path_default_nix <- tempdir()
 
   save_default_nix_test <- function(ide, path_default_nix) {
 
@@ -56,7 +56,7 @@ testthat::test_that("Snapshot test of rix()", {
 
 testthat::test_that("Quarto gets added to sys packages", {
 
-  path_default_nix <- withr::local_tempdir()
+  path_default_nix <- tempdir()
 
   save_default_nix_test <- function(pkgs, path_default_nix) {
 

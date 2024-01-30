@@ -2,7 +2,7 @@
 
 testthat::test_that("Snapshot test of rix_init()", {
 
-  path_env_nix <- withr::local_tempdir()
+  path_env_nix <- tempdir()
 
   save_rix_init_test <- function(path_env_nix) {
 

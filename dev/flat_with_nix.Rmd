@@ -216,7 +216,7 @@ with_nix <- function(expr,
     
     # 1) save all function args onto a temporary folder each with
     # `<tag.Rds>` and `value` as serialized objects from RAM ---------------------
-    temp_dir <- withr::local_tempdir()
+    temp_dir <- tempdir()
     serialize_args(args, temp_dir)
     
     # cast list of symbols/names and calls to list of strings; this is to prepare
@@ -845,7 +845,7 @@ testthat::test_that("Testing `with_nix()` if Nix is installed", {
 
   #skip_on_covr()
 
-  path_subshell <- withr::local_tempdir()
+  path_subshell <- tempdir()
 
   rix_init(
     project_path = path_subshell,
@@ -884,7 +884,7 @@ testthat::test_that("Test `with_nix()` if Nix is installed on R 4.2.0", {
   
   skip_if_not(nix_shell_available())
   
-  path_subshell <- withr::local_tempdir()
+  path_subshell <- tempdir()
   
   rix_init(
     project_path = path_subshell,

@@ -19,8 +19,7 @@ Imports:
     httr,
     jsonlite,
     sys,
-    utils,
-    withr
+    utils
 Suggests: 
     knitr,
     rmarkdown,

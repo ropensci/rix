@@ -207,7 +207,7 @@ with_nix <- function(expr,
     
     # 1) save all function args onto a temporary folder each with
     # `<tag.Rds>` and `value` as serialized objects from RAM ---------------------
-    temp_dir <- withr::local_tempdir()
+    temp_dir <- tempdir()
     serialize_args(args, temp_dir)
     
     # cast list of symbols/names and calls to list of strings; this is to prepare
