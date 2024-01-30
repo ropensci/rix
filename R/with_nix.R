@@ -754,7 +754,7 @@ quote_rnix <- function(expr,
     cat(ls())
     cat("\n")
     cat("\n* `sessionInfo()` output:\n")
-    cat(capture.output(sessionInfo()), sep = "\n")
+    try(cat(capture.output(sessionInfo()), sep = "\n"))
   } ) # end of `bquote()`
 
   return(expr_quoted)

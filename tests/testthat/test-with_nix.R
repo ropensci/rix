@@ -20,13 +20,10 @@ testthat::test_that("Test 2 for with_nix() if Nix is installed", {
   
   df <- data.frame(a = 1:3, b = 4:6)
   
-  df_as_vector <- function(x) {
-    out <- as.vector(x = x, mode = "list")
-    return(out)
-  }
-  
   out_subshell <- with_nix(
-    expr = function() df_as_vector(x = df),
+    expr = function() {
+      as.vector(x = data.frame(a = 1:3, b = 4:6), mode = "list")
+    },
     program = "R",
     exec_mode = "non-blocking",
     project_path = path_subshell,
