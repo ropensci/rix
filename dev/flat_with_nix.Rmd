@@ -843,7 +843,7 @@ testthat::test_that("Testing with_nix() if Nix is installed", {
 
   skip_on_covr()
 
-  path_subshell <- tempdir()
+  path_subshell <- withr::local_tempdir()
 
   rix_init(
     project_path = path_subshell,
