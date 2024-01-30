@@ -304,7 +304,7 @@ with_nix <- function(expr,
   # 5) deserialize final output of `expr` evaluated in nix-shell
   # into host R session
   if (program == "R") {
-    out <- readRDS(file = normalizePath(file.path(temp_dir, "_out.Rds")))
+    out <- readRDS(file = file.path(temp_dir, "_out.Rds"))
     on.exit(close(file(rnix_file)))
   } else if (program == "shell") {
     if (exec_mode == "non-blocking") {
