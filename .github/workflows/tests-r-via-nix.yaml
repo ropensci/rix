@@ -6,11 +6,14 @@ on:
   pull_request:
     branches: [main, master]
 
-name: test-via-r-nix
+name: devtools-tests-via-r-nix
 
 jobs:
-  test-coverage:
-    runs-on: ubuntu-latest
+  devtools_test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
