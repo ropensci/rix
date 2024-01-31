@@ -14,7 +14,7 @@ articles:
   z-advanced-topic-reproducible-analytical-pipelines-with-nix: z-advanced-topic-reproducible-analytical-pipelines-with-nix.html
   z-advanced-topic-running-r-or-shell-code-in-nix-from-r: z-advanced-topic-running-r-or-shell-code-in-nix-from-r.html
   z-developers-vignette-save-the-nix-package-versions-data: z-developers-vignette-save-the-nix-package-versions-data.html
-last_built: 2024-01-31T06:43Z
+last_built: 2024-01-31T07:06Z
 urls:
   reference: https://b-rodrigues.github.io/rix/reference
   article: https://b-rodrigues.github.io/rix/articles
