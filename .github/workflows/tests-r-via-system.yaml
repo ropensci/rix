@@ -27,7 +27,7 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
 
-      - name: devtools::test() via nix-shell
+      - name: devtools::test() via system R
         run: Rscript -e 'devtools::test()'
 
       - name: Show testthat output
