@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [main, master]
 
-name: test-coverage
+name: test-coverage-r-system
 
 jobs:
   test-coverage:
