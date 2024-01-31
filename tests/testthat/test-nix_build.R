@@ -5,9 +5,9 @@ testthat::test_that("Testing that `nix_build()` builds derivation", {
   
   skip_if_not(nix_shell_available())
   
-  skip_on_covr()
+  # skip_on_covr()
 
-  path_subshell <- "."
+  path_subshell <- tempdir()
 
   rix_init(
     project_path = path_subshell,
