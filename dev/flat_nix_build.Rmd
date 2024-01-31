@@ -45,7 +45,7 @@ nix_build <- function(project_path = ".",
     remove_r_libs_user()
   }
   has_nix_build <- nix_build_installed() # TRUE if yes, FALSE if no
-  nix_file <- file.path(project_path, "default.nix")
+  nix_file <- normalizePath(file.path(project_path, "default.nix"))
 
   stopifnot(
     "`project_path` must be character of length 1." =
@@ -61,19 +61,21 @@ nix_build <- function(project_path = ".",
   stopifnot("option `rix.nix_build_max_jobs` is not integerish" =
     is_integerish(max_jobs))
   max_jobs <- as.integer(max_jobs)
+  
+  cmd <- "nix-build"
 
   if (max_jobs == 1L) {
-    cmd <- c("nix-build", nix_file)
+    args <- nix_file
   } else {
-    cmd <- c("nix-build", "--max-jobs", as.character(max_jobs), nix_file)
+    args <- c("--max-jobs", as.character(max_jobs), nix_file)
   }
 
-  cat(paste0("Launching `", paste0(cmd, collapse = " "), "`", " in ",
+  cat(paste0("Launching `", paste0(cmd, args, collapse = " "), "`", " in ",
     exec_mode, " mode\n"))
 
   proc <- switch(exec_mode,
-    "blocking" = sys::exec_internal(cmd = cmd),
-    "non-blocking" = sys::exec_background(cmd = cmd),
+    "blocking" = sys::exec_internal(cmd = cmd, args = args),
+    "non-blocking" = sys::exec_background(cmd = cmd, args = args),
     stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
   )
 
