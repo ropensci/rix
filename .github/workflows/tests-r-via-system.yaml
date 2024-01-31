@@ -33,9 +33,6 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
 
-      - name: Permissions on tmp
-        run: sudo chmod -R a+rwx /tmp/
-
       - name: devtools::test() via system R
         run: Rscript -e 'devtools::test()'
 
