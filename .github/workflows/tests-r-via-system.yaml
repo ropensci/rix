@@ -10,7 +10,11 @@ name: tests-r-via-system
 
 jobs:
   devtools:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+
     steps:
       - uses: actions/checkout@v3
 
@@ -31,7 +35,6 @@ jobs:
         run: Rscript -e 'devtools::test()'
 
       - name: Show testthat output
-        if: always()
         run: |
           ## --------------------------------------------------------------------
           find ${{ runner.temp }}/package -name 'testthat.Rout*' -exec cat '{}' \; || true
