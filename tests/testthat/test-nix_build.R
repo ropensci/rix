@@ -3,6 +3,11 @@
 
 testthat::test_that("Testing that `nix_build()` builds derivation", {
   
+  if (isFALSE(is_nix_rsession())) {
+    # needed for the GitHub test runners with system's R
+    set_nix_path()
+  }
+  
   skip_if_not(nix_shell_available())
   
   # skip_on_covr()

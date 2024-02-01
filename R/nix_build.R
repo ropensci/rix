@@ -29,7 +29,29 @@ nix_build <- function(project_path = ".",
   # if nix store is not PATH variable; e.g. on macOS (system's) RStudio
   PATH <- set_nix_path()
   if (isTRUE(nzchar(Sys.getenv("NIX_STORE")))) {
+    # for Nix R sessions, guarantee that the system's user library 
+    # (R_LIBS_USER) is not in the search path for packages => run-time purity
+    current_libpaths <- .libPaths()
     remove_r_libs_user()
+  } else {
+    LD_LIBRARY_PATH_default <- Sys.getenv("LD_LIBRARY_PATH")
+    if (nzchar(LD_LIBRARY_PATH_default)) {
+      # On some systems, like Ubuntu 22.04, we found that a preset 
+      # `LD_LIBRARY_PATH` environment variable in the system's R session
+      # (R installed via apt) is responsible for causing  a segmentation fault
+      # for both `nix-build` and `nix-shell` when invoked via 
+      # `sys::exec_internal`, `base::system()` or `base::system2()` from R.
+      # This seems due to incompatible linked libraries or permission issue that
+      # conflict when mixing Nix packages and libraries from the system.
+      # Therefore, we set it to `""` and set  back the default (old)
+      # `LD_LIBRARY_PATH` when `with_nix()` exits. For newer RStudio versions,
+      # LD_LIBRARY_PATH is not `""` anymore
+      # https://github.com/rstudio/rstudio/issues/12585
+      fix_ld_library_path()
+      cat("* Current LD_LIBRARY_PATH in system R session is:",
+        LD_LIBRARY_PATH_default)
+      cat("\n", "Setting `LD_LIBRARY_PATH` to `''` during `nix_build()`")
+    }
   }
   has_nix_build <- nix_build_installed() # TRUE if yes, FALSE if no
   nix_file <- normalizePath(file.path(project_path, "default.nix"))
@@ -73,7 +95,20 @@ nix_build <- function(project_path = ".",
   }
 
   # todo (?): clean zombies for background/non-blocking mode
-
+  
+  # set back library paths to state before calling `with_nix()`
+  
+  if (isTRUE(nzchar(Sys.getenv("NIX_STORE")))) {
+    # set back library paths to state before calling `with_nix()`
+    .libPaths(new = current_libpaths)
+  } else {
+    if (nzchar(LD_LIBRARY_PATH_default)) {
+       # set old LD_LIBRARY_PATH (only if system's R session and if it wasn't
+       # `""`)
+      on.exit(Sys.setenv(LD_LIBRARY_PATH=LD_LIBRARY_PATH_default))
+    }
+  }
+  
   return(invisible(proc))
 }
 
@@ -86,6 +121,13 @@ remove_r_libs_user <- function() {
   # sets new library path without user library, making nix-R pure at 
   # run-time
   invisible(.libPaths(new_paths))
+}
+
+#' @noRd
+fix_ld_library_path <- function() {
+  old_ld_library_path <- Sys.getenv("LD_LIBRARY_PATH")
+  Sys.setenv(LD_LIBRARY_PATH="")
+  invisible(old_ld_library_path)
 }
 
 #' @noRd
