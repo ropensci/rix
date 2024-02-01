@@ -2,6 +2,11 @@
 
 testthat::test_that("Testing `with_nix()` if Nix is installed", {
 
+  if (isFALSE(is_nix_rsession())) {
+    # needed for the GitHub test runners with system's R
+    set_nix_path()
+  }
+  
   skip_if_not(nix_shell_available())
   # R version 3.5.3 on Nixpkgs does not build for aarch64-darwin (ARM macOS)
   skip_if(Sys.info()["sysname"] == "Darwin")
@@ -44,7 +49,12 @@ testthat::test_that("Testing `with_nix()` if Nix is installed", {
 })
 
 testthat::test_that("Test `with_nix()` if Nix is installed on R 4.2.0", {
-
+  
+  if (isFALSE(is_nix_rsession())) {
+    # needed for the GitHub test runners with system's R
+    set_nix_path()
+  }
+  
   skip_if_not(nix_shell_available())
 
   skip_on_covr()
