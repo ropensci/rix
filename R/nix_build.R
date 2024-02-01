@@ -32,7 +32,12 @@ nix_build <- function(project_path = ".",
     # for Nix R sessions, guarantee that the system's user library 
     # (R_LIBS_USER) is not in the search path for packages => run-time purity
     current_libpaths <- .libPaths()
-    remove_r_libs_user()
+    # don't do this in covr test environment, because this sets R_LIBS_USER
+    # to multiple paths
+    R_LIBS_USER <- Sys.getenv("R_LIBS_USER")
+    if (isFALSE(nzchar(Sys.getenv("R_COVR")))) {
+      remove_r_libs_user()
+    }
   } else {
     LD_LIBRARY_PATH_default <- Sys.getenv("LD_LIBRARY_PATH")
     if (nzchar(LD_LIBRARY_PATH_default)) {
@@ -114,13 +119,22 @@ nix_build <- function(project_path = ".",
 
 #' @noRd
 remove_r_libs_user <- function() {
-  current_paths <- .libPaths()
+  current_paths <- .libPaths() 
   userlib_paths <- Sys.getenv("R_LIBS_USER")
   user_dir <- grep(paste(userlib_paths, collapse = "|"), current_paths)
-  new_paths <- current_paths[-user_dir]
+  match <- length(user_dir) != 0L
+  if (isTRUE(match)) {
+    new_paths <- current_paths[-user_dir]
+  }
   # sets new library path without user library, making nix-R pure at 
   # run-time
-  invisible(.libPaths(new_paths))
+  invisible({
+    if (isTRUE(match)) {
+      .libPaths(new_paths)
+    } else {
+      .libPaths()
+    }
+  })
 }
 
 #' @noRd

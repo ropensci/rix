@@ -170,7 +170,12 @@ with_nix <- function(expr,
     # for Nix R sessions, guarantee that the system's user library 
     # (R_LIBS_USER) is not in the search path for packages => run-time purity
     current_libpaths <- .libPaths()
-    remove_r_libs_user()
+    # don't do this in covr test environment, because this sets R_LIBS_USER
+    # to multiple paths
+    R_LIBS_USER <- Sys.getenv("R_LIBS_USER")
+    if (isFALSE(nzchar(Sys.getenv("R_COVR")))) {
+      remove_r_libs_user()
+    }
   } else {
     LD_LIBRARY_PATH_default <- Sys.getenv("LD_LIBRARY_PATH")
     if (nzchar(LD_LIBRARY_PATH_default)) {
@@ -186,9 +191,9 @@ with_nix <- function(expr,
       # LD_LIBRARY_PATH is not `""` anymore
       # https://github.com/rstudio/rstudio/issues/12585
       fix_ld_library_path()
-      cat("* Current LD_LIBRARY_PATH in system R session is:\n",
+      cat("* Current LD_LIBRARY_PATH in system R session is:",
         LD_LIBRARY_PATH_default)
-      cat("\n", "Setting `LD_LIBRARY_PATH` to `''` during `with_nix()`")
+      cat("\n", "Setting `LD_LIBRARY_PATH` to `''` during `nix_build()`")
     }
   }
   
