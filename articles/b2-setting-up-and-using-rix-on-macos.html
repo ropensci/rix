@@ -155,7 +155,7 @@ can now run something like this:</p>
 generate an environment with R, <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> and
 <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>. If you need to add packages for your project,
 rerun the command above, but add the needed packages to
-<code>r_pkgs</code>. This is detailled in the vignette
+<code>r_pkgs</code>. This is detailed in the vignettes
 <code><a href="../articles/d1-installing-r-packages-in-a-nix-environment.html">vignette("d1-installing-r-packages-in-a-nix-environment")</a></code>
 and
 <code><a href="../articles/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment.html">vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")</a></code>.</p>
@@ -184,14 +184,33 @@ to learn more.</p>
 <div class="section level3">
 <h3 id="shared-libraries-issue">Shared libraries issue<a class="anchor" aria-label="anchor" href="#shared-libraries-issue"></a>
 </h3>
-<p>When using environments built with Nix on macOS, you might get error
-messages refering to “shared libraries”, which indicate that your user
-library of R packages is interfering with the project-specific Nix
-environment. In this case, you might want to set up a project-specific
-<code>.Rprofile</code> using <code><a href="../reference/rix_init.html">rix::rix_init()</a></code>. This function
-generates an <code>.Rprofile</code> file on the root of your project and
-ensures that the Nix environment only loads R packages from its own
-project-specific library. This should solve the issue.</p>
+<p>When using environments built with Nix on macOS, you might get
+crashes (segmentation faults) refering to “shared libraries”. These
+indicate that your user library of R packages is interfering with the
+project-specific Nix environment. The system’s user library that Nix
+packaged R by default includes appears in the search paths (check
+<code>libPaths()</code>). For macOS, the user library is at
+<code>/Library/Frameworks/R.framework/Versions/&lt;major&gt;.&lt;minor&gt;-&lt;arch&gt;/Resources/library</code>;
+we have observed crashes with R packages that depend on system
+libraries, such as {data.table} or {dplyr}, and their (reverse)
+dependencies. Because user libraries from the system would also appear
+on the search path in R from <code>nixpkgs</code> for Linux, we think
+its a good idea to force isolation of R packages by making them behave
+in a runtime-pure manner. To make this happen, we recommend that you set
+up a project-specific <code>.Rprofile</code> using
+<code><a href="../reference/rix_init.html">rix::rix_init()</a></code>. This way, only packages declaratively
+defined in your <code>default.nix</code> and built to be part of the Nix
+store (one R package is one separate derivation listed in a unique Nix
+path) appear on the R library path.</p>
+<p>As an example, call <code><a href="../reference/rix.html">rix::rix()</a></code> like this.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># see ?rix_init for more details</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/rix_init.html">rix_init</a></span><span class="op">(</span></span>
+<span>  project_path <span class="op">=</span> <span class="st">"./rix_darwin"</span>,</span>
+<span>  profile_action <span class="op">=</span> <span class="st">"create_missing"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="rstudio-and-other-development-interfaces-on-macos">RStudio and other development interfaces on macOS<a class="anchor" aria-label="anchor" href="#rstudio-and-other-development-interfaces-on-macos"></a>
@@ -223,8 +242,8 @@ for further details;</p></li>
 and RStudio, but generate a <code>default.nix</code> at the end with
 <code>ide = "other"</code> with the right version of R for
 reproducibility purposes;</p></li>
-<li><p>use subshells to execute only the code you need to run in a
-specific environment. See this vignette
+<li><p>use <em>subshells</em> to execute only the code you need to run
+in a specific environment. See this vignette
 <code><a href="../articles/z-advanced-topic-running-r-or-shell-code-in-nix-from-r.html">vignette("z-advanced-topic-running-r-or-shell-code-in-nix-from-r")</a></code>;</p></li>
 <li><p>help us package RStudio for macOS on <code>nixpgs</code>. See <a href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/rstudio/default.nix" class="external-link">here</a>,
 the Nix expression for RStudio.</p></li>
@@ -232,6 +251,32 @@ the Nix expression for RStudio.</p></li>
 <p>We recommend you continue with the next vignette before tackling the
 more advanced topics listed above:
 <code><a href="../articles/c-using-rix-to-build-project-specific-environments.html">vignette("c-using-rix-to-build-project-specific-environments")</a></code>.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="why-do-we-need-all-these-special-tweaks">Why do we need all these special tweaks?<a class="anchor" aria-label="anchor" href="#why-do-we-need-all-these-special-tweaks"></a>
+</h2>
+<div class="section level3">
+<h3 id="path-of-nix-installation-not-in-path">Path of Nix installation not in <code>PATH</code><a class="anchor" aria-label="anchor" href="#path-of-nix-installation-not-in-path"></a>
+</h3>
+<p>When using RStudio Desktop on macOS, you typically launch it from the
+Applications folder. However, RStudio currently lacks an option to start
+an integrated R session via a shell startup on macOS (see this <a href="https://github.com/rstudio/rstudio/issues/13341" class="external-link">issue</a> On
+RStudio for Linux flavors, <code>PATH</code> is properly inherited in R
+sessions. As a result, key environmental variables for UNIX systems,
+like PATH, are not be properly loaded from your default shell (e.g.,
+<code>zsh</code>, via <code>~/.zshrc</code>). Also, RStudio overwrites a
+<code>PATH</code> variable set via <code>.Rprofile</code> or
+<code>.Renviron</code> with its own defaults, which makes it impossible
+to find Nix and standard Nix tools like <code>nix-build</code>. It’s
+worth noting that this doesn’t impact <code><a href="../reference/rix.html">rix::rix()</a></code>, which
+generates R expressions and doesn’t require a Nix installation. As a
+workaround, we have added mechanisms in <code><a href="../reference/nix_build.html">nix_build()</a></code> and
+<code><a href="../reference/with_nix.html">with_nix()</a></code> that append the path of the Nix store to the
+<code>PATH</code> variable in an active session automatically (via
+<code><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv()</a></code>, when you use RStudio on macOS. You don’t have
+to do anything. We have you covered, and you get a friendly message that
+informs you. special side effect.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
