@@ -241,7 +241,8 @@ testthat::test_that("Testing that `nix_build()` builds derivation", {
   rix(
     r_ver = "latest",
     overwrite = TRUE,
-    project_path = path_subshell
+    project_path = path_subshell,
+    shell_hook = NULL
   )
 
   out <- nix_build(

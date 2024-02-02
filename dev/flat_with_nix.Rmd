@@ -890,8 +890,6 @@ testthat::test_that("Testing `with_nix()` if Nix is installed", {
   # R version 3.5.3 on Nixpkgs does not build for aarch64-darwin (ARM macOS)
   skip_if(Sys.info()["sysname"] == "Darwin")
 
-  skip_on_covr()
-
   path_subshell <- tempdir()
 
   rix_init(
@@ -903,7 +901,8 @@ testthat::test_that("Testing `with_nix()` if Nix is installed", {
   rix(
     r_ver = "3.5.3",
     overwrite = TRUE,
-    project_path = path_subshell
+    project_path = path_subshell,
+    shell_hook = NULL
   )
 
   out_subshell <- with_nix(
@@ -919,12 +918,12 @@ testthat::test_that("Testing `with_nix()` if Nix is installed", {
     message_type = "simple"
   )
 
-                                        # On a recent version of R, set.seed(1234);sample(seq(1,10), 5)
-                                        # returns c(10, 6, 5, 4, 1)
-                                        # but not on versions prior to 3.6
+  # On a recent version of R, set.seed(1234);sample(seq(1,10), 5)
+  # returns c(10, 6, 5, 4, 1)
+  # but not on versions prior to 3.6
   testthat::expect_true(
-              all(c(2, 6, 5, 8, 9) == out_subshell)
-            )
+    all(c(2, 6, 5, 8, 9) == out_subshell)
+  )
 })
 
 testthat::test_that("Test `with_nix()` if Nix is installed on R 4.2.0", {
@@ -935,8 +934,6 @@ testthat::test_that("Test `with_nix()` if Nix is installed on R 4.2.0", {
   }
   
   skip_if_not(nix_shell_available())
-
-  skip_on_covr()
 
   path_subshell <- tempdir()
 
@@ -949,7 +946,8 @@ testthat::test_that("Test `with_nix()` if Nix is installed on R 4.2.0", {
   rix(
     r_ver = "4.2.0",
     overwrite = TRUE,
-    project_path = path_subshell
+    project_path = path_subshell,
+    shell_hook = NULL
   )
 
   df <- data.frame(a = 1:3, b = 4:6)

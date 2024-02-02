@@ -54,5 +54,5 @@ let
     LC_MEASUREMENT = "en_US.UTF-8";
 
     buildInputs = [ git_archive_pkgs rpkgs tex system_packages  ];
-      shellHook = "R --vanilla";
+      
   }

@@ -18,5 +18,5 @@ let
     LC_MEASUREMENT = "en_US.UTF-8";
 
     buildInputs = [  rpkgs  system_packages  ];
-      shellHook = "R --vanilla";
+      
   }

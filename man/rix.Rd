@@ -14,7 +14,7 @@ rix(
   project_path = ".",
   overwrite = FALSE,
   print = FALSE,
-  shell_hook = "R --vanilla"
+  shell_hook = NULL
 )
 }
 \arguments{
@@ -38,18 +38,22 @@ interactively use "rstudio" or "code" for Visual Studio Code. For other editors,
 use "other". This has been tested with RStudio, VS Code and Emacs. If other
 editors don't work, please open an issue.}
 
-\item{project_path}{Character, defaults to the current working directory. Where to write
-\code{default.nix}, for example "/home/path/to/project".
-The file will thus be written to the file "/home/path/to/project/default.nix".}
+\item{project_path}{Character, defaults to the current working directory.
+Where to write \code{default.nix}, for example "/home/path/to/project".
+The file will thus be written to the file
+"/home/path/to/project/default.nix".}
 
 \item{overwrite}{Logical, defaults to FALSE. If TRUE, overwrite the \code{default.nix}
 file in the specified path.}
 
 \item{print}{Logical, defaults to FALSE. If TRUE, print \code{default.nix} to console.}
 
-\item{shell_hook}{Character, defaults to \code{"R --vanilla"}. Commands added to the shell_hook get
-executed when the Nix shell starts (via \code{shellHook}). So by default, using \verb{nix-shell default.nix} will
-start R. Set to NULL if you want bash to be started instead.}
+\item{shell_hook}{Character of length 1, defaults to \code{NULL}. Commands added
+to the \code{shellHook} variable executed when the Nix shell starts. So
+by default, using \verb{nix-shell default.nix} (or path with \code{shell.nix}) will
+start a specific program, possibly with flags (separated by space), and/or
+do shell actions. You can for example use \code{shell_hook = R}, if you want to
+directly enter the declared Nix R session.}
 }
 \value{
 Nothing, this function only has the side-effect of writing a file
@@ -108,6 +112,7 @@ rix(r_ver = "latest",
     ide = "code",
     project_path = path_default_nix,
     overwrite = TRUE,
-    print = TRUE)
+    print = TRUE,
+    shell_hook = NULL)
 }
 }
