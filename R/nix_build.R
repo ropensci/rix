@@ -59,7 +59,8 @@ nix_build <- function(project_path = ".",
     }
   }
   has_nix_build <- nix_build_installed() # TRUE if yes, FALSE if no
-  nix_file <- normalizePath(file.path(project_path, "default.nix"))
+  nix_dir <- normalizePath(project_path)
+  nix_file <- file.path(nix_dir, "default.nix")
 
   stopifnot(
     "`project_path` must be character of length 1." =
@@ -79,14 +80,14 @@ nix_build <- function(project_path = ".",
   cmd <- "nix-build"
 
   if (max_jobs == 1L) {
-    args <- nix_file
+    args <- nix_dir
   } else {
-    args <- c("--max-jobs", as.character(max_jobs), nix_file)
+    args <- c("--max-jobs", as.character(max_jobs), nix_dir)
   }
 
   cat(paste0("Launching `", paste0(cmd, args, collapse = " "), "`", " in ",
     exec_mode, " mode\n"))
-
+  
   proc <- switch(exec_mode,
     "blocking" = sys::exec_internal(cmd = cmd, args = args),
     "non-blocking" = sys::exec_background(cmd = cmd, args = args),
@@ -113,7 +114,7 @@ nix_build <- function(project_path = ".",
       on.exit(Sys.setenv(LD_LIBRARY_PATH=LD_LIBRARY_PATH_default))
     }
   }
-  
+
   return(invisible(proc))
 }
 
@@ -179,8 +180,8 @@ is_integerish <- function(x, tol = .Machine$double.eps^0.5) {
 
 #' @noRd
 nix_build_installed <- function() {
-  exit_code <- system2("command", "-v", "nix-build")
-  if (exit_code == 0L) {
+  which_nix_build <- Sys.which("nix-build")
+  if (nzchar(which_nix_build)) {
     return(invisible(TRUE))
   } else {
     return(invisible(FALSE))
