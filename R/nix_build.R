@@ -114,6 +114,12 @@ nix_build <- function(project_path = ".",
     }
   }
   
+  # clean artefact
+  on.exit(
+    suppressWarnings(file.remove(file.path(project_path, "nix-build"))), 
+    add = TRUE, after = FALSE
+  )
+  
   return(invisible(proc))
 }
 

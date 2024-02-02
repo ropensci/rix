@@ -127,6 +127,12 @@ nix_build <- function(project_path = ".",
     }
   }
   
+  # clean artefact
+  on.exit(
+    suppressWarnings(file.remove(file.path(project_path, "nix-build"))), 
+    add = TRUE, after = FALSE
+  )
+  
   return(invisible(proc))
 }
 
@@ -254,5 +260,7 @@ testthat::test_that("Testing that `nix_build()` builds derivation", {
   testthat::expect_true(
     out$status == 0L
   )
+  
+  unlink(file.path(path_subshell, "nix-build"))
 })
 ```
