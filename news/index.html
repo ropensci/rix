@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rix</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +61,60 @@
       <small>Source: <a href="https://github.com/b-rodrigues/rix/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.0" id="rix-060-2024-02-02">rix 0.6.0 (2024-02-02)<a class="anchor" aria-label="anchor" href="#rix-060-2024-02-02"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-6-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-6-0"></a></h3>
+<ul><li>
+<code><a href="../reference/with_nix.html">with_nix()</a></code>: evaluate and return R functions or shell commands in Nix env:
+<ul><li>added <code>nix_file</code> argument as alternative to <code>project_path</code>. Specify <code>*.nix</code> fle defining the Nix software environment in which you want to run <code>expr</code>.</li>
+<li>
+<code>macOS</code>: made it compatible with system’s RStudio version on macOS, where the R session can not (yet) be started from a shell when launched from Dock. Now <code>/nix/var/nix/profiles/default/bin</code> is added to the <code>PATH</code> variable while <code><a href="../reference/with_nix.html">with_nix()</a></code> are called.</li>
+</ul></li>
+<li>
+<code><a href="../reference/nix_build.html">nix_build()</a></code> – invoke <code>nix-build</code> from R:
+<ul><li>
+<code>macOS</code>: made it compatible with system’s RStudio version on macOS, where the R session can not (yet) be started from a shell when launched from Dock. Now <code>/nix/var/nix/profiles/default/bin</code> is added to the <code>PATH</code> variable while <code><a href="../reference/with_nix.html">with_nix()</a></code> are called.</li>
+</ul></li>
+<li>
+<code><a href="../reference/rix_init.html">rix_init()</a></code> – create an isolated, project-specific, and runtime-pure R setup via Nix
+<ul><li>added <code>nix_file</code> argument to specify a specific <code>.nix</code> file</li>
+</ul></li>
+</ul></div>
+<div class="section level3">
+<h3 id="user-facing-changes-0-6-0">User facing changes<a class="anchor" aria-label="anchor" href="#user-facing-changes-0-6-0"></a></h3>
+<ul><li>
+<code><a href="../reference/rix.html">rix()</a></code> – Generate a Nix expressions that build reproducible development environments:
+<ul><li>
+<code>shell_hook = NULL</code> becomes the new default; before it was <code>= "R --vanilla"</code>. The new default ensures that <code><a href="../reference/with_nix.html">with_nix()</a></code> applied on a specific <code>project_path</code> directory containing a custom <code>.Rprofile</code> file that was generated with <code><a href="../reference/rix_init.html">rix_init()</a></code>, together with a <code>default.nix</code> expression file, can read that profile file to effectively enforce run-time pure R libraries (only from Nix store).</li>
+</ul></li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-6-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-6-0"></a></h3>
+<ul><li>
+<code><a href="../reference/nix_build.html">nix_build()</a></code> – invoke <code>nix-build</code> from R:
+<ul><li>avoided empty file artefact when checking for presence of <code>nix-build</code> binary. The internal helper now uses <code>Sys.which("nix-build")</code> for checking availability on <code>PATH</code> in the R session.</li>
+<li>added another guardrail for run-time purity of Nixpkgs R by removing the <code>R_LIBS_USER</code> path from <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code>.</li>
+</ul></li>
+<li>
+<code><a href="../reference/with_nix.html">with_nix()</a></code> – evaluate and return R functions or shell commands in Nix env:
+<ul><li>Now cleans all itermediary and output artefacts (files) written in Nix shell (<code>nix-shell</code>) session environment when exiting. These file artefacts are now written in a subdirectory <code>with_nix</code> under <code><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir()</a></code> of the current R session and all files are deleted. Now, when an <code>expr</code> errors in a Nix shell evaluation (i.e. custom R function), but had a previous successful run with a different <code>expr</code> and/or R global environment state with success and <code>_out.Rds</code> produced, the current session fails to bring this output into the current R session.</li>
+<li>The code run the Nix-R session defined by <code>project_path</code>, now attemps to record <code><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo()</a></code> with <code>try</code>. We found failures of that command under older R versions on Nixpkgs for macOS (i.e., aarch64-darwin).</li>
+<li>Fix segmentation faults in tests by temporarily setting <code>LD_LIBRARY_PATH</code>.</li>
+<li>Patched the import of <code>glibcLocalesUtf8</code> with <code>gibcLocales</code> (imports all locales). This was necessary to support Nixpkgs R versions &lt;= 4.2.0, where <code>glibcLocalsUtf8</code> derivation was not yet available. We do not sacrifice reproducibility but rather have larger total sizes of derivations involved in the subshell (around 200MB extra).</li>
+</ul></li>
+</ul></div>
+<div class="section level3">
+<h3 id="quality-and-unit-testing-0-6-0">Quality and unit testing<a class="anchor" aria-label="anchor" href="#quality-and-unit-testing-0-6-0"></a></h3>
+<ul><li>added test suite of 17 unit tests using {testthat}</li>
+<li>Add GitHub actions runners on the repository that use system’s R or Nix R environments configured with Nix.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="internal-refactoring-0-6-0">Internal refactoring<a class="anchor" aria-label="anchor" href="#internal-refactoring-0-6-0"></a></h3>
+<ul><li>
+<code><a href="../reference/nix_build.html">nix_build()</a></code>: consistently separate <code>cmd</code> and <code>args</code> for <code>nix-build</code> system</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.1.9000" id="rix-0519000-2024-01-17">rix 0.5.1.9000 (2024-01-17)<a class="anchor" aria-label="anchor" href="#rix-0519000-2024-01-17"></a></h2>
 <ul><li>Added <code>rix::init()</code> to initialize and maintain an isolated, project-specific, and pure R setup via Nix. It accomplishes this by writing a custom <code>.Rprofile</code> that guarantees R packages can only be attached from Nix paths, preventing unnoticed loading from the system’s R user library (<code>R_LIBS_USER</code> and ensuring runtime purity regarding packages and linked libraries). Additionally, it appends <code>/nix/var/nix/profiles/default/bin</code> to the <code>PATH</code>. Currently, this modification only takes effect in the current R session and not in new R sessions for RStudio on MacOS. This is because the default R session is not started from a shell. The <code>PATH</code> will be modified by RStudio when starting the R session, effectively after loading the local <code>.Rprofile</code>. Future versions of RStudio will hopefully respect all environmental variables from a shell environment.</li>
