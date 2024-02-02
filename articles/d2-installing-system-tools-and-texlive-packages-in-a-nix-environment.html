@@ -175,7 +175,7 @@ line tool (required to edit Quarto documents from R using the
 <span><span class="co">#&gt;     LC_MEASUREMENT = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     buildInputs = [  rpkgs  system_packages  ];</span></span>
-<span><span class="co">#&gt;       shellHook = "R --vanilla";</span></span>
+<span><span class="co">#&gt;       </span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre>
 <p>You can look for all the available software <a href="https://search.nixos.org/packages?channel=unstable&amp;from=0&amp;size=50&amp;sort=relevance&amp;type=packages&amp;query=" class="external-link">here</a>.
 Simply look for the right package name, and add it to the
@@ -238,7 +238,7 @@ add a TexLive package to the <code>tex_pkgs</code> argument of
 <span><span class="co">#&gt;     LC_MEASUREMENT = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     buildInputs = [  rpkgs tex system_packages  ];</span></span>
-<span><span class="co">#&gt;       shellHook = "R --vanilla";</span></span>
+<span><span class="co">#&gt;       </span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre></div>
 <p>This will automically add the <em>small</em> TexLive distribution
 available through <code>nixpkgs</code> with the <code>amsmath</code>

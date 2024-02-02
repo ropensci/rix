@@ -78,7 +78,7 @@
 <span>  project_path <span class="op">=</span> <span class="st">"."</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  print <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  shell_hook <span class="op">=</span> <span class="st">"R --vanilla"</span></span>
+<span>  shell_hook <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -116,9 +116,10 @@ editors don't work, please open an issue.</p></dd>
 
 
 <dt>project_path</dt>
-<dd><p>Character, defaults to the current working directory. Where to write
-<code>default.nix</code>, for example "/home/path/to/project".
-The file will thus be written to the file "/home/path/to/project/default.nix".</p></dd>
+<dd><p>Character, defaults to the current working directory.
+Where to write <code>default.nix</code>, for example "/home/path/to/project".
+The file will thus be written to the file
+"/home/path/to/project/default.nix".</p></dd>
 
 
 <dt>overwrite</dt>
@@ -131,9 +132,12 @@ file in the specified path.</p></dd>
 
 
 <dt>shell_hook</dt>
-<dd><p>Character, defaults to <code>"R --vanilla"</code>. Commands added to the shell_hook get
-executed when the Nix shell starts (via <code>shellHook</code>). So by default, using <code>nix-shell default.nix</code> will
-start R. Set to NULL if you want bash to be started instead.</p></dd>
+<dd><p>Character of length 1, defaults to <code>NULL</code>. Commands added
+to the <code>shellHook</code> variable executed when the Nix shell starts. So
+by default, using <code>nix-shell default.nix</code> (or path with <code>shell.nix</code>) will
+start a specific program, possibly with flags (separated by space), and/or
+do shell actions. You can for example use <code>shell_hook = R</code>, if you want to
+directly enter the declared Nix R session.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -196,7 +200,8 @@ and the aforementioned locale variable names.</p>
 <span class="r-in"><span>    ide <span class="op">=</span> <span class="st">"code"</span>,</span></span>
 <span class="r-in"><span>    project_path <span class="op">=</span> <span class="va">path_default_nix</span>,</span></span>
 <span class="r-in"><span>    overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>    print <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    print <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>    shell_hook <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
