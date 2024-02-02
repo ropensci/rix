@@ -161,8 +161,8 @@ out <- with_nix(
   message_type = "simple"
 )
 
-## You can also use packages, which will be exported to the nix-R session
-## running through `nix-shell` environment
-R 4.2.2
+## You can also attach packages with `library()` calls in the current R 
+## session, which will be exported to the nix-R session.
+## Other option: running system commands through `nix-shell` environment.
 }
 }

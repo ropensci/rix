@@ -247,7 +247,10 @@ with_nix <- function(expr,
     
     # 1) save all function args onto a temporary folder each with
     # `<tag.Rds>` and `value` as serialized objects from RAM ---------------------
-    temp_dir <- tempdir()
+    temp_dir <- file.path(tempdir(), "with_nix")
+    if (!dir.exists(temp_dir)) {
+      dir.create(temp_dir)
+    }
     serialize_args(args, temp_dir)
     
     # cast list of symbols/names and calls to list of strings; this is to prepare
@@ -336,7 +339,6 @@ with_nix <- function(expr,
   # into host R session
   if (program == "R") {
     out <- readRDS(file = file.path(temp_dir, "_out.Rds"))
-    on.exit(close(file(rnix_file)))
   } else if (program == "shell") {
     if (exec_mode == "non-blocking") {
       status <- poll_sys_proc_nonblocking(
@@ -371,8 +373,10 @@ with_nix <- function(expr,
   } else if (program == "shell") {
     print(out$stdout)
   }
-  
   cat("")
+  
+  on.exit(unlink(temp_dir, recursive = TRUE, force = TRUE), after = FALSE)
+  
   return(out)
 }
 
