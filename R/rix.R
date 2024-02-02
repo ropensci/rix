@@ -18,15 +18,19 @@
 #'   interactively use "rstudio" or "code" for Visual Studio Code. For other editors,
 #'   use "other". This has been tested with RStudio, VS Code and Emacs. If other
 #'   editors don't work, please open an issue.
-#' @param project_path Character, defaults to the current working directory. Where to write
-#'   `default.nix`, for example "/home/path/to/project".
-#'   The file will thus be written to the file "/home/path/to/project/default.nix".
+#' @param project_path Character, defaults to the current working directory. 
+#'   Where to write `default.nix`, for example "/home/path/to/project".
+#'   The file will thus be written to the file 
+#'   "/home/path/to/project/default.nix".
 #' @param overwrite Logical, defaults to FALSE. If TRUE, overwrite the `default.nix`
 #'   file in the specified path.
 #' @param print Logical, defaults to FALSE. If TRUE, print `default.nix` to console.
-#' @param shell_hook Character, defaults to `"R --vanilla"`. Commands added to the shell_hook get
-#'   executed when the Nix shell starts (via `shellHook`). So by default, using `nix-shell default.nix` will
-#'   start R. Set to NULL if you want bash to be started instead.
+#' @param shell_hook Character of length 1, defaults to `NULL`. Commands added
+#'   to the `shellHook` variable executed when the Nix shell starts. So
+#'   by default, using `nix-shell default.nix` (or path with `shell.nix`) will 
+#'   start a specific program, possibly with flags (separated by space), and/or
+#'   do shell actions. You can for example use `shell_hook = R`, if you want to
+#'   directly enter the declared Nix R session.
 #' @details This function will write a `default.nix` in the chosen path. Using
 #'   the Nix package manager, it is then possible to build a reproducible
 #'   development environment using the `nix-build` command in the path. This
@@ -74,7 +78,8 @@
 #'     ide = "code",
 #'     project_path = path_default_nix,
 #'     overwrite = TRUE,
-#'     print = TRUE)
+#'     print = TRUE,
+#'     shell_hook = NULL)
 #' }
 rix <- function(r_ver = "latest",
                 r_pkgs = NULL,
@@ -85,7 +90,7 @@ rix <- function(r_ver = "latest",
                 project_path = ".",
                 overwrite = FALSE,
                 print = FALSE,
-                shell_hook = "R --vanilla"){
+                shell_hook = NULL){
 
   stopifnot("'ide' has to be one of 'other', 'rstudio' or 'code'" = (ide %in% c("other", "rstudio", "code")))
 

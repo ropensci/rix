@@ -21,7 +21,8 @@ testthat::test_that("Snapshot test of rix()", {
         ),
         ide = ide,
         project_path = path_default_nix,
-        overwrite = TRUE)
+        overwrite = TRUE,
+        shell_hook = NULL)
 
     paste0(path_default_nix, "/default.nix")
 
@@ -64,7 +65,9 @@ testthat::test_that("Quarto gets added to sys packages", {
         r_pkgs = pkgs,
         ide = "other",
         project_path = path_default_nix,
-        overwrite = TRUE)
+        overwrite = TRUE,
+        shell_hook = NULL
+      )
 
     paste0(path_default_nix, "/default.nix")
 

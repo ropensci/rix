@@ -28,13 +28,16 @@ jobs:
       - name: Install R packages
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::devtools, any::codetools
+          extra-packages: any::devtools, any::codetools any::covr
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
 
       - name: devtools::test() via system R
         run: Rscript -e 'devtools::test()'
+        
+        - name: covr::codecov() via system R
+        run: RScript -e 'covr::codecov(quiet = FALSE, clean = FALSE, install_path = file.path(Sys.getenv("RUNNER_TEMP"), "package"))
 
       - name: Show testthat output
         run: |
