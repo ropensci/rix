@@ -52,7 +52,7 @@ latest version of R. The R `{quarto}` package is also installed, as well as the
 `{quarto}` package) and git:
 
 
-```{r}
+```{r parsermd-chunk-1}
 path_default_nix <- tempdir()
 
 rix(r_ver = "latest",
@@ -64,7 +64,7 @@ rix(r_ver = "latest",
     overwrite = TRUE)
 ```
 
-```{r echo = F}
+```{r parsermd-chunk-2, echo = F}
 cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```
 
@@ -84,7 +84,7 @@ you go. The basic use is to simply add a TexLive package to the `tex_pkgs`
 argument of `rix()` like this:
 
 
-```{r}
+```{r parsermd-chunk-3}
 path_default_nix <- tempdir()
 
 rix(r_ver = "latest",

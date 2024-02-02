@@ -109,4 +109,3 @@ installed on your system.
 
 - If you’re running either Linux or Windows, read the Linux or Windows vignette: `vignette("b1-setting-up-and-using-rix-on-linux-and-windows")`
 - If you’re running macOS, read the macOS vignette: `vignette("b2-setting-up-and-using-rix-on-macos")`
-

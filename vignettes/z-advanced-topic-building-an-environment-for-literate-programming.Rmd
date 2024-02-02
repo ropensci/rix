@@ -45,7 +45,7 @@ Because we want to compile a PDF, we also need to have `texlive` installed, as
 well as some LaTeX packages. For this, we use the `tex_pkgs` argument:
 
 
-```{r}
+```{r parsermd-chunk-1}
 path_default_nix <- tempdir()
 
 rix(r_ver = "4.3.1",
@@ -109,7 +109,7 @@ So there's an R chunk in `template.qmd` that uses the `{MASS}` package. Change
 the environment when built:
 
 
-```{r}
+```{r parsermd-chunk-2}
 rix(r_ver = "4.3.1",
     r_pkgs = c("quarto", "MASS"),
     system_pkgs = "quarto",
@@ -145,7 +145,7 @@ easier way to list the dependencies and requirements of a LaTeX document.
 This is what the final script to build the environment looks like:
 
 
-```{r}
+```{r parsermd-chunk-3}
 rix(r_ver = "4.3.1",
     r_pkgs = c("quarto", "MASS"),
     system_pkgs = "quarto",
