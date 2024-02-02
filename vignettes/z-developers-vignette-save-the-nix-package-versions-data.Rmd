@@ -29,7 +29,7 @@ web-interface to look for packages and get their revisions.
 It is possible to scrape the table and get the data:
 
 
-```{r eval = F}
+```{r parsermd-chunk-1, eval = F}
 library(rvest)
 library(dplyr)
 library(janitor)
