@@ -1,4 +1,75 @@
-<!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
+<!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
+
+# rix 0.6.0 (2024-02-02)
+
+## New features
+
+- `with_nix()`: evaluate and return R functions or shell commands in Nix env:
+  - added `nix_file` argument as alternative to `project_path`. Specify `*.nix`
+    fle defining the Nix software environment in which you want to run `expr`.
+  - `macOS`: made it compatible with system's RStudio version on macOS, where
+    the R session can not (yet) be started from a shell when launched from Dock. 
+    Now `/nix/var/nix/profiles/default/bin` is added to the `PATH` variable
+    while `with_nix()` are called.
+    
+- `nix_build()` -- invoke `nix-build` from R:
+  - `macOS`: made it compatible with system's RStudio version on macOS, where
+    the R session can not (yet) be started from a shell when launched from Dock. 
+    Now `/nix/var/nix/profiles/default/bin` is added to the `PATH` variable
+    while `with_nix()` are called.
+
+- `rix_init()` -- create an isolated, project-specific, and runtime-pure R setup via Nix
+  - added `nix_file` argument to specify a specific `.nix` file
+
+## User facing changes
+
+- `rix()` -- Generate a Nix expressions that build reproducible development
+  environments:
+  - `shell_hook = NULL` becomes the new default; before it was 
+    `= "R --vanilla"`. The new default ensures that `with_nix()` applied on
+    a specific `project_path` directory containing a custom `.Rprofile` file
+    that was generated with `rix_init()`, together with a `default.nix`
+    expression file, can read that profile file to effectively enforce run-time
+    pure R libraries (only from Nix store).
+
+## Bug fixes
+
+- `nix_build()` -- invoke `nix-build` from R:
+  - avoided empty file artefact when checking for presence of `nix-build` binary.
+    The internal helper now uses `Sys.which("nix-build")` for checking
+    availability on `PATH` in the R session.
+  - added another guardrail for run-time purity of Nixpkgs R by removing the 
+    `R_LIBS_USER` path from `.libPaths()`.
+
+- `with_nix()` -- evaluate and return R functions or shell commands in Nix env:
+  - Now cleans all itermediary and output artefacts (files) written in Nix
+    shell (`nix-shell`) session environment when exiting. These file artefacts
+    are now written in a subdirectory `with_nix` under `tempdir()` of the 
+    current R session and all files are deleted. Now, when an `expr` errors
+    in a Nix shell evaluation (i.e. custom R function), but had a previous
+    successful run with a different `expr` and/or R global environment state
+    with success and `_out.Rds` produced, the current session fails to bring
+    this output into the current R session.
+  - The code run the Nix-R session defined by `project_path`, now attemps to
+    record `sessionInfo()` with `try`. We found failures of that command under
+    older R versions on Nixpkgs for macOS (i.e., aarch64-darwin).
+  - Fix segmentation faults in tests by temporarily setting `LD_LIBRARY_PATH`.
+  - Patched the import of `glibcLocalesUtf8` with `gibcLocales` (imports all
+    locales). This was necessary to support Nixpkgs R versions <= 4.2.0, where
+    `glibcLocalsUtf8` derivation was not yet available. We do not sacrifice
+    reproducibility but rather have larger total sizes of derivations involved
+    in the subshell (around 200MB extra).
+
+## Quality and unit testing
+
+- added test suite of 17 unit tests using {testthat}
+- Add GitHub actions runners on the repository that use system's R or Nix R
+  environments configured with Nix.
+  
+## Internal refactoring
+
+- `nix_build()`: consistently separate `cmd` and `args` for `nix-build` system
+
 
 # rix 0.5.1.9000 (2024-01-17)
 
@@ -14,6 +85,7 @@
   R session, effectively after loading the local `.Rprofile`. Future versions
   of RStudio will hopefully respect all environmental variables from a shell
   environment.
+
 
 # rix 0.5.1 (2024-01-16)
 
