@@ -37,7 +37,7 @@ jobs:
         run: Rscript -e 'devtools::test()'
         
       - name: covr::codecov() via system R
-        run: RScript -e 'Sys.setenv("LD_LIBRARY_PATH"=""), covr::codecov(quiet = FALSE, clean = FALSE)
+        run: RScript -e 'Sys.setenv("LD_LIBRARY_PATH"=""), covr::codecov(quiet = FALSE, clean = FALSE, install_path = file.path(Sys.getenv("RUNNER_TEMP"), "package"))
           
         shell: Rscript {0}
       
