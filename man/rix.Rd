@@ -19,9 +19,8 @@ rix(
 }
 \arguments{
 \item{r_ver}{Character, defaults to "latest". The required R version, for example "4.0.0".
-To use the latest version of R, use "latest", if you need the latest, bleeding edge version
-of R and packages, then use "latest". You can check which R versions are available using \code{available_r}.
-For reproducibility purposes, you can also provide a nixpkgs revision.}
+You can check which R versions are available using \code{available_r}.
+For reproducibility purposes, you can also provide a nixpkgs revision directly.}
 
 \item{r_pkgs}{Vector of characters. List the required R packages for your
 analysis here.}
