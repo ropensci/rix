@@ -795,8 +795,8 @@ quote_rnix <- function(expr,
     cat("\n\n* the following objects are in the global environment:\n")
     cat(ls())
     cat("\n")
-    try(cat("\n* `sessionInfo()` output:\n"))
-    cat(capture.output(sessionInfo()), sep = "\n")
+    cat("\n* `sessionInfo()` output:\n")
+    try(cat(capture.output(sessionInfo()), sep = "\n"))
   } ) # end of `bquote()`
 
   return(expr_quoted)
