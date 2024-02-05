@@ -22,7 +22,6 @@ detect_os <- function(){
 #' generate_locale_archive("Linux")
 #' @noRd
 generate_locale_archive <- function(os){
-  os <- detect_os()
   if (os == "Linux" || os == "Darwin") {
     'LOCALE_ARCHIVE = if pkgs.system == \"x86_64-linux\" then  \"${pkgs.glibcLocales}/lib/locale/locale-archive\" else \"\";'
   } else {

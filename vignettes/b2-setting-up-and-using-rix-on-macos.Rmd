@@ -46,7 +46,7 @@ a company that provides services and tools built on Nix. Simply open a terminal
 and run the following line:
 
 
-```{sh parsermd-chunk-1, eval = FALSE}
+```{sh eval = FALSE}
 curl --proto '=https' --tlsv1.2 -sSf \
     -L https://install.determinate.systems/nix | \
      sh -s -- install
@@ -101,7 +101,7 @@ R session, and install `{rix}` if that's not already done. Because `{rix}` is
 not yet on CRAN, the easiest way is to install it from its r-universe:
 
 
-```{r parsermd-chunk-2, eval = FALSE}
+```{r eval = FALSE}
 install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
   "https://cloud.r-project.org"))
 ```

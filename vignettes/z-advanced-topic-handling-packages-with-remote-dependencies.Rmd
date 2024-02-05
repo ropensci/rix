@@ -47,7 +47,7 @@ Fortran. To create a reproducible development environment that makes
 the following `rix::rix()` call:
 
 
-```{r parsermd-chunk-1}
+```{r}
 path_default_nix <- tempdir()
 
 rix(r_ver = "latest",

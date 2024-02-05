@@ -41,11 +41,19 @@ This function adds deals with locale on Linux (and WSL2):
 #' @examples
 #' generate_locale_archive("Linux")
 generate_locale_archive <- function(os){
-  os <- detect_os()
   if (os == "Linux" || os == "Darwin") {
     'LOCALE_ARCHIVE = if pkgs.system == \"x86_64-linux\" then  \"${pkgs.glibcLocales}/lib/locale/locale-archive\" else \"\";'
   } else {
     stop("Operating System unsupported")
   }
 }
+```
+
+```{r test-generate_locale_archive}
+testthat::test_that("Test that generate_locale_archive fails", {
+  testthat::expect_error(
+    generate_locale_archive("Plan9"),
+    "Operating System unsupported"
+    )
+})
 ```

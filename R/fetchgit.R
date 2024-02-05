@@ -89,9 +89,9 @@ fetchzip <- function(archive_pkg, sri_hash = NULL){
 #' @noRd
 fetchgits <- function(git_pkgs){
 
-  if(!all(sapply(git_pkgs, is.list))){
+  if(!all(vapply(git_pkgs, is.list, logical(1)))){
     fetchgit(git_pkgs)
-  } else if(all(sapply(git_pkgs, is.list))){
+  } else if(all(vapply(git_pkgs, is.list, logical(1)))){
     paste(lapply(git_pkgs, fetchgit), collapse = "\n")
   } else {
     stop("There is something wrong with the input. Make sure it is either a list of four elements 'package_name', 'repo_url', 'branch_name' and 'commit' or a list of lists with these four elements")
@@ -112,7 +112,7 @@ fetchzips <- function(archive_pkgs){
   } else if(length(archive_pkgs) > 1){
     paste(lapply(archive_pkgs, fetchzip), collapse = "\n")
   } else {
-    stop("There is something wrong with the input. Make sure it is either a sinle package name, or an atomic vector of package names, for example c('dplyr@0.8.0', 'tidyr@1.0.0').")
+    stop("There is something wrong with the input. Make sure it is either a single package name, or an atomic vector of package names, for example c('dplyr@0.8.0', 'tidyr@1.0.0').")
   }
 
 }

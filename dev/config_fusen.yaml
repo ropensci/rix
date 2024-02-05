@@ -145,7 +145,7 @@ flat_fetchers.Rmd:
   path: dev/flat_fetchers.Rmd
   state: active
   R: R/fetchgit.R
-  tests: []
+  tests: tests/testthat/test-fetchgit.R
   vignettes: []
   inflate:
     flat_file: dev/flat_fetchers.Rmd
@@ -184,7 +184,7 @@ flat_get_os.Rmd:
   path: dev/flat_get_os.Rmd
   state: active
   R: R/detect_os.R
-  tests: []
+  tests: tests/testthat/test-detect_os.R
   vignettes: []
   inflate:
     flat_file: dev/flat_get_os.Rmd
