@@ -26,7 +26,8 @@ For reproducibility purposes, you can also provide a nixpkgs revision directly.}
 analysis here.}
 
 \item{system_pkgs}{Vector of characters. List further software you wish to install that
-are not R packages such as command line applications for example.}
+are not R packages such as command line applications for example. You can look for
+available software on the NixOS website \url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=}}
 
 \item{git_pkgs}{List. A list of packages to install from Git. See details for more information.}
 
