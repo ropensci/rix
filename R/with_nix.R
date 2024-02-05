@@ -41,6 +41,12 @@
 #' can easily do so by providing Nix expressions in custom `.nix` or
 #' `default.nix` files in different subfolders of the project.
 #' 
+#' It is recommended that you use `rix_init()` to generate a custom `.Rprofile`
+#' file for the subshell in `project_dir`. The defaults in that file ensure
+#' that only R packages from the Nix store, that are defined in the subshell
+#' `.nix` file are loaded and system's libraries are excluded.
+#' 
+#' 
 #' To do its job, `with_nix()` heavily relies on patterns that manipulate
 #' language expressions (aka computing on the language) offered in base R as
 #' well as the \{codetools\} package by Luke Tierney.
@@ -288,28 +294,16 @@ with_nix <- function(expr,
       exec_mode, " mode:\n\n"#,
       # paste0(rnix_deparsed, collapse = " ")
     ))
-    
-    # if there is a .Rprofile file with custom startup options (i.e, generated
-    # using `rix_init()`), the subshell R session should respect that. Mostly,
-    # such a situation occurs when forcing R libraries from the Nix store only
-    subshell_rprofile <- file.path(project_path, ".Rprofile")
-    if (file.exists(subshell_rprofile)) {
-      file.copy(from = subshell_rprofile, to = temp_dir)
-    }
 
     # command to run deparsed R expression via nix-shell
     cmd_rnix_deparsed <- c(
       file.path(project_path, "default.nix"),
       "--pure", # required for to have nix glibc
       "--run",
-      if (file.exists(subshell_rprofile)) {
-        sprintf(
-          "Rscript '%s'",
-          rnix_file
-        )
-      } else {
-        "Rscript --vanilla '%s'"
-      }
+      sprintf(
+        "Rscript --no-site-file --no-environ --no-restore '%s'",
+        rnix_file
+      )
     )
     
     proc <- switch(exec_mode,
