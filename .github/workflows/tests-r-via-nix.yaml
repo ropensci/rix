@@ -28,8 +28,8 @@ jobs:
       
       - name: devtools::test() via nix-shell
         run: nix-shell --pure -p cacert nix R rPackages.covr rPackages.codetools rPackages.xml2 rPackages.sys rPackages.devtools --run "Rscript -e 'devtools::test()'"
-      - name: Test coverage
-        run: nix-shell --pure -p nix git cacert R rPackages.covr rPackages.codetools rPackages.sys rPackages.xml2 rPackages.httr rPackages.testthat --run "Rscript -e 'covr::codecov()' "
+      #- name: Test coverage
+      #  run: nix-shell --pure -p nix git cacert R rPackages.covr rPackages.codetools rPackages.sys rPackages.xml2 rPackages.httr rPackages.testthat --run "Rscript -e 'covr::codecov()' "
 
       - name: Show testthat output
         if: always()
