@@ -94,7 +94,7 @@ details about this on [The Determinate Nix
 Installer page](https://github.com/DeterminateSystems/nix-installer)):
 
 
-```{sh parsermd-chunk-1, eval = FALSE}
+```{sh eval = FALSE}
 curl --proto '=https' --tlsv1.2 -sSf \
     -L https://install.determinate.systems/nix | \
      sh -s -- install
@@ -163,7 +163,7 @@ Start an R session, and install `{rix}` if that's not already done. Because
 r-universe:
 
 
-```{r parsermd-chunk-2, eval = FALSE}
+```{r eval = FALSE}
 install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
   "https://cloud.r-project.org"))
 ```

@@ -35,7 +35,7 @@ you did so using a tailor-made Nix environment. Here is the call to `rix()` that
 you could have used to build that environment:
 
 
-```{r parsermd-chunk-1}
+```{r}
 path_default_nix <- tempdir()
 
 rix(r_ver = "4.2.2",
@@ -54,7 +54,7 @@ rix(r_ver = "4.2.2",
 This call to `rix()` generates the following `default.nix` file:
 
 
-```{r parsermd-chunk-2, echo = F}
+```{r echo = F}
 cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```
 
@@ -78,7 +78,7 @@ If you wish to run the pipeline whenever you drop into the Nix shell, you could
 add a *Shell-hook* to the generated `default.nix` file:
 
 
-```{r parsermd-chunk-3, eval = FALSE}
+```{r eval = FALSE}
 rix(r_ver = "4.2.2",
     r_pkgs = c("targets", "tarchetypes", "rmarkdown"),
     system_pkgs = NULL,
