@@ -1,9 +1,16 @@
 ---
-output:
-  github_document:
-    toc: true
-    toc_depth: 3
+output: github_document
 ---
+
+- [Reproducible Environments with
+  Nix](#reproducible-environments-with-nix)
+  - [Introduction](#introduction)
+  - [Quick start for returning users](#quick-start-for-returning-users)
+  - [Getting started for new users](#getting-started-for-new-users)
+    - [Docker](#docker)
+  - [Contributing](#contributing)
+  - [Thanks](#thanks)
+  - [Recommended reading](#recommended-reading)
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/b-rodrigues/rix/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/b-rodrigues/rix/actions/workflows/R-CMD-check.yaml)
@@ -18,14 +25,12 @@ output:
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.project_path = "man/figures/README-",
+  fig.path = "man/figures/README-",
   out.width = "100%"
 )
 ```
 
-<img src="man/figures/logo.png" align="right" style="width: 25%;"/>
-
-# Reproducible Environments with Nix
+# rix: Reproducible Environments with Nix <a href="https://https://b-rodrigues.github.io/rix/"><img src="man/figures/logo.png" align="right" height="138" /></a>
 
 ## Introduction
 
@@ -81,7 +86,7 @@ WSL2) and `{rix}` comes with the following features:
   environment (potentially with a different R version and R packages) for an 
   interactive R session, and get back the output of that function using 
   [`with_nix()`](https://b-rodrigues.github.io/rix/reference/with_nix.html);
-  
+
 `{rix}` does not require Nix to be installed on your system to generate
 expressions. This means that you can generate expressions on a system on which
 you cannot easily install software, and then use these expressions on the cloud
