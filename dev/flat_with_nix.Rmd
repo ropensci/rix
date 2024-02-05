@@ -298,15 +298,27 @@ with_nix <- function(expr,
       # paste0(rnix_deparsed, collapse = " ")
     ))
     
+    # if there is a .Rprofile file with custom startup options (i.e, generated
+    # using `rix_init()`), the subshell R session should respect that. Mostly,
+    # such a situation occurs when forcing R libraries from the Nix store only
+    subshell_rprofile <- file.path(project_path, ".Rprofile")
+    if (file.exists(subshell_rprofile)) {
+      file.copy(from = subshell_rprofile, to = temp_dir)
+    }
+
     # command to run deparsed R expression via nix-shell
     cmd_rnix_deparsed <- c(
       file.path(project_path, "default.nix"),
       "--pure", # required for to have nix glibc
       "--run",
-      sprintf(
-        "Rscript --vanilla '%s'",
-        rnix_file
-      )
+      if (file.exists(subshell_rprofile)) {
+        sprintf(
+          "Rscript '%s'",
+          rnix_file
+        )
+      } else {
+        "Rscript --vanilla '%s'"
+      }
     )
     
     proc <- switch(exec_mode,
