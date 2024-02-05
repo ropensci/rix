@@ -1,8 +1,8 @@
 on:
   push:
-    branches: [main_no, master_no]
+    branches: [main, master]
   pull_request:
-    branches: [main_no, master_no]
+    branches: [main, master]
 
 name: ropensci-pkgcheck
 
