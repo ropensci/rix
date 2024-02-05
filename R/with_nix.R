@@ -41,6 +41,12 @@
 #' can easily do so by providing Nix expressions in custom `.nix` or
 #' `default.nix` files in different subfolders of the project.
 #' 
+#' It is recommended that you use `rix_init()` to generate a custom `.Rprofile`
+#' file for the subshell in `project_dir`. The defaults in that file ensure
+#' that only R packages from the Nix store, that are defined in the subshell
+#' `.nix` file are loaded and system's libraries are excluded.
+#' 
+#' 
 #' To do its job, `with_nix()` heavily relies on patterns that manipulate
 #' language expressions (aka computing on the language) offered in base R as
 #' well as the \{codetools\} package by Luke Tierney.
@@ -288,14 +294,14 @@ with_nix <- function(expr,
       exec_mode, " mode:\n\n"#,
       # paste0(rnix_deparsed, collapse = " ")
     ))
-    
+
     # command to run deparsed R expression via nix-shell
     cmd_rnix_deparsed <- c(
       file.path(project_path, "default.nix"),
       "--pure", # required for to have nix glibc
       "--run",
       sprintf(
-        "Rscript --vanilla '%s'",
+        "Rscript --no-site-file --no-environ --no-restore '%s'",
         rnix_file
       )
     )

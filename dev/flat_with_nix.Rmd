@@ -50,6 +50,12 @@ environment.
 #' can easily do so by providing Nix expressions in custom `.nix` or
 #' `default.nix` files in different subfolders of the project.
 #' 
+#' It is recommended that you use `rix_init()` to generate a custom `.Rprofile`
+#' file for the subshell in `project_dir`. The defaults in that file ensure
+#' that only R packages from the Nix store, that are defined in the subshell
+#' `.nix` file are loaded and system's libraries are excluded.
+#' 
+#' 
 #' To do its job, `with_nix()` heavily relies on patterns that manipulate
 #' language expressions (aka computing on the language) offered in base R as
 #' well as the \{codetools\} package by Luke Tierney.
@@ -297,14 +303,14 @@ with_nix <- function(expr,
       exec_mode, " mode:\n\n"#,
       # paste0(rnix_deparsed, collapse = " ")
     ))
-    
+
     # command to run deparsed R expression via nix-shell
     cmd_rnix_deparsed <- c(
       file.path(project_path, "default.nix"),
       "--pure", # required for to have nix glibc
       "--run",
       sprintf(
-        "Rscript --vanilla '%s'",
+        "Rscript --no-site-file --no-environ --no-restore '%s'",
         rnix_file
       )
     )
@@ -968,6 +974,46 @@ testthat::test_that("Test `with_nix()` if Nix is installed on R 4.2.0", {
 
   testthat::expect_false(
     inherits(out_subshell, "data.frame")
+  )
+})
+
+
+testthat::test_that("Test `with_nix()` correct .libPaths()", {
+  
+  if (isFALSE(is_nix_rsession())) {
+    # needed for the GitHub test runners with system's R
+    set_nix_path()
+  }
+  
+  skip_if_not(nix_shell_available())
+
+  path_subshell <- tempdir()
+
+  rix_init(
+    project_path = path_subshell,
+    rprofile_action = "overwrite",
+    message_type = "simple"
+  )
+
+  rix(
+    r_ver = "4.3.1",
+    overwrite = TRUE,
+    project_path = path_subshell,
+    shell_hook = NULL
+  )
+
+  out_subshell <- with_nix(
+    expr = function() {
+      .libPaths()
+    },
+    program = "R",
+    exec_mode = "blocking",
+    project_path = path_subshell,
+    message_type = "verbose"
+  )
+
+  testthat::expect_true(
+    is.character(out_subshell)
   )
 })
 

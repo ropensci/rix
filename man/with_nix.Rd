@@ -105,6 +105,11 @@ environments. If testing of different sets of environments is necessary, you
 can easily do so by providing Nix expressions in custom \code{.nix} or
 \code{default.nix} files in different subfolders of the project.
 
+It is recommended that you use \code{rix_init()} to generate a custom \code{.Rprofile}
+file for the subshell in \code{project_dir}. The defaults in that file ensure
+that only R packages from the Nix store, that are defined in the subshell
+\code{.nix} file are loaded and system's libraries are excluded.
+
 To do its job, \code{with_nix()} heavily relies on patterns that manipulate
 language expressions (aka computing on the language) offered in base R as
 well as the \{codetools\} package by Luke Tierney.
