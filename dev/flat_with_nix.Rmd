@@ -977,4 +977,44 @@ testthat::test_that("Test `with_nix()` if Nix is installed on R 4.2.0", {
   )
 })
 
+
+testthat::test_that("Test `with_nix()` correct .libPaths()", {
+  
+  if (isFALSE(is_nix_rsession())) {
+    # needed for the GitHub test runners with system's R
+    set_nix_path()
+  }
+  
+  skip_if_not(nix_shell_available())
+
+  path_subshell <- tempdir()
+
+  rix_init(
+    project_path = path_subshell,
+    rprofile_action = "overwrite",
+    message_type = "simple"
+  )
+
+  rix(
+    r_ver = "4.3.1",
+    overwrite = TRUE,
+    project_path = path_subshell,
+    shell_hook = NULL
+  )
+
+  out_subshell <- with_nix(
+    expr = function() {
+      .libPaths()
+    },
+    program = "R",
+    exec_mode = "blocking",
+    project_path = path_subshell,
+    message_type = "verbose"
+  )
+
+  testthat::expect_true(
+    is.character(out_subshell)
+  )
+})
+
 ```
