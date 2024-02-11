@@ -366,8 +366,9 @@ of `{stringr}`:
 
 
 
-```{r eval = FALSE}
+```{r}
 library("rix")
+
 path_env_stringr <- file.path(".", "_env_stringr_1.4.1")
 
 rix_init(
