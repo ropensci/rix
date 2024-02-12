@@ -245,19 +245,6 @@ flat_rix_init.Rmd:
     check: true
     document: true
     overwrite: 'yes'
-flat_save_r_nix_revs.Rmd:
-  path: dev/flat_save_r_nix_revs.Rmd
-  state: active
-  R: []
-  tests: []
-  vignettes: vignettes/z-developers-vignette-save-the-nix-package-versions-data.Rmd
-  inflate:
-    flat_file: dev/flat_save_r_nix_revs.Rmd
-    vignette_name: 'z - Developers Vignette: Save the Nix Package Versions data'
-    open_vignette: true
-    check: true
-    document: true
-    overwrite: 'yes'
 flat_with_nix.Rmd:
   path: dev/flat_with_nix.Rmd
   state: active
@@ -280,6 +267,19 @@ flat_zzz.Rmd:
   inflate:
     flat_file: dev/flat_zzz.Rmd
     vignette_name: .na
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: 'yes'
+z-inst_rix.Rmd:
+  path: dev/z-inst_rix.Rmd
+  state: active
+  R: []
+  tests: []
+  vignettes: vignettes/z-developers-vignette-generate-an-environment-with-rix-only.Rmd
+  inflate:
+    flat_file: dev/z-inst_rix.Rmd
+    vignette_name: 'z - Developers Vignette: Generate an environment with rix only'
     open_vignette: true
     check: true
     document: true
@@ -319,6 +319,19 @@ z-raps_with_nix.Rmd:
   inflate:
     flat_file: dev/z-raps_with_nix.Rmd
     vignette_name: 'z - Advanced topic: Reproducible Analytical Pipelines with Nix'
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: 'yes'
+z-save_r_nix_revs.Rmd:
+  path: dev/z-save_r_nix_revs.Rmd
+  state: active
+  R: []
+  tests: []
+  vignettes: vignettes/z-developers-vignette-save-the-nix-package-versions-data.Rmd
+  inflate:
+    flat_file: dev/z-save_r_nix_revs.Rmd
+    vignette_name: 'z - Developers Vignette: Save the Nix Package Versions data'
     open_vignette: true
     check: true
     document: true

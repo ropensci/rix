@@ -79,7 +79,7 @@ usethis::use_git()
 ```{r development-inflate, eval=FALSE}
 # Run but keep eval=FALSE to avoid infinite loop
 # Execute in the console directly
-fusen::inflate(flat_file = "dev/flat_save_r_nix_revs.Rmd",
+fusen::inflate(flat_file = "dev/z-save_r_nix_revs.Rmd",
                vignette_name = "z - Developers Vignette: Save the Nix Package Versions data",
                overwrite = TRUE)
 ```
@@ -186,6 +186,20 @@ fusen::inflate(flat_file = "dev/flat_zzz.Rmd",
                overwrite = TRUE)
 ```
 
+```{r}
+fusen::inflate(flat_file = "dev/z-inst_rix.Rmd",
+               vignette_name = "z - Developers Vignette: Generate an environment with rix only",
+               overwrite = TRUE)
+```
+
+```{r}
+local({
+  knitr::knit("vignettes/z-developers-vignette-generate-an-environment-with-rix-only.Rmd",
+              output = tempfile())
+})
+
+```
+
 # Vignettes for users
 
 ```{r}
@@ -258,6 +272,16 @@ fusen::inflate(flat_file = "dev/z-subshells.Rmd",
 # Generating the inst/extdata/default.nix
 
 ```{r, eval = FALSE}
+latest_commit <- tryCatch(
+  expr = {
+    sys::as_text(
+      sys::exec_internal("git", c("rev-parse", "master"))$stdout
+    )
+  },
+  # if it fails, use this commit instead
+  error = function(e) "de009f777266a2836da26a5f3e118c7dcf911087"
+)
+
 rix(r_ver = "latest",
     r_pkgs = NULL,
     system_pkgs = NULL,
@@ -265,7 +289,7 @@ rix(r_ver = "latest",
       package_name = "rix",
       repo_url = "https://github.com/b-rodrigues/rix/",
       branch_name = "master",
-      commit = "de009f777266a2836da26a5f3e118c7dcf911087"
+      commit = latest_commit
     ),
     ide = "other",
     project_path = "inst/extdata",
