@@ -37,7 +37,7 @@ latest_commit <- tryCatch(
     )
   },
   # if it fails, use this commit instead
-  error = function(e) "de009f777266a2836da26a5f3e118c7dcf911087"
+  error = function(e) "4d96207e7f69cbadca5349e9caa5bcc4059c1dc3"
 )
 
 rix(r_ver = "latest",
