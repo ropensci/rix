@@ -17,8 +17,8 @@ rix](https://b-rodrigues.r-universe.dev/badges/rix?scale=1&color=pink&style=roun
 [![Docs](https://img.shields.io/badge/docs-release-blue.svg)](https://b-rodrigues.github.io/rix)
 [![Status at rOpenSci Software Peer
 Review](https://badges.ropensci.org/625_status.svg)](https://github.com/ropensci/software-review/issues/625)
-
 <!-- badges: end -->
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # rix: Reproducible Environments with Nix <a href="https://https://b-rodrigues.github.io/rix/"><img src="man/figures/logo.png" align="right" height="138" /></a>
