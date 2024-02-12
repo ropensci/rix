@@ -14,12 +14,15 @@ The latest commit gets used automatically:
 ```{r, eval = T}
 library(rix)
 
-api_url <- "https://api.github.com/repos/b-rodrigues/rix/commits?sha=master"
-
-response <- httr::GET(url = api_url)
-
-commit_data <- jsonlite::fromJSON(httr::content(response, "text"))
-latest_commit <- commit_data$sha[1]
+latest_commit <- tryCatch(
+  expr = {
+    sys::as_text(
+      sys::exec_internal("git", c("rev-parse", "master"))$stdout
+    )
+  },
+  # if it fails, use this commit instead
+  error = function(e) "4d96207e7f69cbadca5349e9caa5bcc4059c1dc3"
+)
 
 rix(r_ver = "latest",
     r_pkgs = NULL,
@@ -31,7 +34,8 @@ rix(r_ver = "latest",
       commit = latest_commit
     ),
     ide = "other",
-    project_path = "inst/extdata",
+    # path is "./vignettes/" so need to go one up
+    project_path = "../inst/extdata",
     overwrite = TRUE,
     shell_hook = NULL)
 ```
