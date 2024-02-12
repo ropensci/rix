@@ -140,7 +140,7 @@ As an example, call `rix::rix()` like this.
 
 rix_init(
   project_path = "./rix_darwin",
-  profile_action = "create_missing"
+  rprofile_action = "create_missing"
 )
 ```
 
