@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="rix">
-<title>z - Developers Vignette: Save the Nix Package Versions data • rix</title>
+<title>z - Developers Vignette: Generate an environment with rix only • rix</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
@@ -17,7 +17,7 @@
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="z - Developers Vignette: Save the Nix Package Versions data">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="z - Developers Vignette: Generate an environment with rix only">
 <meta property="og:description" content="rix">
 <meta property="og:image" content="https://b-rodrigues.github.io/rix/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -90,37 +90,50 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>z - Developers Vignette: Save the Nix Package Versions data</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>z - Developers Vignette: Generate an environment with rix only</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/b-rodrigues/rix/blob/HEAD/vignettes/z-developers-vignette-save-the-nix-package-versions-data.Rmd" class="external-link"><code>vignettes/z-developers-vignette-save-the-nix-package-versions-data.Rmd</code></a></small>
-      <div class="d-none name"><code>z-developers-vignette-save-the-nix-package-versions-data.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/b-rodrigues/rix/blob/HEAD/vignettes/z-developers-vignette-generate-an-environment-with-rix-only.Rmd" class="external-link"><code>vignettes/z-developers-vignette-generate-an-environment-with-rix-only.Rmd</code></a></small>
+      <div class="d-none name"><code>z-developers-vignette-generate-an-environment-with-rix-only.Rmd</code></div>
     </div>
 
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://b-rodrigues.github.io/rix/">rix</a></span><span class="op">)</span></span></code></pre></div>
-<!-- WARNING - This vignette is generated by {fusen} from dev/z-save_r_nix_revs.Rmd: do not edit by hand -->
-<p>This vignette is only needed for the developers of
-<a href="https://b-rodrigues.github.io/rix/">rix</a>.</p>
-<p>To install old versions of R, specific Nix revisions must be used.
-This tool <a href="https://lazamar.co.uk/nix-versions/" class="external-link">Nix Package
-Versions</a> provides a simple web-interface to look for packages and
-get their revisions.</p>
-<p>It is possible to scrape the table and get the data:</p>
+<!-- WARNING - This vignette is generated by {fusen} from dev/z-inst_rix.Rmd: do not edit by hand -->
+<p>The code below generates the <code>default.nix</code> file included
+in the package at <code>inst/extdata</code>. You can use the call below
+in case you want to generate an environment with <a href="https://b-rodrigues.github.io/rix/">rix</a>
+only.</p>
+<p>The latest commit gets used automatically:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rvest.tidyverse.org/" class="external-link">rvest</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sfirke/janitor" class="external-link">janitor</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://b-rodrigues.github.io/rix/">rix</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">r_nix_revs</span> <span class="op">&lt;-</span> <span class="fu">read_html</span><span class="op">(</span><span class="st">"https://lazamar.co.uk/nix-versions/?channel=nixpkgs-unstable&amp;package=r"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">html_element</span><span class="op">(</span><span class="st">"table"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">html_table</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">clean_names</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"wrapper"</span>, <span class="va">version</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">package</span><span class="op">)</span></span></code></pre></div>
-<p>This saves the data into the package.</p>
+<span><span class="va">latest_commit</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
+<span>  expr <span class="op">=</span> <span class="op">{</span></span>
+<span>    <span class="fu">sys</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sys/man/as_text.html" class="external-link">as_text</a></span><span class="op">(</span></span>
+<span>      <span class="fu">sys</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sys/man/exec.html" class="external-link">exec_internal</a></span><span class="op">(</span><span class="st">"git"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rev-parse"</span>, <span class="st">"master"</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">stdout</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span>  <span class="co"># if it fails, use this commit instead</span></span>
+<span>  error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="st">"4d96207e7f69cbadca5349e9caa5bcc4059c1dc3"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"latest"</span>,</span>
+<span>    r_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    system_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    git_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      package_name <span class="op">=</span> <span class="st">"rix"</span>,</span>
+<span>      repo_url <span class="op">=</span> <span class="st">"https://github.com/b-rodrigues/rix/"</span>,</span>
+<span>      branch_name <span class="op">=</span> <span class="st">"master"</span>,</span>
+<span>      commit <span class="op">=</span> <span class="va">latest_commit</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    ide <span class="op">=</span> <span class="st">"other"</span>,</span>
+<span>    <span class="co"># path is "./vignettes/" so need to go one up</span></span>
+<span>    project_path <span class="op">=</span> <span class="st">"../inst/extdata"</span>,</span>
+<span>    overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    shell_hook <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
   </main>
 </div>
 
