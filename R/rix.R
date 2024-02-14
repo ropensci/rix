@@ -95,6 +95,18 @@ rix <- function(r_ver = "latest",
 
   stopifnot("'ide' has to be one of 'other', 'rstudio' or 'code'" = (ide %in% c("other", "rstudio", "code")))
 
+  if(Sys.info()["sysname"] == "Darwin" & ide == "rstudio"){
+    warning(
+      "Your detected operating system is macOS, and you chose
+'rstudio' as the IDE. Please note that 'rstudio' is not
+available through 'nixpkgs' for macOS, so the expression you
+generated will not build on macOS. If you wish to build this
+expression on macOS, change the 'ide =' argument to either
+'code' or 'other'. Please refer to the macOS-specific vignette
+https://b-rodrigues.github.io/rix/articles/b2-setting-up-and-using-rix-on-macos.html
+for more details.")
+  }
+
   project_path <- if(project_path == "."){
      "default.nix"
   } else {
@@ -305,7 +317,9 @@ get_system_pkgs(system_pkgs, r_pkgs))
   }
 
   generate_rstudio_pkgs <- function(ide, flag_git_archive, flag_rpkgs){
-    if(ide == "rstudio"){
+    if (flag_rpkgs == ""){
+      return(NULL)
+      } else if(ide == "rstudio"){
       sprintf('rstudio_pkgs = pkgs.rstudioWrapper.override {
   packages = [ %s %s ];
 };
@@ -318,7 +332,7 @@ flag_rpkgs
     }
   }
 
-  flag_rstudio <- if (ide == "rstudio") "rstudio_pkgs" else  ""
+  flag_rstudio <- if (ide == "rstudio" & flag_rpkgs != "") "rstudio_pkgs" else ""
 
   shell_hook <- if (!is.null(shell_hook) && nzchar(shell_hook)) {
     paste0('shellHook = "', shell_hook, '";')
