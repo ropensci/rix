@@ -59,33 +59,45 @@ testthat::test_that("Quarto gets added to sys packages", {
 
   path_default_nix <- tempdir()
 
-  save_default_nix_test <- function(pkgs, path_default_nix) {
+  save_default_nix_test <- function(pkgs, interface, path_default_nix) {
 
-    rix(r_ver = "4.3.1",
-        r_pkgs = pkgs,
-        ide = "other",
-        project_path = path_default_nix,
-        overwrite = TRUE,
-        shell_hook = NULL
-      )
+      rix(r_ver = "4.3.1",
+          r_pkgs = pkgs,
+          ide = interface,
+          project_path = path_default_nix,
+          overwrite = TRUE,
+          shell_hook = NULL
+          )
 
-    paste0(path_default_nix, "/default.nix")
+      paste0(path_default_nix, "/default.nix")
 
-  }
+    }
 
-  testthat::announce_snapshot_file("find_rev/no_quarto_default.nix")
+    testthat::announce_snapshot_file("rix/no_quarto_default.nix")
 
-  testthat::expect_snapshot_file(
-              path = save_default_nix_test(pkgs = "dplyr", path_default_nix),
-              name = "no_quarto_default.nix",
+    testthat::expect_snapshot_file(
+                path = save_default_nix_test(pkgs = "dplyr",
+                                             interface = "other",
+                                             path_default_nix),
+                name = "no_quarto_default.nix",
+                )
+
+    testthat::announce_snapshot_file("rix/yes_quarto_default.nix")
+
+    testthat::expect_snapshot_file(
+                path = save_default_nix_test(pkgs = c("dplyr", "quarto"),
+                                             interface = "other",
+                                             path_default_nix),
+                name = "yes_quarto_default.nix"
               )
 
-  testthat::announce_snapshot_file("find_rev/yes_quarto_default.nix")
+    testthat::announce_snapshot_file("rix/null_pkgs_rstudio.nix")
 
   testthat::expect_snapshot_file(
-              path = save_default_nix_test(pkgs = c("dplyr", "quarto"),
+              path = save_default_nix_test(pkgs = NULL,
+                                           interface = "rstudio",
                                            path_default_nix),
-              name = "yes_quarto_default.nix"
+              name = "null_pkgs_rstudio.nix"
             )
 
 })

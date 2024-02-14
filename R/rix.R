@@ -317,7 +317,9 @@ get_system_pkgs(system_pkgs, r_pkgs))
   }
 
   generate_rstudio_pkgs <- function(ide, flag_git_archive, flag_rpkgs){
-    if(ide == "rstudio"){
+    if (flag_rpkgs == ""){
+      return(NULL)
+      } else if(ide == "rstudio"){
       sprintf('rstudio_pkgs = pkgs.rstudioWrapper.override {
   packages = [ %s %s ];
 };
@@ -330,7 +332,7 @@ flag_rpkgs
     }
   }
 
-  flag_rstudio <- if (ide == "rstudio") "rstudio_pkgs" else  ""
+  flag_rstudio <- if (ide == "rstudio" & flag_rpkgs != "") "rstudio_pkgs" else ""
 
   shell_hook <- if (!is.null(shell_hook) && nzchar(shell_hook)) {
     paste0('shellHook = "', shell_hook, '";')
