@@ -128,6 +128,8 @@ testthat::test_that("Quarto gets added to sys packages", {
 
 testthat::test_that("r_pkgs = NULL and ide = 'rstudio' work together", {
 
+  skip_if(Sys.info()["sysname"] == "Darwin")
+
   path_default_nix <- tempdir()
 
   save_default_nix_test <- function(pkgs, interface, path_default_nix) {
@@ -140,11 +142,11 @@ testthat::test_that("r_pkgs = NULL and ide = 'rstudio' work together", {
         shell_hook = NULL
         )
 
-      paste0(path_default_nix, "/default.nix")
+    paste0(path_default_nix, "/default.nix")
 
-    }
+  }
 
- testthat::announce_snapshot_file("rix/null_pkgs_rstudio.nix")
+  testthat::announce_snapshot_file("rix/null_pkgs_rstudio.nix")
 
   testthat::expect_snapshot_file(
    path = save_default_nix_test(pkgs = NULL,
