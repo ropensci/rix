@@ -90,3 +90,31 @@ testthat::test_that("Quarto gets added to sys packages", {
 
 })
 
+
+testthat::test_that("If on darwin and ide = rstudio, raise warning", {
+
+  skip_if(Sys.info()["sysname"] != "Darwin")
+
+  path_default_nix <- tempdir()
+
+  save_default_nix_test <- function(pkgs, path_default_nix) {
+
+    rix(r_ver = "4.3.1",
+        r_pkgs = pkgs,
+        ide = "rstudio",
+        project_path = path_default_nix,
+        overwrite = TRUE,
+        shell_hook = NULL
+      )
+
+    paste0(path_default_nix, "/default.nix")
+
+  }
+
+  testthat::expect_warning(
+              path = save_default_nix_test(pkgs = "", path_default_nix),
+              regexp = "refer to the macOS"
+              )
+
+})
+

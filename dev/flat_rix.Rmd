@@ -111,6 +111,18 @@ rix <- function(r_ver = "latest",
 
   stopifnot("'ide' has to be one of 'other', 'rstudio' or 'code'" = (ide %in% c("other", "rstudio", "code")))
 
+  if(Sys.info()["sysname"] == "Darwin" & ide == "rstudio"){
+    warning(
+      "Your detected operating system is macOS, and you chose
+'rstudio' as the IDE. Please note that 'rstudio' is not
+available through 'nixpkgs' for macOS, so the expression you
+generated will not build on macOS. If you wish to build this
+expression on macOS, change the 'ide =' argument to either
+'code' or 'other'. Please refer to the macOS-specific vignette
+https://b-rodrigues.github.io/rix/articles/b2-setting-up-and-using-rix-on-macos.html
+for more details.")
+  }
+
   project_path <- if(project_path == "."){
      "default.nix"
   } else {
@@ -488,3 +500,32 @@ testthat::test_that("Quarto gets added to sys packages", {
 
 ```
 
+```{r, tests-warning_macos_rstudio}
+testthat::test_that("If on darwin and ide = rstudio, raise warning", {
+
+  skip_if(Sys.info()["sysname"] != "Darwin")
+
+  path_default_nix <- tempdir()
+
+  save_default_nix_test <- function(pkgs, path_default_nix) {
+
+    rix(r_ver = "4.3.1",
+        r_pkgs = pkgs,
+        ide = "rstudio",
+        project_path = path_default_nix,
+        overwrite = TRUE,
+        shell_hook = NULL
+      )
+
+    paste0(path_default_nix, "/default.nix")
+
+  }
+
+  testthat::expect_warning(
+              path = save_default_nix_test(pkgs = "", path_default_nix),
+              regexp = "refer to the macOS"
+              )
+
+})
+
+```
