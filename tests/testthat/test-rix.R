@@ -97,10 +97,10 @@ testthat::test_that("If on darwin and ide = rstudio, raise warning", {
 
   path_default_nix <- tempdir()
 
-  save_default_nix_test <- function(pkgs, path_default_nix) {
+  save_default_nix_test <- function(path_default_nix) {
 
     rix(r_ver = "4.3.1",
-        r_pkgs = pkgs,
+        r_pkgs = NULL,
         ide = "rstudio",
         project_path = path_default_nix,
         overwrite = TRUE,
@@ -112,7 +112,7 @@ testthat::test_that("If on darwin and ide = rstudio, raise warning", {
   }
 
   testthat::expect_warning(
-              path = save_default_nix_test(pkgs = "", path_default_nix),
+              path = save_default_nix_test(path_default_nix),
               regexp = "refer to the macOS"
               )
 
