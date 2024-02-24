@@ -141,7 +141,7 @@ project is called `housing`, you could create this script and execute it to
 start your project:
 
 ```
-!#/bin/bash
+#!/bin/bash
 nix-shell /absolute/path/to/housing/default.nix --run code
 ```
 
