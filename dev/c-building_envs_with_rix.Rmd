@@ -120,10 +120,8 @@ launching your editor from that environment more streamlined. For example, if yo
 project is called `housing`, you could create this script and execute it to
 start your project:
 
-```
-#!/bin/bash
-nix-shell /absolute/path/to/housing/default.nix --run code
-```
+    #!/bin/bash
+    nix-shell /absolute/path/to/housing/default.nix --run code
 
 This will execute VS Code in the environment for the `housing` project. If you
 use `{targets}` you could execute the pipeline in the environment by running:

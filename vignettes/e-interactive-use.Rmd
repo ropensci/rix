@@ -93,8 +93,25 @@ rix(r_ver = "latest",
 Navigate to that folder using your terminal, and then run `nix-shell`. You will
 then be *dropped into* a Nix shell. From there you can type `rstudio` to run
 this project specific version of R and RStudio with all the required packages
-for this project, in this case `{dplyr}` and `{ggplot2}`. You can then work on
-it as usual.
+for this project, in this case `{dplyr}` and `{ggplot2}`. If you get an error
+
+```
+qt.glx: qglx_findConfig: Failed to finding... 
+qt.glx: qglx_findConfig: Failed to finding...
+Could not initialize GLX
+Aborted (core dumped)
+```
+
+then you might need to run this before typing `rstudio`:
+
+```
+export QT_XCB_GL_INTEGRATION=none
+```
+
+This should solve the issue. In any case, we would be thankful if you opened
+an issue if you encountered this bug and if the fix worked for you. 
+
+You can then work on it as usual.
 
 You can also define a shortcut to a project that will take care of activating
 the environment and launching RStudio. This way, you don't need to start a
@@ -111,6 +128,7 @@ save in your PATH:
     #!nix-shell /home/Billy/Document/kmeans/default.nix -i bash
     rstudio
 
+(if needed, add the `export QT_XCB_GL_INTEGRATION=none` line before `rstudio`).
 Name this script something like `kmeans_project`, make it executable (using
 `chmod +x kmeans_project`), and now you can run RStudio within this environment
 from anywhere.
