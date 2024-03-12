@@ -94,6 +94,14 @@ to learn more.
 
 ## More macOS specificities
 
+### R Support for Apple Silicon in Nixpkgs
+
+In Nixpkgs, the M series processors of the ARM64 family, also known under
+AArch64, supports R since R version 3.5.3. Earlier versions of R will not 
+compile on modern Apple processor architectures for the correspoding Nixpkgs
+revisions at that time. Hence, the `darwin-aarch64` architecture has constrained
+backwards-compatibility.
+
 ### Shared libraries issue
 
 When using environments built with Nix on macOS, you might get crashes 
