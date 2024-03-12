@@ -400,9 +400,10 @@ source, which can be a frustrating experience, especially if you only need it to
 load data and bring it down to a manageable size (using `select()` and
 `filter()` for instance). This use cases illustrates how to achieve this.
 
-Let's start by building a subshell built using an arbitrary revision of `nixpkgs`:
+Let's start by building a subshell that is based on a distinct revision of
+nixpkgs, for which we know that arrow compiles on both linux and macOS (darwin).
 
-```{r, eval = F}
+```{r, eval=FALSE}
 library("rix")
 
 path_env_arrow <- file.path("env_arrow")
@@ -423,10 +424,10 @@ rix(
 
 This specific revision of R contains `{arrow}` 13. Let's now
 suppose that you already have a script with some code to
-load and tranform some data using `{arrow}`. It may look
+load and transform some data using `{arrow}`. It may look
 something like this:
 
-```{r, eval = F}
+```{r, eval=FALSE}
 library(arrow)
 library(dplyr)
 
@@ -439,7 +440,7 @@ arrow_cars %>%
 
 To run this code in a subshell, we recommend wrapping it inside a function:
 
-```{r, eval = FALSE}
+```{r, eval=FALSE}
 arrow_script <- function() {
   library(arrow)
   library(dplyr)
