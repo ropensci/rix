@@ -148,18 +148,18 @@ following path: <code>~/Documents/kmeans</code> (on Windows it would be
 something like <code>C:\Users\Billy\Documents\kmeans</code>). For
 example, here is how you could use <a href="https://b-rodrigues.github.io/rix/">rix</a> to generate the
 <code>default.nix</code> for this environment:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rix)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>path_to_project <span class="ot">&lt;-</span> <span class="er">~/</span>Documents<span class="sc">/</span>kmeans</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rix</span>(<span class="at">r_ver =</span> <span class="st">"latest"</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">r_pkgs =</span> <span class="fu">c</span>(<span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span>),</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">system_pkgs =</span> <span class="cn">NULL</span>,</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">git_pkgs =</span> <span class="cn">NULL</span>,</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">ide =</span> <span class="st">"rstudio"</span>,</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">project_path =</span> path_to_project,</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">overwrite =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">print =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(rix)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>path_to_project <span class="ot">&lt;-</span> <span class="er">~/</span>Documents<span class="sc">/</span>kmeans</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="fu">rix</span>(<span class="at">r_ver =</span> <span class="st">"latest"</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>    <span class="at">r_pkgs =</span> <span class="fu">c</span>(<span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span>),</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>    <span class="at">system_pkgs =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>    <span class="at">git_pkgs =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>    <span class="at">ide =</span> <span class="st">"rstudio"</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>    <span class="at">project_path =</span> path_to_project,</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>    <span class="at">overwrite =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>    <span class="at">print =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p>Navigate to that folder using your terminal, and then run
 <code>nix-shell</code>. You will then be <em>dropped into</em> a Nix
 shell. From there you can type <code>rstudio</code> to run this project

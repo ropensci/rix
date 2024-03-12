@@ -133,22 +133,22 @@ official MS documentation</a>.</p>
 supports other users than <code>root</code> running Nix. To set this up,
 please do as outlined <a href="https://ubuntu.com/blog/ubuntu-wsl-enable-systemd" class="external-link">this official
 Ubuntu blog entry</a>:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># in WSL2 Ubuntu shell</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> <span class="at">-i</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> /etc/wsl.conf</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># add this entry</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="ex">[boot]</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="va">systemd</span><span class="op">=</span>true</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># then restart running instance from PowerShell</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="ex">wsl</span> <span class="at">--shutdown</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># relaunch Ubuntu WSL2</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co"># in WSL2 Ubuntu shell</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="fu">sudo</span> <span class="at">-i</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="fu">nano</span> /etc/wsl.conf</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co"># add this entry</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="ex">[boot]</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="va">systemd</span><span class="op">=</span>true</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co"># then restart running instance from PowerShell</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="ex">wsl</span> <span class="at">--shutdown</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co"># relaunch Ubuntu WSL2</span></span></code></pre></div>
 <p>Afterwards, you can install Nix like business as usual. You can
 proceed with the Determinate Systems installer.</p>
 </div>
@@ -167,9 +167,9 @@ cannot or have decided not to activate systemd, then you have to append
 <code>--init none</code> to the command. You can find more details about
 this on <a href="https://github.com/DeterminateSystems/nix-installer" class="external-link">The
 Determinate Nix Installer page</a>):</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">--proto</span> <span class="st">'=https'</span> <span class="at">--tlsv1.2</span> <span class="at">-sSf</span> <span class="dt">\</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">-L</span> https://install.determinate.systems/nix <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>     <span class="fu">sh</span> <span class="at">-s</span> <span class="at">--</span> install</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="ex">curl</span> <span class="at">--proto</span> <span class="st">'=https'</span> <span class="at">--tlsv1.2</span> <span class="at">-sSf</span> <span class="dt">\</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>    <span class="at">-L</span> https://install.determinate.systems/nix <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>     <span class="fu">sh</span> <span class="at">-s</span> <span class="at">--</span> install</span></code></pre></div>
 <p>Once you have Nix installed, you can build the expressions you
 generate with <a href="https://b-rodrigues.github.io/rix/">rix</a>!</p>
 <p>On Linux, once Nix is installed, all the software that will be

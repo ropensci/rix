@@ -154,9 +154,9 @@
 <details><summary>
 Click to expand
 </summary><p>If you are already familiar with Nix and R, and simply want to get started as quickly as possible, you can start by installing Nix using the installer from <a href="https://determinate.systems/posts/determinate-nix-installer" class="external-link">Determinate Systems</a> a company that provides services and tools built on Nix:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">--proto</span> <span class="st">'=https'</span> <span class="at">--tlsv1.2</span> <span class="at">-sSf</span> <span class="dt">\</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">-L</span> https://install.determinate.systems/nix <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>     <span class="fu">sh</span> <span class="at">-s</span> <span class="at">--</span> install</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="ex">curl</span> <span class="at">--proto</span> <span class="st">'=https'</span> <span class="at">--tlsv1.2</span> <span class="at">-sSf</span> <span class="dt">\</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>    <span class="at">-L</span> https://install.determinate.systems/nix <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>     <span class="fu">sh</span> <span class="at">-s</span> <span class="at">--</span> install</span></code></pre></div>
 <p>You can check that everything works well by trying to build the Nix expression that ships with <a href="https://b-rodrigues.github.io/rix/">rix</a>. Nix expressions are typically saved into files with the name <code>default.nix</code> or <code>shell.nix</code>. This expression installs the latest version of R and <a href="https://b-rodrigues.github.io/rix/">rix</a> in a separate, reproducible environment:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span></span>
@@ -169,7 +169,7 @@ Click to expand
 <span><span class="fu"><a href="reference/nix_build.html">nix_build</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="st">"."</span><span class="op">)</span></span></code></pre></div>
 <p>If everything worked well, you should see a file called <code>result</code> next to <code>default.nix</code>. You can now enter this newly built development environment by opening a terminal in that folder and typing <code>nix-shell</code>. You should be immediately dropped into an interactive R session.</p>
 <p>If you don’t have R installed, but have the Nix package manager installed, you can run a temporary R session with R using this command (it will build the same environment as the one above):</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nix<span class="sc">-</span>shell <span class="sc">--</span>expr <span class="st">"$(curl -sl https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix)"</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>nix<span class="sc">-</span>shell <span class="sc">--</span>expr <span class="st">"$(curl -sl https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix)"</span></span></code></pre></div>
 You can then create new development environment definitions, build them, and start using them.
 </details>
 </div>
