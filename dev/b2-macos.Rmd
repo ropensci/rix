@@ -18,7 +18,7 @@ When it comes to Nix, there are really only two supported operating systems:
 macOS and Linux distributions. Windows is "supported" because it is actually
 running Linux thanks to WSL2. In practice this means that Linux distributions
 and Windows can be considered one system, and macOS another, separate, system,
-with its own idiosyncracies. This vignette details these.
+with its own idiosyncrasies. This vignette details these.
 
 ## Installing Nix
 
@@ -99,7 +99,7 @@ to learn more.
 In Nixpkgs, the M series processors of the ARM64 family, also known under
 AArch64, supports R since R version 3.5.3. Earlier versions of R will not 
 compile on modern Apple processor architectures for the correspoding Nixpkgs
-revisions at that time. Hence, the `darwin-aarch64` architecture has constrained
+revisions at that time. Hence, the `darwin-aarch64` platform has constrained
 backwards-compatibility.
 
 ### Shared libraries issue
