@@ -390,3 +390,81 @@ identical(out_system_stringr, out_nix_stringr)
 ```
 
 As expected, the result is `FALSE`.
+
+## **Case study 3: Using a subshell to get hard to install dependencies**
+
+Nix subshells are quite useful in cases where you need to use a package that
+might be difficult to install, such as `{arrow}`, or other packages that must be
+compiled. Depending on your operating system you need to compile `{arrow}` from
+source, which can be a frustrating experience, especially if you only need it to
+load data and bring it down to a manageable size (using `select()` and
+`filter()` for instance). This use cases illustrates how to achieve this.
+
+Let's start by building a subshell built using an arbitrary revision of `nixpkgs`:
+
+```{r, eval = F}
+library("rix")
+
+path_env_arrow <- file.path("env_arrow")
+
+rix_init(
+  project_path = path_env_arrow,
+  rprofile_action = "overwrite",
+  message_type = "simple"
+)
+
+rix(
+  r_ver = "af63e7a15daf283b4ce634006b3767f9c0eb0c58",
+  r_pkgs = c("dplyr", "arrow"),
+  overwrite = TRUE,
+  project_path = path_env_arrow
+)
+```
+
+This specific revision of R contains `{arrow}` 13. Let's now
+suppose that you already have a script with some code to
+load and tranform some data using `{arrow}`. It may look
+something like this:
+
+```{r, eval = F}
+library(arrow)
+library(dplyr)
+
+arrow_cars <- arrow_table(cars)
+
+arrow_cars %>%
+  filter(speed > 10) %>%
+  as.data.frame()
+```
+
+To run this code in a subshell, we recommend wrapping it inside a function:
+
+```{r, eval = FALSE}
+arrow_script <- function() {
+  library(arrow)
+  library(dplyr)
+
+  arrow_cars <- arrow_table(cars)
+
+  arrow_cars %>%
+    filter(speed > 10) %>%
+    as.data.frame()
+}
+
+```
+
+Which we can then run in the subshell:
+
+```{r, eval = FALSE}
+out_nix_arrow <- with_nix(
+  expr = function() arrow_script(),
+  program = "R",
+  exec_mode = "non-blocking",
+  project_path = path_env_arrow,
+  message_type = "simple"
+)
+
+```
+
+This will run the function in the subshell, and its output will be saved in the
+`out_nix_arrow` variable, for further manipulation in your main shell/session.
