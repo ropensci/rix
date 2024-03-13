@@ -113,7 +113,7 @@ vignette instead.</em></p>
 systems: macOS and Linux distributions. Windows is “supported” because
 it is actually running Linux thanks to WSL2. In practice this means that
 Linux distributions and Windows can be considered one system, and macOS
-another, separate, system, with its own idiosyncracies. This vignette
+another, separate, system, with its own idiosyncrasies. This vignette
 details these.</p>
 </div>
 <div class="section level2">
@@ -182,6 +182,16 @@ to learn more.</p>
 <div class="section level2">
 <h2 id="more-macos-specificities">More macOS specificities<a class="anchor" aria-label="anchor" href="#more-macos-specificities"></a>
 </h2>
+<div class="section level3">
+<h3 id="r-support-for-apple-silicon-in-nixpkgs">R Support for Apple Silicon in Nixpkgs<a class="anchor" aria-label="anchor" href="#r-support-for-apple-silicon-in-nixpkgs"></a>
+</h3>
+<p>In Nixpkgs, the M series processors of the ARM64 family, also known
+under AArch64, supports R since R version 3.5.3. Earlier versions of R
+will not compile on modern Apple processor architectures for the
+corresponding Nixpkgs revisions at that time. Hence, the
+<code>darwin-aarch64</code> platform has constrained
+backwards-compatibility.</p>
+</div>
 <div class="section level3">
 <h3 id="shared-libraries-issue">Shared libraries issue<a class="anchor" aria-label="anchor" href="#shared-libraries-issue"></a>
 </h3>
