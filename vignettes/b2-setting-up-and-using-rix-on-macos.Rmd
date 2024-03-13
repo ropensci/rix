@@ -117,7 +117,7 @@ to learn more.
 
 In Nixpkgs, the M series processors of the ARM64 family, also known under
 AArch64, supports R since R version 3.5.3. Earlier versions of R will not 
-compile on modern Apple processor architectures for the correspoding Nixpkgs
+compile on modern Apple processor architectures for the corresponding Nixpkgs
 revisions at that time. Hence, the `darwin-aarch64` platform has constrained
 backwards-compatibility.
 
