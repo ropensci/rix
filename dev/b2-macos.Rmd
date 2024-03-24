@@ -172,18 +172,17 @@ advanced topics listed above: `vignette("c-using-rix-to-build-project-specific-e
 
 When using RStudio Desktop on macOS, you typically launch it from the
 Applications folder. However, RStudio currently lacks an option to start an
-integrated R session via a shell startup on macOS (see this 
-[issue](https://github.com/rstudio/rstudio/issues/13341)
-On RStudio for Linux flavors, `PATH` is properly inherited
-in R sessions. As a result, key environmental variables for UNIX systems, 
-like PATH, are not be properly loaded from your default shell 
-(e.g., `zsh`, via `~/.zshrc`). Also, RStudio overwrites a `PATH` variable set
-via `.Rprofile` or `.Renviron` with its own defaults, which makes it impossible
-to find Nix and standard Nix tools like `nix-build`. It's worth noting that this
-doesn't impact `rix::rix()`, which generates R expressions and doesn't require 
-a Nix installation. As a workaround, we have added mechanisms in `nix_build()`
-and `with_nix()` that append the path of the Nix store to the `PATH` variable in
-an active session automatically (via `Sys.setenv()`, when you use RStudio on
-macOS. You don't have to do anything. We have you covered, and you get a
-friendly message that informs you.
-special side effect.
+integrated R session via a shell startup on macOS (see this
+[issue](https://github.com/rstudio/rstudio/issues/13341) On RStudio for Linux
+flavors, `PATH` is properly inherited in R sessions. As a result, key
+environmental variables for UNIX systems, like PATH, are not be properly loaded
+from your default shell (e.g., `zsh`, via `~/.zshrc`). Also, RStudio overwrites
+a `PATH` variable set via `.Rprofile` or `.Renviron` with its own defaults,
+which makes it impossible to find Nix and standard Nix tools like `nix-build`.
+It's worth noting that this doesn't impact `rix::rix()`, which generates Nix
+expressions and doesn't require a Nix installation. As a workaround, we have
+added mechanisms in `nix_build()` and `with_nix()` that append the path of the
+Nix store to the `PATH` variable in an active session automatically (via
+`Sys.setenv()`, when you use RStudio on macOS. You don't have to do anything. We
+have you covered, and you get a friendly message that informs you. special side
+effect.
