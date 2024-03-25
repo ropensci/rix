@@ -1,7 +1,7 @@
 let
  pkgs = import (fetchTarball "https://github.com/b-rodrigues/nixpkgs/archive/47a8b097030002fef021b6d3f52caca7e1675779.tar.gz") {};
  system_packages = builtins.attrValues {
-  inherit (pkgs) R glibcLocalesUtf8;
+  inherit (pkgs) R glibcLocalesUtf8 nix;
 };
  r_packages = builtins.attrValues {
   inherit (pkgs.rPackages) devtools fusen codetools jsonlite httr sys testthat knitr rmarkdown;

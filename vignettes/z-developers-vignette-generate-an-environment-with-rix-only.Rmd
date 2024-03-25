@@ -27,7 +27,7 @@ an environment with `{rix}` only.
 The latest commit gets used automatically:
 
 
-```{r eval = T}
+```{r parsermd-chunk-1, eval = T}
 library(rix)
 
 latest_commit <- tryCatch(

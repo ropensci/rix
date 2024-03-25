@@ -26,10 +26,10 @@ To install old versions of R, specific Nix revisions must be used. This tool
 [Nix Package Versions](https://lazamar.co.uk/nix-versions/) provides a simple
 web-interface to look for packages and get their revisions.
 
-It is possible to scrape the table and get the data:
+It is possible to scrape the table and get the data, but the code below
+should not be executed and is instead kept for historcial reasons:
 
-
-```{r eval = F}
+```
 library(rvest)
 library(dplyr)
 library(janitor)
@@ -43,5 +43,26 @@ r_nix_revs <- read_html("https://lazamar.co.uk/nix-versions/?channel=nixpkgs-uns
 
 ```
 
-This saves the data into the package.
+The code above provided commits up until version 4.3.1. The commit for the 4.3.2
+release does not use the above code, instead we manually chose the last commit
+that contains all the fixes that were merged during this release. This ensures
+that a maximum of packages are in a working state.
+
+
+```{r parsermd-chunk-1, eval = TRUE}
+library(rix)
+
+data("r_nix_revs")
+
+revision_4.3.2 <- as.data.frame(
+  list(
+    "version" = "4.3.2",
+    "revision" = "219f896bdf192721446db4fedc338eebf732057d",
+    "date" = "2024-03-10"
+  )
+)
+
+r_nix_revs <- rbind(r_nix_revs,
+                    revision_4.3.2)
+```
 

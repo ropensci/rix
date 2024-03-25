@@ -33,7 +33,7 @@ It is possible to install an arbitrary version of a package that has been
 archived on CRAN:
 
 
-```{r}
+```{r parsermd-chunk-1}
 path_default_nix <- tempdir()
 
 rix(r_ver = "4.2.1",
@@ -45,7 +45,7 @@ rix(r_ver = "4.2.1",
     overwrite = TRUE)
 ```
 
-```{r echo = F}
+```{r parsermd-chunk-2, echo = F}
 cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```
 
@@ -64,7 +64,7 @@ particular package.
 It is also possible to install packages from Github:
 
 
-```{r}
+```{r parsermd-chunk-3}
 rix(r_ver = "4.2.1",
     r_pkgs = c("dplyr", "janitor"),
     git_pkgs = list(
@@ -83,7 +83,7 @@ rix(r_ver = "4.2.1",
 
 ```
 
-```{r echo = F}
+```{r parsermd-chunk-4, echo = F}
 cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```
 
@@ -99,7 +99,7 @@ This example shows how to install packages from CRAN, from the CRAN archives and
 from GitHub:
 
 
-```{r}
+```{r parsermd-chunk-5}
 rix(r_ver = "4.2.1",
     r_pkgs = c("dplyr", "janitor", "AER@1.2-8"),
     git_pkgs = list(
@@ -118,7 +118,7 @@ rix(r_ver = "4.2.1",
 
 ```
 
-```{r echo = F}
+```{r parsermd-chunk-6, echo = F}
 cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```
 

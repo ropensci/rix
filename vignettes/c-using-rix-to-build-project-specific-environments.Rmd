@@ -50,7 +50,7 @@ file. You need to provide the following inputs to `rix()`:
 Run the following command to generate the right `default.nix` file:
 
 
-```{r}
+```{r parsermd-chunk-1}
 path_default_nix <- tempdir()
 
 rix(r_ver = "latest",
@@ -99,7 +99,7 @@ an environment with R version 4.2.1, the `{dplyr}` and `{janitor}` packages and
 no specific IDE:
 
 
-```{r}
+```{r parsermd-chunk-2}
 path_default_nix <- tempdir()
 
 rix(r_ver = "4.2.1",
@@ -115,7 +115,7 @@ rix(r_ver = "4.2.1",
 The file looks like this:
 
 
-```{r echo = F}
+```{r parsermd-chunk-3, echo = F}
 cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```
 
