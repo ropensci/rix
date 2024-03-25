@@ -108,9 +108,10 @@
 This tool <a href="https://lazamar.co.uk/nix-versions/" class="external-link">Nix Package
 Versions</a> provides a simple web-interface to look for packages and
 get their revisions.</p>
-<p>It is possible to scrape the table and get the data:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rvest.tidyverse.org/" class="external-link">rvest</a></span><span class="op">)</span></span>
+<p>It is possible to scrape the table and get the data, but the code
+below should not be executed and is instead kept for historcial
+reasons:</p>
+<pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rvest.tidyverse.org/" class="external-link">rvest</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sfirke/janitor" class="external-link">janitor</a></span><span class="op">)</span></span>
 <span></span>
@@ -119,8 +120,27 @@ get their revisions.</p>
 <span>  <span class="fu">html_table</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">clean_names</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"wrapper"</span>, <span class="va">version</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">package</span><span class="op">)</span></span></code></pre></div>
-<p>This saves the data into the package.</p>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">package</span><span class="op">)</span></span></code></pre>
+<p>The code above provided commits up until version 4.3.1. The commit
+for the 4.3.2 release does not use the above code, instead we manually
+chose the last commit that contains all the fixes that were merged
+during this release. This ensures that a maximum of packages are in a
+working state.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://b-rodrigues.github.io/rix/">rix</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"r_nix_revs"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">revision_4.3.2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="st">"version"</span> <span class="op">=</span> <span class="st">"4.3.2"</span>,</span>
+<span>    <span class="st">"revision"</span> <span class="op">=</span> <span class="st">"219f896bdf192721446db4fedc338eebf732057d"</span>,</span>
+<span>    <span class="st">"date"</span> <span class="op">=</span> <span class="st">"2024-03-10"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">r_nix_revs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">r_nix_revs</span>,</span>
+<span>                    <span class="va">revision_4.3.2</span><span class="op">)</span></span></code></pre></div>
   </main>
 </div>
 
