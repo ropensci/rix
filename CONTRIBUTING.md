@@ -45,6 +45,9 @@ inflate the package using `fusen::inflate_all()`. If no errors are found
 In our development workflow, we use [semantic versioning](https://semver.org)
 via [{fledge}](https://fledge.cynkra.com).
 
+If you can’t or don’t wish to use `{fusen}`, then simply change the files you
+need and open a PR. We can then include your fix "the fusen way".
+
 ## Discussions
 
 For general discussion about the package, open a discussion on <https://github.com/b-rodrigues/rix/discussions>.
