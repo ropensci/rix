@@ -7,6 +7,107 @@ editor_options:
     wrap: 80
 ---
 
+## Non-technical intro to Nix
+
+*If you are familiar with the concept of package managers, you can skip
+to the next section.*
+
+To ensure that a project is reproducible you need to deal with at least four
+things:
+
+- Make sure that the required/correct version of R (or any other language) is installed;
+- Make sure that the required versions of packages are installed;
+- Make sure that system dependencies are installed (for example, you'd need a working Java installation to install the `{rJava}` R package on Linux);
+- Make sure that you can install all of this for the hardware you have on hand.
+
+For the three first bullet points, the consensus seems to be a mixture of Docker
+to deal with system dependencies, `{renv}` for the packages (or `{groundhog}`,
+or a fixed CRAN snapshot like those [Posit
+provides](https://packagemanager.posit.co/__docs__/user/get-repo-url/#ui-frozen-urls))
+and the [R installation manager](https://github.com/r-lib/rig) to install the
+correct version of R (unless you use a Docker image as base that already ships
+the required version by default). As for the last point, the only way out is to
+be able to compile the software for the target architecture. There's a lot of
+moving pieces, and knowledge that you need to have to get it right.
+
+But it turns out that this is not the only solution. Docker + `{renv}` (or some
+other way to deal with packages) is likely the most popular way to ensure
+reproducibility of your projects, but there are other tools to achieve this. One
+such tool is called Nix.
+
+Nix is a package manager for Linux distributions, macOS and apparently it even
+works on Windows if you enable WSL2. What's a package manager? If you're not a
+Linux user, you may not be aware. Let me explain it this way: in R, if you want
+to install a package to provide some functionality not included with a vanilla
+installation of R, you'd run this:
+
+```
+install.packages("dplyr")
+```
+
+It turns out that Linux distributions, like Ubuntu for example, work in a
+similar way, but for software that you'd usually install using an installer (at
+least on Windows). For example you could install Firefox on Ubuntu using:
+
+```
+sudo apt-get install firefox
+```
+
+(there's also graphical interfaces that make this process "more user-friendly").
+In Linux jargon, `packages` are simply what we call software (or I guess
+it's all "apps" these days). These packages get downloaded from so-called
+repositories (think of CRAN, the repository of R packages) but for any type of
+software that you might need to make your computer work: web browsers, office
+suites, multimedia software and so on.
+
+So Nix is just another package manager that you can use to install software.
+
+But what interests us is not using Nix to install Firefox, but instead to
+install R and the R packages that we require for our analysis (or any other
+programming language that we need). But why use Nix instead of the usual ways to
+install software on our operating systems?
+
+The first thing that you should know is that Nix's repository, `nixpkgs`, is
+huge. Humongously huge. As I'm writing these lines, [there's more than 80'000
+pieces of software available](https://search.nixos.org/packages), and the
+*entirety of CRAN* is also available through `nixpkgs`. So instead of installing
+R as you usually do and then use `install.packages()` to install packages, you
+could use Nix to handle everything. But still, why use Nix at all?
+
+Nix has an interesting feature: using Nix, it is possible to install software in
+(relatively) isolated environments. So using Nix, you can install as many
+versions of R and R packages that you need. Suppose that you start working on a
+new project. As you start the project, with Nix, you would install a
+project-specific version of R and R packages that you would only use for that
+particular project. If you switch projects, you'd switch versions of R and R
+packages. If you are familiar with `{renv}`, you should see that this is exactly
+the same thing: the difference is that not only will you have a project-specific
+library of R packages, you will also have a project-specific R version. So if
+you start a project now, you'd have R version 4.2.3 installed (the latest
+version available in `nixpkgs` but not the latest version available, more on
+this later), with the accompagnying versions of R packages, for as long as the
+project lives (which can be a long time). If you start a project next year, then
+that project will have its own R, maybe R version 4.4.2 or something like that,
+and the set of required R packages that would be current at that time. This is
+because Nix always installs the software that you need in separate, (isolated)
+environments on your computer. So you can define an environment for one specific
+project.
+
+But Nix even goes even further: not only can you install R and R packages using
+Nix (in isolated) project-specific environments, Nix even installs the required
+system dependencies. So for example if I need `{rJava}`, Nix will make sure to
+install the correct version of Java as well, always in that project-specific
+environment (so if you already some Java version installed on your system, there
+won't be any interference).
+
+What's also pretty awesome, is that you can use a specific version of `nixpkgs`
+to *always* get *exactly* the same versions of **all** the software whenever you
+build that environment to run your project's code. The environment gets defined
+in a simple plain-text file, and anyone using that file to build the environment
+will get exactly, byte by byte, the same environment as you when you initially
+started the project. And this also regardless of the operating system that is
+used.
+
 ## The Nix package manager
 
 Nix is a package manager that can be installed on your computer (regardless of
