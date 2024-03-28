@@ -80,7 +80,9 @@ versions of R and R packages that you need. Suppose that you start working on a
 new project. As you start the project, with Nix, you would install a
 project-specific version of R and R packages that you would only use for that
 particular project. If you switch projects, you'd switch versions of R and R
-packages. If you are familiar with `{renv}`, you should see that this is exactly
+packages. 
+
+If you are familiar with `{renv}`, you should see that this is exactly
 the same thing: the difference is that not only will you have a project-specific
 library of R packages, you will also have a project-specific R version. So if
 you start a project now, you'd have R version 4.2.3 installed (the latest
@@ -93,7 +95,7 @@ because Nix always installs the software that you need in separate, (isolated)
 environments on your computer. So you can define an environment for one specific
 project.
 
-But Nix even goes even further: not only can you install R and R packages using
+But Nix goes even further: not only can you install R and R packages using
 Nix (in isolated) project-specific environments, Nix even installs the required
 system dependencies. So for example if I need `{rJava}`, Nix will make sure to
 install the correct version of Java as well, always in that project-specific
@@ -118,7 +120,9 @@ similar purposes. Nix functions in a similar way, but has many advantages over
 classic package managers. The main advantage of Nix, at least for our purposes,
 is that its repository of software is huge. As of writing, it contains more than
 80.000 packages, and the entirety of CRAN and Bioconductor is available through
-Nix's repositories. This means that using Nix, it is possible to install not
+Nix's repositories. 
+
+This means that using Nix, it is possible to install not
 only R, but also all the packages required for your project. The obvious
 question is why use Nix instead of simply installing R and R packages as usual.
 The answer is that Nix makes sure to install every dependency of any package, up
@@ -126,8 +130,9 @@ to required system libraries. For example, the `{xlsx}` package requires the
 Java programming language to be installed on your computer to successfully
 install. This can be difficult to achieve, and `{xlsx}` bullied many R
 developers throughout the years (especially those using a Linux distribution,
-`sudo R CMD javareconf` still plagues my nightmares). But with Nix, it suffices
-to declare that we want the `{xlsx}` package for our project, and Nix figures
+`sudo R CMD javareconf` still plagues my nightmares). 
+
+But with Nix, it suffices to declare that we want the `{xlsx}` package for our project, and Nix figures
 out automatically that Java is required and installs and configures it. It all
 just happens without any required intervention from the user. The second
 advantage of Nix is that it is possible to *pin* a certain *revision* of the Nix
