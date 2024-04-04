@@ -4,7 +4,7 @@ let
   inherit (pkgs) R glibcLocalesUtf8 nix;
 };
  r_packages = builtins.attrValues {
-  inherit (pkgs.rPackages) devtools fusen codetools jsonlite httr sys testthat knitr rmarkdown;
+  inherit (pkgs.rPackages) devtools fledge fusen codetools jsonlite httr sys testthat knitr rmarkdown;
 };
   tex = (pkgs.texlive.combine {
   inherit (pkgs.texlive) scheme-small;
