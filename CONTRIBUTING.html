@@ -64,14 +64,31 @@
 
 <div id="contributing" class="section level1">
 
+<div class="section level2">
+<h2 id="development-environment">Development environment<a class="anchor" aria-label="anchor" href="#development-environment"></a></h2>
+<p>We provide a <code>default.nix</code> file that defines the right development environment if you already are a Nix user and wish to contribute to the package. This development environment will provide bleeding edge packages, as it is uses a fork of <code>nixpkgs</code> that gets updated daily (R packages included). Because this environment is bleeding edge, no pre-built binaries are available from <code>chache.nixos.org</code>, so building this environment locally is quite time-consuming.</p>
+<p>To speed-up this process, we also provide a cache of this environment that also gets updated several times a day. To use this cache, you need to have <a href="https://app.cachix.org/" class="external-link">cachix</a> installed and configured. So if you wish to use this development environment and its associated cache to very quickly have the right environment to contribute to the package, run the following steps:</p>
+<ul><li>First, install cachix: <code>nix-env -iA cachix -f https://cachix.org/api/v1/install</code>
+</li>
+<li>Enable the cache: <code>cachix use b-rodrigues</code>
+</li>
+</ul><p>You might get an error message stating that your user cannot use caches. Simply follow the instructions in the warning to give the right permissions to your user to use caches.</p>
+<p>Then, when you run <code>nix-build</code>, binaries will be pulled from <code>b-rodrigues.cachix.org</code> and <code>cache.nixos.org</code>. Building the development environment is nothing more than waiting for packages to download.</p>
+<p>There is also the possibility that you cannot successfully build the devoplement environment: because the <code>nixpkgs</code> fork gets updated fully automatically several times a day without any checks, if building a package fails, there will be no fix released yet.</p>
+<p>If you cannot build the development environment, please open an issue, we could then propose a fix upstream.</p>
+</div>
+<div class="section level2">
+<h2 id="fusen-and-fledge">{fusen} and {fledge}<a class="anchor" aria-label="anchor" href="#fusen-and-fledge"></a></h2>
 <p>This package is developed using the <a href="https://thinkr-open.github.io/fusen/" class="external-link">fusen</a> package. If you want to contribute, please edit the <code>.Rmd</code> files found in the <code>dev/</code> folder. Then, inflate the package using <code>fusen::inflate_all()</code>. If no errors are found (warning and notes are OK), then commit and open a PR. To learn how to use <a href="https://thinkr-open.github.io/fusen/" class="external-link">fusen</a> (don’t worry, it’s super easy), refer to this <a href="https://thinkr-open.github.io/fusen/articles/How-to-use-fusen.html" class="external-link">vignette</a>. In our development workflow, we use <a href="https://semver.org" class="external-link">semantic versioning</a> via <a href="https://fledge.cynkra.com" class="external-link">{fledge}</a>.</p>
+</div>
 <div class="section level2">
 <h2 id="discussions">Discussions<a class="anchor" aria-label="anchor" href="#discussions"></a></h2>
 <p>For general discussion about the package, open a discussion on <a href="https://github.com/b-rodrigues/rix/discussions" class="external-link uri">https://github.com/b-rodrigues/rix/discussions</a>. To submit bug reports or request features, open an issue <a href="https://github.com/b-rodrigues/issues" class="external-link uri">https://github.com/b-rodrigues/issues</a>.</p>
 </div>
 </div>
 
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
