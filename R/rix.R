@@ -268,7 +268,7 @@ tex_pkgs)
     paste(system_pkgs, collapse = ' ')
   }
 
-  flag_git_archive <- if(!is.null(cran_pkgs$archive) | !is.null(git_pkgs)){
+  flag_git_archive <- if(!is.null(cran_pkgs$archive_pkgs) | !is.null(git_pkgs)){
                         "git_archive_pkgs"
                       } else {
                         ""

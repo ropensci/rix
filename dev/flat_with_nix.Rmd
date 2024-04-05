@@ -221,7 +221,7 @@ with_nix <- function(expr,
         "* If you are in an R session of your host operating system, you
         either\n1a) need to install Nix first, or if you have already done so ",
         "\n",
-        "To install, we suggest you follow https://zero-to-nix.com/start/install ."
+        "To install, we suggest you follow https://zero-to-nix.com/start/install .",
         "\n",
         "1b) make sure that the location of the nix store is in the `PATH`
         variable of this R session (mostly necessary in RStudio).\n",
