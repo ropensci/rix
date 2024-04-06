@@ -10,7 +10,7 @@
 get_latest <- function() {
   api_url <- "https://api.github.com/repos/NixOS/nixpkgs/commits?sha=nixpkgs-unstable"
 
-  is_online <- curl::has_internet()
+  is_online <- has_internet()
 
   if(!is_online){
     stop("ERROR! You don't seem to be connected to the internet.")
