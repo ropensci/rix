@@ -16,12 +16,12 @@ Depends:
     R (>= 2.10)
 Imports: 
     codetools,
+    curl,
     httr,
     jsonlite,
     sys,
     utils
 Suggests: 
-    curl,
     knitr,
     rmarkdown,
     testthat
