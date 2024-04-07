@@ -22,7 +22,9 @@ Imports:
     jsonlite,
     sys,
     utils
-Suggests: 
+Suggests:
+    arrow,
+    dplyr,
     knitr,
     rmarkdown,
     testthat
