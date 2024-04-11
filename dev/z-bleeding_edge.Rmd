@@ -29,4 +29,10 @@ how you can contribute, read the  `vignette("z-contributing_to_nixpkgs")`). Afte
 the whole rPackages set gets updated. 
 
 Essentially this means that if you start a project with `{rix}` using `"latest"` as the `r_ver` just after the rPackages set got
-updated, this project will use very fresh packages.
+updated, this project will use very fresh packages. But if instead you start a project just before an R release, then the 
+environment will be using older packages. In practice this rarely matters, unless you absolutely need a very recent version
+of package because you need a specific feature, or if you need an environment with bleeding edge packages for development.
+In that case, we provide the `r_ver = "bleeding"` option that makes it possible to use the most recent packages for your
+environment, but at a cost. You must be aware of this cost which we detail in the next section.
+
+## Using bleeding edge package for your environments
