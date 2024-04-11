@@ -36,3 +36,21 @@ In that case, we provide the `r_ver = "bleeding"` option that makes it possible 
 environment, but at a cost. You must be aware of this cost which we detail in the next section.
 
 ## Using bleeding edge package for your environments
+
+CRAN is continuously getting new or updated packages. When you use R outside of Nix, running `install.packages(pkg)`
+will install the latest version of the `pkg` package available from CRAN (unless you changed the default
+repository url). With Nix, packages do not get downloaded from CRAN but for the `nixpkgs` repository, and may
+be outdated, as explained above. If you require bleeding edge packages, use the `"bleeding"` option to `r_ver`. This
+will **NOT** download packages from the official `nixpkgs` repository anymore, but from a fork that we maintain that
+you can find [here](https://github.com/rstats-on-nix/nixpkgs/tree/r-daily). This fork gets updated every 6 hours with
+latest commits from both the `nixpkgs` repository and CRAN. This means that environments generated using this fork
+will contain bleeding packages for both the CRAN (and Bioconductor) packages as well as system-level dependencies.
+
+But this comes at a cost of which you must be aware.
+
+First, because these packages are bleeding edge, they’ve very unlikely have been built by *Hydra* yet. *Hydra* periodically
+builds packages and these get cached. So if you’re using Nix, pre-compiled binaries get used instead of being
+built from source. This is not the case if you use our fork, **unless** you also use the cache that we provide, courtesy
+of [cachix.org](cachix.org). Cachix provides a cache for your own projects and works seamlessly with the official Nix cache.
+However, we are limited in space, and cannot possible cache all the CRAN packages. So only the most popular packages
+get built and cached.
