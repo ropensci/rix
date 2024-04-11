@@ -7,3 +7,15 @@ editor_options:
 
 ## Introduction
 
+It is important to understand the release cycle of the rPackages set and what steps you should take
+if you need bleeding edge packages. R packages on nixpkgs tend to get updated alongside a new release of R, 
+and the reason is to ensure a certain level of quality. The vast majority of CRAN (and Bioconductor) packages 
+made available through `nixpkgs` in a fully automated way. But some packages do require some manual intervention
+to work on Nix, and we only know this if we try to build these packages, but building packages requires quite 
+a lot of resources. We can’t build CRAN packages every single day to see if everything works well on Nix, 
+so we only rebuild the whole tree whenever there’s a new release of R. Packages get built on a CI infrastructure 
+called *Hydra*, and then these packages get cached on [cache.nixos.org](cache.nixos.org) so whenever someone 
+wants to install a package, a pre-built binary gets pulled from the cache instead of getting installed from source. 
+For packages that don’t need compiling this is not that big of a time save, but for packages that do need to get compiled it is huge. 
+Depending on which packages you want to install, if you had to build everything from source, it could potentially take hours, 
+but if you can install pre-built binaries it’s just a matter of how quick your internet connection is.
