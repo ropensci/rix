@@ -1,0 +1,9 @@
+---
+title: "Advanced topic: Understanding the rPackages set release cycle and using bleeding edge packages"
+output: html_document
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
