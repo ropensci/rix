@@ -19,3 +19,14 @@ wants to install a package, a pre-built binary gets pulled from the cache instea
 For packages that don’t need compiling this is not that big of a time save, but for packages that do need to get compiled it is huge. 
 Depending on which packages you want to install, if you had to build everything from source, it could potentially take hours, 
 but if you can install pre-built binaries it’s just a matter of how quick your internet connection is.
+
+## R packages available through Nix
+
+As explained in the introduction, the *rPackages* set on `nixpkgs` gets updated shortly after a new release of R.
+The process involves first updating the package definitions found [here](https://github.com/NixOS/nixpkgs/blob/nixos-unstable/pkgs/development/r-modules/),
+and then building the whole tree on a CI platform called *Hydra*. Build failures then get fixed by volunteers (to learn 
+how you can contribute, read the  `vignette("z-contributing_to_nixpkgs")`). After the most important packages have been fixed,
+the whole rPackages set gets updated. 
+
+Essentially this means that if you start a project with `{rix}` using `"latest"` as the `r_ver` just after the rPackages set got
+updated, this project will use very fresh packages.
