@@ -22,8 +22,6 @@ Imports:
     sys,
     utils
 Suggests:
-    arrow,
-    dplyr,
     knitr,
     rmarkdown,
     testthat
