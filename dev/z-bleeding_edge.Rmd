@@ -8,7 +8,7 @@ editor_options:
 ## Introduction
 
 It is important to understand the release cycle of the rPackages set and what steps you should take
-if you need bleeding edge packages. R packages on nixpkgs tend to get updated alongside a new release of R, 
+if you need bleeding edge packages. R packages on `nixpkgs` tend to get updated alongside a new release of R, 
 and the reason is to ensure a certain level of quality. The vast majority of CRAN (and Bioconductor) packages 
 made available through `nixpkgs` in a fully automated way. But some packages do require some manual intervention
 to work on Nix, and we only know this if we try to build these packages, but building packages requires quite 
@@ -31,8 +31,8 @@ the whole rPackages set gets updated.
 Essentially this means that if you start a project with `{rix}` using `"latest"` as the `r_ver` just after the rPackages set got
 updated, this project will use very fresh packages. But if instead you start a project just before an R release, then the 
 environment will be using older packages. In practice this rarely matters, unless you absolutely need a very recent version
-of package because you need a specific feature, or if you need an environment with bleeding edge packages for development.
-In that case, we provide the `r_ver = "bleeding"` option that makes it possible to use the most recent packages for your
+of a specific package because you need a specific feature, or if you need an environment with bleeding edge packages for development.
+For cases like this, we provide the `r_ver = "bleeding"` option that makes it possible to use the most recent packages for your
 environment, but at a cost. You must be aware of this cost which we detail in the next section.
 
 ## Using bleeding edge package for your environments
@@ -53,4 +53,17 @@ builds packages and these get cached. So if you’re using Nix, pre-compiled bin
 built from source. This is not the case if you use our fork, **unless** you also use the cache that we provide, courtesy
 of [cachix.org](cachix.org). Cachix provides a cache for your own projects and works seamlessly with the official Nix cache.
 However, we are limited in space, and cannot possible cache all the CRAN packages. So only the most popular packages
-get built and cached.
+get built and cached, and hopefully the packages you need are part of it. To use the cache, run the following commands on
+your computer. First, install the Cachix client:
+
+```
+nix-env -iA cachix -f https://cachix.org/api/v1/install
+```
+
+then use the cache:
+
+```
+cachix use rstats-on-nix
+```
+
+that’s it! Packages now not only will get pulled from the official cache, but also from the dedicated `rstats-on-nix` cache.
