@@ -20,7 +20,7 @@ jobs:
   
     - uses: cachix/cachix-action@v14
       with:
-        name: b-rodrigues
+        name: rstats-on-nix
         # If you chose signing key for write access
         # signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
         # If you chose API tokens for write access OR if you have a private cache
