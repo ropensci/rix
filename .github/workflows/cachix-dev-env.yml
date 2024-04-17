@@ -34,5 +34,5 @@ jobs:
               nix-build
          fi
         
-    - run: nix-store -qR --include-outputs $(nix-instantiate default.nix) | cachix push b-rodrigues
+    - run: nix-store -qR --include-outputs $(nix-instantiate default.nix) | cachix push rstats-on-nix
     - run: nix-shell --run "echo OK"
