@@ -77,7 +77,9 @@ packages on Cachix (create a Cachix account first). You can take inspiration fro
 [here](https://github.com/b-rodrigues/rix/blob/master/.github/workflows/cachix-dev-env.yml). As you can see on 
 [line 27](https://github.com/b-rodrigues/rix/blob/517dc636da752e4d92d0ed7251c4d4d01b14c088/.github/workflows/cachix-dev-env.yml#L27)
 you need to define a repository secret called `CACHIX_AUTH`. You need to create an authentication token on Cachix, and then
-paste it into the repository secrets of Github Actions. Then, on [line 37](https://github.com/b-rodrigues/rix/blob/517dc636da752e4d92d0ed7251c4d4d01b14c088/.github/workflows/cachix-dev-env.yml#L37)
+paste it into the repository secrets of Github Actions. Then, on 
+[line 23](https://github.com/b-rodrigues/rix/blob/60790ed16e7854e068c29d694474d07bd01bf23e/.github/workflows/cachix-dev-env.yml#L23) 
+and on [line 37](https://github.com/b-rodrigues/rix/blob/517dc636da752e4d92d0ed7251c4d4d01b14c088/.github/workflows/cachix-dev-env.yml#L37)
 simply replace `rstats-on-nix` with your cache’s name. This environment will be built periodically on Github Actions
 according to the instructions in the `default.nix` file, which you can then use on your local machine to develop your package
 (or whatever project). Don’t forget to enable Cachix on your computer and to call `nix-build` locally to install the 
