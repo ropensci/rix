@@ -22,7 +22,11 @@ Because Windows is really running Linux under the hood thanks to WSL2, this
 means that WSL2 needs to be running on your Windows system before you attempt to
 install Nix. But it is important to know that you can run `{rix}` even if you
 don't have Nix installed, which means you can generate Nix expressions, you
-just can't build them.
+just can't build them. So if you can’t install Nix on your system, but have 
+R already installed, you can skip to the last section of this vignette to 
+simply install the `{rix}` package.
+
+## Installing Nix
 
 ### Windows pre-requisites
 
@@ -56,7 +60,7 @@ wsl --shutdown
 Afterwards, you can install Nix like business as usual. You can proceed with the
 Determinate Systems installer.
 
-## Installing Nix
+### The Determinate Systems installer
 
 You can use `{rix}` to generate Nix expressions even if you don't have Nix
 installed on your system, but obviously, you need to install Nix if you actually
@@ -93,7 +97,7 @@ This will map `/nix` to `/home/path_to/nix` which can be on a larger partition.
 If you have enough space on your root partition, you can ignore the above
 instructions.
 
-## What if you don't have R already installed?
+## Case 1: you don’t have R installed and wish to install it using Nix as well
 
 If you have successfully installed Nix, but don't have yet R installed on your
 system, you could install R as you would usually do on your operating system,
@@ -125,13 +129,27 @@ rerun the command above, but add the needed packages to `r_pkgs`. This is
 detailled in the vignette `vignette("d1-installing-r-packages-in-a-nix-environment")` and
 `vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")`.
 
-## Generating expressions
+You could also include `{rix}` in your project-specific environments, by generating
+a `default.nix` like so:
 
-Once you have R installed, either through the usual installer for your operating
-system, or through Nix as explained previously, you can now start building
-project-specific development environments.
+```
+rix(r_ver = "latest",
+    r_pkgs = NULL,
+    git_pkgs = list(package_name = "rix",
+                   repo_url = "https://github.com/b-rodrigues/rix",
+                   branch_name = "master",
+                   commit = "76d1bdd03d78589d399b4b9d473ecde616920a82"),
+    ide = "other",
+    project_path = ".",
+    overwrite = TRUE)
+```
 
-Start an R session, and install `{rix}` if that's not already done. Because
+Change the commit to a more recent one and adapt the `project_path` argument if needed.
+
+## Case 2: you have R installed through your OS’s package manager
+
+If you have installed R on your system through the usual means of installation (so not Nix,
+as decribed before), you can install the `{rix}` package as usual as well. Because
 `{rix}` is not yet on CRAN, the easiest way is to install it from its
 r-universe:
 
