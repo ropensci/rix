@@ -125,8 +125,13 @@ rix(r_ver = "latest",
 
 to generate a `default.nix`, and then use that file to generate an environment
 with R, `{dplyr}` and `{ggplot2}`. If you need to add packages for your project,
-rerun the command above, but add the needed packages to `r_pkgs`. This is
-detailled in the vignette `vignette("d1-installing-r-packages-in-a-nix-environment")` and
+rerun the command above, but add the needed packages to `r_pkgs`. Beware that if
+your already have a `default.nix` file in the working directory, running
+`rix()` with the `overwrite = TRUE` argument will overwrite it! So make sure
+that you are using a version control system for your projects to avoid bad surprises.
+
+More details about managing project-specific `default.nix` are detailled in the 
+vignette `vignette("d1-installing-r-packages-in-a-nix-environment")` and
 `vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")`.
 
 You could also include `{rix}` in your project-specific environments, by generating
