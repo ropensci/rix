@@ -21,6 +21,7 @@ Imports:
     sys,
     utils
 Suggests: 
+    curl,
     knitr,
     rmarkdown,
     testthat

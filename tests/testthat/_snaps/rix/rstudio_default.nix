@@ -43,7 +43,7 @@ let
  system_packages = builtins.attrValues {
   inherit (pkgs) R glibcLocales nix quarto;
 };
- rstudio_pkgs = pkgs.rstudioWrapper.override {
+ wrapped_pkgs = pkgs.rstudioWrapper.override {
   packages = [ git_archive_pkgs rpkgs ];
 };
  in
@@ -56,6 +56,6 @@ let
     LC_PAPER = "en_US.UTF-8";
     LC_MEASUREMENT = "en_US.UTF-8";
 
-    buildInputs = [ git_archive_pkgs rpkgs tex system_packages rstudio_pkgs ];
+    buildInputs = [ git_archive_pkgs rpkgs tex system_packages wrapped_pkgs ];
       
   }

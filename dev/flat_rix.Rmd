@@ -1,4 +1,4 @@
----
+--
 title: "rix"
 output: html_document
 editor_options:
@@ -32,19 +32,20 @@ you use another IDE, you can leave the "ide" argument blank:
 #' @param git_pkgs List. A list of packages to install from Git. See details for more information.
 #' @param tex_pkgs Vector of characters. A set of tex packages to install. Use this if you need to compile `.tex` documents, or build PDF documents using Quarto. If you don't know which package to add, start by adding "amsmath". See the Vignette "Authoring LaTeX documents" for more details.
 #' @param ide Character, defaults to "other". If you wish to use RStudio to work
-#'   interactively use "rstudio" or "code" for Visual Studio Code. For other editors,
-#'   use "other". This has been tested with RStudio, VS Code and Emacs. If other
-#'   editors don't work, please open an issue.
-#' @param project_path Character, defaults to the current working directory. 
+#'   interactively use "rstudio" or "rserver" for the server version. Use "code"
+#    for Visual Studio Code. You can also use "radian", an interactive REPL. For
+#'   other editors, use "other". This has been tested with RStudio, VS Code and
+#'   Emacs. If other editors don't work, please open an issue.
+#' @param project_path Character, defaults to the current working directory.
 #'   Where to write `default.nix`, for example "/home/path/to/project".
-#'   The file will thus be written to the file 
+#'   The file will thus be written to the file
 #'   "/home/path/to/project/default.nix".
 #' @param overwrite Logical, defaults to FALSE. If TRUE, overwrite the `default.nix`
 #'   file in the specified path.
 #' @param print Logical, defaults to FALSE. If TRUE, print `default.nix` to console.
 #' @param shell_hook Character of length 1, defaults to `NULL`. Commands added
 #'   to the `shellHook` variable executed when the Nix shell starts. So
-#'   by default, using `nix-shell default.nix` (or path with `shell.nix`) will 
+#'   by default, using `nix-shell default.nix` (or path with `shell.nix`) will
 #'   start a specific program, possibly with flags (separated by space), and/or
 #'   do shell actions. You can for example use `shell_hook = R`, if you want to
 #'   directly enter the declared Nix R session.
@@ -80,7 +81,7 @@ you use another IDE, you can leave the "ide" argument blank:
 #'   `LC_PAPER`, `LC_MEASUREMENT`). This is done to ensure locale
 #'   reproducibility by default in Nix environments created with `rix()`.
 #'   If there are good reasons to not stick to the default, you can set your
-#'   preferred locale variables via 
+#'   preferred locale variables via
 #'   `options(rix.nix_locale_variables = list(LANG = "de_CH.UTF-8", <...>)`
 #'   and the aforementioned locale variable names.
 #' @export
@@ -103,13 +104,20 @@ rix <- function(r_ver = "latest",
                 system_pkgs = NULL,
                 git_pkgs = NULL,
                 tex_pkgs = NULL,
-                ide = "other",
+                ide = c("other", "code", "radian", "rstudio", "rserver"),
                 project_path = ".",
                 overwrite = FALSE,
                 print = FALSE,
                 shell_hook = NULL){
 
-  stopifnot("'ide' has to be one of 'other', 'rstudio' or 'code'" = (ide %in% c("other", "rstudio", "code")))
+  ide <- match.arg(ide, c("other", "code", "radian", "rstudio", "rserver"))
+
+  # Wrapper attributes to be used later
+  attrib = c(
+    radian = "radianWrapper",
+    rstudio = "rstudioWrapper",
+    rserver = "rstudioServerWrapper"
+  )
 
   if(Sys.info()["sysname"] == "Darwin" & ide == "rstudio"){
     warning(
@@ -332,14 +340,15 @@ get_system_pkgs(system_pkgs, r_pkgs))
     paste0(locale_vars, ";\n")
   }
 
-  generate_rstudio_pkgs <- function(ide, flag_git_archive, flag_rpkgs){
+  generate_wrapped_pkgs <- function(ide, attrib, flag_git_archive, flag_rpkgs){
     if (flag_rpkgs == ""){
       return(NULL)
-      } else if(ide == "rstudio"){
-      sprintf('rstudio_pkgs = pkgs.rstudioWrapper.override {
+      } else if(ide %in% names(attrib)){
+      sprintf('wrapped_pkgs = pkgs.%s.override {
   packages = [ %s %s ];
 };
 ',
+attrib[ide],
 flag_git_archive,
 flag_rpkgs
 )
@@ -348,7 +357,7 @@ flag_rpkgs
     }
   }
 
-  flag_rstudio <- if (ide == "rstudio" & flag_rpkgs != "") "rstudio_pkgs" else ""
+  flag_wrapper <- if (ide %in% names(attrib) & flag_rpkgs != "") "wrapped_pkgs" else ""
 
   shell_hook <- if (!is.null(shell_hook) && nzchar(shell_hook)) {
     paste0('shellHook = "', shell_hook, '";')
@@ -369,7 +378,7 @@ flag_rpkgs
   flag_git_archive,
   flag_rpkgs,
   flag_tex_pkgs,
-  flag_rstudio,
+  flag_wrapper,
   shell_hook
   )
 
@@ -385,7 +394,7 @@ flag_rpkgs
     generate_git_archived_packages(git_pkgs, cran_pkgs$archive_pkgs),
     generate_tex_pkgs(tex_pkgs),
     generate_system_pkgs(system_pkgs, r_pkgs),
-    generate_rstudio_pkgs(ide, flag_git_archive, flag_rpkgs),
+    generate_wrapped_pkgs(ide, attrib, flag_git_archive, flag_rpkgs),
     generate_shell(flag_git_archive, flag_rpkgs),
     collapse = "\n"
     )

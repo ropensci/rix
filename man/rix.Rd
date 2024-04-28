@@ -10,7 +10,7 @@ rix(
   system_pkgs = NULL,
   git_pkgs = NULL,
   tex_pkgs = NULL,
-  ide = "other",
+  ide = c("other", "code", "radian", "rstudio", "rserver"),
   project_path = ".",
   overwrite = FALSE,
   print = FALSE,
@@ -34,9 +34,9 @@ available software on the NixOS website \url{https://search.nixos.org/packages?c
 \item{tex_pkgs}{Vector of characters. A set of tex packages to install. Use this if you need to compile \code{.tex} documents, or build PDF documents using Quarto. If you don't know which package to add, start by adding "amsmath". See the Vignette "Authoring LaTeX documents" for more details.}
 
 \item{ide}{Character, defaults to "other". If you wish to use RStudio to work
-interactively use "rstudio" or "code" for Visual Studio Code. For other editors,
-use "other". This has been tested with RStudio, VS Code and Emacs. If other
-editors don't work, please open an issue.}
+interactively use "rstudio" or "rserver" for the server version. Use "code"
+other editors, use "other". This has been tested with RStudio, VS Code and
+Emacs. If other editors don't work, please open an issue.}
 
 \item{project_path}{Character, defaults to the current working directory.
 Where to write \code{default.nix}, for example "/home/path/to/project".
