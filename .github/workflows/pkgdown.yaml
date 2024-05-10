@@ -11,6 +11,10 @@ on:
 
 name: pkgdown
 
+permissions:
+  contents: read
+  deployments: write
+
 jobs:
   pkgdown:
     runs-on: ubuntu-latest
