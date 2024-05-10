@@ -31,10 +31,14 @@ available software on the NixOS website \url{https://search.nixos.org/packages?c
 
 \item{git_pkgs}{List. A list of packages to install from Git. See details for more information.}
 
-\item{tex_pkgs}{Vector of characters. A set of tex packages to install. Use this if you need to compile \code{.tex} documents, or build PDF documents using Quarto. If you don't know which package to add, start by adding "amsmath". See the Vignette "Authoring LaTeX documents" for more details.}
+\item{tex_pkgs}{Vector of characters. A set of tex packages to install.
+Use this if you need to compile \code{.tex} documents,
+or build PDF documents using Quarto. If you don't know which package to add,
+start by adding "amsmath". See the Vignette "Authoring LaTeX documents" for more details.}
 
 \item{ide}{Character, defaults to "other". If you wish to use RStudio to work
 interactively use "rstudio" or "rserver" for the server version. Use "code"
+for Visual Studio Code. You can also use "radian", an interactive REPL. For
 other editors, use "other". This has been tested with RStudio, VS Code and
 Emacs. If other editors don't work, please open an issue.}
 
