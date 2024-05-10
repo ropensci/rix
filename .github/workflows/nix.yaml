@@ -6,6 +6,9 @@ on:
 
 name: nix-builder
 
+permissions:
+  contents: read
+
 jobs:
   run-x86_64-linux:
     name: nix builder for Ubuntu
