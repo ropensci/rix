@@ -6,6 +6,9 @@ on:
 
 name: ropensci-pkgcheck
 
+permissions:
+  contents: read
+
 jobs:
   run-x86_64-linux:
     name: Run ropensci pkgcheck
