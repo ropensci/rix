@@ -281,7 +281,7 @@ like PATH, are not be properly loaded from your default shell (e.g.,
 <code>.Renviron</code> with its own defaults, which makes it impossible
 to find Nix and standard Nix tools like <code>nix-build</code>. It’s
 worth noting that this doesn’t impact <code><a href="../reference/rix.html">rix::rix()</a></code>, which
-generates R expressions and doesn’t require a Nix installation. As a
+generates Nix expressions and doesn’t require a Nix installation. As a
 workaround, we have added mechanisms in <code><a href="../reference/nix_build.html">nix_build()</a></code> and
 <code><a href="../reference/with_nix.html">with_nix()</a></code> that append the path of the Nix store to the
 <code>PATH</code> variable in an active session automatically (via
