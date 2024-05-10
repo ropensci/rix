@@ -8,6 +8,9 @@ on:
 
 name: devtools-tests-via-r-nix
 
+permissions:
+  contents: read
+
 jobs:
   devtools_test:
     runs-on: ${{ matrix.os }}
