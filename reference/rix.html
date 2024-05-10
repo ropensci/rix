@@ -75,7 +75,7 @@
 <span>  system_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  git_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  tex_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  ide <span class="op">=</span> <span class="st">"other"</span>,</span>
+<span>  ide <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"other"</span>, <span class="st">"code"</span>, <span class="st">"radian"</span>, <span class="st">"rstudio"</span>, <span class="st">"rserver"</span><span class="op">)</span>,</span>
 <span>  project_path <span class="op">=</span> <span class="st">"."</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  print <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -112,9 +112,9 @@ available software on the NixOS website <a href="https://search.nixos.org/packag
 
 <dt>ide</dt>
 <dd><p>Character, defaults to "other". If you wish to use RStudio to work
-interactively use "rstudio" or "code" for Visual Studio Code. For other editors,
-use "other". This has been tested with RStudio, VS Code and Emacs. If other
-editors don't work, please open an issue.</p></dd>
+interactively use "rstudio" or "rserver" for the server version. Use "code"
+other editors, use "other". This has been tested with RStudio, VS Code and
+Emacs. If other editors don't work, please open an issue.</p></dd>
 
 
 <dt>project_path</dt>
