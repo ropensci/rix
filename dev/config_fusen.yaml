@@ -171,7 +171,7 @@ flat_get_latest.Rmd:
   path: dev/flat_get_latest.Rmd
   state: active
   R: R/get_latest.R
-  tests: []
+  tests: tests/testthat/test-get_latest.R
   vignettes: []
   inflate:
     flat_file: dev/flat_get_latest.Rmd
