@@ -18,11 +18,17 @@ up-to-date version of R and R packages can do so:
 #' @return A character. The commit hash of the latest nixpkgs-unstable revision
 #' @importFrom httr content GET stop_for_status
 #' @importFrom jsonlite fromJSON
+#' @importFrom curl has_internet
 #'
 #' @examples
 get_latest <- function() {
   api_url <- "https://api.github.com/repos/NixOS/nixpkgs/commits?sha=nixpkgs-unstable"
 
+  is_online <- has_internet()
+
+  if(!is_online){
+    stop("ERROR! You don't seem to be connected to the internet.")
+  } else {
   tryCatch({
     response <- httr::GET(url = api_url)
     httr::stop_for_status(response)
@@ -33,17 +39,20 @@ get_latest <- function() {
     cat("Error:", e$message, "\n")
     return(NULL)
   })
+
+  }
+
 }
 ```
 
 ```{r, tests-get_latest}
-testthat::test_that("get_latest() fails as expected if error", {
-  is_internet_down <- function() {
-    !curl::has_internet()
-  }
+testthat::test_that("get_latest() fails gracefully if no internet", {
 
-  testthat::local_mocked_bindings(is_internet_down = function(...) TRUE)
-  testthat::expect_error(get_latest())
+  with_mocked_bindings(
+    expect_error(get_latest(),
+                 "You don't seem to be connected"),
+     `has_internet` = function(...) FALSE
+  )
 
 })
 

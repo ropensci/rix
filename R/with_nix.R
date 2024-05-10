@@ -204,8 +204,6 @@ with_nix <- function(expr,
   }
   
   has_nix_shell <- nix_shell_available() # TRUE if yes, FALSE if no
-  stopifnot("`nix-shell` not available. To install, we suggest you follow https://zero-to-nix.com/start/install ." =
-    isTRUE(has_nix_shell))
   
   if (isFALSE(has_nix_shell)) {
     stop(
@@ -213,6 +211,8 @@ with_nix <- function(expr,
         "shell environment.\n",
         "* If you are in an R session of your host operating system, you
         either\n1a) need to install Nix first, or if you have already done so ",
+        "\n",
+        "To install, we suggest you follow https://zero-to-nix.com/start/install .",
         "\n",
         "1b) make sure that the location of the nix store is in the `PATH`
         variable of this R session (mostly necessary in RStudio).\n",
@@ -561,7 +561,7 @@ recurse_find_check_globals <- function(expr, args_vec) {
     env_other <- lapply(result_list, "[", "env_other")
     env_other <- unlist_unname(env_other)
     
-    env_fun = lapply(result_list, "[", "env_fun")
+    env_fun <- lapply(result_list, "[", "env_fun")
     env_fun <- unlist_unname(env_fun)
     
     exports <- list(
