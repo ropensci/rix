@@ -2,7 +2,7 @@
 
 testthat::test_that("get_latest() fails gracefully if no internet", {
 
-with_mocked_bindings(`curl::has_internet` = function(...) FALSE,
+local_mocked_bindings(`curl::has_internet` = function(...) FALSE,
           expect_error(get_latest(), "You don't seem to be connected")
           )
 
