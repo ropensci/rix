@@ -26,7 +26,7 @@ jobs:
 
       - uses: cachix/cachix-action@v14
         with:
-          name: b-rodrigues
+          name: rstats-on-nix
       
       - name: devtools::test() via nix-shell
         run: nix-shell --pure -p cacert nix R rPackages.covr rPackages.codetools rPackages.xml2 rPackages.sys rPackages.devtools --run "Rscript -e 'devtools::test()'"
