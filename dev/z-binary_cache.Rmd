@@ -1,0 +1,20 @@
+---
+title: "Advanced topic: Rolling out your own binary cache"
+output: html_document
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Most of the software that the Nix package manager installs gets built from source, which
+can take a very long time. For example, installing R or RStudio from source could take
+up several hours, dependending on your hardware. Some R packages also must be compiled, so
+depending on the environment you need, this could take several hours to build.
+
+Thankfully, packages get pre-build using [Hydra](https://hydra.nixos.org/project/nixpkgs), 
+and the resulting binaries are then made avaible on NixOS’s [public cache](https://cache.nixos.org/).
+Concretely, this means that you likely will never have to build packages from source: the
+Nix package manager first checks if what you need is in the public cache, and if yes, it downloads
+a binary from there instead of building it on your computer. This means that building an environment
+is just a matter of waiting for packages to download.
