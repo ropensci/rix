@@ -10,19 +10,38 @@ library(testthat)
 ```
 
 The function below will return the very latest commit from the unstable branch
-of `NixOS/nixpkgs`. This will make sure that users that want to use the most
-up-to-date version of R and R packages can do so:
+of `NixOS/nixpkgs` if `r_version = "latest"`. If `r_version = "bleeding_edge"`
+the `rstats-on-nix` fork of `nixpkgs` gets used instead and if `r_version = "frozen_edge"`
+then the `rstats-on-nix` fork at with the latest commit pinned gets used. 
+This will make sure that users that want to use the most up-to-date version of R and R packages can do so:
 
 ```{r function-get_latest}
 #' get_latest Get the latest R version and packages
+#' @param r_version Character. R version to look for, for example, "4.2.0". If a nixpkgs revision is provided instead, this gets returned.
 #' @return A character. The commit hash of the latest nixpkgs-unstable revision
 #' @importFrom httr content GET stop_for_status
 #' @importFrom jsonlite fromJSON
 #'
 #' @examples
-get_latest <- function() {
-  api_url <- "https://api.github.com/repos/NixOS/nixpkgs/commits?sha=nixpkgs-unstable"
+get_latest <- function(r_ver) {
+  if(r_version == "bleeding_edge"){
+    latest_commit <- "refs/heads/r-daily"
+  } else {
+    latest_commit <- get_latest_or_frozen(r_ver)
+  }
+  latest_commit
+}
+```
 
+```{r function-get_latest_or_frozen}
+#' @noRd
+get_latest_or_frozen <- function(r_ver) {
+  if(r_ver == "frozen_edge"){
+    api_url <- "https://api.github.com/repos/rstats-on-nix/nixpkgs/commits?sha=r-daily"
+  } else {
+    api_url <- "https://api.github.com/repos/NixOS/nixpkgs/commits?sha=nixpkgs-unstable"
+  }
+  
   tryCatch({
     response <- httr::GET(url = api_url)
     httr::stop_for_status(response)
