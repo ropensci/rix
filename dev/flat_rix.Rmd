@@ -149,6 +149,8 @@ for more details.")
   }
 
   # Find the Nix revision to use
+  # TODO: don’t just return nix revision
+  # but write a function to return the whole url
   nix_revision <- find_rev(r_ver)
 
   project_path <- file.path(project_path)
