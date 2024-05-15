@@ -35,20 +35,25 @@ of a specific package because you need a specific feature, or if you need an env
 For cases like this, we provide the `r_ver = "bleeding"` option that makes it possible to use the most recent packages for your
 environment, but at a cost. You must be aware of this cost which we detail in the next section.
 
-## Using bleeding edge package for your environments
+## Using bleeding, and frozen, edge package for your environments
 
 CRAN is continuously getting new or updated packages. When you use R outside of Nix, running `install.packages(pkg)`
 will install the latest version of the `pkg` package available from CRAN (unless you changed the default
 repository url). With Nix, packages do not get downloaded from CRAN but for the `nixpkgs` repository, and may
-be outdated, as explained above. If you require bleeding edge packages, use the `"bleeding"` option to `r_ver`. This
+be outdated, as explained above. If you require bleeding edge packages, use the `"bleeding_edge"` option to `r_ver`. This
 will **NOT** download packages from the official `nixpkgs` repository anymore, but from a fork that we maintain that
 you can find [here](https://github.com/rstats-on-nix/nixpkgs/tree/r-daily). This fork gets updated every 12 hours with
 the latest commits from both the `nixpkgs` repository and CRAN. This means that environments generated using this fork
 will contain bleeding packages for both the CRAN (and Bioconductor) packages as well as system-level dependencies.
+Also, be aware that this will generate an expression that is **NOT** reproducible! Each time you will rebuild the 
+environment generated using the `"bleeding_edge"` option, you will get exactly that: an environment with bleeding
+edge packages at build time. If you want instead to have bleeding edge packages at the time you generate the
+expression, but then want reproducibility (in other words, building should always result in the
+same environment), then use the `"frozen_edge"` option instead. 
 
-But this comes at a cost of which you must be aware.
+In any case, whatever option you choose, they imply come at a cost of which you must be aware.
 
-First, because these packages are bleeding edge, they very unlikely have been built by *Hydra* yet. *Hydra* periodically
+First, because these packages are bleeding edge, they very have not had the chance to be built by *Hydra* yet. *Hydra* periodically
 builds packages and these get cached. So if you’re using Nix, pre-compiled binaries get used instead of being
 built from source. This is not the case if you use our fork, **unless** you also use the cache that we provide, courtesy
 of [cachix.org](cachix.org). Cachix provides a cache for your own projects and works seamlessly with the official Nix cache.
@@ -70,4 +75,6 @@ that’s it! Packages now not only will get pulled from the official cache, but 
 
 ## Making your own cache
 
+If you need packages that are not included in your cache, you can very easily roll out your own binary cache. Simply build the 
+environment once on one machine, and then push the binaries in a cache for re-use. 
 Refer to the vignette `vignette("z-binary_cache")` to learn how to set up your own cache.
