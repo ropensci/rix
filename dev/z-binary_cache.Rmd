@@ -42,7 +42,7 @@ For example, imagine you have the following `generate_env.R` file for a project,
 ```
 library(rix)
 
-rix(r_ver = "bleeding",
+rix(r_ver = "bleeding_edge",
     r_pkgs = c("dplyr", "ggplot2"),
     system_pkgs = NULL,
     git_pkgs = NULL,
