@@ -33,7 +33,7 @@ find_rev <- function(r_version) {
   stopifnot("r_version has to be a character." = is.character(r_version))
 
   if(r_version == "latest"){
-    return(get_latest())
+    return(get_latest(r_version))
   } else if(nchar(r_version) == 40){
     return(r_version)
   } else {
