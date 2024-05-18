@@ -12,25 +12,25 @@ find_rev <- function(r_version) {
   stopifnot("r_version has to be a character." = is.character(r_version))
 
   if(r_version == "latest"){
-    return(get_latest())
+    return(get_latest(r_version))
   } else if(nchar(r_version) == 40){
     return(r_version)
   } else {
 
-  temp <- new.env(parent = emptyenv())
+    temp <- new.env(parent = emptyenv())
 
-  data(list = "r_nix_revs",
-       package = "rix",
-       envir = temp)
+    data(list = "r_nix_revs",
+         package = "rix",
+         envir = temp)
 
-  get("r_nix_revs", envir = temp)
+    get("r_nix_revs", envir = temp)
 
-  output <- r_nix_revs$revision[r_nix_revs$version == r_version]
+    output <- r_nix_revs$revision[r_nix_revs$version == r_version]
 
-  stopifnot("Error: the provided R version is likely wrong. Please check that you provided a correct R version. You can list available versions using `available_r()`" = !identical(character(0), output))
+    stopifnot("Error: the provided R version is likely wrong. Please check that you provided a correct R version. You can list available versions using `available_r()`" = !identical(character(0), output))
 
     output
-}
+  }
 
 }
 

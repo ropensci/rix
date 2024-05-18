@@ -133,6 +133,8 @@ for more details.")
   }
 
   # Find the Nix revision to use
+  # TODO: don’t just return nix revision
+  # but write a function to return the whole url
   nix_revision <- find_rev(r_ver)
 
   project_path <- file.path(project_path)
@@ -141,7 +143,6 @@ for more details.")
 
   # Get the rix version
   rix_version <- utils::packageVersion("rix")
-
 
 
   # Now we need to generate all the different sets of packages
