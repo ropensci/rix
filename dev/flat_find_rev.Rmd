@@ -21,6 +21,7 @@ pkgload::load_all(export_all = FALSE)
 This function takes an R version as an input and returns the Nix revision that
 provides it:
 
+
 ```{r function-find_rev}
 #' find_rev Find the right Nix revision
 #' @param r_version Character. R version to look for, for example, "4.2.0". If a nixpkgs revision is provided instead, this gets returned.
@@ -38,20 +39,20 @@ find_rev <- function(r_version) {
     return(r_version)
   } else {
 
-  temp <- new.env(parent = emptyenv())
+    temp <- new.env(parent = emptyenv())
 
-  data(list = "r_nix_revs",
-       package = "rix",
-       envir = temp)
+    data(list = "r_nix_revs",
+         package = "rix",
+         envir = temp)
 
-  get("r_nix_revs", envir = temp)
+    get("r_nix_revs", envir = temp)
 
-  output <- r_nix_revs$revision[r_nix_revs$version == r_version]
+    output <- r_nix_revs$revision[r_nix_revs$version == r_version]
 
-  stopifnot("Error: the provided R version is likely wrong. Please check that you provided a correct R version. You can list available versions using `available_r()`" = !identical(character(0), output))
+    stopifnot("Error: the provided R version is likely wrong. Please check that you provided a correct R version. You can list available versions using `available_r()`" = !identical(character(0), output))
 
     output
-}
+  }
 
 }
 

@@ -206,6 +206,20 @@ flat_get_sri_hash_deps.Rmd:
     check: true
     document: true
     overwrite: 'yes'
+flat_make_nixpkgs_url.Rmd:
+  path: dev/flat_make_nixpkgs_url.Rmd
+  state: active
+  R: R/make_nixpkgs_url.R
+  tests: []
+  vignettes: vignettes/get-started.Rmd
+  inflate:
+    flat_file: dev/flat_make_nixpkgs_url.Rmd
+    vignette_name: Get started
+    open_vignette: true
+    check: false
+    document: true
+    overwrite: ask
+    clean: ask
 flat_nix_build.Rmd:
   path: dev/flat_nix_build.Rmd
   state: active
