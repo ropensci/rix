@@ -15,7 +15,7 @@ articles:
   z-advanced-topic-running-r-or-shell-code-in-nix-from-r: z-advanced-topic-running-r-or-shell-code-in-nix-from-r.html
   z-developers-vignette-generate-an-environment-with-rix-only: z-developers-vignette-generate-an-environment-with-rix-only.html
   z-developers-vignette-save-the-nix-package-versions-data: z-developers-vignette-save-the-nix-package-versions-data.html
-last_built: 2024-05-19T08:36Z
+last_built: 2024-05-19T09:27Z
 urls:
   reference: https://b-rodrigues.github.io/rix/reference
   article: https://b-rodrigues.github.io/rix/articles
