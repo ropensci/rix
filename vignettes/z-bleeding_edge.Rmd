@@ -1,0 +1,119 @@
+---
+title: "z - Advanced topic: Understanding the rPackages set release cycle and using bleeding edge packages"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{z-advanced-topic-understanding-the-rpackages-set-release-cycle-and-using-bleeding-edge-packages}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r, include=FALSE}
+library(rix)
+```
+
+## Introduction
+
+It is important to understand the release cycle of the rPackages set and what
+steps you should take if you need bleeding edge packages. R packages on
+`nixpkgs` tend to get updated alongside a new release of R, and the reason is to
+ensure a certain level of quality. The vast majority of CRAN (and Bioconductor)
+packages made available through `nixpkgs` in a fully automated way. But some
+packages do require some manual intervention to work on Nix, and we only know
+this if we try to build these packages, but building packages requires quite a
+lot of resources. We can’t build CRAN packages every single day to see if
+everything works well on Nix, so we only rebuild the whole tree whenever there’s
+a new release of R. Packages get built on a CI infrastructure called *Hydra*,
+and then these packages get cached on [cache.nixos.org](cache.nixos.org) so
+whenever someone wants to install a package, a pre-built binary gets pulled from
+the cache instead of getting installed from source. For packages that don’t need
+compiling this is not that big of a time save, but for packages that do need to
+get compiled it is huge. Depending on which packages you want to install, if you
+had to build everything from source, it could potentially take hours, but if you
+can install pre-built binaries it’s just a matter of how quick your internet
+connection is.
+
+## R packages available through Nix
+
+As explained in the introduction, the *rPackages* set on `nixpkgs` gets updated
+shortly after a new release of R. The process involves first updating the
+package definitions found
+[here](https://github.com/NixOS/nixpkgs/blob/nixos-unstable/pkgs/development/r-modules/),
+and then building the whole tree on a CI platform called *Hydra*. Build failures
+then get fixed by volunteers (to learn how you can contribute, read the
+`vignette("z-contributing_to_nixpkgs")`). After the most important packages have
+been fixed, the whole rPackages set gets updated.
+
+Essentially this means that if you start a project with `{rix}` using `"latest"`
+as the `r_ver` just after the rPackages set got updated, this project will use
+very fresh packages. But if instead you start a project just before an R
+release, then the environment will be using older packages. In practice this
+rarely matters, unless you absolutely need a very recent version of a specific
+package because you need a specific feature, or if you need an environment with
+bleeding edge packages for development. For cases like this, we provide the
+`r_ver = "bleeding"` option that makes it possible to use the most recent
+packages for your environment, but at a cost. You must be aware of this cost
+which we detail in the next section.
+
+## Using bleeding, and frozen, edge package for your environments
+
+CRAN is continuously getting new or updated packages. When you use R outside of
+Nix, running `install.packages(pkg)` will install the latest version of the
+`pkg` package available from CRAN (unless you changed the default repository
+url). With Nix, packages do not get downloaded from CRAN but for the `nixpkgs`
+repository, and may be outdated, as explained above. If you require bleeding
+edge packages, use the `"bleeding_edge"` option to `r_ver`. This will **NOT**
+download packages from the official `nixpkgs` repository anymore, but from a
+fork that we maintain that you can find
+[here](https://github.com/rstats-on-nix/nixpkgs/tree/r-daily). This fork gets
+updated every 12 hours with the latest commits from both the `nixpkgs`
+repository and CRAN. This means that environments generated using this fork will
+contain bleeding packages for both the CRAN (and Bioconductor) packages as well
+as system-level dependencies. Also, be aware that this will generate an
+expression that is **NOT** reproducible! Each time you will rebuild the
+environment generated using the `"bleeding_edge"` option, you will get exactly
+that: an environment with bleeding edge packages at build time. If you want
+instead to have bleeding edge packages at the time you generate the expression,
+but then want reproducibility (in other words, building should always result in
+the same environment), then use the `"frozen_edge"` option instead.
+
+In any case, whatever option you choose, they imply come at a cost of which you
+must be aware.
+
+First, because these packages are bleeding edge, they very have not had the
+chance to be built by *Hydra* yet. *Hydra* periodically builds packages and
+these get cached. So if you’re using Nix, pre-compiled binaries get used instead
+of being built from source. This is not the case if you use our fork, **unless**
+you also use the cache that we provide, courtesy of [cachix.org](cachix.org).
+Cachix provides a cache for your own projects and works seamlessly with the
+official Nix cache. However, we are limited in space, and cannot possible cache
+all the CRAN packages. So only the most popular packages get built and cached,
+and hopefully the packages you need are part of this limited set. To use the
+cache, run the following commands on your computer. First, install the Cachix
+client:
+
+```
+nix-env -iA cachix -f https://cachix.org/api/v1/install
+```
+
+then use the cache:
+
+```
+cachix use rstats-on-nix
+```
+
+that’s it! Packages now not only will get pulled from the official cache, but
+also from the dedicated `rstats-on-nix` cache.
+
+## Making your own cache
+
+If you need packages that are not included in your cache, you can very easily
+roll out your own binary cache. Simply build the environment once on one
+machine, and then push the binaries in a cache for re-use. Refer to the vignette
+`vignette("z-binary_cache")` to learn how to set up your own cache.
