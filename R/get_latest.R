@@ -29,7 +29,6 @@ get_latest_or_frozen <- function(r_ver) {
   } else {
     api_url <- "https://api.github.com/repos/NixOS/nixpkgs/commits?sha=nixpkgs-unstable"
   }
-
   tryCatch({
     response <- httr::GET(url = api_url)
     httr::stop_for_status(response)
