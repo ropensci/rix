@@ -12,7 +12,7 @@ Description: Provides helper functions to create reproducible development
 License: GPL (>= 3)
 URL: https://b-rodrigues.github.io/rix/
 BugReports: https://github.com/b-rodrigues/rix
-Depends: 
+Depends:
     R (>= 2.10)
 Imports:
     codetools,
@@ -25,9 +25,12 @@ Suggests:
     knitr,
     rmarkdown,
     testthat
-VignetteBuilder: 
+VignetteBuilder:
     knitr
+<<<<<<< HEAD
 Config/fusen/version: 0.5.2.9000
+=======
+>>>>>>> origin/master
 Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
