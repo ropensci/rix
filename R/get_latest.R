@@ -12,7 +12,7 @@ get_latest <- function(r_ver) {
 
   if(!is_online){
     stop("ERROR! You don't seem to be connected to the internet.")
-  } else if(r_version == "bleeding_edge"){
+  } else if(r_ver == "bleeding_edge"){
     latest_commit <- "refs/heads/r-daily"
   } else {
     latest_commit <- get_latest_or_frozen(r_ver)
