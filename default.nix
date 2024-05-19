@@ -6,32 +6,6 @@ let
  r_packages = builtins.attrValues {
   inherit (pkgs.rPackages) devtools fledge codetools jsonlite httr sys testthat knitr rmarkdown;
  };
- fusen = [(pkgs.rPackages.buildRPackage {
-    name = "fusen";
-    src = pkgs.fetchgit {
-      url = "https://github.com/ThinkR-open/fusen/";
-      branchName = "fusen";
-      rev = "146bc4a70404f66124389635a7384ca40e2304d2";
-      sha256 = "sha256-zxM4XT2XwxQhzc8w5MwyVEVBIRryXicTvROwrpMhnS0=";
-    };
-    propagatedBuildInputs = builtins.attrValues {
-      inherit (pkgs.rPackages)
-        attachment
-        cli
-        desc
-        devtools
-        glue
-        here
-        magrittr
-        parsermd
-        roxygen2
-        stringi
-        tibble
-        tidyr
-        usethis
-        yaml;
-    };
- }) ];
   tex = (pkgs.texlive.combine {
     inherit (pkgs.texlive) scheme-small;
   });
@@ -45,6 +19,6 @@ let
     LC_PAPER = "en_US.UTF-8";
     LC_MEASUREMENT = "en_US.UTF-8";
 
-    buildInputs = [ system_packages r_packages fusen tex ];
+    buildInputs = [ system_packages r_packages tex ];
 
   }
