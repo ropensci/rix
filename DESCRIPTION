@@ -27,10 +27,6 @@ Suggests:
     testthat
 VignetteBuilder:
     knitr
-<<<<<<< HEAD
-Config/fusen/version: 0.5.2.9000
-=======
->>>>>>> origin/master
 Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
