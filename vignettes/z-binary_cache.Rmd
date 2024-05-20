@@ -22,30 +22,28 @@ library(rix)
 
 ## Introduction
 
-Most of the software that the Nix package manager installs gets built from
-source, which can take a very long time. For example, installing R or RStudio
-from source could take up several hours, dependending on your hardware. Some R
-packages also must be compiled, so depending on the environment you need, this
-could take several hours to build. This vignette will explain how you can cut
-down on building times by building the environment once, and then caching it, so
-you don’t need to rebuild it on new machines.
+At its core, the Nix package manager install packages from source, which can
+take a very long time. For example, installing R or RStudio from source could
+take up several hours, depending on your hardware. Some R packages also must be
+compiled, so depending on the environment you need, this could take several
+hours to build. In practice however, this is rarely the case as most, if not
+all, packages get pre-built and made available through NixOS's [public
+cache](https://cache.nixos.org/). The Nix package manager first checks if what
+you need is in the public cache, and if yes, it downloads a binary from there
+instead of building it on your computer. This means that building an environment
+is just a matter of waiting for packages to download.
 
-Most packages you will need, get pre-build using
-[Hydra](https://hydra.nixos.org/project/nixpkgs), and the resulting binaries are
-then made avaible on NixOS’s [public cache](https://cache.nixos.org/).
-Concretely, this means that you likely will never have to build packages from
-source: the Nix package manager first checks if what you need is in the public
-cache, and if yes, it downloads a binary from there instead of building it on
-your computer. This means that building an environment is just a matter of
-waiting for packages to download.
+However, in some cases, you might need to use packages that have not been pre-built and
+cached yet, for example if you use `rix(r_ver = "bleeding_edge")` or rix(r_ver =
+"frozen_edge")` to generate environments with bleeding edge packages. Building
+these environments could potentially take quite long, because these packages
+need to be built from source on your computer.
 
-However, if you use `rix::rix(r_ver = "bleeding", ...)`, you will generate an
-expression that when built will result in an environment with bleeding edge R
-packages. These packages will get installed from source, and so it could take a
-very long time to build. This is where we advise that you first: use our cache
-on top of the public cache (as explained in `vignette("z-bleeding_edge")`), and
-then, if our cache didn’t cover your needs, set up your own if you had to build
-many packages from source. This vignette explains how.
+This vignette will explain how you can cut down on building times by building
+the environment once, and then caching it, so you don’t need to rebuild it on
+new machines. But before rolling out your own cache, try using ours as explained
+in `vignette("z-bleeding_edge")`, and if our cache didn’t cover your needs, set
+up your own. This vignette explains how.
 
 ## Using Github Actions to build the environment
 
@@ -87,7 +85,7 @@ on:
     branches: [ master, main ]
 ```
 
-to this:
+to these:
 
 ```
 on:
@@ -98,7 +96,7 @@ on:
 ```
 
 By using [cron syntax](https://en.wikipedia.org/wiki/Cron#Overview) you can
-specify how often you want the environment to be re-built. This is can be useful
+specify how often you want the environment to be re-built. This can be useful
 if you need to develop against the current state of CRAN every day (for
 instance, for package development). To then use the cache, you need to open an
 account on [Cachix](https://www.cachix.org/). The free tier includes 5GB of
@@ -124,7 +122,9 @@ cachix use your-cache-name
 ```
 
 Anyone can pull binaries from your cache, so if you work in a team, you can
-ensure everyone can benefit from it.
+ensure everyone can benefit from it. You can also use several caches at once,
+NixOS's public cache, our `rstats-on-nix` cache, and your own, so your cache
+will only end up holding the binaries not found in the other two caches!
 
 Take a look at
 [this package’s](https://github.com/b-rodrigues/rix/blob/master/.github/workflows/cachix-dev-env.yml)
