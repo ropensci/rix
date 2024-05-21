@@ -1,5 +1,30 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.7.0 (2024-05-21)
+
+- Added the possibility to create "bleeding_edge" and "frozen_edge" environments
+- Added `ga_cachix()`, a function to create a GA workflow file that builds and pushes an environment to a Cachix cache
+
+
+# rix 0.6.0.9000 (2024-05-05)
+
+- `with_nix()`: do not use `--vanilla` because it does not respect custom code startup via `.Rprofile`
+- `nix_build()` and `with_nix()`: improvements. Remove `nix-build` artefact file by using `Sys.which()` for checking availability. `with_nix()`: clean all itermediary and output artefacts (files) on exit
+- Patch `rix()` with `shell_hook = NULL` default, Nix-R wrappers `nix_build()` and `with_nix()`; update testfiles
+- `with_nix()`: try `sessionInfo()`; fails under R Nixpkgs on darwin
+- Do not remove `R_LIBS_USER` from .libPaths() in covr test environment
+- `nix_build()` & `with_nix()`: fix segmentation fault with adjusting `LD_LIBRARY_PATH` temporarily 
+- `nix_build()`: consistently separate cmd and args for `nix-build` system command
+- `nix_build()`: another guardrail for run-time purity of Nixpkgs R
+- implement `nix_file` to specify specific `.nix` file
+- Make `nix_shell()` and `with_nix()` compatible with RStudio on macOS, where the R session is not (yet) started from a shell. Now `/nix/var/nix/profiles/default/bin` is added to the `PATH` variable after `nix_shell()` or `with_nix()` are called from an RStudio version of the system (not as Nix package).
+- Add `rix::init()` to initiate and maintain an isolated, project-specific and pure R setup via Nix
+- update with `glibcLocales` patch
+-`with_nix()` needs patch for R <= 4.2.0; `glibcLocalesUtf8` -> `gibcLocales`
+- Implement `with_nix()` to valuate function in R or shell command via `nix-shell` environment
+- Added `tar_nix_ga()`, a function to run targets pipelines on Github Actions using a Nix expression
+
+
 # rix 0.6.0 (2024-02-02)
 
 ## New features
