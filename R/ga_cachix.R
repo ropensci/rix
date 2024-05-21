@@ -13,7 +13,7 @@
 #' @export
 #' @examples
 #' \dontrun{
-#'   ga_cachix("my-cachix", path_default = ".")
+#'   ga_cachix("my-cachix", path_default = "default.nix")
 #' }
 ga_cachix <- function(cache_name, path_default){
 
@@ -44,12 +44,22 @@ ga_cachix <- function(cache_name, path_default){
 
   file.copy(source, path, overwrite = TRUE)
   message("GitHub Actions workflow file saved to: ", path)
+
+  # The sed command for Darwin is of the form "sed -i '' s/foo/bar"
+  # while on Linux it's "sed -i s/foo/bar"
+  darwin_specific_quotes <- if(Sys.info()["sysname"] == "Darwin"){
+                              "'' "
+                            } else {
+                              ""
+                            }
+
   system(
-    paste0("sed -i '' 's/CACHE_NAME/", cache_name, "/g' ", paste0(path, "/cachix-dev-env.yaml"))
+    paste0("sed -i ", darwin_specific_quotes, "'s/CACHE_NAME/", cache_name, "/g' ",
+           paste0(path, "/cachix-dev-env.yaml"))
   )
 
   system(
-    paste0("sed -i '' 's/PATH_TO_DEFAULT_NIX/", path_default, "/g' ", paste0(path, "/cachix-dev-env.yaml"))
+    paste0("sed -i ", darwin_specific_quotes, "'s/PATH_TO_DEFAULT_NIX/", path_default, "/g' ", paste0(path, "/cachix-dev-env.yaml"))
   )
 
   if(identical(Sys.getenv("TESTTHAT"), "true")) paste0(path, "/cachix-dev-env.yaml")

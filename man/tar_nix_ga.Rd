@@ -7,7 +7,7 @@
 tar_nix_ga()
 }
 \value{
-Nothing, copies file to a diretory.
+Nothing, copies file to a directory.
 }
 \description{
 tar_nix_ga Run a \{targets\}  pipeline on Github Actions.
