@@ -22,12 +22,12 @@ library(rix)
 
 ## Introduction
 
-At its core, the Nix package manager install packages from source, which can
+At its core, the Nix package manager installs software from source, which can
 take a very long time. For example, installing R or RStudio from source could
 take up several hours, depending on your hardware. Some R packages also must be
 compiled, so depending on the environment you need, this could take several
 hours to build. In practice however, this is rarely the case as most, if not
-all, packages get pre-built and made available through NixOS's [public
+all packages get pre-built and made available through NixOS's [public
 cache](https://cache.nixos.org/). The Nix package manager first checks if what
 you need is in the public cache, and if yes, it downloads a binary from there
 instead of building it on your computer. This means that building an environment
@@ -40,7 +40,7 @@ these environments could potentially take quite long, because these packages
 need to be built from source on your computer.
 
 This vignette will explain how you can cut down on building times by building
-the environment once, and then caching it, so you don’t need to rebuild it on
+the environment once, and then cache it, so you don’t need to rebuild it on
 new machines. But before rolling out your own cache, try using ours as explained
 in `vignette("z-bleeding_edge")`, and if our cache didn’t cover your needs, set
 up your own. This vignette explains how.
@@ -98,15 +98,22 @@ on:
 By using [cron syntax](https://en.wikipedia.org/wiki/Cron#Overview) you can
 specify how often you want the environment to be re-built. This can be useful
 if you need to develop against the current state of CRAN every day (for
-instance, for package development). To then use the cache, you need to open an
+instance, for package development).
+
+## Using your cache
+
+Whether you decide to build the packages on Github or locally, to then use your cache, you need to open an
 account on [Cachix](https://www.cachix.org/). The free tier includes 5GB of
 space, which is more than enough for several development environments. Once your
-account is done, create a personal auth token so that the workflow can
+account is done, create a personal auth token so that the Github Actions workflow (or
+your computer, if building locally) can
 authenticate to your Cachix account. Then, copy this token, and go to your
 Github repository’s settings, then *Secrets and variables > Actions* and add a
 new repository secret. Copy the token in the `Secret` field and name the secret
-`CACHIX_AUTH`. Now the action can authenticate to Cachix, and push the binaries
-it builds!
+`CACHIX_AUTH`. Now the action can authenticate to Cachix and push the binaries
+it builds! If building locally, simply run `cachix authtoken <TOKEN>` in your 
+terminal before building (follow the instructions on Cachix website to learn
+how to push the binaries afterwards).
 
 To use your personalized cache on your computers, run the following commands on
 your computer. First, install the Cachix client:
