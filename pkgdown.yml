@@ -13,9 +13,12 @@ articles:
   z-advanced-topic-handling-packages-with-remote-dependencies: z-advanced-topic-handling-packages-with-remote-dependencies.html
   z-advanced-topic-reproducible-analytical-pipelines-with-nix: z-advanced-topic-reproducible-analytical-pipelines-with-nix.html
   z-advanced-topic-running-r-or-shell-code-in-nix-from-r: z-advanced-topic-running-r-or-shell-code-in-nix-from-r.html
+  z-binary_cache: z-binary_cache.html
+  z-bleeding_edge: z-bleeding_edge.html
+  z-contributing_to_nixpkgs: z-contributing_to_nixpkgs.html
   z-developers-vignette-generate-an-environment-with-rix-only: z-developers-vignette-generate-an-environment-with-rix-only.html
   z-developers-vignette-save-the-nix-package-versions-data: z-developers-vignette-save-the-nix-package-versions-data.html
-last_built: 2024-05-19T09:27Z
+last_built: 2024-05-21T20:15Z
 urls:
   reference: https://b-rodrigues.github.io/rix/reference
   article: https://b-rodrigues.github.io/rix/articles

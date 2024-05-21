@@ -35,6 +35,9 @@
     <a class="dropdown-item" href="../articles/z-advanced-topic-handling-packages-with-remote-dependencies.html">z - Advanced topic: Handling packages with remote dependencies</a>
     <a class="dropdown-item" href="../articles/z-advanced-topic-reproducible-analytical-pipelines-with-nix.html">z - Advanced topic: Reproducible Analytical Pipelines with Nix</a>
     <a class="dropdown-item" href="../articles/z-advanced-topic-running-r-or-shell-code-in-nix-from-r.html">z - Advanced topic: Running R or Shell Code in Nix from R</a>
+    <a class="dropdown-item" href="../articles/z-binary_cache.html">z - Advanced topic: Rolling out your own binary cache</a>
+    <a class="dropdown-item" href="../articles/z-bleeding_edge.html">z - Advanced topic: Understanding the rPackages set release cycle and using bleeding edge packages</a>
+    <a class="dropdown-item" href="../articles/z-contributing_to_nixpkgs.html">UNKNOWN TITLE</a>
     <a class="dropdown-item" href="../articles/z-developers-vignette-generate-an-environment-with-rix-only.html">z - Developers Vignette: Generate an environment with rix only</a>
     <a class="dropdown-item" href="../articles/z-developers-vignette-save-the-nix-package-versions-data.html">z - Developers Vignette: Save the Nix Package Versions data</a>
   </div>
@@ -88,7 +91,9 @@
     <dl><dt>r_ver</dt>
 <dd><p>Character, defaults to "latest". The required R version, for example "4.0.0".
 You can check which R versions are available using <code>available_r</code>.
-For reproducibility purposes, you can also provide a nixpkgs revision directly.</p></dd>
+For reproducibility purposes, you can also provide a nixpkgs revision directly.
+It is also possible to provide either "bleeding_edge" or "frozen_edge" if you
+need an environment with bleeding edge packages. Read more in the "Details" below.</p></dd>
 
 
 <dt>r_pkgs</dt>
@@ -191,7 +196,21 @@ reproducibility by default in Nix environments created with <code>rix()</code>.
 If there are good reasons to not stick to the default, you can set your
 preferred locale variables via
 <code>options(rix.nix_locale_variables = list(LANG = "de_CH.UTF-8", &lt;...&gt;)</code>
-and the aforementioned locale variable names.</p>
+and the aforementioned locale variable names.
+It is possible to use "bleeding_edge" or "frozen_edge" as the value for
+the <code>r_ver</code> argument. This will create an environment with the very
+latest R packages. "bleeding_edge" means that every time you will build
+the environment, the packages will get updated. This is especially useful
+for environments that need to be constantly updated, for example when
+developing a package. In contrast, "frozen_edge" will create an
+environment that will remain stable at build time. So if you create
+a <code>default.nix</code> file using "bleeding_edge", each time you build it
+using <code>nix-build</code> that environment will be up-to-date. With "frozen_edge"
+that environment will be up-to-date on the date that the <code>default.nix</code>
+will be generated, and then each subsequent call to <code>nix-build</code> will
+result in the same environment. We highly recommend you read the
+vignette titled
+"z - Advanced topic: Understanding the rPackages set release cycle and using bleeding edge packages".</p>
     </div>
 
     <div class="section level2">
