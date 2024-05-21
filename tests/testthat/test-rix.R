@@ -183,3 +183,100 @@ testthat::test_that("If on darwin and ide = rstudio, raise warning", {
 
 })
 
+
+testthat::test_that("rix(), bleeding_edge", {
+
+  path_default_nix <- tempdir()
+
+  save_default_nix_test <- function(ide, path_default_nix) {
+
+    # This will generate the warning to read the vignette for bleeding_edge 
+    suppressWarnings(
+      rix(r_ver = "bleeding_edge",
+          r_pkgs = c("dplyr", "janitor", "AER@1.2-8", "quarto"),
+          tex_pkgs = c("amsmath"),
+          git_pkgs = list(
+            list(package_name = "housing",
+                 repo_url = "https://github.com/rap4all/housing/",
+                 branch_name = "fusen",
+                 commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
+            list(package_name = "fusen",
+                 repo_url = "https://github.com/ThinkR-open/fusen",
+                 branch_name = "main",
+                 commit = "d617172447d2947efb20ad6a4463742b8a5d79dc")
+          ),
+          ide = ide,
+          project_path = path_default_nix,
+          overwrite = TRUE,
+          shell_hook = NULL)
+    )
+
+    paste0(path_default_nix, "/default.nix")
+
+  }
+
+  testthat::announce_snapshot_file("rix/bleeding_edge_default.nix")
+
+  testthat::expect_snapshot_file(
+    path = save_default_nix_test(ide = "other", path_default_nix),
+    name = "bleeding_edge_default.nix",
+  )
+
+
+})
+
+testthat::test_that("rix(), frozen_edge", {
+
+  # because of the sed command, this will only work on Linux
+  skip_if(Sys.info()["sysname"] != "Linux")
+
+  path_default_nix <- tempdir()
+
+  save_default_nix_test <- function(ide, path_default_nix) {
+
+    # This will generate the warning to read the vignette for bleeding_edge 
+    suppressWarnings(
+      rix(r_ver = "frozen_edge",
+          r_pkgs = c("dplyr", "janitor", "AER@1.2-8", "quarto"),
+          tex_pkgs = c("amsmath"),
+          git_pkgs = list(
+            list(package_name = "housing",
+                 repo_url = "https://github.com/rap4all/housing/",
+                 branch_name = "fusen",
+                 commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
+            list(package_name = "fusen",
+                 repo_url = "https://github.com/ThinkR-open/fusen",
+                 branch_name = "main",
+                 commit = "d617172447d2947efb20ad6a4463742b8a5d79dc")
+          ),
+          ide = ide,
+          project_path = path_default_nix,
+          overwrite = TRUE,
+          shell_hook = NULL)
+    )
+
+    paste0(path_default_nix, "/default.nix")
+
+  }
+
+  testthat::announce_snapshot_file("rix/frozen_edge_default.nix")
+
+  frozen_edge_commit <- get_right_commit("frozen_edge")
+
+  system(
+    paste0("sed -i 's/REVISION/", frozen_edge_commit, "/' _snaps/rix/frozen_edge_default.nix")
+  )
+
+  testthat::expect_snapshot_file(
+    path = save_default_nix_test(ide = "other", path_default_nix),
+    name = "frozen_edge_default.nix",
+  )
+
+
+  on.exit(
+    system(
+      paste0("sed -i 's/", frozen_edge_commit, "/REVISION/' _snaps/rix/frozen_edge_default.nix")
+    )
+  )
+
+})

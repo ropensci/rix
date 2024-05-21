@@ -4,7 +4,7 @@
 #' projects `default.nix` file to generate the development environment on
 #' Github Actions and will then run the projects \{targets\} pipeline. Make
 #' sure to give read and write permissions to the Github Actions bot.
-#' @return Nothing, copies file to a diretory.
+#' @return Nothing, copies file to a directory.
 #' @export
 #' @examples
 #' \dontrun{
@@ -38,6 +38,6 @@ tar_nix_ga <- function(){
   )
 
   file.copy(source, path, overwrite = TRUE)
-  message("GitHub Actions workflow file save to: ", path)
+  message("GitHub Actions workflow file saved to: ", path)
   if(identical(Sys.getenv("TESTTHAT"), "true")) paste0(path, "/run-pipeline.yaml")
   }
