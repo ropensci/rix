@@ -29,6 +29,6 @@ read and write permissions to the Github Actions bot.
 }
 \examples{
 \dontrun{
-  ga_cachix("my-cachix", path_default = ".")
+  ga_cachix("my-cachix", path_default = "default.nix")
 }
 }

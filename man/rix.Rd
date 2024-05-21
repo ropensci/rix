@@ -20,7 +20,9 @@ rix(
 \arguments{
 \item{r_ver}{Character, defaults to "latest". The required R version, for example "4.0.0".
 You can check which R versions are available using \code{available_r}.
-For reproducibility purposes, you can also provide a nixpkgs revision directly.}
+For reproducibility purposes, you can also provide a nixpkgs revision directly.
+It is also possible to provide either "bleeding_edge" or "frozen_edge" if you
+need an environment with bleeding edge packages. Read more in the "Details" below.}
 
 \item{r_pkgs}{Vector of characters. List the required R packages for your
 analysis here.}
@@ -104,6 +106,20 @@ If there are good reasons to not stick to the default, you can set your
 preferred locale variables via
 \verb{options(rix.nix_locale_variables = list(LANG = "de_CH.UTF-8", <...>)}
 and the aforementioned locale variable names.
+It is possible to use "bleeding_edge" or "frozen_edge" as the value for
+the \code{r_ver} argument. This will create an environment with the very
+latest R packages. "bleeding_edge" means that every time you will build
+the environment, the packages will get updated. This is especially useful
+for environments that need to be constantly updated, for example when
+developing a package. In contrast, "frozen_edge" will create an
+environment that will remain stable at build time. So if you create
+a \code{default.nix} file using "bleeding_edge", each time you build it
+using \code{nix-build} that environment will be up-to-date. With "frozen_edge"
+that environment will be up-to-date on the date that the \code{default.nix}
+will be generated, and then each subsequent call to \code{nix-build} will
+result in the same environment. We highly recommend you read the
+vignette titled
+"z - Advanced topic: Understanding the rPackages set release cycle and using bleeding edge packages".
 }
 \examples{
 \dontrun{
