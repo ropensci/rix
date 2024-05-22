@@ -16,7 +16,7 @@
 #  > "pandoc",
 #  > "nix"),
 #  > tex_pkgs = "scheme-small",
-#  > ide = "radian",
+#  > ide = "other",
 #  > project_path = ".",
 #  > overwrite = TRUE,
 #  > print = FALSE,
@@ -33,12 +33,9 @@ let
   inherit (pkgs.texlive) scheme-small;
 });
  system_packages = builtins.attrValues {
-  inherit (pkgs) R glibcLocalesUtf8 pandoc nix;
+  inherit (pkgs) R glibcLocalesUtf8 pandoc nix glibcLocales;
 };
- wrapped_pkgs = pkgs.radianWrapper.override {
-  packages = [  rpkgs ];
-};
- in
+  in
   pkgs.mkShell {
     LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
     LANG = "en_US.UTF-8";
@@ -48,6 +45,6 @@ let
     LC_PAPER = "en_US.UTF-8";
     LC_MEASUREMENT = "en_US.UTF-8";
 
-    buildInputs = [  rpkgs tex system_packages wrapped_pkgs ];
+    buildInputs = [  rpkgs tex system_packages  ];
       
   }
