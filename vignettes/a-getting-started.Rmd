@@ -46,7 +46,7 @@ other way to deal with packages) is likely the most popular way to ensure
 reproducibility of your projects, but there are other tools to achieve this. One
 such tool is called Nix.
 
-Nix is a package manager for Linux distributions, macOS and apparently it even
+Nix is a package manager for Linux distributions, macOS and it even
 works on Windows if you enable WSL2. What's a package manager? If you're not a
 Linux user, you may not be aware. Let me explain it this way: in R, if you want
 to install a package to provide some functionality not included with a vanilla
