@@ -3,6 +3,7 @@
 # rix 0.7.0 (2024-05-21)
 
 - Added the possibility to create "bleeding_edge" and "frozen_edge" environments
+- Added the possibility to use *radian* as the environment's console (courtesy of [kupac](https://github.com/b-rodrigues/rix/pull/161)) and *RStudio server*
 - Added `ga_cachix()`, a function to create a GA workflow file that builds and pushes an environment to a Cachix cache
 
 
