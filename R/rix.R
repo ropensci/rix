@@ -231,10 +231,12 @@ rPackages)
   generate_tex_pkgs <- function(tex_pkgs) {
     if (!is.null(tex_pkgs)) {
 
+      tex_pkgs <- unique(c("scheme-small", tex_pkgs))
+
       tex_pkgs <- paste(tex_pkgs, collapse = ' ')
 
     sprintf('tex = (pkgs.texlive.combine {
-  inherit (pkgs.texlive) scheme-small %s;
+  inherit (pkgs.texlive) %s;
 });
 ',
 tex_pkgs)
@@ -250,10 +252,12 @@ tex_pkgs)
   # system packages
   get_system_pkgs <- function(system_pkgs, r_pkgs){
 
+    system_pkgs <- c(system_pkgs, "R", "glibcLocales", "nix")
+
     system_pkgs <- if(any(grepl("quarto", r_pkgs))){
                 unique(c(system_pkgs, "quarto"))
               } else {
-                system_pkgs
+                unique(system_pkgs)
               }
 
     paste(system_pkgs, collapse = ' ')
@@ -281,7 +285,7 @@ tex_pkgs)
   # to add it.
   generate_system_pkgs <- function(system_pkgs, r_pkgs){
     sprintf('system_packages = builtins.attrValues {
-  inherit (pkgs) R glibcLocales nix %s;
+  inherit (pkgs) %s;
 };
 ',
 get_system_pkgs(system_pkgs, r_pkgs))

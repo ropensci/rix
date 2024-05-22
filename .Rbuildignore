@@ -17,3 +17,4 @@
 ^_debug_with_nix.R$
 ^codemeta\.json$
 ^CONTRIBUTING.md$
+create_dev_env.R
