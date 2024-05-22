@@ -163,7 +163,7 @@ line tool (required to edit Quarto documents from R using the
 <span><span class="co">#&gt;   inherit (pkgs.rPackages) quarto;</span></span>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;    system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) R glibcLocales nix quarto git;</span></span>
+<span><span class="co">#&gt;   inherit (pkgs) quarto git R glibcLocales nix;</span></span>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
@@ -226,7 +226,7 @@ add a TexLive package to the <code>tex_pkgs</code> argument of
 <span><span class="co">#&gt;   inherit (pkgs.texlive) scheme-small amsmath;</span></span>
 <span><span class="co">#&gt; });</span></span>
 <span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) R glibcLocales nix quarto;</span></span>
+<span><span class="co">#&gt;   inherit (pkgs) quarto R glibcLocales nix;</span></span>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>

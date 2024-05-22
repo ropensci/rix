@@ -272,7 +272,7 @@ expressions that pin R version 4.2.0 from Nixpkgs.</p>
 <span><span class="co">#&gt; let</span></span>
 <span><span class="co">#&gt;  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/6e3a86f2f73a466656a401302d3ece26fba401d9.tar.gz") {};</span></span>
 <span><span class="co">#&gt;     system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) R glibcLocales nix ;</span></span>
+<span><span class="co">#&gt;   inherit (pkgs) R glibcLocales nix;</span></span>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt;   in</span></span>
 <span><span class="co">#&gt;   pkgs.mkShell {</span></span>
