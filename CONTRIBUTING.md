@@ -27,7 +27,7 @@ Then, when you run `nix-build`, binaries will be pulled from `b-rodrigues.cachix
 `cache.nixos.org`. Building the development environment is nothing more than
 waiting for packages to download.
 
-There is also the possibility that you cannot successfully build the devoplement 
+There is also the possibility that you cannot successfully build the development 
 environment: because the `nixpkgs` fork gets updated fully automatically several times
 a day without any checks, if building a package fails, there will be no fix released yet.
 
