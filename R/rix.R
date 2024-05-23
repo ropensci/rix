@@ -172,7 +172,7 @@ for more details.")
 
   # Get the two lists. One list is current CRAN packages
   # the other is archived CRAN packages.
-  cran_pkgs <- get_rPackages(r_pkgs)
+  cran_pkgs <- get_rPackages(r_pkgs, ide)
 
   # we need to know if the user wants R packages
 

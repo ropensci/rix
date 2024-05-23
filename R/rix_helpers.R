@@ -42,7 +42,7 @@ nix_url
 #' generate_rPackages Internal function used to generate the header of the `default.nix` file.
 #' @param r_pkgs Character, list of R packages to install.
 #' @noRd
-get_rPackages <- function(r_pkgs){
+get_rPackages <- function(r_pkgs, ide){
 
   # in case users pass something like c("dplyr", "tidyr@1.0.0")
   # r_pkgs will be "dplyr" only
