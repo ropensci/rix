@@ -85,7 +85,7 @@ get_rPackages <- function(r_pkgs, ide){
 }
 
 # generate_* function generate the actual Nix code
-generate_rpkgs <- function(rPackages) {
+generate_rpkgs <- function(rPackages, flag_rpkgs) {
   if (flag_rpkgs == ""){
     NULL
   } else {
@@ -127,7 +127,7 @@ get_system_pkgs <- function(system_pkgs, r_pkgs){
   paste(system_pkgs, collapse = ' ')
 }
 
-  generate_git_archived_packages <- function(git_pkgs, archive_pkgs){
+  generate_git_archived_packages <- function(git_pkgs, archive_pkgs, flag_git_archive){
     if(flag_git_archive == ""){
       NULL
     } else {
