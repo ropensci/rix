@@ -1,1 +1,19 @@
+---
+title: "z - Advanced topic: Contributing to nixpkgs"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{z-advanced-topic-contributing-to-nixpkgs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r, include=FALSE}
+library(rix)
+```
