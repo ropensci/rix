@@ -215,7 +215,7 @@ for more details.")
     generate_tex_pkgs(tex_pkgs),
     generate_system_pkgs(system_pkgs, r_pkgs),
     generate_wrapped_pkgs(ide, attrib, flag_git_archive, flag_rpkgs),
-    generate_shell(flag_git_archive, flag_rpkgs),
+    generate_shell(flag_git_archive, flag_rpkgs, flag_tex_pkgs, flag_wrapper, shell_hook),
     collapse = "\n"
     )
 
