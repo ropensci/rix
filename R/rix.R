@@ -172,36 +172,37 @@ for more details.")
 
   # Get the two lists. One list is current CRAN packages
   # the other is archived CRAN packages.
-  cran_pkgs <- get_rPackages(r_pkgs, ide)
+  cran_pkgs <- get_rpkgs(r_pkgs, ide)
 
-  # we need to know if the user wants R packages
-
+  # If there are R packages, passes the string "rpkgs" to buildInputs
   flag_rpkgs <- if(is.null(cran_pkgs$rPackages) | cran_pkgs$rPackages == ""){
                   ""
                 } else {
                   "rpkgs"
                 }
 
-
+  # If there are LaTeX packages, passes the string "tex" to buildInputs
   flag_tex_pkgs <- if(is.null(tex_pkgs)){
                      ""
                    } else {
                      "tex"
                    }
 
+  # If there are R packages from Git, passes the string "git_archive_pkgs" to buildInputs
   flag_git_archive <- if(!is.null(cran_pkgs$archive_pkgs) | !is.null(git_pkgs)){
                         "git_archive_pkgs"
                       } else {
                         ""
                       }
 
-
+  # If there are wrapped packages (for example for RStudio), passes the "wrapped_pkgs"
+  # to buildInputs
   flag_wrapper <- if (ide %in% names(attrib) & flag_rpkgs != "") "wrapped_pkgs" else ""
 
+  # Correctly formats shellHook for Nix's mkShell
   shell_hook <- if (!is.null(shell_hook) && nzchar(shell_hook)) {
     paste0('shellHook = "', shell_hook, '";')
   } else {''}
-
 
   # Generate default.nix file
   default.nix <- paste(
@@ -211,7 +212,7 @@ for more details.")
                     r_ver_text,
                     rix_call),
     generate_rpkgs(cran_pkgs$rPackages, flag_rpkgs),
-    generate_git_archived_packages(git_pkgs, cran_pkgs$archive_pkgs, flag_git_archive),
+    generate_git_archived_pkgs(git_pkgs, cran_pkgs$archive_pkgs, flag_git_archive),
     generate_tex_pkgs(tex_pkgs),
     generate_system_pkgs(system_pkgs, r_pkgs),
     generate_wrapped_pkgs(ide, attrib, flag_git_archive, flag_rpkgs),
