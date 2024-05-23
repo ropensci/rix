@@ -36,6 +36,20 @@ nix_url
   }
 }
 
+#' generate_rix_call Internal function used to generate the call to `rix()` as shown in `default.nix`
+#' @param rix_call Character, call to rix().
+#' @param nix_url Character, nixpkgs revision to be used.
+#' @noRd
+generate_rix_call <- function(rix_call, nix_url){
+
+  rix_call$r_ver <- nix_url
+
+  rix_call <- paste0("# >", deparse1(rix_call))
+
+  gsub(",", ",\n#  >", rix_call)
+}
+
+
 # Now we need to generate all the different sets of packages
 # to install. Let's start by the CRAN packages, current
 # and archived. The function below builds the strings.
