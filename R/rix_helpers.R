@@ -197,7 +197,10 @@ flag_rpkgs
 
                                         # Generate the shell
 generate_shell <- function(flag_git_archive,
-                           flag_rpkgs){
+                           flag_rpkgs,
+                           flag_tex_pkgs,
+                           flag_wrapper,
+                           shell_hook){
   sprintf('in
   pkgs.mkShell {
     %s
