@@ -1,6 +1,6 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
-# rix 0.7.0 (2024-05-24)
+# rix 0.7.1 (2024-05-24)
 
 - Better messages of comments on top of the generated `default.nix` files.
 
