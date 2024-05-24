@@ -46,7 +46,7 @@ testthat::test_that("rix(), ide is 'other' or 'code'", {
   save_default_nix_test <- function(ide, path_default_nix) {
 
     rix(r_ver = "4.3.1",
-        r_pkgs = c("dplyr", "janitor", "AER@1.2-8", "quarto"),
+        r_pkgs = c("data.table", "janitor", "AER@1.2-8", "quarto"),
         tex_pkgs = c("amsmath"),
         git_pkgs = list(
           list(package_name = "housing",
@@ -117,7 +117,7 @@ testthat::test_that("Quarto gets added to sys packages", {
   testthat::announce_snapshot_file("rix/yes_quarto_default.nix")
 
   testthat::expect_snapshot_file(
-              path = save_default_nix_test(pkgs = c("dplyr", "quarto"),
+              path = save_default_nix_test(pkgs = c("dplyr", "quarto", "data.table"),
                                            interface = "other",
                                            path_default_nix),
               name = "yes_quarto_default.nix"

@@ -112,7 +112,7 @@ get_rpkgs <- function(r_pkgs, ide){
               r_pkgs
             }
 
-  rPackages <- paste(r_pkgs, collapse = ' ')
+  rPackages <- paste(c("", r_pkgs), collapse = '\n      ')
 
   rPackages <- gsub('\\.', '_', rPackages)
 
