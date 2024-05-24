@@ -108,7 +108,8 @@ testthat::test_that("Quarto gets added to sys packages", {
   testthat::announce_snapshot_file("rix/no_quarto_default.nix")
 
   testthat::expect_snapshot_file(
-              path = save_default_nix_test(pkgs = "dplyr",                                       interface = "other",
+              path = save_default_nix_test(pkgs = "dplyr",
+                                           interface = "other",
                                            path_default_nix),
               name = "no_quarto_default.nix",
               )

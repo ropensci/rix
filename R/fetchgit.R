@@ -13,18 +13,20 @@ fetchgit <- function(git_pkg){
   sri_hash <- output$sri_hash
   imports <- output$deps
 
-  sprintf('(pkgs.rPackages.buildRPackage {
+  sprintf('
+  (pkgs.rPackages.buildRPackage {
     name = \"%s\";
     src = pkgs.fetchgit {
-      url = \"%s\";
-      branchName = \"%s\";
-      rev = \"%s\";
-      sha256 = \"%s\";
+     url = \"%s\";
+     branchName = \"%s\";
+     rev = \"%s\";
+     sha256 = \"%s\";
     };
     propagatedBuildInputs = builtins.attrValues {
-      inherit (pkgs.rPackages) %s;
+     inherit (pkgs.rPackages) %s;
     };
-  })',
+  })
+',
   package_name,
   repo_url,
   branch_name,
@@ -62,16 +64,18 @@ fetchzip <- function(archive_pkg, sri_hash = NULL){
     imports <- NULL
   }
 
-  sprintf('(pkgs.rPackages.buildRPackage {
+  sprintf('
+  (pkgs.rPackages.buildRPackage {
     name = \"%s\";
     src = pkgs.fetchzip {
-      url = \"%s\";
-      sha256 = \"%s\";
+     url = \"%s\";
+     sha256 = \"%s\";
     };
     propagatedBuildInputs = builtins.attrValues {
-      inherit (pkgs.rPackages) %s;
+     inherit (pkgs.rPackages) %s;
     };
-  })',
+  })
+',
   package_name,
   repo_url,
   sri_hash,
