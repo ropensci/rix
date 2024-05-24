@@ -102,8 +102,382 @@
 
     
     
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>If you want to help us make the R ecosystem better on Nix by fixing
+packages, then read on!</p>
+<p>This Vignette will help you help us! It lists common ways that
+packages can break and teaches you how to fix these R packages for
+inclusion to <code>nixpkgs</code>. Every package available on CRAN and
+Bioconductor gets built on Hydra and made available through the
+<code>rPackages</code> package set. So there’s no need to manually
+package them. However, some packages don’t build successfully, and
+require manual fixing. Most of them are very quick, one-line fixes, but
+others require a bit more work. The goal of this Vignette is to make you
+quickly familiar with the main reasons a package may be broken and
+explain to you how to fix it, and why certain packages get fixed in
+certain ways.</p>
+<p>This vignette assumes that you are comfortable with Git and with the
+concepts of branches and PRs (pull requests) and with compiling software
+on Linux.</p>
+</div>
+<div class="section level2">
+<h2 id="setting-up">Setting up<a class="anchor" aria-label="anchor" href="#setting-up"></a>
+</h2>
+<p>We first need to set up some thing. Fork the <a href="https://github.com/NixOS/nixpkgs" class="external-link"><code>nixpkgs</code>
+repository</a> and clone it to your computer. Then, add the original
+repository as a remote:</p>
+<pre><code>git checkout master
 
-  </main>
+# Add upstream as a remote
+git remote add upstream git@github.com:NixOS/nixpkgs.git</code></pre>
+<p>This way, each time you want to fix a package, you can fetch the
+latest updates from upstream and merge them to your local copy:</p>
+<pre><code># Fetch latest updates
+git fetch upstream
+
+# Merge latest upstream/master to your master
+git merge upstream/master</code></pre>
+<p>Make sure to merge the latest commits from upstream regularly,
+because <code>nixpkgs</code> gets updated very frequently each day. We
+can now look for a package to fix.</p>
+<p>If for some reason you cannot update your local copy, make sure
+you’re on <code>master</code> and reset hard:</p>
+<pre><code>git reset --hard upstream/master</code></pre>
+<p>Always make sure to create a new branch to fix a package, don’t work
+from <code>master</code>, you’ll just be asking for trouble!</p>
+<p>You might also want to join our Matrix chat room to coordinate
+efforts. You can join it <a href="https://matrix.to/#/#r:nixos.org" class="external-link">here</a>.</p>
+</div>
+<div class="section level2">
+<h2 id="where-to-find-packages-to-fix">Where to find packages to fix<a class="anchor" aria-label="anchor" href="#where-to-find-packages-to-fix"></a>
+</h2>
+<p>The first step to help fix a package is to find a package to fix: you
+should visit the latest <code>rPackages</code> evaluation over <a href="https://hydra.nixos.org/jobset/nixpkgs/r-updates" class="external-link">here</a>. Click
+on the “Still failing jobs” tab to see which packages’ builds didn’t
+succeed and click on a package. You should see something like this:</p>
+<div class="float">
+<img src="images/AIUQ_failing.png" alt="AIUQ build steps"><div class="figcaption">AIUQ build steps</div>
+</div>
+<p>From there, you can see that <code>{AIUQ}</code>’s build failed
+because of another package, <code>{SuperGauss}</code>, so fixing
+<code>{SuperGauss}</code> will likely fix this one as well.</p>
+<p>You can look for <code>{SuperGauss}</code> in the “Still failing
+jobs” tab, and see why <code>{SuperGauss}</code> failed, or you could
+check out a little dashboard I built that you can find <a href="https://raw.githack.com/b-rodrigues/nixpkgs-r-updates-fails/targets-runs/output/r-updates-fails.html" class="external-link">here</a>.
+This dashboard shows essentially the same information you find on the
+“Still failing jobs” tab from before, but with several added niceties.
+First of all, there’s a column called <code>fails_because_of</code> that
+shows the name of the package that caused another to fail. So in our
+example with <code>{AIUQ}</code>, <code>{SuperGauss}</code> would be
+listed there (if a package fails for another reason, like a missing
+system-level dependency, then its own name is listed there). You can
+type <code>{SuperGauss}</code> on the little box there to filter and see
+all the packages that fail because of of it. Then, you can also see the
+package’s <em>package rank</em>. This rank is computed using the
+<a href="https://github.com/lindbrook/packageRank" class="external-link">packageRank</a> package, and the table is sorted by lowest
+rank (low ranks indicate high popularity and there’s also the
+<code>percentile</code> column that indicates the percentage of packages
+with higher downloads). Finally, there’s a direct link to a PR fixing
+the package (if it has been opened) and also the PR’s status: has it
+been merged already or not?</p>
+<p>Having a link to the PR is quite useful, because it immediately tells
+you if someone already tried fixing it. If the PR has been merged,
+simply try to another fix package. If the PR is open and not yet merged,
+this is a great opportunity to help review it (more on that below)!</p>
+<p>Let’s go back to fixing <code>{SuperGauss}</code>. If you go back on
+Hydra, you can see the error message that was thrown during
+building:</p>
+<div class="float">
+<img src="images/SuperGauss_log.png" alt="Check out the logfile"><div class="figcaption">Check out the logfile</div>
+</div>
+<p>Click on the logfile (either <code>pretty</code>, <code>raw</code> or
+<code>tail</code>) to see what happened. Here’s what we see:</p>
+<pre><code>checking for pkg-config... no
+checking for FFTW... configure: error: in `/build/SuperGauss':
+configure: error: The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables FFTW_CFLAGS
+and FFTW_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see &lt;http://pkg-config.freedesktop.org/&gt;.
+See `config.log' for more details
+ERROR: configuration failed for package 'SuperGauss'
+* removing '/nix/store/jxv5p85x24xmfcnifw2ibvx9jhk9f2w4-r-SuperGauss-2.0.3/library/SuperGauss'</code></pre>
+<p>So the issue is that some system-level dependencies are missing,
+<code>pkg-config</code> and <code>FFTW</code>, so we need to add these
+to fix the build. Which brings us the first recipe of this cookbook!</p>
+</div>
+<div class="section level2">
+<h2 id="case-1-packages-that-need-dependencies-to-build">Case 1: packages that need dependencies to build<a class="anchor" aria-label="anchor" href="#case-1-packages-that-need-dependencies-to-build"></a>
+</h2>
+<p>Fixing packages that require system-level dependencies is a matter of
+adding one, maybe two lines, in the right place in the expression that
+defines the whole of the <code>rPackages</code> set. You can find this
+file <a href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/r-modules/default.nix" class="external-link">here</a>.</p>
+<p>In there, you will find a line that starts with
+<code>packagesWithNativeBuildInputs = {</code> and another that starts
+with <code>packagesWithBuildInputs = {</code> which define a long list
+of packages. The difference between <code>NativeBuildInputs</code> and
+<code>BuildInputs</code> is that dependencies that are needed for
+compilation get listed into <code>NativeBuildInputs</code> (so things
+like compilers and packages such as <code>pkg-config</code>) and
+dependencies that are needed at run-time (dynamic libraries) get listed
+under <code>BuildInputs</code>. For R, actually, you could put
+everything under <code>NativeBuildInputs</code> and it would still work,
+but we try to pay attention to this and do it properly. In case of
+doubt, put everything under <code>NativeBuildInputs</code>: when
+reviewing your PR, people will then tell you where to put what.</p>
+<p>Before doing anything else, try to build the package. The following
+line will drop you in an interactive Nix shell with the package if build
+succeeds (run the command at the root of the cloned <code>nixpkgs</code>
+directory):</p>
+<pre><code>nix-shell -I nixpkgs=. -p R rPackages.SuperGauss</code></pre>
+<p>if you see the same error as on Hydra, and made sure that no PR is
+opened, then you can start fixing the package.</p>
+<p>So, we need to add two dependencies. Let’s read the relevant lines in
+the error message again:</p>
+<pre><code>configure: error: The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables FFTW_CFLAGS
+and FFTW_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.</code></pre>
+<p>If you look in the <code>default.nix</code> file, in particular the
+two lists that define the packages that need
+<code>nativeBuildInputs</code> and <code>buildInputs</code>, you’ll see
+that many of them have <code>pkg-config</code> listed there already. So
+let’s add the following line in the
+<code>packagesWithNativeBuildInputs</code></p>
+<pre><code>SuperGauss = [ pkgs.pkg-config ];</code></pre>
+<p>and this one under <code>packagesWithBuildInputs</code>:</p>
+<pre><code>SuperGauss = [ pkgs.fftw.dev ];</code></pre>
+<p>This is because <code>pkg-config</code> is only needed to compile
+<code>{SuperGauss}</code> and <code>fftw.dev</code> is needed at
+run-time as well.</p>
+<p>Try to build a shell with <code>{SuperGauss}</code> again:</p>
+<pre><code>nix-shell -I nixpkgs=. -p R rPackages.SuperGauss</code></pre>
+<p>If it worked, start R and load the library. Sometimes packages can
+build successfully but fail to launch, so taking the time to load them
+avoids wasting your reviewer’s time. Ideally, try to run one or several
+examples from the package’s vignette or help files. This also makes sure
+that everything is working properly. If your testing succeeded, you can
+now open a PR!</p>
+<p>Before committing, make sure that you are on a seprate branch for
+this fix (you can do your changes on <code>master</code> as long as you
+don’t commit and change branch):</p>
+<pre><code>git checkout -b fix_supergauss</code></pre>
+<p>From there, make sure that only the <code>default.nix</code> file
+changed:</p>
+<pre><code>git status</code></pre>
+<pre><code>user@computer:~/Documents/nixpkgs(fix_supergauss *)$ git status
+On branch fix_supergaus
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git restore &lt;file&gt;..." to discard changes in working directory)
+    modified:   pkgs/development/r-modules/default.nix
+
+no changes added to commit (use "git add" and/or "git commit -a")</code></pre>
+<p>Sometimes, running examples may produce files, so if that’s the case
+get rid of them. No files added in this case so add
+<code>default.nix</code> to the commit and write following commit
+message:</p>
+<pre><code>git add .
+git commit -m "rPackages.SuperGauss: fixed build"</code></pre>
+<p>This commit message follows <code>nixpkgs</code>’s <a href="https://nixos.wiki/wiki/Nixpkgs/Contributing" class="external-link">contributing
+guidelines</a>. Format all your messages like this.</p>
+<p>Now push your changes:</p>
+<pre><code>git push origin fix_supergauss</code></pre>
+<p>and go on your fork’s repository to open a PR.</p>
+<p>Congratulations, you fixed your first package!</p>
+</div>
+<div class="section level2">
+<h2 id="case-2-packages-that-need-a-home-x-or-simple-patching">Case 2: packages that need a home, X, or simple patching<a class="anchor" aria-label="anchor" href="#case-2-packages-that-need-a-home-x-or-simple-patching"></a>
+</h2>
+<p>Some package may require a <code>/home</code> directory during their
+installation process. They usually fail with a message that looks like
+this:</p>
+<pre><code>Warning in normalizePath("~") :
+  path[1]="/homeless-shelter": No such file or directory</code></pre>
+<p>so add the package to the list named
+<code>packagesRequiringHome</code> and try rebuilding.</p>
+<p>See this PR as an example: <a href="https://github.com/NixOS/nixpkgs/pull/292336" class="external-link uri">https://github.com/NixOS/nixpkgs/pull/292336</a></p>
+<p>Some packages require <code>X</code>, as in <code>X11</code>, the
+windowing system on Linux distributions. In other words, these pacakges
+must be installed on a machine with a graphical session running. Because
+that’s not the case on Hydra, this needs to be mocked. Simply add the
+package to the list named <code>packagesRequiringX</code> and try
+rebuilding.</p>
+<p>See this PR <a href="https://github.com/NixOS/nixpkgs/pull/292347" class="external-link uri">https://github.com/NixOS/nixpkgs/pull/292347</a> for an
+example.</p>
+<p>Finally, some packages that must be compiled need first to be
+configured. This is a common step when compiling software. This
+configuration step ensures that needed dependencies are found (among
+other things). Because Nix works the way it does, it can happen that
+this configuration step fails because dependencies are not in the usual
+<code>/usr/bin</code> or <code>/bin</code>, etc, paths. So this needs to
+be patched before the configuration step. To fix this, the
+<code>configuration</code> file that lists the different dependencies to
+be found needs to be patched, and this can be done by overriding one of
+the phases before the configure phase. We override the
+<code>postPatch</code> phase like this:</p>
+<pre><code><span><span class="va">RcppCGAL</span> <span class="op">=</span> <span class="fu">old.RcppCGAL.overrideAttrs</span> <span class="op">(</span><span class="va">attrs</span><span class="op">:</span> <span class="op">{</span></span>
+<span>  <span class="va">postPatch</span> <span class="op">=</span> <span class="st">"patchShebangs configure"</span>;</span>
+<span><span class="op">}</span><span class="op">)</span>;</span></code></pre>
+<p>Read more about <code>patchShebangs</code> <a href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/build-support/setup-hooks/patch-shebangs.sh" class="external-link">here</a>.</p>
+<p>See this PR for an example: <a href="https://github.com/NixOS/nixpkgs/pull/289775" class="external-link uri">https://github.com/NixOS/nixpkgs/pull/289775</a></p>
+<p>Sometimes patching is a bit more complicated. See this other example
+<a href="https://github.com/NixOS/nixpkgs/pull/291258" class="external-link">here</a>.</p>
+</div>
+<div class="section level2">
+<h2 id="case-3-packages-that-require-their-attributes-to-be-overridden">Case 3: packages that require their attributes to be overridden<a class="anchor" aria-label="anchor" href="#case-3-packages-that-require-their-attributes-to-be-overridden"></a>
+</h2>
+<p>Staying on the topic of overrides, it can also happen that packages
+need one or more of their attributes to be overridden. This is already
+much more complex than the cases from before, because the error messages
+that may hint at which attributes to override can be much more cryptic.
+For example, here’s the build log of <a href="https://ropensci.r-universe.dev/xslt" class="external-link">xslt</a>:</p>
+<pre><code>Running phase: unpackPhase
+unpacking source archive /nix/store/gxcysc8y3x1wz7qz3q1fpv8g8f92iqyv-xslt_1.4.4.tar.gz
+source root is xslt
+setting SOURCE_DATE_EPOCH to timestamp 1676995202 of file xslt/MD5
+Running phase: patchPhase
+Running phase: updateAutotoolsGnuConfigScriptsPhase
+Running phase: configurePhase
+Running phase: buildPhase
+Running phase: checkPhase
+Running phase: installPhase
+* installing *source* package 'xslt' ...
+** package 'xslt' successfully unpacked and MD5 sums checked
+** using staged installation
+Found pkg-config cflags and libs!
+Using PKG_CFLAGS=-I/nix/store/8jkj0gm1chw8rhpqbpljydlwsm6hmgwp-libxslt-1.1.39-dev/include -I/nix/store/iqjsxkcdnvvz1bfpq960ygicc5clz9hv-libxml2-2.12.3-unstable-2023-12-14-dev/include/libxml2
+Using PKG_LIBS=-L/nix/store/ksp5m4p5fi1d8zvhng96qqzy1wqc51v6-libxslt-1.1.39/lib -L/nix/store/4jvs7wz2jfmc6x9zgngfcr9804x9hwln-libxml2-2.12.3-unstable-2023-12-14/lib -lexslt -lxslt -lxml2
+** libs
+using C++ compiler: 'g++ (GCC) 13.2.0'
+rm -f RcppExports.o xslt.o xslt_init.o xslt.so
+/nix/store/xq8920m5mbd83vdlydwli7qsh67gfm5v-gcc-wrapper-13.2.0/bin/c++ -std=gnu++17 -I"/nix/store/403kbh5v910gks340j7s1647kijm60rv-R-4.3.2/lib/R/include" -DNDEBUG -I/nix/store/8jkj0gm1chw8rhpqbpljydlwsm6hmgwp-libxslt-1.1.39-dev/include -I/nix/store/iqjsxkcdnvvz1bfpq960ygicc5clz9hv-libxml2-2.12.3-unstable-2023-12-14-dev/include/libxml2 -DSTRICT_R_HEADERS -I'/nix/store/0vzi341m7nbxhdbi8kj50nwn7rrssk5z-r-Rcpp-1.0.12/library/Rcpp/include' -I'/nix/store/h6z1v3qb2pxhb3yjrykdaircz3xk1jla-r-xml2-1.3.6/library/xml2/include'     -fpic  -g -O2  -c RcppExports.cpp -o RcppExports.o
+/nix/store/xq8920m5mbd83vdlydwli7qsh67gfm5v-gcc-wrapper-13.2.0/bin/c++ -std=gnu++17 -I"/nix/store/403kbh5v910gks340j7s1647kijm60rv-R-4.3.2/lib/R/include" -DNDEBUG -I/nix/store/8jkj0gm1chw8rhpqbpljydlwsm6hmgwp-libxslt-1.1.39-dev/include -I/nix/store/iqjsxkcdnvvz1bfpq960ygicc5clz9hv-libxml2-2.12.3-unstable-2023-12-14-dev/include/libxml2 -DSTRICT_R_HEADERS -I'/nix/store/0vzi341m7nbxhdbi8kj50nwn7rrssk5z-r-Rcpp-1.0.12/library/Rcpp/include' -I'/nix/store/h6z1v3qb2pxhb3yjrykdaircz3xk1jla-r-xml2-1.3.6/library/xml2/include'     -fpic  -g -O2  -c xslt.cpp -o xslt.o
+/nix/store/xq8920m5mbd83vdlydwli7qsh67gfm5v-gcc-wrapper-13.2.0/bin/c++ -std=gnu++17 -I"/nix/store/403kbh5v910gks340j7s1647kijm60rv-R-4.3.2/lib/R/include" -DNDEBUG -I/nix/store/8jkj0gm1chw8rhpqbpljydlwsm6hmgwp-libxslt-1.1.39-dev/include -I/nix/store/iqjsxkcdnvvz1bfpq960ygicc5clz9hv-libxml2-2.12.3-unstable-2023-12-14-dev/include/libxml2 -DSTRICT_R_HEADERS -I'/nix/store/0vzi341m7nbxhdbi8kj50nwn7rrssk5z-r-Rcpp-1.0.12/library/Rcpp/include' -I'/nix/store/h6z1v3qb2pxhb3yjrykdaircz3xk1jla-r-xml2-1.3.6/library/xml2/include'     -fpic  -g -O2  -c xslt_init.cpp -o xslt_init.o
+xslt_init.cpp: In function 'void R_init_xslt(DllInfo*)':
+xslt_init.cpp:36:37: error: invalid conversion from 'void (*)(void*, xmlError*)' {aka 'void (*)(void*, _xmlError*)'} to 'xmlStructuredErrorFunc' {aka 'void (*)(void*, const _xmlError*)'} [8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-fpermissive-fpermissive8;;]
+   36 |     xmlSetStructuredErrorFunc(NULL, handleError);
+      |                                     ^~~~~~~~~~~
+      |                                     |
+      |                                     void (*)(void*, xmlError*) {aka void (*)(void*, _xmlError*)}
+In file included from xslt_init.cpp:4:
+/nix/store/iqjsxkcdnvvz1bfpq960ygicc5clz9hv-libxml2-2.12.3-unstable-2023-12-14-dev/include/libxml2/libxml/xmlerror.h:898:57: note:   initializing argument 2 of 'void xmlSetStructuredErrorFunc(void*, xmlStructuredErrorFunc)'
+  898 |                                  xmlStructuredErrorFunc handler);
+      |                                  ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+make: *** [/nix/store/403kbh5v910gks340j7s1647kijm60rv-R-4.3.2/lib/R/etc/Makeconf:200: xslt_init.o] Error 1
+ERROR: compilation failed for package 'xslt'
+* removing '/nix/store/1p4qp17ccjvi53g3vl67j3z8n1lp61m3-r-xslt-1.4.4/library/xslt'</code></pre>
+<p>The only hint in there is that url pointing to <code>gcc</code>’s
+manual entry on the <code>-fpermissive</code> flag. What happened is
+that code raises some warning during compilation: without this flag, the
+warning gets turned into an error. So we need to add this flag during
+compilation to “tolerate” the warning. Here’s how this was done for
+<a href="https://ropensci.r-universe.dev/xslt" class="external-link">xslt</a>:</p>
+<pre><code>xslt = old.xslt.overrideAttrs (attrs: {
+  env = (attrs.env or { }) // {
+    NIX_CFLAGS_COMPILE = attrs.env.NIX_CFLAGS_COMPILE + " -fpermissive";
+  };
+});</code></pre>
+<p>So the attribute we override is the <code>NIX_CFLAGS_COMPILE</code>
+attribute. We add <code>-fpermissive</code> to the other flags and we’re
+good to go.</p>
+<p>Check out this PR for the complete <code>{xlst} example:</code><a href="https://github.com/NixOS/nixpkgs/pull/292329" class="external-link uri">https://github.com/NixOS/nixpkgs/pull/292329</a></p>
+<p>Also take some time to read other examples of overrides in the
+<code>default.nix</code> file to learn about other common attributes
+that could need to be overridden.</p>
+</div>
+<div class="section level2">
+<h2 id="case-4-packages-that-need-a-dependency-that-must-be-overridden">Case 4: packages that need a dependency that must be overridden<a class="anchor" aria-label="anchor" href="#case-4-packages-that-need-a-dependency-that-must-be-overridden"></a>
+</h2>
+<p>Sometimes it is not the attribute of a package that needs to be
+overriden, but one of its dependencies.</p>
+<p>For example, the <a href="https://ropensci.r-universe.dev/opencv" class="external-link">opencv</a> R packages requires the
+<code>opencv</code> software to be compiled using a specific
+configuration option <code>enableGtk2 = true</code>. However, the
+version of <code>opencv</code> available on <code>nixpkgs</code> doesn’t
+have this flag set to <code>true</code>. But that’s not an issue, since
+we can override it.</p>
+<p>See this <a href="https://github.com/NixOS/nixpkgs/pull/293081" class="external-link">PR</a> to see how
+this was done.</p>
+<p>Another interesting example is this <a href="https://github.com/NixOS/nixpkgs/pull/291004" class="external-link">PR</a> fixing
+<a href="https://hhoeflin.github.io/hdf5r/" class="external-link">hdf5r</a>. Even though it was not merged in the end, I still
+think that you should study it, as the solution that was tried is quite
+instructive!</p>
+<p>Finally, there’s <a href="https://github.com/NixOS/nixpkgs/pull/294933" class="external-link">this other example
+fixing <code>{arrow}</code></a>. The included comment explains what’s
+happening quite well so I won’t rewrite it here.</p>
+</div>
+<div class="section level2">
+<h2 id="case-5-darwin-specific-fixes">Case 5: darwin-specific fixes<a class="anchor" aria-label="anchor" href="#case-5-darwin-specific-fixes"></a>
+</h2>
+<p>Darwin (or macOS) may require some specific fixes for some packages
+to work. I won’t detail them here, as I don’t own the required hardware,
+but you can look through the
+<code>pkgs/development/r-modules/default.nix</code> file for
+darwin-specific fixes. Look for the “darwin” string to find several
+examples.</p>
+</div>
+<div class="section level2">
+<h2 id="case-6-an-r-packages-requires-software-not-in-nixpkgs-or-outdated-in-nixpkgs">Case 6: an R packages requires software not in nixpkgs (or outdated
+in nixpkgs)<a class="anchor" aria-label="anchor" href="#case-6-an-r-packages-requires-software-not-in-nixpkgs-or-outdated-in-nixpkgs"></a>
+</h2>
+<p>Some R packages depend on other software to function. For instance,
+<code>{RQuantlib}</code> requires <code>quantlib</code> which was
+outdated on <code>nixpkgs</code> and leading to build failure.</p>
+<p>In <a href="https://github.com/NixOS/nixpkgs/pull/300087" class="external-link">this
+PR</a>, you’ll see that first <code>quantlib</code> got updated, and
+then <code>{RQuantlib}</code> fixed.</p>
+<p>Another example: <a href="https://R-Forge.R-project.org/projects/rsymphony" class="external-link">Rsymphony</a> required the
+<code>Symphony</code> optimizer to be available, which was completely
+missing from <code>nixpkgs</code>. In <a href="https://github.com/NixOS/nixpkgs/pull/305301" class="external-link">this other
+example</a>, you’ll see that <code>Symphony</code> was added to
+<code>nixpkgs</code> and then <code>{RSymphony}</code> was fixed</p>
+</div>
+<div class="section level2">
+<h2 id="study-study-study-study">Study! Study! Study! Study!<a class="anchor" aria-label="anchor" href="#study-study-study-study"></a>
+</h2>
+<p>The best way to learn, is to read what has already been done by
+others. While this guide can hopefully get you started quickly, I highly
+recommend that you check out all the PRs that have been opened and
+merged <a href="https://github.com/NixOS/nixpkgs/pulls?q=is%3Apr+rPackages" class="external-link">here</a>.
+As stated already, don’t hesitate to join our Matrix channel <a href="https://matrix.to/#/#r:nixos.org" class="external-link">here</a> if you need help to get
+started!</p>
+</div>
+<div class="section level2">
+<h2 id="broken-packages">Broken packages<a class="anchor" aria-label="anchor" href="#broken-packages"></a>
+</h2>
+<p>Finally, there are packages that are “broken”. These are packages
+that absolutely require something to function that Nix cannot easily
+provide: for instance, some packages must connect to the internet to
+download stuff during installation time. Because building with Nix
+happens in a sandbox to ensure purity, these packages cannot work,
+unless there is a way to circumvent the need for a connection. For
+example, in this <a href="https://github.com/NixOS/nixpkgs/pull/307071" class="external-link">PR</a> you will see
+that it is possible to download the content required at build time
+beforehand, so that installation can still succeed.</p>
+<p>Other packages require for example to be linked against proprietary
+software, such as <a href="https://R-Forge.R-project.org/projects/rcplex" class="external-link">Rcplex</a>. While it should also be
+possible to fix this package, there is little incentive to do so as this
+would require to get an evaluation version of the software and then fix
+the package. However, the build would still be listed as failing on
+Hydra, as we cannot get that proprietary software (even if an evaluation
+version) installed there. Also, this would require quite some effort to
+keep maintaining.</p>
+<p>To suggest a packages as “broken”, add it to the
+<code>brokenPackages</code> list in <a href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/r-modules/default.nix" class="external-link">pkgs/development/r-modules/default.nix</a>.</p>
+</div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
