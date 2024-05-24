@@ -147,28 +147,14 @@ for more details.")
     paste0(project_path, "/default.nix")
   }
 
-  # Generate the correct text for the header depending on wether
-  # an R version or a Nix revision is supplied to `r_ver`
-  if(nchar(r_ver) > 20){
-    r_ver_text <- paste0("as it was as of nixpkgs revision: ", r_ver)
-  } else {
-    r_ver_text <- paste0("version ", r_ver)
-  }
-
   # Find url to use
   # In case of bleeding or frozen edge, the rstats-on-nix/nixpkgs
   # fork is used. Otherwise, upstream NixOS/nixpkgs
-  nix_url <- make_nixpkgs_url(r_ver)
-
-  # Get the revision
-  nix_revision <- gsub("(.*archive\\/)|(\\.tar\\.gz)", "", nix_url)
+  nix_repo <- make_nixpkgs_url(r_ver)
 
   project_path <- file.path(project_path)
 
   rix_call <- match.call()
-
-  # Get the rix version
-  rix_version <- utils::packageVersion("rix")
 
   # Get the two lists. One list is current CRAN packages
   # the other is archived CRAN packages.
@@ -206,10 +192,8 @@ for more details.")
 
   # Generate default.nix file
   default.nix <- paste(
-    generate_header(rix_version,
-                    nix_revision,
-                    nix_url,
-                    r_ver_text,
+    generate_header(nix_repo,
+                    r_ver,
                     rix_call),
     generate_rpkgs(cran_pkgs$rPackages, flag_rpkgs),
     generate_git_archived_pkgs(git_pkgs, cran_pkgs$archive_pkgs, flag_git_archive),
