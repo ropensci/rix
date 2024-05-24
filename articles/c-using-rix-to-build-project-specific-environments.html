@@ -178,7 +178,10 @@ file to the console or not.</li>
 <span><span class="co">#&gt;  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/3305b2b25e4ae4baee872346eae133cf6f611783.tar.gz") {};</span></span>
 <span><span class="co">#&gt;  </span></span>
 <span><span class="co">#&gt;  rpkgs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.rPackages) dplyr ggplot2 languageserver;</span></span>
+<span><span class="co">#&gt;   inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;       dplyr</span></span>
+<span><span class="co">#&gt;       ggplot2</span></span>
+<span><span class="co">#&gt;       languageserver;</span></span>
 <span><span class="co">#&gt;  };</span></span>
 <span><span class="co">#&gt;    </span></span>
 <span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
@@ -257,7 +260,9 @@ IDE:</p>
 <span><span class="co">#&gt;  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/79b3d4bcae8c7007c9fd51c279a8a67acfa73a2a.tar.gz") {};</span></span>
 <span><span class="co">#&gt;  </span></span>
 <span><span class="co">#&gt;  rpkgs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.rPackages) dplyr janitor;</span></span>
+<span><span class="co">#&gt;   inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;       dplyr</span></span>
+<span><span class="co">#&gt;       janitor;</span></span>
 <span><span class="co">#&gt;  };</span></span>
 <span><span class="co">#&gt;    </span></span>
 <span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>

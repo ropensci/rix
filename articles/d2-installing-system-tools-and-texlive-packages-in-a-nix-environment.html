@@ -161,7 +161,8 @@ line tool (required to edit Quarto documents from R using the
 <span><span class="co">#&gt;  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/3305b2b25e4ae4baee872346eae133cf6f611783.tar.gz") {};</span></span>
 <span><span class="co">#&gt;  </span></span>
 <span><span class="co">#&gt;  rpkgs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.rPackages) quarto;</span></span>
+<span><span class="co">#&gt;   inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;       quarto;</span></span>
 <span><span class="co">#&gt;  };</span></span>
 <span><span class="co">#&gt;    </span></span>
 <span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
@@ -225,7 +226,8 @@ add a TexLive package to the <code>tex_pkgs</code> argument of
 <span><span class="co">#&gt;  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/3305b2b25e4ae4baee872346eae133cf6f611783.tar.gz") {};</span></span>
 <span><span class="co">#&gt;  </span></span>
 <span><span class="co">#&gt;  rpkgs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.rPackages) quarto;</span></span>
+<span><span class="co">#&gt;   inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;       quarto;</span></span>
 <span><span class="co">#&gt;  };</span></span>
 <span><span class="co">#&gt;   </span></span>
 <span><span class="co">#&gt;  tex = (pkgs.texlive.combine {</span></span>

@@ -153,7 +153,10 @@ that environment:</p>
 <span><span class="co">#&gt;  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/8ad5e8132c5dcf977e308e7bf5517cc6cc0bf7d8.tar.gz") {};</span></span>
 <span><span class="co">#&gt;  </span></span>
 <span><span class="co">#&gt;  rpkgs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.rPackages) targets tarchetypes rmarkdown;</span></span>
+<span><span class="co">#&gt;   inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;       targets</span></span>
+<span><span class="co">#&gt;       tarchetypes</span></span>
+<span><span class="co">#&gt;       rmarkdown;</span></span>
 <span><span class="co">#&gt;  };</span></span>
 <span><span class="co">#&gt;  </span></span>
 <span><span class="co">#&gt;  git_archive_pkgs = [</span></span>
