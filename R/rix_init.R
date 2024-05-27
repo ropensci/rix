@@ -295,7 +295,7 @@ nix_rprofile <- function() {
     if (isTRUE(is_nixr)) {
       current_paths <- .libPaths()
       userlib_paths <- Sys.getenv("R_LIBS_USER")
-      user_dir <- grep(paste(userlib_paths, collapse = "|"), current_paths)
+      user_dir <- grep(paste(userlib_paths, collapse = "|"), current_paths, fixed = TRUE)
       new_paths <- current_paths[-user_dir]
       # sets new library path without user library, making nix-R pure at 
       # run-time
