@@ -42,4 +42,4 @@ via [{fledge}](https://fledge.cynkra.com).
 ## Discussions
 
 For general discussion about the package, open a discussion on <https://github.com/b-rodrigues/rix/discussions>.
-To submit bug reports or request features, open an issue <https://github.com/b-rodrigues/issues>.
+To submit bug reports or request features, open an issue <https://github.com/b-rodrigues/rix/issues>.
