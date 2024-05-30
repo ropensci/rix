@@ -442,3 +442,46 @@ effort to keep maintaining.
 
 To suggest a packages as "broken", add it to the `brokenPackages` list in
 [pkgs/development/r-modules/default.nix](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/r-modules/default.nix).
+
+## Reviewing PRs
+
+To accelerate merging of PRs, it always helps if people review them first! If you
+want to help reviewing, you can proceed as follows. First, we highly recommend that
+you use the following script put together by [Kupac](https://github.com/kupac):
+
+```
+#!/usr/bin/env bash
+
+nix-shell -p "radianWrapper.override{packages = with rPackages; [ ${*:2} ];}" \
+          -I nixpkgs="https://github.com/nixos/nixpkgs/archive/$1.tar.gz" --run radian
+```
+
+Save that into a file called `rpkg-pr-review` (or whatever you prefer) in your `$PATH` 
+(for example, `home/you/bin/`, and make sure  this folder is in your `$PATH`) and make it
+executable:
+
+```
+chmod +x rpkg-pr-review
+```
+
+Find a PR in need of a review. Find the commit ID of the PR:
+
+![Copy the commit ID](images/pr_commit_id.png)
+
+and you can now use it with the script saved before:
+
+```
+rpkg-pr-review COMMIT_ID pkg1 pkg2
+```
+
+Replace `COMMIT_ID` with the Git commit ID from the PR, and `pkg1` and `pkg2` with the package(s) you
+need to review. This will download everything needed and drop you into an interactive `radian` shell
+where you can test the packages (if you prefer a standard R shell, replace the `radianWrapper` with
+the `rWrapper`, but `radian` is pretty neat, give it a go!)
+
+You can test if the package works, try some examples and so on. You can then also check the fix itself:
+do you understand how the fix works? Would you have done it differently? You can make suggestions to the 
+committer if you have any. If not, you can also approve the PR from Github’s interface:
+
+![Copy the commit ID](images/pr_review.png)
+
