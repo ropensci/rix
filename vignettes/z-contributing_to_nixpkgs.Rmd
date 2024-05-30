@@ -483,5 +483,5 @@ You can test if the package works, try some examples and so on. You can then als
 do you understand how the fix works? Would you have done it differently? You can make suggestions to the 
 committer if you have any. If not, you can also approve the PR from Github’s interface:
 
-![Copy the commit ID](images/pr_review.png)
+![You can leave your review on Github’s interface](images/pr_review.png)
 
