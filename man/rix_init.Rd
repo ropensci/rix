@@ -8,7 +8,7 @@ setup via Nix.}
 rix_init(
   project_path = ".",
   rprofile_action = c("create_missing", "create_backup", "overwrite", "append"),
-  message_type = c("simple", "verbose")
+  message_type = c("simple", "quiet", "verbose")
 )
 }
 \arguments{
@@ -91,9 +91,11 @@ code ran between two software environments with \code{rix::with_nix()}.
 \dontrun{
 # create an isolated, runtime-pure R setup via Nix
 project_path <- "./sub_shell"
+if (!dir.exist(project_path)) dir.create(project_path)
 rix_init(
   project_path = project_path,
-  rprofile_action = "create_missing"
+  rprofile_action = "create_missing",
+  message_type = c("simple")
 )
 }
 }

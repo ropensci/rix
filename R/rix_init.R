@@ -75,16 +75,21 @@
 #' \dontrun{
 #' # create an isolated, runtime-pure R setup via Nix
 #' project_path <- "./sub_shell"
+#' if (!dir.exist(project_path)) dir.create(project_path)
 #' rix_init(
 #'   project_path = project_path,
-#'   rprofile_action = "create_missing"
+#'   rprofile_action = "create_missing",
+#'   message_type = c("simple")
 #' )
 #' }
 rix_init <- function(project_path = ".",
                  rprofile_action = c("create_missing", "create_backup",
                    "overwrite", "append"),
-                 message_type = c("simple", "verbose")) {
-  message_type <- match.arg(message_type, choices = c("simple", "verbose"))
+                 message_type = c("simple", "quiet", "verbose")) {
+  message_type <- match.arg(message_type,
+    choices = c("simple", "quiet", "verbose"))
+  is_quiet <- message_type == "quiet"
+  
   rprofile_action <- match.arg(rprofile_action,
     choices = c("create_missing", "create_backup", "overwrite", "append"))
   stopifnot(
@@ -92,16 +97,22 @@ rix_init <- function(project_path = ".",
       is.character(project_path) && length(project_path) == 1L
   )
   
-  cat("\n### Bootstrapping isolated, project-specific, and runtime-pure",
-    "R setup via Nix ###\n\n")
+  if (isFALSE(is_quiet)) {
+    cat("\n### Bootstrapping isolated, project-specific, and runtime-pure",
+        "R setup via Nix ###\n\n")
+  }
   if (isFALSE(dir.exists(project_path))) {
     dir.create(path = project_path, recursive = TRUE)
     project_path <- normalizePath(path = project_path)
-    cat("==> Created isolated nix-R project folder:\n", project_path, "\n")
+    if (isFALSE(is_quiet)) {
+      cat("==> Created isolated nix-R project folder:\n", project_path, "\n")
+    }
   } else {
     project_path <- normalizePath(path = project_path)
-    cat("==> Existing isolated nix-R project folder:\n", project_path,
-      "\n")
+    if (isFALSE(is_quiet)) {
+      cat("==> Existing isolated nix-R project folder:\n", project_path,
+        "\n")
+    }
   }
   
   # create project-local `.Rprofile` with pure settings
@@ -118,8 +129,8 @@ rix_init <- function(project_path = ".",
     )
   }
   
-  is_nixr <- is_nix_rsession()
-  is_rstudio <- is_rstudio_session()
+  is_nixr <- is_nix_rsession(message_type)
+  is_rstudio <- is_rstudio_session(message_type)
   
   rprofile_exists <- file.exists(rprofile_file)
   timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")
@@ -128,28 +139,35 @@ rix_init <- function(project_path = ".",
   switch(rprofile_action,
     create_missing = {
       if (isTRUE(rprofile_exists)) {
-        cat(
-          "\n* Keep existing `.Rprofile`. in `project_path`:\n",
-          paste0(project_path, "/"), "\n"
-        )
+        if (isFALSE(is_quiet)) {
+          cat(
+            "\n* Keep existing `.Rprofile`. in `project_path`:\n",
+            paste0(project_path, "/"), "\n"
+          )
+        }
       } else {
         write_rprofile(rprofile_text, rprofile_file)
-        message_rprofile(action_string = "Added", project_path = project_path)
+        if (isFALSE(is_quiet)) {
+          message_rprofile(action_string = "Added", project_path = project_path)
+        }
       }
       set_message_session_PATH(message_type = message_type)
     },
     create_backup = {
       if (isTRUE(rprofile_exists)) {
         file.copy(from = rprofile_file, to = rprofile_backup)
-        cat(
-          "\n==> Backed up existing `.Rprofile` in file:\n", rprofile_backup,
-          "\n"
-        )
         write_rprofile(rprofile_text, rprofile_file)
-        message_rprofile(
-          action_string = "Overwrote",
-          project_path = project_path
-        )
+        if (isFALSE(is_quiet)) {
+          cat(
+            "\n==> Backed up existing `.Rprofile` in file:\n", rprofile_backup,
+            "\n"
+          )
+          message_rprofile(
+            action_string = "Overwrote",
+            project_path = project_path
+          )
+        }
+        
         if (message_type == "verbose") {
           cat("\n* Current lines of local `.Rprofile` are\n:")
           cat(readLines(con = file(rprofile_file)), sep = "\n")
@@ -216,15 +234,19 @@ message_rprofile <- function(action_string = "Added",
 }
 
 #' @noRd
-set_message_session_PATH <- function(message_type = c("simple", "verbose")) {
-  match.arg(message_type, choices = c("simple", "verbose"))
+set_message_session_PATH <- function(message_type =
+                                       c("simple", "quiet", "verbose")) {
+  message_type <- match.arg(message_type,
+    choices = c("simple", "quiet", "verbose"))
   if (message_type == "verbose") {
     cat("\n\n* Current `PATH` variable set in R session is:\n\n")
     cat(Sys.getenv("PATH"))
   }
-  cat("\n\n==> Also adjusting `PATH` via `Sys.setenv()`, so that",
-  "system commands can invoke key Nix commands like `nix-build` in this",
-  "RStudio session on the host operating system.")
+  if (message_type != "quiet") {
+    cat("\n\n==> Also adjusting `PATH` via `Sys.setenv()`, so that",
+        "system commands can invoke key Nix commands like `nix-build` in this",
+        "RStudio session on the host operating system.")
+  }
   PATH <- set_nix_path()
   if (message_type == "verbose") {
     cat("\n\n* Updated `PATH` variable is:\n\n", PATH)
@@ -238,12 +260,12 @@ is_nix_rsession <- function(message_type = c("simple", "quiet", "verbose")) {
   is_nixr <- nzchar(Sys.getenv("NIX_STORE"))
   
   if (isTRUE(is_nixr)) {
-    if (isFALSE(is_quiet)) {
+    if (message_type == "simple") {
       cat("==> R session running via Nix (nixpkgs)\n")
     }
     return(TRUE)
   } else {
-    if (isFALSE(is_quiet)) {
+    if (message_type == "simple") {
       cat("\n==> R session running via host operating system or docker\n")
     }
     return(FALSE)
@@ -257,12 +279,12 @@ is_rstudio_session <- function(message_type = c("simple", "quiet", "verbose")) {
   is_rstudio <- Sys.getenv("RSTUDIO") == "1"
   
   if (isTRUE(is_rstudio)) {
-    if (isFALSE(is_quiet)) {
+    if (message_type == "verbose") {
       cat("\n==> R session running from RStudio\n")
     }
     return(TRUE)
   } else {
-    if (isFALSE(is_quiet)) {
+    if (message_type == "verbose") {
       cat("* R session not running from RStudio")
     }
     return(FALSE)
