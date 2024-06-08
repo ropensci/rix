@@ -145,29 +145,50 @@ fix_ld_library_path <- function() {
 
 #' @noRd
 poll_sys_proc_blocking <- function(cmd, proc,
-                                   what = c("nix-build", "expr")) {
+                                   what = c("nix-build", "expr"),
+                                   message_type = 
+                                     c("simple", "quiet", "verbose")
+                                   ) {
   what <- match.arg(what)
+  message_type <- match.arg(message_type)
+  is_quiet <- message_type == "quiet"
+  
   status <- proc$status
-  if (status == 0L) {
-    cat(paste0("\n==> ", sys::as_text(proc$stdout)))
-    cat(paste0("\n==> `", what, "` succeeded!", "\n"))
-  } else {
-    msg <- nix_build_exit_msg()
-    cat(paste0("`", cmd, "`", " failed with ", msg))
+  if (isFALSE(is_quiet)) {
+    if (status == 0L) {
+      cat(paste0("\n==> ", sys::as_text(proc$stdout)))
+      cat(paste0("\n==> `", what, "` succeeded!", "\n"))
+    } else {
+      msg <- nix_build_exit_msg()
+      cat(paste0("`", cmd, "`", " failed with ", msg))
+    }
   }
+  
   return(invisible(status))
 }
 
 #' @noRd
 poll_sys_proc_nonblocking <- function(cmd, proc, 
-                                      what = c("nix-build", "expr")) {
+                                      what = c("nix-build", "expr"),
+                                      message_type = 
+                                        c("simple", "quiet", "verbose")) {
   what <- match.arg(what)
-  cat(paste0("\n==> Process ID (PID) is ", proc, "."))
-  cat("\n==> Receiving stdout and stderr streams...\n")
-  status <- sys::exec_status(proc, wait = TRUE)
-  if (status == 0L) {
-    cat(paste0("\n==> `", what, "` succeeded!"))
+  message_type <- match.arg(message_type)
+  is_quiet <- message_type == "quiet"
+  
+  if (isFALSE(is_quiet)) {
+    cat(paste0("\n==> Process ID (PID) is ", proc, "."))
+    cat("\n==> Receiving stdout and stderr streams...\n")
   }
+
+  status <- sys::exec_status(proc, wait = TRUE)
+  
+  if (isFALSE(is_quiet)) {
+    if (status == 0L) {
+      cat(paste0("\n==> `", what, "` succeeded!"))
+    }
+  }
+  
   return(invisible(status))
 }
 

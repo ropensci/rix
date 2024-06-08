@@ -88,8 +88,8 @@
 #' the Nix software environment in which you want to run `expr`. See
 #'  `project_path` argument as an alternative way to specify the environment.
 #' @param message_type String how detailed output is. Currently, there is 
-#' either `"simple"` (default) or `"verbose"`, which shows the script that runs
-#' via `nix-shell`.
+#' either `"simple"` (default), `"quiet` or `"verbose"`, which shows the script
+#' that runs via `nix-shell`.
 #' @importFrom codetools findGlobals checkUsage
 #' @export
 #' @return 
@@ -148,7 +148,7 @@ with_nix <- function(expr,
                      exec_mode = c("blocking", "non-blocking"),
                      project_path = ".",
                      nix_file = NULL,
-                     message_type = c("simple", "verbose")) {
+                     message_type = c("simple", "quiet", "verbose")) {
   if (is.null(nix_file)) {
     nix_file <- file.path(project_path, "default.nix")
   }
@@ -226,6 +226,8 @@ with_nix <- function(expr,
   exec_mode <- match.arg(exec_mode)
   message_type <- match.arg(message_type)
   
+  is_quiet <- message_type == "quiet"
+  
   if (program == "R") {
   
     # get the function arguments as a pairlist;
@@ -236,8 +238,10 @@ with_nix <- function(expr,
     # and bound to `"."` (project root)
     args <- as.list(formals(expr))
     
-    cat("\n### Prepare to exchange arguments and globals for `expr`",
-      "between the host and Nix R sessions ###\n")
+    if (message_type == "verbose") {
+      cat("\n### Prepare to exchange arguments and globals for `expr`",
+          "between the host and Nix R sessions ###\n")
+    }
     
     # 1) save all function args onto a temporary folder each with
     # `<tag.Rds>` and `value` as serialized objects from RAM ---------------------
@@ -257,10 +261,15 @@ with_nix <- function(expr,
     # https://github.com/cran/codetools/blob/master/R/codetools.R
     # http://adv-r.had.co.nz/Expressions.html#ast-funs
     
-    # code inspection: generates messages with potential problems
-    check_expr(expr)
-    
-    globals_expr <- recurse_find_check_globals(expr, args_vec)
+    # do code inspection checks to report messages with potential code problems,
+    # and find global variables of `expr` recursively
+    # using {codetools} wrapper
+    if (isFALSE(is_quiet)) {
+      globals_expr <- recurse_find_check_globals(expr, args_vec)
+    } else {
+      globals_expr <- recurse_find_check_globals(expr, args_vec,
+        message_type = "quiet")
+    }
     
     # wrapper around `serialize_lobjs()`
     globals <- serialize_globals(globals_expr, temp_dir)
@@ -276,7 +285,8 @@ with_nix <- function(expr,
     rnix_file <- file.path(temp_dir, "with_nix_r.R")
     
     rnix_quoted <- quote_rnix(
-      expr, program, message_type, args_vec, globals, pkgs, temp_dir, rnix_file
+      expr, program, message_type = message_type,
+      args_vec, globals, pkgs, temp_dir, rnix_file
     )
     rnix_deparsed <- deparse_chr1(expr = rnix_quoted, collapse = "\n")
     
@@ -287,10 +297,11 @@ with_nix <- function(expr,
     writeLines(text = rnix_deparsed, file(rnix_file))
     
     # 3) run expression in nix session, based on temporary script
-    cat(paste0("==> Running deparsed expression via `nix-shell`", " in ",
-      exec_mode, " mode:\n\n"#,
-      # paste0(rnix_deparsed, collapse = " ")
-    ))
+    if (isFALSE(is_quiet)) {
+      cat(paste0("==> Running deparsed expression via `nix-shell`", " in ",
+                 exec_mode, " mode:\n\n"
+      ))
+    }
 
     # command to run deparsed R expression via nix-shell
     cmd_rnix_deparsed <- c(
@@ -310,9 +321,12 @@ with_nix <- function(expr,
       stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
     )
     if (exec_mode == "non-blocking") {
-      poll_sys_proc_nonblocking(cmd = cmd_rnix_deparsed, proc, what = "expr")
+      poll_sys_proc_nonblocking(
+        cmd = cmd_rnix_deparsed, proc, what = "expr",
+        message_type = message_type)
     } else if (exec_mode == "blocking") {
-      poll_sys_proc_blocking(cmd = cmd_rnix_deparsed, proc, what = "expr")
+      poll_sys_proc_blocking(cmd = cmd_rnix_deparsed, proc, what = "expr",
+        message_type = message_type)
     }
   } else if (program == "shell") { # end of `if (program == "R")`
     shell_cmd <- c(
@@ -346,8 +360,10 @@ with_nix <- function(expr,
       out$stderr <- sys::as_text(out$stderr)
     }
   }
-
-  cat("\n### Finished code evaluation in `nix-shell` ###\n")
+  
+  if (isFALSE(is_quiet)) {
+    cat("\n### Finished code evaluation in `nix-shell` ###\n")
+  }
   
   if (isTRUE(nzchar(Sys.getenv("NIX_STORE")))) {
     # set back library paths to state before calling `with_nix()`
@@ -361,7 +377,10 @@ with_nix <- function(expr,
   }
   
   # return output from evaluated function
-  cat("\n* Evaluating `expr` in `nix-shell` returns:\n")
+  if (isFALSE(is_quiet)) {
+    cat("\n* Evaluating `expr` in `nix-shell` returns:\n")
+  }
+  
   if (program == "R") {
     print(out)
   } else if (program == "shell") {
@@ -414,16 +433,6 @@ serialize_args <- function(args, temp_dir) {
   })
 }
 
-
-#' @noRd
-check_expr <- function(expr) {
-    cat("* checking code in `expr` for potential problems:\n",
-      "`codetools::checkUsage(fun = expr)`\n")
-    codetools::checkUsage(fun = expr)
-    cat("\n")
-  }
-
-
 #' @noRd
 # to determine which extra packages to load in Nix R prior evaluating `expr`
 get_expr_extra_pkgs <- function(globals_expr) {
@@ -462,11 +471,22 @@ where <- function(name, env = parent.frame()) {
 #' Finds and checks global functions and variables recursively for closure
 #' `expr`
 #' @noRd
-recurse_find_check_globals <- function(expr, args_vec) {
+recurse_find_check_globals <- function(expr,
+                                       args_vec,
+                                       message_type =
+                                         c("simple", "quiet", "verbose")
+                                       ) {
+  
+    message_type <- match.arg(message_type)
+    is_quiet <- message_type == "quiet"
     
-    cat("* checking code in `expr` for potential problems:\n")
-    codetools::checkUsage(fun = expr)
-    cat("\n")
+    if (isFALSE(is_quiet)) {
+      cat("\n* checking code in `expr` for potential problems\n")
+      codetools::checkUsage(fun = expr)
+      cat("\n")
+    } else {
+      codetools::checkUsage(fun = expr)
+    }
     
     globals_expr <- codetools::findGlobals(fun = expr)
     globals_lst <- classify_globals(globals_expr, args_vec)
@@ -488,8 +508,9 @@ recurse_find_check_globals <- function(expr, args_vec) {
         # successive rounds
         globals_exprs <- unlist(lapply(globals_lst, get_globals_exprs))
       }
-      
-      cat("* checking code in `globals_exprs` for potential problems:\n")
+      if (isFALSE(is_quiet)) {
+        cat("* checking code in `globals_exprs` for potential problems\n")
+      }
       lapply(
         globals_exprs,
         codetools::checkUsage
@@ -735,9 +756,15 @@ quote_rnix <- function(expr,
                        temp_dir,
                        rnix_file) {
   expr_quoted <- bquote( {
-    cat("### Start evaluating `expr` in `nix-shell` ###")
-    cat("\n* wrote R script evaluated via `Rscript` in `nix-shell`:",
-      .(rnix_file))
+    message_type <- .(message_type)
+    is_quiet <- message_type == "quiet"
+    if (isFALSE(is_quiet)) {
+      cat("\n### Start evaluating `expr` in `nix-shell` ###")
+    }
+    if (message_type == "verbose") {
+      cat("\n* wrote R script evaluated via `Rscript` in `nix-shell`:",
+          .(rnix_file))
+    }
     temp_dir <- .(temp_dir)
     cat("\n", Sys.getenv("NIX_PATH"))
     # fix library paths for nix R on macOS and linux; avoid permission issue
@@ -747,7 +774,9 @@ quote_rnix <- function(expr,
     new_paths <- current_paths[-user_dir]
     .libPaths(new_paths)
     r_version_num <- paste0(R.version$major, ".", R.version$minor)
-    cat("\n* using Nix with R version", r_version_num, "\n\n")
+    if (isFALSE(is_quiet)) {
+      cat("\n* using Nix with R version", r_version_num, "\n\n")
+    }
     # assign `args_vec` as in c(...) form.
     args_vec <- .(with_assign_vecnames_call(vec = args_vec))
     # deserialize arguments from disk
@@ -758,10 +787,12 @@ quote_rnix <- function(expr,
         x = nm,
         value = readRDS(file = file.path(temp_dir, paste0(obj, ".Rds")))
       )
-      cat(
-        paste0("  => reading file ", "'", obj, ".Rds", "'",
-          " for argument named `", obj, "`\n")
-      )
+      if (message_type == "verbose") {
+        cat(
+          paste0("  => reading file ", "'", obj, ".Rds", "'",
+                 " for argument named `", obj, "`\n")
+        )
+      }
     }
 
     globals <- .(with_assign_vecnames_call(vec = globals))
@@ -772,10 +803,12 @@ quote_rnix <- function(expr,
         x = nm,
         value = readRDS(file = file.path(temp_dir, paste0(obj, ".Rds")))
       )
-      cat(
-        paste0("  => reading file ", "'", obj, ".Rds", "'",
-          " for global object named `", obj, "`\n")
-      )
+      if (message_type == "verbose") {
+        cat(
+          paste0("  => reading file ", "'", obj, ".Rds", "'",
+                 " for global object named `", obj, "`\n")
+        )
+      }
     }
 
     # for now name of character vector containing packages is hard-coded
@@ -789,21 +822,22 @@ quote_rnix <- function(expr,
     names(lst) <- args_vec
     lst <- lapply(lst, as.name)
     rnix_out <- do.call(.(expr), lst)
-    cat("\n* called `expr` with args", args_vec, ":\n")
-    message_type <- .(message_type)
-    if (message_type == "verbose") {
-    # cat("\n", deparse(.(expr))) # not nicely formatted, use print
-      # print(.(expr))
+    if (message_type != "quiet") {
+      cat("\n* called `expr` with args:", args_vec, "\n")
+      cat("\n* The type of the output object returned by `expr` is",
+          typeof(rnix_out))
     }
-    cat("\n* The type of the output object returned by `expr` is",
-      typeof(rnix_out))
     saveRDS(object = rnix_out, file = file.path(temp_dir, "_out.Rds"))
-    cat("\n* Saved output to", file.path(temp_dir, "_out.Rds"))
-    cat("\n\n* the following objects are in the global environment:\n")
-    cat(ls())
-    cat("\n")
-    cat("\n* `sessionInfo()` output:\n")
-    try(cat(capture.output(sessionInfo()), sep = "\n"))
+    if (message_type == "verbose") {
+      cat("\n* Saved output to", file.path(temp_dir, "_out.Rds"))
+      cat("\n\n* the following objects are in the global environment:\n")
+      cat(ls())
+      cat("\n")
+    }
+    if (message_type != "quiet") {
+      cat("* `sessionInfo()` output:\n")
+      try(cat(capture.output(sessionInfo()), sep = "\n"))
+    }
   } ) # end of `bquote()`
 
   return(expr_quoted)

@@ -10,7 +10,7 @@ with_nix(
   exec_mode = c("blocking", "non-blocking"),
   project_path = ".",
   nix_file = NULL,
-  message_type = c("simple", "verbose")
+  message_type = c("simple", "quiet", "verbose")
 )
 }
 \arguments{
@@ -47,8 +47,8 @@ the Nix software environment in which you want to run \code{expr}. See
 \code{project_path} argument as an alternative way to specify the environment.}
 
 \item{message_type}{String how detailed output is. Currently, there is
-either \code{"simple"} (default) or \code{"verbose"}, which shows the script that runs
-via \code{nix-shell}.}
+either \code{"simple"} (default), \verb{"quiet} or \code{"verbose"}, which shows the script
+that runs via \code{nix-shell}.}
 }
 \value{
 \itemize{
