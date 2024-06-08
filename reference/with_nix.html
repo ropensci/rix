@@ -99,7 +99,7 @@ current R session.</p></li>
 <span>  exec_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blocking"</span>, <span class="st">"non-blocking"</span><span class="op">)</span>,</span>
 <span>  project_path <span class="op">=</span> <span class="st">"."</span>,</span>
 <span>  nix_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  message_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"simple"</span>, <span class="st">"verbose"</span><span class="op">)</span></span>
+<span>  message_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"simple"</span>, <span class="st">"quiet"</span>, <span class="st">"verbose"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -149,8 +149,8 @@ the Nix software environment in which you want to run <code>expr</code>. See
 
 <dt>message_type</dt>
 <dd><p>String how detailed output is. Currently, there is
-either <code>"simple"</code> (default) or <code>"verbose"</code>, which shows the script that runs
-via <code>nix-shell</code>.</p></dd>
+either <code>"simple"</code> (default), <code>"quiet</code> or <code>"verbose"</code>, which shows the script
+that runs via <code>nix-shell</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
