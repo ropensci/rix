@@ -165,7 +165,10 @@ with_nix <- function(expr,
   # ad-hoc solution for RStudio's limitation that R sessions cannot yet inherit
   # proper `PATH` from custom `.Rprofile` on macOS (2023-01-17)
   # adjust `PATH` to include `/nix/var/nix/profiles/default/bin`
-  if (isTRUE(is_rstudio_session()) && isFALSE(is_nix_rsession())) {
+  is_rstudio <- is_rstudio_session(message_type = message_type)
+  is_nix <- is_nix_rsession(message_type = message_type)
+  
+  if (isTRUE(is_rstudio) && isFALSE(is_nix)) {
     set_nix_path()
   }
   
@@ -299,7 +302,7 @@ with_nix <- function(expr,
     # 3) run expression in nix session, based on temporary script
     if (isFALSE(is_quiet)) {
       cat(paste0("==> Running deparsed expression via `nix-shell`", " in ",
-                 exec_mode, " mode:\n\n"
+                 exec_mode, " mode\n\n"
       ))
     }
 
@@ -382,9 +385,13 @@ with_nix <- function(expr,
   }
   
   if (program == "R") {
-    print(out)
+    if (isFALSE(is_quiet)) {
+      print(out)
+    }
   } else if (program == "shell") {
-    print(out$stdout)
+    if (isFALSE(is_quiet)) {
+      print(out$stdout)
+    }
   }
   cat("")
   
@@ -822,10 +829,10 @@ quote_rnix <- function(expr,
     names(lst) <- args_vec
     lst <- lapply(lst, as.name)
     rnix_out <- do.call(.(expr), lst)
-    if (message_type != "quiet") {
-      cat("\n* called `expr` with args:", args_vec, "\n")
+    if (message_type == "verbose") {
+      cat("* called `expr` with args:", args_vec, "\n")
       cat("\n* The type of the output object returned by `expr` is",
-          typeof(rnix_out))
+          paste0(typeof(rnix_out), ".\n"))
     }
     saveRDS(object = rnix_out, file = file.path(temp_dir, "_out.Rds"))
     if (message_type == "verbose") {
@@ -835,7 +842,7 @@ quote_rnix <- function(expr,
       cat("\n")
     }
     if (message_type != "quiet") {
-      cat("* `sessionInfo()` output:\n")
+      cat("\n* `sessionInfo()` output:\n\n")
       try(cat(capture.output(sessionInfo()), sep = "\n"))
     }
   } ) # end of `bquote()`
