@@ -8,7 +8,7 @@ setup via Nix.}
 rix_init(
   project_path = ".",
   rprofile_action = c("create_missing", "create_backup", "overwrite", "append"),
-  message_type = c("simple", "verbose")
+  message_type = c("simple", "quiet", "verbose")
 )
 }
 \arguments{
@@ -29,7 +29,9 @@ project setup.}
 
 \item{message_type}{Character. Message type, defaults to \code{"simple"}, which
 gives minimal but sufficient feedback. Other values are currently
-\code{"verbose"}, which provides more detailed diagnostics.}
+\verb{"quiet}, which writes \code{.Rprofile} without message, and
+\code{"verbose"}, which provides the actions done to achieve fully controlled
+R project environments in Nix.}
 }
 \value{
 Nothing, this function only has the side-effect of writing a file
@@ -91,9 +93,11 @@ code ran between two software environments with \code{rix::with_nix()}.
 \dontrun{
 # create an isolated, runtime-pure R setup via Nix
 project_path <- "./sub_shell"
+if (!dir.exist(project_path)) dir.create(project_path)
 rix_init(
   project_path = project_path,
-  rprofile_action = "create_missing"
+  rprofile_action = "create_missing",
+  message_type = c("simple")
 )
 }
 }
