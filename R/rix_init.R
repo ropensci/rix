@@ -232,25 +232,39 @@ set_message_session_PATH <- function(message_type = c("simple", "verbose")) {
 }
 
 #' @noRd
-is_nix_rsession <- function() {
+is_nix_rsession <- function(message_type = c("simple", "quiet", "verbose")) {
+  message_type <- match.arg(message_type)
+  is_quiet <- message_type == "quiet"
   is_nixr <- nzchar(Sys.getenv("NIX_STORE"))
+  
   if (isTRUE(is_nixr)) {
-    cat("==> R session running via Nix (nixpkgs)\n")
+    if (isFALSE(is_quiet)) {
+      cat("==> R session running via Nix (nixpkgs)\n")
+    }
     return(TRUE)
   } else {
-    cat("\n==> R session running via host operating system or docker\n")
+    if (isFALSE(is_quiet)) {
+      cat("\n==> R session running via host operating system or docker\n")
+    }
     return(FALSE)
   }
 }
 
 #' @noRd
-is_rstudio_session <- function() {
+is_rstudio_session <- function(message_type = c("simple", "quiet", "verbose")) {
+  message_type <- match.arg(message_type)
+  is_quiet <- message_type == "quiet"
   is_rstudio <- Sys.getenv("RSTUDIO") == "1"
+  
   if (isTRUE(is_rstudio)) {
-    cat("\n==> R session running from RStudio\n")
+    if (isFALSE(is_quiet)) {
+      cat("\n==> R session running from RStudio\n")
+    }
     return(TRUE)
   } else {
-    cat("* R session not running from RStudio")
+    if (isFALSE(is_quiet)) {
+      cat("* R session not running from RStudio")
+    }
     return(FALSE)
   }
 }
