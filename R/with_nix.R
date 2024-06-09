@@ -273,9 +273,7 @@ with_nix <- function(expr,
     rnix_deparsed <- deparse_chr1(expr = rnix_quoted, collapse = "\n")
     
     # 4): for 2) and 3) write script to disk, to run later via `Rscript` from
-    # `nix-shell` 
-    # environment
-    r_version_file <- file.path(temp_dir, "nix-r-version.txt")
+    # `nix-shell` environment
     writeLines(text = rnix_deparsed, file(rnix_file))
     
     # 3) run expression in nix session, based on temporary script
