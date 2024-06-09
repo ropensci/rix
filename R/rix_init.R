@@ -300,10 +300,10 @@ message_r_session_nix_rstudio <- function(is_nix_r,
   
   if (isTRUE(is_nix_r)) {
     nix_r_msg <-
-      "\n* current R session running inside Nix environment (nixpkgs)"
+      "\n* current R session running inside Nix environment"
   } else {
     nix_r_msg <-
-      "\n* current R session running outside Nix environment (nixpkgs)"
+      "\n* current R session running outside Nix environment"
   }
   
   if (isTRUE(is_rstudio)) {
