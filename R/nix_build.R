@@ -83,7 +83,7 @@ nix_build <- function(project_path = ".",
     args <- c("--max-jobs", as.character(max_jobs), nix_dir)
   }
 
-  cat(paste0("Launching `", paste0(cmd, args, collapse = " "), "`", " in ",
+  cat(paste0("Launching `", paste0(cmd, " ", args, collapse = " "), "`", " in ",
     exec_mode, " mode\n"))
   
   proc <- switch(exec_mode,
