@@ -68,7 +68,7 @@ nix_build <- function(project_path = ".",
     "`nix-build` not available. To install, we suggest you follow https://zero-to-nix.com/start/install ." =
       isTRUE(has_nix_build)
   )
-  exec_mode <- match.arg(exec_mode)
+  exec_mode <- match.arg(exec_mode, choices = c("blocking", "non-blocking"))
  
   max_jobs <- getOption("rix.nix_build_max_jobs", default = 1L)
   stopifnot("option `rix.nix_build_max_jobs` is not integerish" =
