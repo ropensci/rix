@@ -67,8 +67,8 @@
 #' @param message_type Character. Message type, defaults to `"simple"`, which 
 #' gives minimal but sufficient feedback. Other values are currently 
 #' `"quiet`, which writes `.Rprofile` without message, and
-#' `"verbose"`, which provides the actions done to achieve fully controlled 
-#' R project environments in Nix.
+#' `"verbose"`, which displays the mechanisms implemented to achieve fully
+#' controlled R project environments in Nix.
 #' @export
 #' @seealso [with_nix()]
 #' @return Nothing, this function only has the side-effect of writing a file
