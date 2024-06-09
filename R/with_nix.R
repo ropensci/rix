@@ -165,8 +165,11 @@ with_nix <- function(expr,
   # ad-hoc solution for RStudio's limitation that R sessions cannot yet inherit
   # proper `PATH` from custom `.Rprofile` on macOS (2023-01-17)
   # adjust `PATH` to include `/nix/var/nix/profiles/default/bin`
-  is_rstudio <- is_rstudio_session(message_type = message_type)
-  is_nix <- is_nix_rsession(message_type = message_type)
+  is_rstudio <- is_rstudio_session()
+  is_nix_r <- is_nix_r_session()
+  
+  # cat message if not quiet
+  message_r_session_nix_rstudio(is_nix_r, is_rstudio, message_type)
   
   if (isTRUE(is_rstudio) && isFALSE(is_nix)) {
     set_nix_path()

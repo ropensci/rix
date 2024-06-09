@@ -131,9 +131,12 @@ rix_init <- function(project_path = ".",
     )
   }
   
-  is_nixr <- is_nix_rsession(message_type)
-  is_rstudio <- is_rstudio_session(message_type)
+  is_nix_r <- is_nix_r_session()
+  is_rstudio <- is_rstudio_session()
   
+  # signal message if not quiet
+  message_r_session_nix_rstudio(is_nix_r, is_rstudio, message_type)
+
   rprofile_exists <- file.exists(rprofile_file)
   timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")
   rprofile_backup <- paste0(rprofile_file, "_backup_", timestamp)
@@ -247,7 +250,7 @@ set_message_session_PATH <- function(message_type =
   if (message_type != "quiet") {
     cat("\n\n==> Also adjusting `PATH` via `Sys.setenv()`, so that",
         "system commands can invoke key Nix commands like `nix-build` in this",
-        "RStudio session on the host operating system.")
+        "RStudio session outside Nix")
   }
   PATH <- set_nix_path()
   if (message_type == "verbose") {
@@ -256,45 +259,54 @@ set_message_session_PATH <- function(message_type =
 }
 
 #' @noRd
-is_nix_rsession <- function(message_type = c("simple", "quiet", "verbose")) {
-  message_type <- match.arg(message_type, 
+message_r_session_nix_rstudio <- function(is_nix_r, 
+                                          is_rstudio,
+                                          message_type =
+                                            c("simple", "quiet", "verbose")
+                                          ) {
+  stopifnot(
+    "`is_nix_r` needs to be TRUE or FALSE" =
+      is.logical(is_nix_r) && length(is_nix_r) == 1L,
+    "`is_rstudio` needs to be TRUE or FALSE" =
+      is.logical(is_rstudio) && length(is_rstudio) == 1L
+  )
+  message_type <- match.arg(message_type,
     choices = c("simple", "quiet", "verbose"))
-  is_nixr <- nzchar(Sys.getenv("NIX_STORE"))
   
-  if (isTRUE(is_nixr)) {
-    msg <- "==> R session running via Nix (nixpkgs)\n"
-    switch(message_type,
-      verbose = cat(msg)
-    )
-    return(TRUE)
+  if (isTRUE(is_nix_r)) {
+    nix_r_msg <-
+      "\n==> Source R session running inside Nix environment (nixpkgs)"
   } else {
-    msg <- "\n==> R session running via host operating system or docker\n"
-    switch(message_type,
-      verbose = cat(msg)
-    )
-    return(FALSE)
+    nix_r_msg <-
+      "\n==> Source R session running outside Nix environment (nixpkgs)"
   }
+  
+  if (isTRUE(is_rstudio)) {
+    rstudio_msg <- "from RStudio\n"
+  } else {
+    rstudio_msg <- "not from RStudio\n"
+  }
+  
+  # derive compound message
+  msg <- paste0(nix_r_msg, " and ", rstudio_msg)
+  
+  switch(message_type,
+    simple = cat(msg),
+    verbose = cat(msg)
+  )
+}
+
+
+#' @noRd
+is_nix_r_session <- function() {
+  is_nix_r <- nzchar(Sys.getenv("NIX_STORE"))
+  return(is_nix_r)
 }
 
 #' @noRd
 is_rstudio_session <- function(message_type = c("simple", "quiet", "verbose")) {
-  message_type <- match.arg(message_type,
-    choices = c("simple", "quiet", "verbose"))
   is_rstudio <- Sys.getenv("RSTUDIO") == "1"
-  
-  if (isTRUE(is_rstudio)) {
-    msg <- "\n==> R session running from RStudio\n"
-    switch(message_type,
-      verbose = cat(msg)
-    )
-    return(TRUE)
-  } else {
-    msg <- cat("* R session not running from RStudio")
-    switch(message_type,
-      verbose = cat(msg)
-    )
-    return(FALSE)
-  }
+  return(is_rstudio)
 }
 
 #' @noRd
@@ -314,8 +326,8 @@ set_nix_path <- function() {
 nix_rprofile <- function() {
   quote( {
     is_rstudio <- Sys.getenv("RSTUDIO") == "1"
-    is_nixr <- nzchar(Sys.getenv("NIX_STORE"))
-    if (isFALSE(is_nixr) && isTRUE(is_rstudio)) {
+    is_nix_r <- nzchar(Sys.getenv("NIX_STORE"))
+    if (isFALSE(is_nix_r) && isTRUE(is_rstudio)) {
       # Currently, RStudio does not propagate environmental variables defined in 
       # `$HOME/.zshrc`, `$HOME/.bashrc` and alike. This is workaround to 
       # make the path of the nix store and hence basic nix commands available
@@ -334,7 +346,7 @@ nix_rprofile <- function() {
       rm(old_path, nix_path)
     }
     
-    if (isTRUE(is_nixr)) {
+    if (isTRUE(is_nix_r)) {
       current_paths <- .libPaths()
       userlib_paths <- Sys.getenv("R_LIBS_USER")
       user_dir <- grep(paste(userlib_paths, collapse = "|"), current_paths, fixed = TRUE)
@@ -345,7 +357,7 @@ nix_rprofile <- function() {
       rm(current_paths, userlib_paths, user_dir, new_paths)
     }
     
-    rm(is_rstudio, is_nixr)
+    rm(is_rstudio, is_nix_r)
   } )
 }
 

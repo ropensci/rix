@@ -2,7 +2,7 @@ testthat::test_that("Testing `with_nix()` if Nix is installed", {
 
   skip_on_covr()
 
-  if (isFALSE(is_nix_rsession())) {
+  if (isFALSE(is_nix_r_session())) {
     # needed for the GitHub test runners with system's R
     set_nix_path()
   }
@@ -52,7 +52,7 @@ testthat::test_that("Test `with_nix()` if Nix is installed on R 4.2.0", {
 
   skip_on_covr()
 
-  if (isFALSE(is_nix_rsession())) {
+  if (isFALSE(is_nix_r_session())) {
     # needed for the GitHub test runners with system's R
     set_nix_path()
   }
@@ -96,7 +96,7 @@ testthat::test_that("Test `with_nix()` correct .libPaths()", {
 
   skip_on_covr()
   
-  if (isFALSE(is_nix_rsession())) {
+  if (isFALSE(is_nix_r_session())) {
     # needed for the GitHub test runners with system's R
     set_nix_path()
   }

@@ -9,8 +9,8 @@
 #   at run-time.
 {
     is_rstudio <- Sys.getenv("RSTUDIO") == "1"
-    is_nixr <- nzchar(Sys.getenv("NIX_STORE"))
-    if (isFALSE(is_nixr) && isTRUE(is_rstudio)) {
+    is_nix_r <- nzchar(Sys.getenv("NIX_STORE"))
+    if (isFALSE(is_nix_r) && isTRUE(is_rstudio)) {
         cat("{rix} detected RStudio R session")
         old_path <- Sys.getenv("PATH")
         nix_path <- "/nix/var/nix/profiles/default/bin"
@@ -20,7 +20,7 @@
         }
         rm(old_path, nix_path)
     }
-    if (isTRUE(is_nixr)) {
+    if (isTRUE(is_nix_r)) {
         current_paths <- .libPaths()
         userlib_paths <- Sys.getenv("R_LIBS_USER")
         user_dir <- grep(paste(userlib_paths, collapse = "|"), current_paths, fixed = TRUE)
@@ -28,5 +28,5 @@
         .libPaths(new_paths)
         rm(current_paths, userlib_paths, user_dir, new_paths)
     }
-    rm(is_rstudio, is_nixr)
+    rm(is_rstudio, is_nix_r)
 }
