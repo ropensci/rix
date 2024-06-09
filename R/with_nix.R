@@ -231,7 +231,7 @@ with_nix <- function(expr,
     }
     
     # 1) save all function args onto a temporary folder each with
-    # `<tag.Rds>` and `value` as serialized objects from RAM ---------------------
+    # `<tag.Rds>` and `value` as serialized objects from RAM -------------------
     temp_dir <- file.path(tempdir(), "with_nix")
     if (!dir.exists(temp_dir)) {
       dir.create(temp_dir)
