@@ -257,38 +257,42 @@ set_message_session_PATH <- function(message_type =
 
 #' @noRd
 is_nix_rsession <- function(message_type = c("simple", "quiet", "verbose")) {
-  message_type <- match.arg(message_type)
-  is_quiet <- message_type == "quiet"
+  message_type <- match.arg(message_type, 
+    choices = c("simple", "quiet", "verbose"))
   is_nixr <- nzchar(Sys.getenv("NIX_STORE"))
   
   if (isTRUE(is_nixr)) {
-    if (message_type == "simple") {
-      cat("==> R session running via Nix (nixpkgs)\n")
-    }
+    msg <- "==> R session running via Nix (nixpkgs)\n"
+    switch(message_type,
+      verbose = cat(msg)
+    )
     return(TRUE)
   } else {
-    if (message_type == "simple") {
-      cat("\n==> R session running via host operating system or docker\n")
-    }
+    msg <- "\n==> R session running via host operating system or docker\n"
+    switch(message_type,
+      verbose = cat(msg)
+    )
     return(FALSE)
   }
 }
 
 #' @noRd
 is_rstudio_session <- function(message_type = c("simple", "quiet", "verbose")) {
-  message_type <- match.arg(message_type)
-  is_quiet <- message_type == "quiet"
+  message_type <- match.arg(message_type,
+    choices = c("simple", "quiet", "verbose"))
   is_rstudio <- Sys.getenv("RSTUDIO") == "1"
   
   if (isTRUE(is_rstudio)) {
-    if (message_type == "verbose") {
-      cat("\n==> R session running from RStudio\n")
-    }
+    msg <- "\n==> R session running from RStudio\n"
+    switch(message_type,
+      verbose = cat(msg)
+    )
     return(TRUE)
   } else {
-    if (message_type == "verbose") {
-      cat("* R session not running from RStudio")
-    }
+    msg <- cat("* R session not running from RStudio")
+    switch(message_type,
+      verbose = cat(msg)
+    )
     return(FALSE)
   }
 }

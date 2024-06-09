@@ -225,9 +225,10 @@ with_nix <- function(expr,
     )
   }
   
-  program <- match.arg(program)
-  exec_mode <- match.arg(exec_mode)
-  message_type <- match.arg(message_type)
+  program <- match.arg(program, choices = c("R", "shell"))
+  exec_mode <- match.arg(exec_mode, choices = c("blocking", "non-blocking"))
+  message_type <- match.arg(message_type,
+    choices = c("simple", "quiet", "verbose"))
   
   is_quiet <- message_type == "quiet"
   
@@ -484,7 +485,8 @@ recurse_find_check_globals <- function(expr,
                                          c("simple", "quiet", "verbose")
                                        ) {
   
-    message_type <- match.arg(message_type)
+    message_type <- match.arg(message_type,
+      choices = c("simple", "quiet", "verbose"))
     is_quiet <- message_type == "quiet"
     
     if (isFALSE(is_quiet)) {
