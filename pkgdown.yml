@@ -18,7 +18,7 @@ articles:
   z-contributing_to_nixpkgs: z-contributing_to_nixpkgs.html
   z-developers-vignette-generate-an-environment-with-rix-only: z-developers-vignette-generate-an-environment-with-rix-only.html
   z-developers-vignette-save-the-nix-package-versions-data: z-developers-vignette-save-the-nix-package-versions-data.html
-last_built: 2024-06-09T11:58Z
+last_built: 2024-06-09T16:07Z
 urls:
   reference: https://b-rodrigues.github.io/rix/reference
   article: https://b-rodrigues.github.io/rix/articles
