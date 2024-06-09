@@ -230,8 +230,8 @@ with_nix <- function(expr,
     args <- as.list(formals(expr))
     
     if (message_type == "verbose") {
-      cat("\n### Prepare to exchange arguments and globals for `expr`",
-          "between the host and Nix R sessions ###\n")
+      cat("\n==> preparing to exchange arguments and globals in `expr`",
+          "between the current source and Nix R target sessions ...\n")
     }
     
     # 1) save all function args onto a temporary folder each with
@@ -284,8 +284,8 @@ with_nix <- function(expr,
     
     # 3) run expression in nix session, based on temporary script
     if (isFALSE(is_quiet)) {
-      cat(paste0("==> Running deparsed expression via `nix-shell`", " in ",
-                 exec_mode, " mode\n\n"
+      cat(paste0("\n==> running deparsed expression via `nix-shell`", " in ",
+        exec_mode, " mode ...\n\n"
       ))
     }
 
@@ -364,7 +364,7 @@ with_nix <- function(expr,
   
   # return output from evaluated function
   if (isFALSE(is_quiet)) {
-    cat("\n* Evaluating `expr` in `nix-shell` returns:\n")
+    cat("\n* evaluating `expr` in `nix-shell` returns:\n")
   }
   
   if (program == "R") {

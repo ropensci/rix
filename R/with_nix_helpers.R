@@ -110,7 +110,7 @@ recurse_find_check_globals <- function(expr,
   is_quiet <- message_type == "quiet"
   
   if (message_type == "verbose") {
-    cat("\n==> Inspecting code recursively in call stack of `expr`...")
+    cat("\n==> inspecting code recursively in call stack of `expr`...")
     codetools::checkUsage(fun = expr)
     cat("\n")
   }
@@ -308,7 +308,7 @@ classify_globals <- function(globals_expr, args_vec) {
 serialize_globals <- function(globals_expr, temp_dir) {
   funs <- globals_expr$globalenv_fun
   if (!is.null(funs)) {
-    cat("=> Saving global functions to disk:", paste(names(funs)), "\n")
+    cat("==> saving global functions to disk:", paste(names(funs)), " ...\n")
     globalenv_funs <- lapply(
       names(funs),
       function(x) get(x = x, envir = .GlobalEnv)
@@ -318,8 +318,8 @@ serialize_globals <- function(globals_expr, temp_dir) {
   }
   others <- globals_expr$globalenv_other
   if (!is.null(others)) {
-    cat("=> Saving non-function object(s), e.g. other environments:",
-        paste(names(others)), "\n"
+    cat("=> saving non-function object(s), e.g. other environments:",
+        paste(names(others)), " ...\n"
     )
     globalenv_others <- lapply(
       names(others),
@@ -385,10 +385,10 @@ quote_rnix <- function(expr,
     message_type <- .(message_type)
     is_quiet <- message_type == "quiet"
     if (isFALSE(is_quiet)) {
-      cat("\n### Start evaluating `expr` in `nix-shell` ###")
+      cat("\n### start evaluating `expr` in `nix-shell` ###")
     }
     if (message_type == "verbose") {
-      cat("\n* wrote R script evaluated via `Rscript` in `nix-shell`:",
+      cat("\n\n* wrote R script evaluated via `Rscript` in `nix-shell`:",
           .(rnix_file))
     }
     temp_dir <- .(temp_dir)
@@ -401,7 +401,7 @@ quote_rnix <- function(expr,
     .libPaths(new_paths)
     r_version_num <- paste0(R.version$major, ".", R.version$minor)
     if (isFALSE(is_quiet)) {
-      cat("\n* using Nix with R version", r_version_num, "\n\n")
+      cat("\n* evaluating `expr` in Nix shell with R version", r_version_num, "\n\n")
     }
     # assign `args_vec` as in c(...) form.
     args_vec <- .(with_assign_vecnames_call(vec = args_vec))
@@ -415,8 +415,8 @@ quote_rnix <- function(expr,
       )
       if (message_type == "verbose") {
         cat(
-          paste0("  => reading file ", "'", obj, ".Rds", "'",
-                 " for argument named `", obj, "`\n")
+          paste0("  ==> reading file ", "'", obj, ".Rds", "'",
+                 " for argument named `", obj, "` ...\n")
         )
       }
     }
@@ -431,7 +431,7 @@ quote_rnix <- function(expr,
       )
       if (message_type == "verbose") {
         cat(
-          paste0("  => reading file ", "'", obj, ".Rds", "'",
+          paste0("  ==> reading file ", "'", obj, ".Rds", "'",
                  " for global object named `", obj, "`\n")
         )
       }
@@ -449,14 +449,14 @@ quote_rnix <- function(expr,
     lst <- lapply(lst, as.name)
     rnix_out <- do.call(.(expr), lst)
     if (message_type == "verbose") {
-      cat("* called `expr` with args:", args_vec, "\n")
+      cat("\n* called `expr` with args:", args_vec, "\n")
       cat("\n* The type of the output object returned by `expr` is",
           paste0(typeof(rnix_out), ".\n"))
     }
     saveRDS(object = rnix_out, file = file.path(temp_dir, "_out.Rds"))
     if (message_type == "verbose") {
-      cat("\n* Saved output to", file.path(temp_dir, "_out.Rds"))
-      cat("\n\n* the following objects are in the global environment:\n")
+      cat("\n* saved output to", file.path(temp_dir, "_out.Rds"))
+      cat("\n\n* the following objects are in the global Nix R environment:\n")
       cat(ls())
       cat("\n")
     }
