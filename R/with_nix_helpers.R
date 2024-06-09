@@ -305,12 +305,18 @@ classify_globals <- function(globals_expr, args_vec) {
 
 # wrapper to serialize expressions of all global objects found
 #' @noRd
-serialize_globals <- function(globals_expr, temp_dir) {
+serialize_globals <- function(globals_expr,
+                              temp_dir,
+                              message_type = c("simple", "quiet", "verbose")) {
+  message_type <- match.arg(message_type,
+    choices = c("simple", "quiet", "verbose"))
   funs <- globals_expr$globalenv_fun
   if (!is.null(funs)) {
-    cat("==> serializing global functions under `<function-name>.Rds` in
+    if (message_type == "verbose") {
+      cat("==> serializing global functions under `<function-name>.Rds` in
       temporary folder at",
-      paste0(normalizePath(temp_dir), "...\n"), paste(names(funs)), "\n")
+          paste0(normalizePath(temp_dir), "...\n"), paste(names(funs)), "\n")
+    }
     globalenv_funs <- lapply(
       names(funs),
       function(x) get(x = x, envir = .GlobalEnv)
@@ -320,9 +326,11 @@ serialize_globals <- function(globals_expr, temp_dir) {
   }
   others <- globals_expr$globalenv_other
   if (!is.null(others)) {
-    cat("==> serializing non-function object(s), e.g., other environments",
+    if (message_type == "verbose") {
+      cat("==> serializing non-function object(s), e.g., other environments",
         paste(names(others)), " ...\n"
-    )
+      )
+    }
     globalenv_others <- lapply(
       names(others),
       function(x) get(x = x, envir = .GlobalEnv)
