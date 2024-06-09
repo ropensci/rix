@@ -1,3 +1,5 @@
+#' Stop with descriptive error how to solve when `nix-shell` cannot be found
+#' in current shell environment or R session
 #' @noRd
 stop_no_nix_shell <- function() {
   stop(
@@ -302,8 +304,8 @@ classify_globals <- function(globals_expr, args_vec) {
 }
 
 
-# wrapper to serialize expressions of all global objects found
 #' @noRd
+# wrapper to serialize expressions of all global objects found
 serialize_globals <- function(globals_expr,
                               temp_dir,
                               message_type = c("simple", "quiet", "verbose")) {

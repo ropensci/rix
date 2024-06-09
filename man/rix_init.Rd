@@ -30,8 +30,8 @@ project setup.}
 \item{message_type}{Character. Message type, defaults to \code{"simple"}, which
 gives minimal but sufficient feedback. Other values are currently
 \verb{"quiet}, which writes \code{.Rprofile} without message, and
-\code{"verbose"}, which provides the actions done to achieve fully controlled
-R project environments in Nix.}
+\code{"verbose"}, which displays the mechanisms implemented to achieve fully
+controlled R project environments in Nix.}
 }
 \value{
 Nothing, this function only has the side-effect of writing a file
