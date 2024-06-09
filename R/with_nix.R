@@ -81,12 +81,6 @@
 #' The default is `"."`, which is the working directory in the current R
 #' session. This approach also useful when you have different subfolders 
 #' with separate software environments defined in different `default.nix` files.
-#' If you prefer to run code in custom `.nix` files in the same directory
-#' using `with_nix()`, you can use the `nix_file` argument to specify paths
-#' to `.nix` files.
-#' @param nix_file Path to `.nix` file that contains the expressions defining
-#' the Nix software environment in which you want to run `expr`. See
-#'  `project_path` argument as an alternative way to specify the environment.
 #' @param message_type String how detailed output is. Currently, there is 
 #' either `"simple"` (default), `"quiet` or `"verbose"`, which shows the script
 #' that runs via `nix-shell`.
@@ -147,11 +141,8 @@ with_nix <- function(expr,
                      program = c("R", "shell"),
                      exec_mode = c("blocking", "non-blocking"),
                      project_path = ".",
-                     nix_file = NULL,
                      message_type = c("simple", "quiet", "verbose")) {
-  if (is.null(nix_file)) {
-    nix_file <- file.path(project_path, "default.nix")
-  }
+  nix_file <- file.path(project_path, "default.nix")
   stopifnot(
     "`project_path` must be character of length 1." =
       is.character(project_path) && length(project_path) == 1L,
@@ -282,9 +273,7 @@ with_nix <- function(expr,
     rnix_deparsed <- deparse_chr1(expr = rnix_quoted, collapse = "\n")
     
     # 4): for 2) and 3) write script to disk, to run later via `Rscript` from
-    # `nix-shell` 
-    # environment
-    r_version_file <- file.path(temp_dir, "nix-r-version.txt")
+    # `nix-shell` environment
     writeLines(text = rnix_deparsed, file(rnix_file))
     
     # 3) run expression in nix session, based on temporary script
