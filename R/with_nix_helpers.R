@@ -109,13 +109,13 @@ recurse_find_check_globals <- function(expr,
                             choices = c("simple", "quiet", "verbose"))
   is_quiet <- message_type == "quiet"
   
-  if (isFALSE(is_quiet)) {
-    cat("\n* checking code in `expr` for potential problems\n")
+  if (message_type == "verbose") {
+    cat("\n==> Inspecting code recursively in call stack of `expr`...")
     codetools::checkUsage(fun = expr)
     cat("\n")
-  } else {
-    codetools::checkUsage(fun = expr)
   }
+
+  codetools::checkUsage(fun = expr)
   
   globals_expr <- codetools::findGlobals(fun = expr)
   globals_lst <- classify_globals(globals_expr, args_vec)
@@ -136,9 +136,6 @@ recurse_find_check_globals <- function(expr,
     } else {
       # successive rounds
       globals_exprs <- unlist(lapply(globals_lst, get_globals_exprs))
-    }
-    if (isFALSE(is_quiet)) {
-      cat("* checking code in `globals_exprs` for potential problems\n")
     }
     lapply(
       globals_exprs,

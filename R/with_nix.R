@@ -255,12 +255,7 @@ with_nix <- function(expr,
     # do code inspection checks to report messages with potential code problems,
     # and find global variables of `expr` recursively
     # using {codetools} wrapper
-    if (isFALSE(is_quiet)) {
-      globals_expr <- recurse_find_check_globals(expr, args_vec)
-    } else {
-      globals_expr <- recurse_find_check_globals(expr, args_vec,
-        message_type = "quiet")
-    }
+    globals_expr <- recurse_find_check_globals(expr, args_vec, message_type)
     
     # wrapper around `serialize_lobjs()`
     globals <- serialize_globals(globals_expr, temp_dir)
