@@ -112,7 +112,6 @@ recurse_find_check_globals <- function(expr,
   if (message_type == "verbose") {
     cat("\n==> inspecting code recursively in call stack of `expr`...")
     codetools::checkUsage(fun = expr)
-    cat("\n")
   }
 
   codetools::checkUsage(fun = expr)

@@ -229,6 +229,11 @@ with_nix <- function(expr,
     # and bound to `"."` (project root)
     args <- as.list(formals(expr))
     
+    if (isFALSE(is_quiet)) {
+      cat("\n* using environment defined by Nix expression in file:\n", 
+        normalizePath(file.path(project_path, "default.nix")), "\n")
+    }
+    
     if (message_type == "verbose") {
       cat("\n==> preparing to exchange arguments and globals in `expr`",
           "between the current source and Nix R target sessions ...\n")
