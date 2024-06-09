@@ -178,7 +178,7 @@ with_nix <- function(expr,
   # cat message if not quiet
   message_r_session_nix_rstudio(is_nix_r, is_rstudio, message_type)
   
-  if (isTRUE(is_rstudio) && isFALSE(is_nix)) {
+  if (isTRUE(is_rstudio) && isFALSE(is_nix_r)) {
     set_nix_path()
   }
   

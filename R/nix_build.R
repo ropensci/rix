@@ -172,13 +172,14 @@ poll_sys_proc_nonblocking <- function(cmd, proc,
                                       what = c("nix-build", "expr"),
                                       message_type = 
                                         c("simple", "quiet", "verbose")) {
-  what <- match.arg(what)
-  message_type <- match.arg(message_type)
+  what <- match.arg(what, choices = c("nix-build", "expr"))
+  message_type <- match.arg(message_type,
+    choices = c("simple", "quiet", "verbose"))
   is_quiet <- message_type == "quiet"
   
-  if (isFALSE(is_quiet)) {
+  if (message_type == "verbose") {
     cat(paste0("\n==> Process ID (PID) is ", proc, "."))
-    cat("\n==> Receiving stdout and stderr streams...\n")
+    cat("\n==> Receiving stdout and stderr streams from `nix-build`...\n")
   }
 
   status <- sys::exec_status(proc, wait = TRUE)
