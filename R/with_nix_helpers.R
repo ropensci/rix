@@ -308,7 +308,9 @@ classify_globals <- function(globals_expr, args_vec) {
 serialize_globals <- function(globals_expr, temp_dir) {
   funs <- globals_expr$globalenv_fun
   if (!is.null(funs)) {
-    cat("==> saving global functions to disk:", paste(names(funs)), " ...\n")
+    cat("==> serializing global functions under `<function-name>.Rds` in
+      temporary folder at",
+      paste0(normalizePath(temp_dir), "...\n"), paste(names(funs)), "\n")
     globalenv_funs <- lapply(
       names(funs),
       function(x) get(x = x, envir = .GlobalEnv)
@@ -318,7 +320,7 @@ serialize_globals <- function(globals_expr, temp_dir) {
   }
   others <- globals_expr$globalenv_other
   if (!is.null(others)) {
-    cat("=> saving non-function object(s), e.g. other environments:",
+    cat("==> serializing non-function object(s), e.g., other environments",
         paste(names(others)), " ...\n"
     )
     globalenv_others <- lapply(
@@ -330,7 +332,7 @@ serialize_globals <- function(globals_expr, temp_dir) {
   }
   env_funs <- globals_expr$env_fun
   if (!is.null(env_funs)) {
-    cat("=> Serializing function(s) from other environment(s):",
+    cat("==> Serializing function(s) from other environment(s):",
         paste(names(env_funs)), "\n")
     env_funs <- lapply(
       names(env_funs),
@@ -341,7 +343,7 @@ serialize_globals <- function(globals_expr, temp_dir) {
   }
   env_others <- globals_expr$env_other
   if (!is.null(env_others)) {
-    cat("=> Serializing non-function object(s) from custom environment(s)::",
+    cat("==> Serializing non-function object(s) from custom environment(s)::",
         paste(names(env_others)), "\n"
     )
     env_others <- lapply(
