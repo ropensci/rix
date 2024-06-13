@@ -64,23 +64,27 @@ other users than `root` running Nix. To set this up, please do as outlined
 
 sudo -i
 nano /etc/wsl.conf
+```
 
-# add this entry
-
-[boot]
-systemd=true
-
-# then restart running instance from PowerShell
-
-wsl --shutdown
-
-# relaunch Ubuntu WSL2
+This will open the `/etc/wsl.conf` in a nano, a command
+line text editor. Add the following line:
 
 ```
+[boot]
+systemd=true
+```
+
+Save the file with CTRL-O and then quit nano with CTRL-X.
+Then, type the following line in powershell:
+
+```
+wsl --shutdown
+```
+
+and then relaunch WSL (Ubuntu) from the start menu.
 
 Afterwards, you can install Nix like business as usual. You can proceed with the
 Determinate Systems installer.
-
 
 ### The Determinate Systems installer
 
