@@ -14,6 +14,7 @@
 #'   are not R packages such as command line applications for example. You can look for
 #'   available software on the NixOS website \url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=}
 #' @param git_pkgs List. A list of packages to install from Git. See details for more information.
+#' @param local_pkgs List. A list of paths to local packages to install. These packages need to be in the `.tar.gz` or `.zip` formats.
 #' @param tex_pkgs Vector of characters. A set of tex packages to install.
 #'   Use this if you need to compile `.tex` documents,
 #'   or build PDF documents using Quarto. If you don't know which package to add,
@@ -94,6 +95,7 @@
 #'     r_pkgs = c("dplyr", "ggplot2"),
 #'     system_pkgs = NULL,
 #'     git_pkgs = NULL,
+#'     local_pkgs = NULL,
 #'     ide = "code",
 #'     project_path = path_default_nix,
 #'     overwrite = TRUE,
@@ -104,6 +106,7 @@ rix <- function(r_ver = "latest",
                 r_pkgs = NULL,
                 system_pkgs = NULL,
                 git_pkgs = NULL,
+                local_pkgs = NULL,
                 tex_pkgs = NULL,
                 ide = c("other", "code", "radian", "rstudio", "rserver"),
                 project_path = ".",
@@ -181,14 +184,21 @@ for more details.")
                         ""
                       }
 
+  # If there are R packages local packages, passes the string "local_pkgs" to buildInputs
+  flag_local_pkgs <- if(is.null(local_pkgs)){
+                       ""
+                     } else {
+                       "local_pkgs"
+                     }
+
   # If there are wrapped packages (for example for RStudio), passes the "wrapped_pkgs"
   # to buildInputs
   flag_wrapper <- if (ide %in% names(attrib) & flag_rpkgs != "") "wrapped_pkgs" else ""
 
   # Correctly formats shellHook for Nix's mkShell
   shell_hook <- if (!is.null(shell_hook) && nzchar(shell_hook)) {
-    paste0('shellHook = "', shell_hook, '";')
-  } else {''}
+                  paste0('shellHook = "', shell_hook, '";')
+                } else {''}
 
   # Generate default.nix file
   default.nix <- paste(
@@ -198,9 +208,11 @@ for more details.")
     generate_rpkgs(cran_pkgs$rPackages, flag_rpkgs),
     generate_git_archived_pkgs(git_pkgs, cran_pkgs$archive_pkgs, flag_git_archive),
     generate_tex_pkgs(tex_pkgs),
+    generate_local_pkgs(local_pkgs),
     generate_system_pkgs(system_pkgs, r_pkgs),
-    generate_wrapped_pkgs(ide, attrib, flag_git_archive, flag_rpkgs),
-    generate_shell(flag_git_archive, flag_rpkgs, flag_tex_pkgs, flag_wrapper, shell_hook),
+    generate_wrapped_pkgs(ide, attrib, flag_git_archive, flag_rpkgs, flag_local_pkgs),
+    generate_shell(flag_git_archive, flag_rpkgs, flag_tex_pkgs,
+                   flag_local_pkgs, flag_wrapper, shell_hook),
     collapse = "\n"
     )
 

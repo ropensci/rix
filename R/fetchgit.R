@@ -83,9 +83,40 @@ fetchzip <- function(archive_pkg, sri_hash = NULL){
 )
 }
 
+#' fetchlocal Installs a local R package
+#' @param local_pkg A list of characters. The first element of the list is the package path of the form "/dplyr_0.8.0.tar.gz" and the second element is the package imports.
+#' @return A character. The Nix definition to build the R package from local sources.
+#' @noRd
+fetchlocal <- function(local_pkg){
+
+  package <- local_pkg$pkg
+  its_imports <- local_pkg$imports
+
+  pkgs <- gsub("/", "", package)
+  pkgs <- unlist(strsplit(archive_pkg, split = "_"))
+
+  package_name <- pkgs[1]
+  package_src <- package
+
+  imports <- local_pkg$imports
+
+  sprintf('
+  (pkgs.rPackages.buildRPackage {
+    name = \"%s\";
+    src = packages_src;
+    propagatedBuildInputs = builtins.attrValues {
+     inherit (pkgs.rPackages) %s;
+    };
+  })
+',
+  package_name,
+  package_src,
+  imports
+)
+}
 
 
-#' fetchgits Downloads and installs a packages hosted of Git. Wraps `fetchgit()` to handle multiple packages
+#' fetchgits Downloads and installs packages hosted on Git. Wraps `fetchgit()` to handle multiple packages
 #' @param git_pkgs A list of four elements: "package_name", the name of the package, "repo_url", the repository's url, "branch_name", the name of the branch containing the code to download and "commit", the commit hash of interest. This argument can also be a list of lists of these four elements.
 #' @return A character. The Nix definition to download and build the R package from Github.
 #' @noRd
