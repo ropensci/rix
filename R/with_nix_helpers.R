@@ -79,25 +79,6 @@ serialize_args <- function(args, temp_dir) {
   })
 }
 
-#' to determine which extra packages to load in Nix R prior evaluating `expr`
-#' @noRd
-get_expr_extra_pkgs <- function(globals_expr) {
-  envs_check <- lapply(globals_expr, where)
-  names_envs_check <- vapply(envs_check, environmentName, character(1L))
-  
-  default_pkgnames <- paste0("package:", getOption("defaultPackages"))
-  pkgenvs_attached <- setdiff(
-    grep("^package:", names_envs_check, value = TRUE), 
-    c(default_pkgnames, "base")
-  )
-  if (!length(pkgenvs_attached) == 0L) {
-    pkgs_to_attach <- gsub("^package:", "", pkgenvs_attached)
-    return(pkgs_to_attach)
-  } else {
-    return(NULL)
-  }
-}
-
 
 #' Check if the current environment is the empty environment
 #' @return logical vector of length one
