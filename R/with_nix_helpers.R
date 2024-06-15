@@ -332,8 +332,19 @@ classify_globals <- function(globals_expr, args_vec) {
 }
 
 
+#' Serialize expressions of all global objects found.
+#' 
+#' Wrapper around `serialize_lobjs()`
+#' 
+#' @param globals_expr List with character vector of global R objects detected
+#' with elements per object category (`pkgs`, `globalenv_fun`,
+#' `globalenv_other`, `env_other`, `env_fun`)
+#' @param temp_dir String with temporary directory to save R objects in memory
+#' do disk
+#' @param message_type Character vector with messaging type, Either `"simple"`
+#' (default), `"quiet"` for no messaging, or `"verbose"` to report which object
+#' categories are saved under which `.Rds` file and path.
 #' @noRd
-# wrapper to serialize expressions of all global objects found
 serialize_globals <- function(globals_expr,
                               temp_dir,
                               message_type = c("simple", "quiet", "verbose")) {
