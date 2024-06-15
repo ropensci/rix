@@ -7,4 +7,3 @@ testthat::test_that("get_latest() fails gracefully if no internet", {
   )
 
 })
-
