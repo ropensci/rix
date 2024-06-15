@@ -257,7 +257,7 @@ with_nix <- function(expr,
     globals <- serialize_globals(globals_expr, temp_dir)
     
     # extract additional packages to export
-    pkgs <- serialize_pkgs(globals_expr, temp_dir)
+    pkgs <- serialize_pkgs(globals_expr, temp_dir, message_type)
     
     # 2) deserialize formal arguments of `expr` in nix session
     # and necessary global objects ---------------------------------------------
