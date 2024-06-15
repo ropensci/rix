@@ -406,10 +406,27 @@ serialize_globals <- function(globals_expr,
 }
 
 
+#' Save name of R packages as `_pkgs.Rds` file into temporary directory
+#' 
+#' All R packages will be serialized from character vector element `pkgs`. If it
+#' is `NULL`, then `NULL` will be in `_pkgs.Rds` in the temporary directory
+#' 
+#' @param globals_expr List with character vector of global R objects detected
+#' with elements per object category (`pkgs`, `globalenv_fun`,
+#' `globalenv_other`, `env_other`, `env_fun`).
+#' @param temp_dir Character vector with temporary directory to save `_pkgs.Rds`
+#' @param message_type Type of message. Either `"simple"` (default),
+#' `"quiet"`, or `"verbose"`.
+#' @return character vector with name of R packages.
 #' @noRd
-serialize_pkgs <- function(globals_expr, temp_dir) {
+serialize_pkgs <- function(globals_expr,
+                           temp_dir,
+                           message_type = c("simple", "verbose", "quiet")) {
+  message_type <- match.arg(message_type,
+    choices = c("simple", "quiet", "verbose"))
+  is_quiet <- message_type == "quiet"
   pkgs <- globals_expr$pkgs
-  if (!is.null(pkgs)) {
+  if (!is.null(pkgs) & isFALSE(is_quiet)) {
     cat("=> Serializing package(s) required to run `expr`:\n",
         paste(pkgs), "\n"
     )
@@ -571,7 +588,6 @@ with_assign_vec_call <- function(vec) {
 #' @param expr any **R** expression
 #' @return representation of `expr` as character vector of length 1
 #' @author R Core Team
-#' @copyright Copyright (c) [2020] R Core Team
 #' @noRd
 deparse_chr1 <- function(expr, width.cutoff = 500L, collapse = " ", ...) {
   paste(deparse(expr, width.cutoff, ...), collapse = collapse)
