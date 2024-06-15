@@ -229,6 +229,25 @@ recurse_find_check_globals <- function(expr,
   return(exports)
 }
 
+#' Classify global objects found when apply `codetools::findGlobals` on 
+#' `expr`, and also on all global object found via recursion of the same 
+#' function
+#' @param globals_expr character vector of object names assigned for each
+#' global object found
+#' @param args_vec character vector with deparsed function argument names
+#' @return list with object category, where each object category contains
+#' contains a character vector with the the respective environment as value and
+#' the object name assigned as name. If no global object is assigned for a,
+#' category, `NULL` element will be returned. Available object category
+#' elements are:
+#' * `globalenv_fun`: Character vector with function(s) in the global
+#' environment
+#' * `globalenv_other`: Character vector with the R objects in the global
+#' environment
+#' * `env_other`: Character vector with other environments found
+#' * `env_fun`: Character vector with functions assigned to custom othe
+#' other environments
+#' * `pkgs`: Packages found
 #' @noRd
 classify_globals <- function(globals_expr, args_vec) {
   envs_check <- lapply(globals_expr, where)
