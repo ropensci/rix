@@ -426,7 +426,7 @@ serialize_pkgs <- function(globals_expr,
     choices = c("simple", "quiet", "verbose"))
   is_quiet <- message_type == "quiet"
   pkgs <- globals_expr$pkgs
-  if (!is.null(pkgs) & isFALSE(is_quiet)) {
+  if (!is.null(pkgs) && isFALSE(is_quiet)) {
     cat("=> Serializing package(s) required to run `expr`:\n",
         paste(pkgs), "\n"
     )
