@@ -1,7 +1,7 @@
-#' get_latest Get the latest R version and packages
+#' Get the latest R version and packages
 #' @param r_version Character. R version to look for, for example, "4.2.0". If a nixpkgs revision is provided instead, this gets returned.
 #' @return A character. The commit hash of the latest nixpkgs-unstable revision
-#' @importFrom httr content GET stop_for_status
+#' @importFrom curl new_handle curl_fetch_memory handle_reset
 #' @importFrom jsonlite fromJSON
 #' @importFrom curl has_internet
 #'
@@ -25,19 +25,19 @@ get_latest <- function(r_version) {
   } else if(r_version == "bleeding_edge"){
     latest_commit <- "refs/heads/r-daily"
   } else {
-    latest_commit <- get_right_commit(r_version)
+    latest_commit <- get_latest_r_version_commit(r_version)
   }
   latest_commit
 }
 
 
 #' @noRd
-get_right_commit <- function(r_version) {
+get_latest_r_version_commit <- function(r_version) {
 
   if(r_version == "frozen_edge"){
     api_url <- "https://api.github.com/repos/rstats-on-nix/nixpkgs/commits?sha=r-daily"
 
-  } else if(r_version %in% Filter(\(x)`!=`(x, "latest"), available_r())){ #all but latest
+  } else if (r_version %in% Filter(\(x)`!=`(x, "latest"), available_r())){ #all but latest
     temp <- new.env(parent = emptyenv())
 
     data(list = "r_nix_revs",
@@ -51,15 +51,32 @@ get_right_commit <- function(r_version) {
   } else {
     api_url <- "https://api.github.com/repos/NixOS/nixpkgs/commits?sha=nixpkgs-unstable"
   }
-  tryCatch({
-    response <- httr::GET(url = api_url)
-    httr::stop_for_status(response)
-    commit_data <- jsonlite::fromJSON(httr::content(response, "text"))
-    latest_commit <- commit_data$sha[1]
-    return(latest_commit)
-  }, error = function(e) {
-    cat("Error:", e$message, "\n")
-    return(NULL)
-  })
+  
+  # handle to get error for status code 404
+  h <- curl::new_handle(failonerror = TRUE)
+  
+  req <- try_get_request(url = api_url, handle = h)
+  
+  curl::handle_reset(h)
+  
+  commit_data <- jsonlite::fromJSON(rawToChar(req$content))
+  latest_commit <- commit_data$sha[1]
+  
+  return(latest_commit)
+}
 
+
+#' Try fetch contents of an URL with handle and stop with propagating the curl
+#' error and also show URL for context
+#' @noRd
+try_get_request <- function(url, handle) {
+  tryCatch({
+    req <- curl::curl_fetch_memory(url, handle)
+  }, error = function(e) {
+    stop("`curl::curl_fetch_memory(", 
+         paste0("url = ", "'", api_url, "'", ")` "), "failed:\n ",
+         e$message[1], call. = FALSE)
+  })
+  
+  return(req)
 }
