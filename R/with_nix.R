@@ -231,7 +231,7 @@ with_nix <- function(expr,
     }
     
     # 1) save all function args onto a temporary folder each with
-    # `<tag.Rds>` and `value` as serialized objects from RAM ---------------------
+    # `<tag.Rds>` and `value` as serialized objects from RAM -------------------
     temp_dir <- file.path(tempdir(), "with_nix")
     if (!dir.exists(temp_dir)) {
       dir.create(temp_dir)
@@ -257,7 +257,7 @@ with_nix <- function(expr,
     globals <- serialize_globals(globals_expr, temp_dir)
     
     # extract additional packages to export
-    pkgs <- serialize_pkgs(globals_expr, temp_dir)
+    pkgs <- serialize_pkgs(globals_expr, temp_dir, message_type)
     
     # 2) deserialize formal arguments of `expr` in nix session
     # and necessary global objects ---------------------------------------------
