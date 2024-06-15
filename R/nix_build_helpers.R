@@ -52,7 +52,7 @@ remove_r_libs_user <- function() {
 #' https://github.com/rstudio/rstudio/issues/12585 => seems to work since
 #' RStudio 2023.12.0-daily+346 ; however, since we want to go back in time, too,
 #' we'll leave that tweak to ensure properly working behavior.
-#' @return 
+#' @return returns old value for `LD_LIBRARY_PATH` environment variable
 #' @noRd
 fix_ld_library_path <- function() {
   old_ld_library_path <- Sys.getenv("LD_LIBRARY_PATH")
