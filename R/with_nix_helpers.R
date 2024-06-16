@@ -1,3 +1,5 @@
+#' Stop with descriptive error how to solve when `nix-shell` cannot be found
+#' in current shell environment or R session
 #' @noRd
 stop_no_nix_shell <- function() {
   stop(
@@ -20,7 +22,17 @@ stop_no_nix_shell <- function() {
 }
 
 
-#' serialize language objects
+#' Serialize a list of R expressions as `.Rds` to disk
+#' 
+#' This helper is currently only called from the wrapper `serialize_globals()`,
+#' where all recursively found global R objects of `expr` need to be saved
+#' on disk in a temporary directory, so that they can later be deserialized
+#' inside the Nix R environment
+#' @param lobjs list of **R** expressions
+#' @param file path of temporary directory where list of expressions are 
+#' saved as individual `.Rds` files
+#' @details It is called for its side effects to save expressions as `.Rds`
+#' files.
 #' @noRd
 serialize_lobjs <- function(lobjs, temp_dir) {
   invisible({
@@ -40,7 +52,13 @@ serialize_lobjs <- function(lobjs, temp_dir) {
   })
 }
 
-#' serialize arguments
+#' Get all function args of `expr` as R objects and save them into `.Rds` files.
+#' 
+#' Save function arguments into a folder each with `<tag.Rds>` and `value`.
+#' This is used for the first serialization step in the source environment
+#' inside `with_nix()`.
+#' @param args list of symbols where names of elements are character
+#' representations of symbols, or list containing empty symbol(s)
 #' @noRd
 serialize_args <- function(args, temp_dir) {
   invisible({
@@ -61,30 +79,22 @@ serialize_args <- function(args, temp_dir) {
   })
 }
 
-#' @noRd
-# to determine which extra packages to load in Nix R prior evaluating `expr`
-get_expr_extra_pkgs <- function(globals_expr) {
-  envs_check <- lapply(globals_expr, where)
-  names_envs_check <- vapply(envs_check, environmentName, character(1L))
-  
-  default_pkgnames <- paste0("package:", getOption("defaultPackages"))
-  pkgenvs_attached <- setdiff(
-    grep("^package:", names_envs_check, value = TRUE), 
-    c(default_pkgnames, "base")
-  )
-  if (!length(pkgenvs_attached) == 0L) {
-    pkgs_to_attach <- gsub("^package:", "", pkgenvs_attached)
-    return(pkgs_to_attach)
-  } else {
-    return(NULL)
-  }
-}
 
-
+#' Check if the current environment is the empty environment
+#' @return logical vector of length one
 #' @noRd
 is_empty <- function(x) identical(x, emptyenv())
 
 
+#' Find the environment where R object is defined
+#' 
+#' Is used by helper `classify_globals()`, to return the environment where
+#' the object called `name`. The environment stack is queried until the empty
+#' environment is reached.
+#' @param name  string with the name of the R object (a global)
+#' @param env environment (class) where to search is started in direction to
+#' the empty environment
+#' @return environment (class), where object of called `<name>` is found
 #' @noRd
 where <- function(name, env = parent.frame()) {
   while(!is_empty(env)) {
@@ -97,7 +107,8 @@ where <- function(name, env = parent.frame()) {
 }
 
 #' Finds and checks global functions and variables recursively for closure
-#' `expr`
+#' @param expr an **R** expression
+#' @param args_vec character vector with arguments
 #' @noRd
 recurse_find_check_globals <- function(expr,
                                        args_vec,
@@ -218,6 +229,25 @@ recurse_find_check_globals <- function(expr,
   return(exports)
 }
 
+#' Classify global objects found when apply `codetools::findGlobals` on 
+#' `expr`, and also on all global object found via recursion of the same 
+#' function
+#' @param globals_expr character vector of object names assigned for each
+#' global object found
+#' @param args_vec character vector with deparsed function argument names
+#' @return list with object category, where each object category contains
+#' contains a character vector with the the respective environment as value and
+#' the object name assigned as name. If no global object is assigned for a,
+#' category, `NULL` element will be returned. Available object category
+#' elements are:
+#' * `globalenv_fun`: Character vector with function(s) in the global
+#' environment
+#' * `globalenv_other`: Character vector with the R objects in the global
+#' environment
+#' * `env_other`: Character vector with other environments found
+#' * `env_fun`: Character vector with functions assigned to custom othe
+#' other environments
+#' * `pkgs`: Packages found
 #' @noRd
 classify_globals <- function(globals_expr, args_vec) {
   envs_check <- lapply(globals_expr, where)
@@ -302,7 +332,18 @@ classify_globals <- function(globals_expr, args_vec) {
 }
 
 
-# wrapper to serialize expressions of all global objects found
+#' Serialize expressions of all global objects found.
+#' 
+#' Wrapper around `serialize_lobjs()`
+#' 
+#' @param globals_expr List with character vector of global R objects detected
+#' with elements per object category (`pkgs`, `globalenv_fun`,
+#' `globalenv_other`, `env_other`, `env_fun`)
+#' @param temp_dir String with temporary directory to save R objects in memory
+#' do disk
+#' @param message_type Character vector with messaging type, Either `"simple"`
+#' (default), `"quiet"` for no messaging, or `"verbose"` to report which object
+#' categories are saved under which `.Rds` file and path.
 #' @noRd
 serialize_globals <- function(globals_expr,
                               temp_dir,
@@ -365,10 +406,27 @@ serialize_globals <- function(globals_expr,
 }
 
 
+#' Save name of R packages as `_pkgs.Rds` file into temporary directory
+#' 
+#' All R packages will be serialized from character vector element `pkgs`. If it
+#' is `NULL`, then `NULL` will be in `_pkgs.Rds` in the temporary directory
+#' 
+#' @param globals_expr List with character vector of global R objects detected
+#' with elements per object category (`pkgs`, `globalenv_fun`,
+#' `globalenv_other`, `env_other`, `env_fun`).
+#' @param temp_dir Character vector with temporary directory to save `_pkgs.Rds`
+#' @param message_type Type of message. Either `"simple"` (default),
+#' `"quiet"`, or `"verbose"`.
+#' @return character vector with name of R packages.
 #' @noRd
-serialize_pkgs <- function(globals_expr, temp_dir) {
+serialize_pkgs <- function(globals_expr,
+                           temp_dir,
+                           message_type = c("simple", "verbose", "quiet")) {
+  message_type <- match.arg(message_type,
+    choices = c("simple", "quiet", "verbose"))
+  is_quiet <- message_type == "quiet"
   pkgs <- globals_expr$pkgs
-  if (!is.null(pkgs)) {
+  if (!is.null(pkgs) && isFALSE(is_quiet)) {
     cat("=> Serializing package(s) required to run `expr`:\n",
         paste(pkgs), "\n"
     )
@@ -380,8 +438,25 @@ serialize_pkgs <- function(globals_expr, temp_dir) {
   return(pkgs)
 }
 
-# build deparsed script via language objects;
-# reads like R code, and avoids code injection
+#' Quote language objects via partial substitution of expressions
+#' reads like R code, and avoids code injection.
+#' 
+#' This is used to boilerplate a custom R script that is evaluated by calling
+#' `Rscript` in Nix target environment
+#' @param expr Typically a function
+#' @param program string, currently `"R"`
+#' @param message_type character vector of length one with message type;
+#' either `"simple"`, `"quiet"`, or `"verbose"`
+#' @param args_vec character vector with argument names
+#' @param globals character vector with global objects found
+#' @param pkgs if no packages to export, `NULL`, otherwise character vector
+#' of packages to be exported
+#' @param temp_dir string with file path to temporary directory to be used to
+#' evaluate expression in Nix R session
+#' @param rnix_file string with path to `with_nix_r.R` R script evaluated via
+#' `Rscript` in `nix-shell`
+#' @return A language object
+#' @noRd
 quote_rnix <- function(expr,
                        program,
                        message_type,
@@ -492,6 +567,11 @@ with_assign_vecnames_call <- function(vec) {
   return(cl)
 }
 
+
+#' Create call that combines character inputs arguments via `c()`
+#' 
+#' @examples
+#' with_assign_vec_call(c("a", "b"))
 #' @noRd
 with_assign_vec_call <- function(vec) {
   cl <- call("c")
@@ -501,45 +581,24 @@ with_assign_vec_call <- function(vec) {
   return(cl)
 }
 
-# this is what `deparse1()` does, however, it is only since 4.0.0
+#' Deparse expression into string (character vector of length 1)
+#'
+#' This re-implements what `deparse1()` does, because the function has only been
+#' around since 4.0.0
+#' @param expr any **R** expression
+#' @return representation of `expr` as character vector of length 1
+#' @author R Core Team
 #' @noRd
 deparse_chr1 <- function(expr, width.cutoff = 500L, collapse = " ", ...) {
   paste(deparse(expr, width.cutoff, ...), collapse = collapse)
 }
 
-#' @noRd
-with_expr_deparse <- function(expr) {
-  sprintf(
-    'run_expr <- %s\n',
-    deparse_chr1(expr = expr, collapse = "\n")
-  )
-}
 
+#' 
 #' @noRd
 nix_shell_available <- function() {
   which_nix_shell <- Sys.which("nix-shell")
-  if (nzchar(which_nix_shell)) {
-    return(TRUE)
-  } else {
-    return(FALSE)
-  }
+  is_available <- nzchar(which_nix_shell)
+  return(is_available)
 }
 
-#' @noRd
-create_shell_nix <- function(path = file.path("inst", "extdata", 
-                                              "with_nix", "default.nix")) {
-  if (!dir.exists(dirname(path))) {
-    dir.create(dirname(path), recursive = TRUE)
-  }
-  
-  rix(
-    r_ver = "latest",
-    r_pkgs = NULL,
-    system_pkgs = NULL,
-    git_pkgs = NULL,
-    ide = "other",
-    project_path = dirname(path),
-    overwrite = TRUE,
-    shell_hook = NULL
-  )
-}

@@ -67,8 +67,8 @@
 #' @param message_type Character. Message type, defaults to `"simple"`, which 
 #' gives minimal but sufficient feedback. Other values are currently 
 #' `"quiet`, which writes `.Rprofile` without message, and
-#' `"verbose"`, which provides the actions done to achieve fully controlled 
-#' R project environments in Nix.
+#' `"verbose"`, which displays the mechanisms implemented to achieve fully
+#' controlled R project environments in Nix.
 #' @export
 #' @seealso [with_nix()]
 #' @return Nothing, this function only has the side-effect of writing a file
@@ -208,6 +208,12 @@ rix_init <- function(project_path = ".",
   on.exit(close(file(rprofile_file)))
 }
 
+#' Get character vector of length two with comment and code write `.Rprofile`
+#' to evaluate R expressions in a pure R library runtime and also RStudio IDE
+#' on macOS
+#' 
+#' @param rprofile_deparsed deparsed string with containing `.Rprofile` code.
+#' @return Character vector of length 2.
 #' @noRd
 get_rprofile_text <- function(rprofile_deparsed) {
   c(
@@ -224,6 +230,9 @@ get_rprofile_text <- function(rprofile_deparsed) {
   )
 }
 
+#' Print message for `.Rprofile` addition
+#' @param action_string string
+#' @param project_path string with project path
 #' @noRd
 message_rprofile <- function(action_string = "Added",
                              project_path = ".") {
@@ -238,6 +247,14 @@ message_rprofile <- function(action_string = "Added",
   cat(msg)
 }
 
+#' Get current `PATH` entries, report and modify to include default Nix profile
+#' path
+#' 
+#' Print `PATH` environent variable, and modfiy it as as side effect so that `` 
+#' `"/nix/var/nix/profiles/default/bin"` is included. Confirm message with
+#' by printing modified PATH.
+#' @return Character vector that lists `PATH` entries after modification, which
+#' are separated by `":"`.
 #' @noRd
 set_message_session_PATH <- function(message_type =
                                        c("simple", "quiet", "verbose")) {
@@ -258,6 +275,14 @@ set_message_session_PATH <- function(message_type =
   }
 }
 
+
+#' Report whether the current R session is running in Nix and RStudio, or not.
+#' @param is_nix_r logical scalar. `TRUE` means in a Nix R environment
+#' @param is_rstudio `TRUE` means source R session is inside RStudio
+#' @param message_type character vector of lenght one. Either `"simple"`
+#' (default), `"quiet"`, or `"verbose"`. Currently, `"simple"` and `"verbose"``
+#' create identical messages, while `"quiet"` omits diagnostics messages
+#' @return NULL
 #' @noRd
 message_r_session_nix_rstudio <- function(is_nix_r, 
                                           is_rstudio,
@@ -275,10 +300,10 @@ message_r_session_nix_rstudio <- function(is_nix_r,
   
   if (isTRUE(is_nix_r)) {
     nix_r_msg <-
-      "\n* current R session running inside Nix environment (nixpkgs)"
+      "\n* current R session running inside Nix environment"
   } else {
     nix_r_msg <-
-      "\n* current R session running outside Nix environment (nixpkgs)"
+      "\n* current R session running outside Nix environment"
   }
   
   if (isTRUE(is_rstudio)) {
@@ -297,18 +322,38 @@ message_r_session_nix_rstudio <- function(is_nix_r,
 }
 
 
+#' Is the current R session running in a Nix software environment or not?
+#' 
+#' Query `NIX_STORE` environmental variable in current R session. Only nonzero
+#' if inside a Nix R.
+#' session.
+#' @return Logical vector of length one.
 #' @noRd
 is_nix_r_session <- function() {
   is_nix_r <- nzchar(Sys.getenv("NIX_STORE"))
   return(is_nix_r)
 }
 
+
+#' Has the current R session been launched from RStudio or not?
+#' 
+#' Query `RSTUDIO` environmental variable in current R session. Value is `"1"`
+#' if inside RStudio R session.
 #' @noRd
 is_rstudio_session <- function(message_type = c("simple", "quiet", "verbose")) {
   is_rstudio <- Sys.getenv("RSTUDIO") == "1"
   return(is_rstudio)
 }
 
+
+#' If not yet present, add the Nix default path of the system-wide profile to 
+#' `PATH` environment variable inside R session.
+#' 
+#' The default profile for the system is typically located at 
+#' `/nix/var/nix/profiles/default`.
+#' @details creates the side effect of adding the .
+#' `"/nix/var/nix/profiles/default/bin"`, when it is not yet part of `PATH`
+#' @return returns current `PATH` invisibly
 #' @noRd
 set_nix_path <- function() {
   old_path <- Sys.getenv("PATH")
@@ -322,6 +367,10 @@ set_nix_path <- function() {
   invisible(Sys.getenv("PATH"))
 }
 
+
+#¨ Construct expression of `.Rprofile` used by `rix_init()` by quoting
+#' expressions via `quote()`.
+#' @return language object with parsed expression
 #' @noRd
 nix_rprofile <- function() {
   quote( {
