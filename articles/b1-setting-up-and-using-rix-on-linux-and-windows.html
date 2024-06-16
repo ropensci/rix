@@ -143,18 +143,15 @@ Ubuntu blog entry</a>:</p>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co"># in WSL2 Ubuntu shell</span></span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="fu">sudo</span> <span class="at">-i</span></span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="fu">nano</span> /etc/wsl.conf</span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co"># add this entry</span></span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="ex">[boot]</span></span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="va">systemd</span><span class="op">=</span>true</span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co"># then restart running instance from PowerShell</span></span>
-<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a></span>
-<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="ex">wsl</span> <span class="at">--shutdown</span></span>
-<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a></span>
-<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co"># relaunch Ubuntu WSL2</span></span></code></pre></div>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="fu">nano</span> /etc/wsl.conf</span></code></pre></div>
+<p>This will open the <code>/etc/wsl.conf</code> in a nano, a command
+line text editor. Add the following line:</p>
+<pre><code>[boot]
+systemd=true</code></pre>
+<p>Save the file with CTRL-O and then quit nano with CTRL-X. Then, type
+the following line in powershell:</p>
+<pre><code><span><span class="va">wsl</span> <span class="op">-</span><span class="op">-</span><span class="va">shutdown</span></span></code></pre>
+<p>and then relaunch WSL (Ubuntu) from the start menu.</p>
 <p>Afterwards, you can install Nix like business as usual. You can
 proceed with the Determinate Systems installer.</p>
 </div>
@@ -172,9 +169,9 @@ cannot or have decided not to activate systemd, then you have to append
 <code>--init none</code> to the command. You can find more details about
 this on <a href="https://github.com/DeterminateSystems/nix-installer" class="external-link">The
 Determinate Nix Installer page</a>):</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="ex">curl</span> <span class="at">--proto</span> <span class="st">'=https'</span> <span class="at">--tlsv1.2</span> <span class="at">-sSf</span> <span class="dt">\</span></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>    <span class="at">-L</span> https://install.determinate.systems/nix <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>     <span class="fu">sh</span> <span class="at">-s</span> <span class="at">--</span> install</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="ex">curl</span> <span class="at">--proto</span> <span class="st">'=https'</span> <span class="at">--tlsv1.2</span> <span class="at">-sSf</span> <span class="dt">\</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>    <span class="at">-L</span> https://install.determinate.systems/nix <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>     <span class="fu">sh</span> <span class="at">-s</span> <span class="at">--</span> install</span></code></pre></div>
 <p>Once you have Nix installed, you can build the expressions you
 generate with <a href="https://b-rodrigues.github.io/rix/">rix</a>!</p>
 <p>On Linux, once Nix is installed, all the software that will be
@@ -249,7 +246,7 @@ installation (so not Nix, as decribed before), you can install the
 <a href="https://b-rodrigues.github.io/rix/">rix</a> package as usual as well. Because <a href="https://b-rodrigues.github.io/rix/">rix</a>
 is not yet on CRAN, the easiest way is to install it from its
 r-universe:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"rix"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://b-rodrigues.r-universe.dev"</span>,</span>
 <span>  <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>You can then use the <a href="https://b-rodrigues.github.io/rix/">rix</a> package to generate

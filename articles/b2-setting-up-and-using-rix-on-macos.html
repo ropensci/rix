@@ -234,30 +234,30 @@ macOS. When you try to generate an expression with
 <code>ide = "rstudio"</code> on macOS, this will raise a warning. Here
 are the options you have:</p>
 <ul>
-<li><p>ignore the warning, because the environment will be built on a
-Linux distribution (even though you generated the expression on macOS)
-and used on a Linux distribution;</p></li>
-<li><p>change the <code>ide =</code> argument to either
+<li>ignore the warning, because the environment will be built on a Linux
+distribution (even though you generated the expression on macOS) and
+used on a Linux distribution;</li>
+<li>change the <code>ide =</code> argument to either
 <code>"other"</code> or <code>"code"</code>. Use <code>"code"</code> if
 you want to use VS Code and <code>"other"</code> for any other editor,
 like Vim or Emacs. These other editors don’t need to be installed
 through <code>nixpkgs</code> to use Nix environments, unlike
-RStudio;</p></li>
-<li><p>if you’re working on a pipeline with the <a href="https://docs.ropensci.org/targets/" class="external-link">targets</a>
+RStudio;</li>
+<li>if you’re working on a pipeline with the <a href="https://docs.ropensci.org/targets/" class="external-link">targets</a>
 package, you could run it on Github Actions. This means you could work
 on the code on RStudio outside of the Nix environment, as the code will
 only be executed on Github Actions runners. See this vignette
 <code><a href="../articles/z-advanced-topic-reproducible-analytical-pipelines-with-nix.html">vignette("z-advanced-topic-reproducible-analytical-pipelines-with-nix")</a></code>
-for further details;</p></li>
-<li><p>work on your project as usual, using your usual installation of R
+for further details;</li>
+<li>work on your project as usual, using your usual installation of R
 and RStudio, but generate a <code>default.nix</code> at the end with
 <code>ide = "other"</code> with the right version of R for
-reproducibility purposes;</p></li>
-<li><p>use <em>subshells</em> to execute only the code you need to run
-in a specific environment. See this vignette
-<code><a href="../articles/z-advanced-topic-running-r-or-shell-code-in-nix-from-r.html">vignette("z-advanced-topic-running-r-or-shell-code-in-nix-from-r")</a></code>;</p></li>
-<li><p>help us package RStudio for macOS on <code>nixpgs</code>. See <a href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/rstudio/default.nix" class="external-link">here</a>,
-the Nix expression for RStudio.</p></li>
+reproducibility purposes;</li>
+<li>use <em>subshells</em> to execute only the code you need to run in a
+specific environment. See this vignette
+<code><a href="../articles/z-advanced-topic-running-r-or-shell-code-in-nix-from-r.html">vignette("z-advanced-topic-running-r-or-shell-code-in-nix-from-r")</a></code>;</li>
+<li>help us package RStudio for macOS on <code>nixpgs</code>. See <a href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/rstudio/default.nix" class="external-link">here</a>,
+the Nix expression for RStudio.</li>
 </ul>
 <p>We recommend you continue with the next vignette before tackling the
 more advanced topics listed above:
@@ -272,7 +272,7 @@ more advanced topics listed above:
 </h3>
 <p>When using RStudio Desktop on macOS, you typically launch it from the
 Applications folder. However, RStudio currently lacks an option to start
-an integrated R session via a shell startup on macOS (see this <a href="https://github.com/rstudio/rstudio/issues/13341" class="external-link">issue</a> On
+an integrated R session via a shell startup on macOS (see this <a href="https://github.com/rstudio/rstudio/issues/13341" class="external-link">issue</a>. On
 RStudio for Linux flavors, <code>PATH</code> is properly inherited in R
 sessions. As a result, key environmental variables for UNIX systems,
 like PATH, are not be properly loaded from your default shell (e.g.,
