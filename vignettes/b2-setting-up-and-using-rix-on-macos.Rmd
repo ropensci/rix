@@ -18,10 +18,10 @@ knitr::opts_chunk$set(
 library(rix)
 ```
 
-*This vignette will discuss macOS-specific topics. If you're not using macOS, 
-you can ignore this vignette, and read the 
-`vignette("b1-setting-up-and-using-rix-on-linux-and-windows")`
-vignette instead.*
+*This vignette will discuss macOS-specific topics. If you're not using macOS,
+you can ignore this vignette, and read the
+`vignette("b1-setting-up-and-using-rix-on-linux-and-windows")` vignette
+instead.*
 
 ## Introduction
 
@@ -86,7 +86,6 @@ detailed in the vignettes
 `vignette("d1-installing-r-packages-in-a-nix-environment")` and
 `vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")`.
 
-
 ## Generating expressions
 
 Once you have R installed, either through the usual installer for your operating
@@ -97,7 +96,6 @@ On macOS, generating expressions works just like on Linux and Windows. Start an
 R session, and install `{rix}` if that's not already done. Because `{rix}` is
 not yet on CRAN, the easiest way is to install it from its r-universe:
 
-
 ```{r parsermd-chunk-2, eval = FALSE}
 install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
   "https://cloud.r-project.org"))
@@ -106,7 +104,6 @@ install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
 You can then use the `{rix}` package to generate expressions. Consult the
 next vignette `vignette("c-using-rix-to-build-project-specific-environments")`
 to learn more.
-
 
 ## More macOS specificities
 
@@ -117,7 +114,6 @@ AArch64, supports R since R version 3.5.3. Earlier versions of R will not
 compile on modern Apple processor architectures for the corresponding Nixpkgs
 revisions at that time. Hence, the `darwin-aarch64` platform has constrained
 backwards-compatibility.
-
 
 ### Shared libraries issue
 
@@ -178,14 +174,12 @@ on macOS. When you try to generate an expression with `ide =
 - use *subshells* to execute only the code you need to run in a specific
   environment. See this vignette 
   `vignette("z-advanced-topic-running-r-or-shell-code-in-nix-from-r")`;
-
 - help us package RStudio for macOS on `nixpgs`. See
   [here](https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/rstudio/default.nix),
   the Nix expression for RStudio.
   
 We recommend you continue with the next vignette before tackling the more 
 advanced topics listed above: `vignette("c-using-rix-to-build-project-specific-environments")`.
-
 
 ## Why do we need all these special tweaks?
 
@@ -194,7 +188,7 @@ advanced topics listed above: `vignette("c-using-rix-to-build-project-specific-e
 When using RStudio Desktop on macOS, you typically launch it from the
 Applications folder. However, RStudio currently lacks an option to start an
 integrated R session via a shell startup on macOS (see this
-[issue](https://github.com/rstudio/rstudio/issues/13341) On RStudio for Linux
+[issue](https://github.com/rstudio/rstudio/issues/13341). On RStudio for Linux
 flavors, `PATH` is properly inherited in R sessions. As a result, key
 environmental variables for UNIX systems, like PATH, are not be properly loaded
 from your default shell (e.g., `zsh`, via `~/.zshrc`). Also, RStudio overwrites
