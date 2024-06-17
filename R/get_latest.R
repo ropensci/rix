@@ -74,7 +74,7 @@ try_get_request <- function(url, handle) {
     req <- curl::curl_fetch_memory(url, handle)
   }, error = function(e) {
     stop("`curl::curl_fetch_memory(", 
-         paste0("url = ", "'", api_url, "'", ")` "), "failed:\n ",
+         paste0("url = ", "'", url, "'", ")` "), "failed:\n ",
          e$message[1], call. = FALSE)
   })
   
