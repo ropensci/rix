@@ -83,37 +83,94 @@ fetchzip <- function(archive_pkg, sri_hash = NULL){
 )
 }
 
+
+#' Removes base packages from list of packages dependencies
+#' @param list_imports Atomic vector of packages
+#' @return Atomic vector of packages without base packages
+#' @noRd
+remove_base <- function(list_imports){
+
+  gsub("(^base$)|(^compiler$)|(^datasets$)|(^grDevices$)|(^graphics$)|(^grid$)|(^methods$)|(^parallel$)|(^profile$)|(^splines$)|(^stats$)|(^stats4$)|(^tcltk$)|(^tools$)|(^translations$)|(^utils$)",
+       NA_character_,
+       list_imports) |>
+    na.omit()  |>
+    paste(collapse = " ")
+
+}
+
+#' finds dependencies of a package
+#' @param path path to package
+#' @return Atomic vector of packages
+#' @importFrom desc description
+#' @noRd
+get_imports <- function(path){
+
+  output <- desc::description$new(path)$get_deps() |>
+                                      subset(type %in% c("Depends", "Imports", "LinkingTo")) |>
+                                      subset(package != "R")
+
+  output <- output$package
+
+  output <- remove_base(unique(output))
+
+  gsub('\\.', '_', output)
+}
+
+
 #' fetchlocal Installs a local R package
 #' @param local_pkg A list of characters. The first element of the list is the package path of the form "/dplyr_0.8.0.tar.gz" and the second element is the package imports.
 #' @return A character. The Nix definition to build the R package from local sources.
 #' @noRd
 fetchlocal <- function(local_pkg){
 
-  package <- local_pkg$pkg
-  its_imports <- local_pkg$imports
+  its_imports <- get_imports(local_pkg)
 
-  pkgs <- gsub("/", "", package)
-  pkgs <- unlist(strsplit(archive_pkg, split = "_"))
+                                        # Remove package version from name
+  package_name <- unlist(strsplit(local_pkg, split = "_"))
 
-  package_name <- pkgs[1]
-  package_src <- package
+  package_name <- package_name[1]
 
-  imports <- local_pkg$imports
+                                        # Remove rest of path from name
+
+  package_name <- unlist(strsplit(package_name, split = "/")) |> tail(1)
 
   sprintf('
   (pkgs.rPackages.buildRPackage {
     name = \"%s\";
-    src = packages_src;
+    src = %s;
     propagatedBuildInputs = builtins.attrValues {
      inherit (pkgs.rPackages) %s;
     };
   })
 ',
-  package_name,
-  package_src,
-  imports
+package_name,
+local_pkg,
+its_imports
 )
 }
+
+#' fetchlocals Installs a local R package
+#' @param local_pkgs Either a list of paths to local packages, or a path to a single package
+#' @return A character. The Nix definition to build the local R packages from local sources.
+#' @noRd
+fetchlocals <- function(local_pkgs){
+
+  paths_exist <- file.exists(local_pkgs)
+
+  if(!all(paths_exist)){
+    stop(
+      paste0("local_pkgs: The following paths are incorrect:\n",
+             paste(local_pkgs[!paths_exist], collapse = "\n")
+            )
+         )
+  } else if(length(local_pkgs) == 1){
+    fetchlocal(local_pkgs)
+  } else {
+    paste(lapply(local_pkgs, fetchlocal), collapse = "\n")
+  }
+
+}
+
 
 
 #' fetchgits Downloads and installs packages hosted on Git. Wraps `fetchgit()` to handle multiple packages

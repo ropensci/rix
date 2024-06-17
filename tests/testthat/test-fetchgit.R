@@ -85,3 +85,15 @@ testthat::test_that("Test fetchpkgs works", {
   )
 })
 
+
+testthat::test_that("Test fetchlocals works", {
+
+  testthat::skip_on_cran()
+
+  testthat::expect_equal(
+    fetchlocals(
+      "chronicler_0.2.2.tar.gz"
+      ),
+    "\n  (pkgs.rPackages.buildRPackage {\n    name = \"chronicler\";\n    src = chronicler_0.2.2.tar.gz;\n    propagatedBuildInputs = builtins.attrValues {\n     inherit (pkgs.rPackages) clipr diffobj dplyr maybe rlang stringr tibble;\n    };\n  })\n"
+  )
+})

@@ -208,7 +208,7 @@ for more details.")
     generate_rpkgs(cran_pkgs$rPackages, flag_rpkgs),
     generate_git_archived_pkgs(git_pkgs, cran_pkgs$archive_pkgs, flag_git_archive),
     generate_tex_pkgs(tex_pkgs),
-    generate_local_pkgs(local_pkgs),
+    generate_local_pkgs(local_pkgs, flag_local_pkgs),
     generate_system_pkgs(system_pkgs, r_pkgs),
     generate_wrapped_pkgs(ide, attrib, flag_git_archive, flag_rpkgs, flag_local_pkgs),
     generate_shell(flag_git_archive, flag_rpkgs, flag_tex_pkgs,
