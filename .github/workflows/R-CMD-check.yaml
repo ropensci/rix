@@ -15,13 +15,13 @@ jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }}) ${{ matrix.config.ssl-backend }}
 
     strategy:
       fail-fast: false
       matrix:
         config:
-          - {os: macos-latest,   r: 'release'}
+          - {os: macos-latest,   r: 'release', ssl-backend: SecureTransport}
           - {os: windows-latest, r: 'release'}
           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
@@ -53,6 +53,8 @@ jobs:
 
       - uses: r-lib/actions/check-r-package@v2
         if: always()
+        env:
+          CURL_SSL_BACKEND: ${{ matrix.config.ssl-backend }}
         with:
           args: 'c("--as-cran")'
           upload-snapshots: true
