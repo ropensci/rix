@@ -56,5 +56,5 @@ jobs:
         env:
           CURL_SSL_BACKEND: ${{ matrix.config.ssl-backend }}
         with:
-          args: 'c("--as-cran")'
+          args: 'c("--no-manual", "--as-cran", "--run-donttest")'
           upload-snapshots: true
