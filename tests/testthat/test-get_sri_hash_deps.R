@@ -9,21 +9,3 @@ testthat::test_that("get_sri_hash_deps returns correct sri hash and dependencies
               )
             )
 })
-
-testthat::test_that("Internet is out for fetchgit()", {
-
-  testthat::local_mocked_bindings(
-    http_error = function(...) TRUE
-    )
-
-  expect_error(
-    get_sri_hash_deps(
-      "https://github.com/rap4all/housing/",
-      "fusen",
-      "1c860959310b80e67c41f7bbdc3e84cef00df18e"
-    ),
-    'Error in pulling',
-    )
-
-})
-

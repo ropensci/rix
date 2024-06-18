@@ -69,13 +69,15 @@ get_right_commit <- function(r_version) {
 #' Try fetch contents of an URL with handle and stop with propagating the curl
 #' error and also show URL for context
 #' @noRd
-try_get_request <- function(url, handle) {
+try_get_request <- function(url,
+                            handle,
+                            extra_diagnostics = NULL) {
   tryCatch({
     req <- curl::curl_fetch_memory(url, handle)
   }, error = function(e) {
-    stop("`curl::curl_fetch_memory(", 
+    stop("Request `curl::curl_fetch_memory(",
          paste0("url = ", "'", url, "'", ")` "), "failed:\n ",
-         e$message[1], call. = FALSE)
+         e$message[1], extra_diagnostics, call. = FALSE)
   })
   
   return(req)
