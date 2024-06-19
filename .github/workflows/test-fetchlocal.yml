@@ -35,7 +35,7 @@ jobs:
 
       - name: Build default.nix with local packages
         run: |
-          nix-shell ./inst/extdata/default.nix --run "Rscript -e \"rix('4.3.1', local_pkgs = c('./chronicler_0.2.1.tar.gz', 'xtable_1.4-2.tar.gz', overwrite = TRUE)\""
+          nix-shell ./inst/extdata/default.nix --run "Rscript -e \"rix('4.3.1', local_pkgs = c('chronicler_0.2.1.tar.gz', 'xtable_1.4-2.tar.gz'), overwrite = TRUE)\""
 
       - name: Build default.nix
         run: nix-build
