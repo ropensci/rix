@@ -9,6 +9,7 @@ rix(
   r_pkgs = NULL,
   system_pkgs = NULL,
   git_pkgs = NULL,
+  local_pkgs = NULL,
   tex_pkgs = NULL,
   ide = c("other", "code", "radian", "rstudio", "rserver"),
   project_path = ".",
@@ -32,6 +33,8 @@ are not R packages such as command line applications for example. You can look f
 available software on the NixOS website \url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=}}
 
 \item{git_pkgs}{List. A list of packages to install from Git. See details for more information.}
+
+\item{local_pkgs}{List. A list of paths to local packages to install. These packages need to be in the \code{.tar.gz} or \code{.zip} formats.}
 
 \item{tex_pkgs}{Vector of characters. A set of tex packages to install.
 Use this if you need to compile \code{.tex} documents,
@@ -129,6 +132,7 @@ rix(r_ver = "latest",
     r_pkgs = c("dplyr", "ggplot2"),
     system_pkgs = NULL,
     git_pkgs = NULL,
+    local_pkgs = NULL,
     ide = "code",
     project_path = path_default_nix,
     overwrite = TRUE,

@@ -5,8 +5,8 @@
 detect_versions <- function(r_pkgs){
   if(any(grepl("@", r_pkgs))){
 
-    cran_packages <- Filter(\(x)(!grepl("@", x)), r_pkgs)
-    archive_packages <- Filter(\(x)(grepl("@", x)), r_pkgs)
+    cran_packages <- Filter(function(x)(!grepl("@", x)), r_pkgs)
+    archive_packages <- Filter(function(x)(grepl("@", x)), r_pkgs)
 
     # then concatenate cran_packages and r_pkgs
     # and archive_packages and git_pkgs

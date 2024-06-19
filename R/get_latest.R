@@ -36,8 +36,8 @@ get_right_commit <- function(r_version) {
   
   if(r_version == "frozen_edge"){
     api_url <- "https://api.github.com/repos/rstats-on-nix/nixpkgs/commits?sha=r-daily"
-    
-  } else if (r_version %in% Filter(\(x)`!=`(x, "latest"), available_r())){ #all but latest
+  
+  } else if(r_version %in% Filter(function(x)`!=`(x, "latest"), available_r())){ #all but latest
     temp <- new.env(parent = emptyenv())
     
     data(list = "r_nix_revs",

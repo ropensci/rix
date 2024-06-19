@@ -1,7 +1,7 @@
 
 let
  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/976fa3369d722e76f37c77493d99829540d43845.tar.gz") {};
-    
+     
  system_packages = builtins.attrValues {
   inherit (pkgs) R glibcLocales nix;
  };
@@ -17,6 +17,6 @@ in
    LC_PAPER = "en_US.UTF-8";
    LC_MEASUREMENT = "en_US.UTF-8";
 
-   buildInputs = [    system_packages  ];
+   buildInputs = [    system_packages   ];
    
  }
