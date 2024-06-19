@@ -25,7 +25,7 @@ jobs:
       - name: Download test packages
         run: |
           wget https://cran.r-project.org/src/contrib/Archive/chronicler/chronicler_0.2.1.tar.gz
-          wget https://cran.r-project.org/src/contrib/Archive/xtable/xtable_1.4-2.tar.gz
+          wget https://cran.r-project.org/src/contrib/Archive/knitr/knitr_1.46.tar.gz
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
@@ -35,7 +35,7 @@ jobs:
 
       - name: Build default.nix with local packages
         run: |
-          nix-shell ./inst/extdata/default.nix --run "Rscript -e \"library(rix);rix('4.3.1', local_pkgs = c('chronicler_0.2.1.tar.gz', 'xtable_1.4-2.tar.gz'), overwrite = TRUE)\""
+          nix-shell ./inst/extdata/default.nix --run "Rscript -e \"library(rix);rix('4.3.1', local_pkgs = c('chronicler_0.2.1.tar.gz', 'knitr_1.46.tar.gz'), overwrite = TRUE)\""
 
       - name: Build default.nix
         run: nix-build
