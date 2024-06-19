@@ -1,0 +1,41 @@
+# Integration tests for installing local packages
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: test-fetchlocal
+
+permissions:
+  contents: read
+
+jobs:
+  devtools:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download test packages
+        run: |
+          wget https://cran.r-project.org/src/contrib/Archive/chronicler/chronicler_0.2.1.tar.gz
+          wget https://cran.r-project.org/src/contrib/Archive/xtable/xtable_1.4-2.tar.gz
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Build default.nix with local packages
+        run: |
+          nix-shell ./inst/extdata/default.nix --run "rix('4.3.1', local_pkgs = c('./chronicler_0.2.1.tar.gz', 'xtable_1.4-2.tar.gz', overwrite = TRUE)"
+
+      - name: Build default.nix
+        run: nix-build
