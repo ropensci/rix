@@ -53,7 +53,7 @@ let
  tex = (pkgs.texlive.combine {
   inherit (pkgs.texlive) scheme-small amsmath;
  });
- 
+  
  system_packages = builtins.attrValues {
   inherit (pkgs) R glibcLocales nix quarto;
  };
@@ -69,6 +69,6 @@ in
    LC_PAPER = "en_US.UTF-8";
    LC_MEASUREMENT = "en_US.UTF-8";
 
-   buildInputs = [ git_archive_pkgs rpkgs tex system_packages  ];
+   buildInputs = [ git_archive_pkgs rpkgs tex system_packages   ];
    
  }

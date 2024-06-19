@@ -17,6 +17,7 @@ Depends:
 Imports:
     codetools,
     curl,
+    desc,
     httr,
     jsonlite,
     sys,

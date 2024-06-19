@@ -90,7 +90,7 @@ generate_rix_call <- function(rix_call, nix_repo){
 }
 
 
-#' generate_rPackages Internal function that formats the R package names correctly for Nix.
+#' Internal function that formats the R package names correctly for Nix.
 #' @param r_pkgs Character, list of R packages to install.
 #' @noRd
 get_rpkgs <- function(r_pkgs, ide){
@@ -122,7 +122,7 @@ get_rpkgs <- function(r_pkgs, ide){
 }
 
 #' generate_rpkgs Internal function that generates the string containing the correct Nix expression to get R packages.
-#' @param r_pkgs Character, list of R packages to install.
+#' @param rPackages Character, list of R packages to install.
 #' @param flag_rpkgs Character, are there any R packages at all?
 #' @noRd
 generate_rpkgs <- function(rPackages, flag_rpkgs) {
@@ -135,6 +135,24 @@ generate_rpkgs <- function(rPackages, flag_rpkgs) {
  };
 ',
 rPackages)
+  }
+
+}
+
+#' generate_local_pkgs Internal function that generates the string containing the correct Nix expression for installing local packages
+#' @param local_pkgs Character, list of local R packages to install.
+#' @param flag_local_pkgs Character, are there any local R packages at all?
+#' @noRd
+generate_local_pkgs <- function(local_pkgs, flag_local_pkgs) {
+  if (flag_local_pkgs == ""){
+    NULL
+  } else {
+    sprintf('
+ local_pkgs = [
+   %s
+ ];
+',
+fetchlocals(local_pkgs))
   }
 
 }
@@ -252,19 +270,21 @@ generate_locale_variables <- function() {
 #' @param attrib Character, set the correct wrapper for the Nix expression.
 #' @param flag_git_archive Character, are there R packages from Github at all?
 #' @param flag_rpkgs Character, are there any R packages at all?
+#' @param flag_local_pkgs Character, are there any local R packages at all?
 #' @noRd
-generate_wrapped_pkgs <- function(ide, attrib, flag_git_archive, flag_rpkgs){
+generate_wrapped_pkgs <- function(ide, attrib, flag_git_archive, flag_rpkgs, flag_local_pkgs){
   if (flag_rpkgs == ""){
     return(NULL)
   } else if(ide %in% names(attrib)){
     sprintf('
  wrapped_pkgs = pkgs.%s.override {
-  packages = [ %s %s ];
+  packages = [ %s %s %s ];
  };
 ',
 attrib[ide],
 flag_git_archive,
-flag_rpkgs
+flag_rpkgs,
+flag_local_pkgs
 )
   } else {
     NULL
@@ -276,12 +296,14 @@ flag_rpkgs
 #' @param flag_git_archive Character, are there R packages from Github at all?
 #' @param flag_rpkgs Character, are there any R packages at all?
 #' @param flag_tex_pkgs Character, are there any LaTex packages at all?
-#' @param flag_tex_pkgs Character, are there any wrapped packages at all?
+#' @param flag_local_pkgs Character, are there any wrapped packages at all?
+#' @param flag_wrapper Character, are there any wrapped packages at all?
 #' @param shell_hook Character, the mkShell's shellHook.
 #' @noRd
 generate_shell <- function(flag_git_archive,
                            flag_rpkgs,
                            flag_tex_pkgs,
+                           flag_local_pkgs,
                            flag_wrapper,
                            shell_hook){
   sprintf('
@@ -290,7 +312,7 @@ in
  pkgs.mkShell {
    %s
    %s
-   buildInputs = [ %s %s %s system_packages %s ];
+   buildInputs = [ %s %s %s system_packages %s %s ];
    %s
  }',
 generate_locale_archive(detect_os()),
@@ -298,6 +320,7 @@ generate_locale_variables(),
 flag_git_archive,
 flag_rpkgs,
 flag_tex_pkgs,
+flag_local_pkgs,
 flag_wrapper,
 shell_hook
 )
