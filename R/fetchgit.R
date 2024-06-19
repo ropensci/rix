@@ -86,6 +86,7 @@ fetchzip <- function(archive_pkg, sri_hash = NULL){
 
 #' Removes base packages from list of packages dependencies
 #' @param list_imports Atomic vector of packages
+#' @importFrom stats na.omit
 #' @return Atomic vector of packages without base packages
 #' @noRd
 remove_base <- function(list_imports){
@@ -106,8 +107,8 @@ remove_base <- function(list_imports){
 get_imports <- function(path){
 
   output <- desc::description$new(path)$get_deps() |>
-                                      subset(type %in% c("Depends", "Imports", "LinkingTo")) |>
-                                      subset(package != "R")
+              subset(type %in% c("Depends", "Imports", "LinkingTo")) |>
+              subset(package != "R")
 
   output <- output$package
 
@@ -118,26 +119,26 @@ get_imports <- function(path){
 
 
 #' fetchlocal Installs a local R package
-#' @param local_pkg A list of characters. The first element of the list is the package path of the form "/dplyr_0.8.0.tar.gz" and the second element is the package imports.
+#' @param local_pkg A list of local package names ('.tar.gz' archives) to install. These packages need to be in the same folder as the generated `default.nix` file.
+#' @importFrom utils tail
 #' @return A character. The Nix definition to build the R package from local sources.
 #' @noRd
 fetchlocal <- function(local_pkg){
 
   its_imports <- get_imports(local_pkg)
 
-                                        # Remove package version from name
+  # Remove package version from name
   package_name <- unlist(strsplit(local_pkg, split = "_"))
 
   package_name <- package_name[1]
 
-                                        # Remove rest of path from name
-
+  # Remove rest of path from name
   package_name <- unlist(strsplit(package_name, split = "/")) |> tail(1)
 
   sprintf('
   (pkgs.rPackages.buildRPackage {
     name = \"%s\";
-    src = %s;
+    src = ./%s;
     propagatedBuildInputs = builtins.attrValues {
      inherit (pkgs.rPackages) %s;
     };

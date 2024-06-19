@@ -18,4 +18,4 @@
 ^codemeta\.json$
 ^CONTRIBUTING.md$
 create_dev_env.R
-*.tar.gz
+^.*.tar.gz
