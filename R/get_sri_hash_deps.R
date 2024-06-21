@@ -2,7 +2,6 @@
 #' @param repo_url A character. The URL to the package's Github repository or to the `.tar.gz` package hosted on CRAN.
 #' @param branch_name A character. The branch of interest, NULL for archived CRAN packages.
 #' @param commit A character. The commit hash of interest, for reproducibility's sake, NULL for archived CRAN packages.
-#' @importFrom httr content GET http_error
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
 #' - `deps`: string with R package dependencies separarated by space.
