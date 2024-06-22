@@ -220,7 +220,7 @@ generate_git_archived_pkgs <- function(git_pkgs, archive_pkgs, flag_git_archive)
     NULL
   } else {
     sprintf('
- git_archive_pkgs = [%s];\n', fetchpkgs(git_pkgs, archive_pkgs))
+  git_archive_pkgs = [%s];\n', fetchpkgs(git_pkgs, archive_pkgs))
   }
 }
 

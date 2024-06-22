@@ -14,18 +14,18 @@ fetchgit <- function(git_pkg){
   imports <- output$deps
 
   sprintf('
-  (pkgs.rPackages.buildRPackage {
-    name = \"%s\";
-    src = pkgs.fetchgit {
-     url = \"%s\";
-     branchName = \"%s\";
-     rev = \"%s\";
-     sha256 = \"%s\";
-    };
-    propagatedBuildInputs = builtins.attrValues {
-     inherit (pkgs.rPackages) %s;
-    };
-  })
+   (pkgs.rPackages.buildRPackage {
+     name = \"%s\";
+     src = pkgs.fetchgit {
+       url = \"%s\";
+       branchName = \"%s\";
+       rev = \"%s\";
+       sha256 = \"%s\";
+     };
+     propagatedBuildInputs = builtins.attrValues {
+       inherit (pkgs.rPackages) %s;
+     };
+   })
 ',
   package_name,
   repo_url,
