@@ -1,0 +1,197 @@
+---
+title: "z - Advanced topic: Using Nix inside Docker"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{z-advanced-topic-using-nix-inside-doceker}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r, include=FALSE}
+library(rix)
+```
+
+## Introduction
+
+It might look like Nix is an alternative to Docker, but that's not really
+the case. Docker is a containerisation tool, while Nix is a package manager.
+You can use Nix in such a way that you don't need Docker anymore, but if you're
+already invested in Docker, you don't have to abandon it and still benefit
+from Nix.
+
+## A generic Dockerfile
+
+This `Dockerfile` uses `ubuntu:latest` as a base image, and then uses the Nix
+package manager to set up a complete development environment:
+
+```
+FROM ubuntu:latest
+
+RUN apt update -y
+
+RUN apt install curl -y
+
+# We don't have R nor {rix} in this image, so we can bootstrap it by downloading
+# the default.nix file that comes with {rix}. You can also download it beforehand
+# and then copy it to the Docker image 
+RUN curl -O https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix
+
+# Copy a script to generate the environment of interest using {rix}
+COPY generate_env.R .
+
+# The next 4 lines install Nix inside Docker. See the Determinate Systems installer's documentation
+RUN curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install linux \
+  --extra-conf "sandbox = false" \
+  --init none \
+  --no-confirm
+
+# Adds Nix to the path, as described by the Determinate Systems installer's documentation
+ENV PATH="${PATH}:/nix/var/nix/profiles/default/bin"
+
+# This will overwrite the default.nix we downloaded previously with a new
+# expression generated from running `generate_env.R`
+RUN nix-shell --run "Rscript generate_env.R"
+
+# We now build the environment
+RUN nix-build
+
+# Finally, we run `nix-shell`. This will get executed when running
+# containers from this image. You can of course put anything in here
+CMD nix-shell
+```
+
+It doesn't matter that we are using `ubuntu:latest` as a base image, which is
+usually not recommended for reproducibility purposes, since it is Nix that takes
+care of ensuring that our environment is reproducible.
+
+Here is an example of the `generate_env.R` file:
+
+```{r, eval = FALSE}
+library(rix)
+
+rix(r_ver = "4.3.1",
+    r_pkgs = c("dplyr", "ggplot2"),
+    ide = "other",
+    project_path = ".",
+  	shell_hook = "R",
+    overwrite = TRUE)
+```
+
+Using Nix to handle the setup of the environment, even inside Docker, creates a
+nice separation of concerns. On one hand, you can continue using Docker to serve
+applications, and on the other hand, you can use Nix to ensure you don't have to
+store images, as you can always rebuild the correct environment in a completely
+reproducible manner.
+
+## Dockerizing a Shiny application
+
+*Dockerizing* a Shiny application using Nix is very easy as well. You can keep
+almost exactly the same `Dockerfile` as above, you only need to add the required
+`ui.R` and `server.R` files (and any other files needed by your app), and expose
+the port you want:
+
+```
+FROM ubuntu:latest
+
+RUN apt update -y
+
+RUN apt install curl -y
+
+# Get a default.nix with R and rix
+RUN curl -O https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix
+
+# Copy a script to generate the environment of interest using rix
+COPY generate_env.R .
+
+# Copy the required scripts for the app
+COPY ui.R .
+COPY server.R .
+
+RUN curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install linux \
+  --extra-conf "sandbox = false" \
+  --init none \
+  --no-confirm
+
+ENV PATH="${PATH}:/nix/var/nix/profiles/default/bin"
+
+# This will overwrite the default.nix we downloaded with a new one
+RUN nix-shell --run "Rscript generate_env.R"
+
+EXPOSE 3838
+
+RUN nix-build
+
+CMD nix-shell --run "Rscript -e 'shiny::runApp(port = 3838, host = \"0.0.0.0\")'"
+```
+
+adapt the `generate_env.R` script:
+
+```{r, eval = FALSE}
+library(rix)
+
+rix(r_ver = "4.2.2",
+    r_pkgs = "shiny",
+    ide = "other",
+    project_path = ".",
+    overwrite = TRUE
+    )
+```
+
+Here is the code a simple Shiny app (it's the K-means app from the Shiny
+examples gallery):
+
+ui.R:
+
+```{r, eval = FALSE}
+# k-means only works with numerical variables,
+# so don't give the user the option to select
+# a categorical variable
+vars <- setdiff(names(iris), "Species")
+
+pageWithSidebar(
+  headerPanel('Iris k-means clustering'),
+  sidebarPanel(
+    selectInput('xcol', 'X Variable', vars),
+    selectInput('ycol', 'Y Variable', vars, selected = vars[[2]]),
+    numericInput('clusters', 'Cluster count', 3, min = 1, max = 9)
+  ),
+  mainPanel(
+    plotOutput('plot1')
+  )
+)
+```
+
+server.R:
+
+```{r, eval = FALSE}
+function(input, output, session) {
+
+  # Combine the selected variables into a new data frame
+  selectedData <- reactive({
+    iris[, c(input$xcol, input$ycol)]
+  })
+
+  clusters <- reactive({
+    kmeans(selectedData(), input$clusters)
+  })
+
+  output$plot1 <- renderPlot({
+    palette(c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3",
+      "#FF7F00", "#FFFF33", "#A65628", "#F781BF", "#999999"))
+
+    par(mar = c(5.1, 4.1, 0, 1))
+    plot(selectedData(),
+         col = clusters()$cluster,
+         pch = 20, cex = 3)
+    points(clusters()$centers, pch = 4, cex = 4, lwd = 4)
+  })
+
+}
+```
