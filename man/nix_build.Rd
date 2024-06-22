@@ -4,16 +4,15 @@
 \alias{nix_build}
 \title{Invoke shell command \code{nix-build} from an R session}
 \usage{
-nix_build(project_path = ".", exec_mode = c("blocking", "non-blocking"))
+nix_build(project_path = ".", message_type = c("simple", "quiet", "verbose"))
 }
 \arguments{
 \item{project_path}{Path to the folder where the \code{default.nix} file resides.
 The default is \code{"."}, which is the working directory in the current R
 session.}
 
-\item{exec_mode}{Either \code{"blocking"} (default) or \verb{"non-blocking}. This
-will either block the R session while the \code{nix-build} shell command is
-executed, or run \code{nix-build} in the background ("non-blocking").}
+\item{message_type}{Character vector with messaging type, Either \code{"simple"}
+(default), \code{"quiet"} for no messaging, or \code{"verbose"}.}
 }
 \value{
 integer of the process ID (PID) of \code{nix-build} shell command
