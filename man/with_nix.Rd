@@ -143,7 +143,7 @@ get_sample <- function(seed, n) {
 }
 
 out <- with_nix(
-  expr = get_sample(seed = 1234, n = 5),
+  expr = function() get_sample(seed = 1234, n = 5),
   program = "R",
   project_path = ".",
   message_type = "simple"
