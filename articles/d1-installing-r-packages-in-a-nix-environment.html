@@ -59,6 +59,7 @@
     <a class="dropdown-item" href="../articles/z-advanced-topic-handling-packages-with-remote-dependencies.html">z - Advanced topic: Handling packages with remote dependencies</a>
     <a class="dropdown-item" href="../articles/z-advanced-topic-reproducible-analytical-pipelines-with-nix.html">z - Advanced topic: Reproducible Analytical Pipelines with Nix</a>
     <a class="dropdown-item" href="../articles/z-advanced-topic-running-r-or-shell-code-in-nix-from-r.html">z - Advanced topic: Running R or Shell Code in Nix from R</a>
+    <a class="dropdown-item" href="../articles/z-advanced-topic-using-nix-inside-docker.html">z - Advanced topic: Using Nix inside Docker</a>
     <a class="dropdown-item" href="../articles/z-binary_cache.html">z - Advanced topic: Rolling out your own binary cache</a>
     <a class="dropdown-item" href="../articles/z-bleeding_edge.html">z - Advanced topic: Understanding the rPackages set release cycle and using bleeding edge packages</a>
     <a class="dropdown-item" href="../articles/z-contributing_to_nixpkgs.html">z - Advanced topic: Contributing to nixpkgs</a>
@@ -297,11 +298,29 @@ package is also installed, from the main branch at commit
 <code>d617172447d</code>.</p>
 </div>
 <div class="section level2">
+<h2 id="installing-local-archives">Installing local archives<a class="anchor" aria-label="anchor" href="#installing-local-archives"></a>
+</h2>
+<p>It is also possible to install packages from a local
+<code>tar.gz</code> file. For this, place the package in the same folder
+where the <code>default.nix</code> will be generated, and write
+something like this:</p>
+<pre><code><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">'4.3.1'</span>,</span>
+<span>    local_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'chronicler_0.2.1.tar.gz'</span>, <span class="st">'knitr_1.43.tar.gz'</span><span class="op">)</span>, </span>
+<span>    overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre>
+<p>This assumes that both <code>chronicler_0.2.1.tar.gz</code> and
+<code>knitr_1.43.tar.gz</code> have been downloaded beforehand. If you
+want to include a local package that you are developing, make sure to
+first build it using <code><a href="https://devtools.r-lib.org/reference/build.html" class="external-link">devtools::build()</a></code> to build the
+<code>.tar.gz</code> archive, but if you can, consider uploading the
+source code to your package on Github and installing it from Github
+instead.</p>
+</div>
+<div class="section level2">
 <h2 id="a-complete-example">A complete example<a class="anchor" aria-label="anchor" href="#a-complete-example"></a>
 </h2>
 <p>This example shows how to install packages from CRAN, from the CRAN
 archives and from GitHub:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"4.2.1"</span>,</span>
 <span>    r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"janitor"</span>, <span class="st">"AER@1.2-8"</span><span class="op">)</span>,</span>
 <span>    git_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
