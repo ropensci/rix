@@ -148,9 +148,9 @@ generate_local_pkgs <- function(local_pkgs, flag_local_pkgs) {
     NULL
   } else {
     sprintf('
- local_pkgs = [
-   %s
- ];
+  local_pkgs = [
+    %s
+  ];
 ',
 fetchlocals(local_pkgs))
   }
@@ -168,9 +168,9 @@ generate_tex_pkgs <- function(tex_pkgs) {
     tex_pkgs <- paste(tex_pkgs, collapse = ' ')
 
     sprintf('
- tex = (pkgs.texlive.combine {
-  inherit (pkgs.texlive) %s;
- });
+  tex = (pkgs.texlive.combine {
+    inherit (pkgs.texlive) %s;
+  });
 ',
 tex_pkgs)
   }
@@ -220,7 +220,7 @@ generate_git_archived_pkgs <- function(git_pkgs, archive_pkgs, flag_git_archive)
     NULL
   } else {
     sprintf('
-  git_archive_pkgs = [%s];\n', fetchpkgs(git_pkgs, archive_pkgs))
+  git_archive_pkgs = [%s  ];\n', fetchpkgs(git_pkgs, archive_pkgs))
   }
 }
 
@@ -309,12 +309,12 @@ generate_shell <- function(flag_git_archive,
   sprintf('
 in
 
- pkgs.mkShell {
-   %s
-   %s
-   buildInputs = [ %s %s %s system_packages %s %s ];
-   %s
- }',
+pkgs.mkShell {
+  %s
+  %s
+  buildInputs = [ %s %s %s system_packages %s %s ];
+  %s
+}',
 generate_locale_archive(detect_os()),
 generate_locale_variables(),
 flag_git_archive,

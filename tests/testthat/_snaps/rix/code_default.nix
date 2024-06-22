@@ -48,11 +48,11 @@ let
         inherit (pkgs.rPackages) car lmtest sandwich survival zoo Formula;
       };
     })
-];
+  ];
  
- tex = (pkgs.texlive.combine {
-  inherit (pkgs.texlive) scheme-small amsmath;
- });
+  tex = (pkgs.texlive.combine {
+    inherit (pkgs.texlive) scheme-small amsmath;
+  });
   
   system_packages = builtins.attrValues {
     inherit (pkgs) R glibcLocales nix quarto;
@@ -60,15 +60,15 @@ let
   
 in
 
- pkgs.mkShell {
-   LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
-   LANG = "en_US.UTF-8";
+pkgs.mkShell {
+  LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
+  LANG = "en_US.UTF-8";
    LC_ALL = "en_US.UTF-8";
    LC_TIME = "en_US.UTF-8";
    LC_MONETARY = "en_US.UTF-8";
    LC_PAPER = "en_US.UTF-8";
    LC_MEASUREMENT = "en_US.UTF-8";
 
-   buildInputs = [ git_archive_pkgs rpkgs tex system_packages   ];
-   
- }
+  buildInputs = [ git_archive_pkgs rpkgs tex system_packages   ];
+  
+}
