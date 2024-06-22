@@ -234,11 +234,6 @@ with_nix <- function(expr,
     # elements of args for now should be of type "symbol" or "language"
     args_vec <- vapply(args, deparse, FUN.VALUE = character(1L))
     
-    # todo in `rnix_deparsed`:
-    # => locate all global variables used by function
-    # https://github.com/cran/codetools/blob/master/R/codetools.R
-    # http://adv-r.had.co.nz/Expressions.html#ast-funs
-    
     # do code inspection checks to report messages with potential code problems,
     # and find global variables of `expr` recursively
     # using {codetools} wrapper
