@@ -96,7 +96,6 @@ current R session.</p></li>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">with_nix</span><span class="op">(</span></span>
 <span>  <span class="va">expr</span>,</span>
 <span>  program <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"R"</span>, <span class="st">"shell"</span><span class="op">)</span>,</span>
-<span>  exec_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blocking"</span>, <span class="st">"non-blocking"</span><span class="op">)</span>,</span>
 <span>  project_path <span class="op">=</span> <span class="st">"."</span>,</span>
 <span>  message_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"simple"</span>, <span class="st">"quiet"</span>, <span class="st">"verbose"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -118,16 +117,6 @@ sure <code>expr</code> is a function (see details and examples).</p></dd>
 <dd><p>String stating where to evaluate the expression. Either <code>"R"</code>,
 the default, or <code>"shell"</code>. <code>where = "R"</code> will evaluate the expression via
 <code>RScript</code> and <code>where = "shell"</code> will run the system command in <code>nix-shell</code>.</p></dd>
-
-
-<dt>exec_mode</dt>
-<dd><p>Either <code>"blocking"</code> (default) or <code>"non-blocking</code>. This
-will either block the R session while <code>expr</code> is running in a <code>nix-shell</code>
-environment, oor running it in the background ("non-blocking"). While
-<code>program = R</code> will yield identical results for foreground and background
-evaluation (R object), <code>program = "shell"</code> will return list of exit status,
-standard output and standard error of the system command and as text in
-blocking mode.</p></dd>
 
 
 <dt>project_path</dt>
@@ -218,7 +207,7 @@ like this via <code>{sys}</code> by Jeroen Ooms:
 <span class="r-in"><span><span class="co"># stream messages, and bring output back to current R session</span></span></span>
 <span class="r-in"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">with_nix</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  expr <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  program <span class="op">=</span> <span class="st">"R"</span>, exec_mode <span class="op">=</span> <span class="st">"non-blocking"</span>, project_path <span class="op">=</span> <span class="va">project_path</span>,</span></span>
+<span class="r-in"><span>  program <span class="op">=</span> <span class="st">"R"</span>, project_path <span class="op">=</span> <span class="va">project_path</span>,</span></span>
 <span class="r-in"><span>  message_type <span class="op">=</span> <span class="st">"simple"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -233,8 +222,8 @@ like this via <code>{sys}</code> by Jeroen Ooms:
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">with_nix</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  expr <span class="op">=</span> <span class="fu">get_sample</span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">1234</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  program <span class="op">=</span> <span class="st">"R"</span>, exec_mode <span class="op">=</span> <span class="st">"non-blocking"</span>,</span></span>
+<span class="r-in"><span>  expr <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu">get_sample</span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">1234</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  program <span class="op">=</span> <span class="st">"R"</span>,</span></span>
 <span class="r-in"><span>  project_path <span class="op">=</span> <span class="st">"."</span>,</span></span>
 <span class="r-in"><span>  message_type <span class="op">=</span> <span class="st">"simple"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
