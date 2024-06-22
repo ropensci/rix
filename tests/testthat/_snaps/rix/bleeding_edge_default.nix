@@ -2,12 +2,12 @@
 let
   pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/refs/heads/r-daily.tar.gz") {};
  
- rpkgs = builtins.attrValues {
-  inherit (pkgs.rPackages) 
+  rpkgs = builtins.attrValues {
+    inherit (pkgs.rPackages) 
       dplyr
       janitor
       quarto;
- };
+  };
  
  git_archive_pkgs = [
   (pkgs.rPackages.buildRPackage {
