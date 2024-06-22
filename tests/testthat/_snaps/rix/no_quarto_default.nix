@@ -7,9 +7,9 @@ let
       dplyr;
   };
     
- system_packages = builtins.attrValues {
-  inherit (pkgs) R glibcLocales nix;
- };
+  system_packages = builtins.attrValues {
+    inherit (pkgs) R glibcLocales nix;
+  };
   
 in
 

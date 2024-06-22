@@ -9,9 +9,9 @@ let
       data_table;
   };
     
- system_packages = builtins.attrValues {
-  inherit (pkgs) R glibcLocales nix quarto;
- };
+  system_packages = builtins.attrValues {
+    inherit (pkgs) R glibcLocales nix quarto;
+  };
   
 in
 

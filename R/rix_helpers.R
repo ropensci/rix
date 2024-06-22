@@ -202,9 +202,9 @@ get_system_pkgs <- function(system_pkgs, r_pkgs){
 #' @noRd
 generate_system_pkgs <- function(system_pkgs, r_pkgs){
   sprintf('
- system_packages = builtins.attrValues {
-  inherit (pkgs) %s;
- };
+  system_packages = builtins.attrValues {
+    inherit (pkgs) %s;
+  };
 ',
 get_system_pkgs(system_pkgs, r_pkgs))
 }

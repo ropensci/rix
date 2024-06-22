@@ -53,9 +53,9 @@ let
   inherit (pkgs.texlive) scheme-small amsmath;
  });
   
- system_packages = builtins.attrValues {
-  inherit (pkgs) R glibcLocales nix quarto;
- };
+  system_packages = builtins.attrValues {
+    inherit (pkgs) R glibcLocales nix quarto;
+  };
  
  wrapped_pkgs = pkgs.rstudioWrapper.override {
   packages = [ git_archive_pkgs rpkgs  ];
