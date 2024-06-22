@@ -130,9 +130,9 @@ generate_rpkgs <- function(rPackages, flag_rpkgs) {
     NULL
   } else {
     sprintf('
- rpkgs = builtins.attrValues {
-  inherit (pkgs.rPackages) %s;
- };
+  rpkgs = builtins.attrValues {
+    inherit (pkgs.rPackages) %s;
+  };
 ',
 rPackages)
   }
