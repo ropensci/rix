@@ -65,16 +65,16 @@ fetchzip <- function(archive_pkg, sri_hash = NULL){
   }
 
   sprintf('
-  (pkgs.rPackages.buildRPackage {
-    name = \"%s\";
-    src = pkgs.fetchzip {
-     url = \"%s\";
-     sha256 = \"%s\";
-    };
-    propagatedBuildInputs = builtins.attrValues {
-     inherit (pkgs.rPackages) %s;
-    };
-  })
+    (pkgs.rPackages.buildRPackage {
+      name = \"%s\";
+      src = pkgs.fetchzip {
+       url = \"%s\";
+       sha256 = \"%s\";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages) %s;
+      };
+    })
 ',
   package_name,
   repo_url,

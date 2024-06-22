@@ -37,16 +37,16 @@ let
       };
     })
  
-  (pkgs.rPackages.buildRPackage {
-    name = "AER";
-    src = pkgs.fetchzip {
-     url = "https://cran.r-project.org/src/contrib/Archive/AER/AER_1.2-8.tar.gz";
-     sha256 = "sha256-OqxXcnUX/2C6wfD5fuNayc8OU+mstI3tt4eBVGQZ2S0=";
-    };
-    propagatedBuildInputs = builtins.attrValues {
-     inherit (pkgs.rPackages) car lmtest sandwich survival zoo Formula;
-    };
-  })
+    (pkgs.rPackages.buildRPackage {
+      name = "AER";
+      src = pkgs.fetchzip {
+       url = "https://cran.r-project.org/src/contrib/Archive/AER/AER_1.2-8.tar.gz";
+       sha256 = "sha256-OqxXcnUX/2C6wfD5fuNayc8OU+mstI3tt4eBVGQZ2S0=";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages) car lmtest sandwich survival zoo Formula;
+      };
+    })
 ];
  
  tex = (pkgs.texlive.combine {
