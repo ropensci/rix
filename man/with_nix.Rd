@@ -144,7 +144,7 @@ get_sample <- function(seed, n) {
 
 out <- with_nix(
   expr = get_sample(seed = 1234, n = 5),
-  program = "R", exec_mode = "non-blocking",
+  program = "R",
   project_path = ".",
   message_type = "simple"
 )

@@ -24,13 +24,9 @@ testthat::test_that("Testing that `nix_build()` builds derivation", {
     shell_hook = NULL
   )
 
-  out <- nix_build(
-    project_path = path_subshell,
-    exec_mode = "blocking"
-  )
-
-  # exit status 0L is success
-  testthat::expect_true(
-    out$status == 0L
+  expect_no_error(
+    nix_build(
+      project_path = path_subshell
+    )
   )
 })
