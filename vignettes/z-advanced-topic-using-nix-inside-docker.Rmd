@@ -20,11 +20,10 @@ library(rix)
 
 ## Introduction
 
-It might look like Nix is an alternative to Docker, but that's not really
-the case. Docker is a containerisation tool, while Nix is a package manager.
-You can use Nix in such a way that you don't need Docker anymore, but if you're
-already invested in Docker, you don't have to abandon it and still benefit
-from Nix.
+It might look like Nix is an alternative to Docker, but that's not really the
+case. Docker is a containerisation tool, while Nix is a package manager. You can
+use Nix in such a way that you don't need Docker anymore, but if you're already
+invested in Docker, you don't have to abandon it and can still benefit from Nix.
 
 ## A generic Dockerfile
 
@@ -40,7 +39,7 @@ RUN apt install curl -y
 
 # We don't have R nor {rix} in this image, so we can bootstrap it by downloading
 # the default.nix file that comes with {rix}. You can also download it beforehand
-# and then copy it to the Docker image 
+# and then copy it to the Docker image
 RUN curl -O https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix
 
 # Copy a script to generate the environment of interest using {rix}
@@ -128,7 +127,7 @@ EXPOSE 3838
 
 RUN nix-build
 
-CMD nix-shell --run "Rscript -e 'shiny::runApp(port = 3838, host = \"0.0.0.0\")'"
+CMD nix-shell --run 'Rscript -e "shiny::runApp(port = 3838, host = \"0.0.0.0\")"'
 ```
 
 adapt the `generate_env.R` script:
@@ -144,10 +143,10 @@ rix(r_ver = "4.2.2",
     )
 ```
 
-Here is the code a simple Shiny app (it's the K-means app from the Shiny
+Here is the code of a simple Shiny app (it's the K-means app from the Shiny
 examples gallery):
 
-ui.R:
+- ui.R:
 
 ```{r, eval = FALSE}
 # k-means only works with numerical variables,
@@ -168,7 +167,7 @@ pageWithSidebar(
 )
 ```
 
-server.R:
+- server.R:
 
 ```{r, eval = FALSE}
 function(input, output, session) {
@@ -194,4 +193,16 @@ function(input, output, session) {
   })
 
 }
+```
+
+Build the image with:
+
+```
+docker build -t shiny_app .
+```
+
+and run a container with:
+
+```
+docker run --rm -p 3838:3838 --name my_container shiny_app
 ```
