@@ -1,6 +1,6 @@
 
 let
-  pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/0a0e0185a76774a99b90b83cc9987b008e32d156.tar.gz") {};
+  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/976fa3369d722e76f37c77493d99829540d43845.tar.gz") {};
  
   rpkgs = builtins.attrValues {
     inherit (pkgs.rPackages) 
@@ -56,7 +56,11 @@ let
  system_packages = builtins.attrValues {
   inherit (pkgs) R glibcLocales nix quarto;
  };
-  
+ 
+ wrapped_pkgs = pkgs.rstudioWrapper.override {
+  packages = [ git_archive_pkgs rpkgs  ];
+ };
+ 
 in
 
  pkgs.mkShell {
@@ -68,6 +72,6 @@ in
    LC_PAPER = "en_US.UTF-8";
    LC_MEASUREMENT = "en_US.UTF-8";
 
-   buildInputs = [ git_archive_pkgs rpkgs tex system_packages   ];
+   buildInputs = [ git_archive_pkgs rpkgs tex system_packages  wrapped_pkgs ];
    
  }
