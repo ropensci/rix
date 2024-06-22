@@ -1,6 +1,6 @@
 
 let
-  pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/0a0e0185a76774a99b90b83cc9987b008e32d156.tar.gz") {};
+  pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/REVISION.tar.gz") {};
  
   rpkgs = builtins.attrValues {
     inherit (pkgs.rPackages) 
