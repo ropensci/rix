@@ -35,7 +35,6 @@ testthat::test_that("Testing `with_nix()` if Nix is installed", {
       return(a)
     },
     program = "R",
-    exec_mode = "non-blocking",
     project_path = path_subshell,
     message_type = "simple"
   )
@@ -81,7 +80,6 @@ testthat::test_that("Test `with_nix()` if Nix is installed on R 4.2.0", {
       as.vector(x = data.frame(a = 1:3, b = 4:6), mode = "list")
     },
     program = "R",
-    exec_mode = "blocking",
     project_path = path_subshell,
     message_type = "verbose"
   )
@@ -123,7 +121,6 @@ testthat::test_that("Test `with_nix()` correct .libPaths()", {
       .libPaths()
     },
     program = "R",
-    exec_mode = "blocking",
     project_path = path_subshell,
     message_type = "verbose"
   )

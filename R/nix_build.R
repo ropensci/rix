@@ -2,9 +2,8 @@
 #' @param project_path Path to the folder where the `default.nix` file resides. 
 #' The default is `"."`, which is the working directory in the current R
 #' session.
-#' @param exec_mode Either `"blocking"` (default) or `"non-blocking`. This
-#' will either block the R session while the `nix-build` shell command is
-#' executed, or run `nix-build` in the background ("non-blocking").
+#' @param message_type Character vector with messaging type, Either `"simple"`
+#' (default), `"quiet"` for no messaging, or `"verbose"`.
 #' @return integer of the process ID (PID) of `nix-build` shell command
 #' launched, if `nix_build()` call is assigned to an R object. Otherwise, it 
 #' will be returned invisibly.
@@ -17,13 +16,17 @@
 #'   systems with high I/O latency. To set `--max-jobs` used, you can declare
 #'   with `options(rix.nix_build_max_jobs = <integer>)`. Once you call
 #'   `nix_build()` the flag will be propagated to the call of `nix-build`.
+#' @importFrom tools pskill
 #' @export
 #' @examples
 #' \dontrun{
 #'   nix_build()
 #' }
 nix_build <- function(project_path = ".",
-                      exec_mode = c("blocking", "non-blocking")) {
+                      message_type = c("simple", "quiet", "verbose")) {
+  message_type <- match.arg(message_type,
+    choices = c("simple", "quiet", "verbose")
+  )
   # if nix store is not PATH variable; e.g. on macOS (system's) RStudio
   PATH <- set_nix_path()
   if (isTRUE(nzchar(Sys.getenv("NIX_STORE")))) {
@@ -68,7 +71,6 @@ nix_build <- function(project_path = ".",
     "`nix-build` not available. To install, we suggest you follow https://zero-to-nix.com/start/install ." =
       isTRUE(has_nix_build)
   )
-  exec_mode <- match.arg(exec_mode, choices = c("blocking", "non-blocking"))
  
   max_jobs <- getOption("rix.nix_build_max_jobs", default = 1L)
   stopifnot("option `rix.nix_build_max_jobs` is not integerish" =
@@ -83,24 +85,12 @@ nix_build <- function(project_path = ".",
     args <- c("--max-jobs", as.character(max_jobs), nix_dir)
   }
 
-  cat(paste0("Launching `", paste0(cmd, " ", args, collapse = " "), "`", " in ",
-    exec_mode, " mode\n"))
+  cat(paste0("Running `", paste0(cmd, " ", args, collapse = " "), "`", 
+    " ...\n"))
   
-  proc <- switch(exec_mode,
-    "blocking" = sys::exec_internal(cmd = cmd, args = args),
-    "non-blocking" = sys::exec_background(cmd = cmd, args = args),
-    stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
-  )
+  proc <- sys::exec_background(cmd = cmd, args = args)
 
-  if (exec_mode == "non-blocking") {
-    poll_sys_proc_nonblocking(cmd, proc, what = "nix-build")
-  } else if (exec_mode == "blocking") {
-    poll_sys_proc_blocking(cmd, proc, what = "nix-build")
-  }
-
-  # todo (?): clean zombies for background/non-blocking mode
-  
-  # set back library paths to state before calling `with_nix()`
+  poll_sys_proc_nonblocking(cmd, proc, what = "nix-build", message_type)
   
   if (isTRUE(nzchar(Sys.getenv("NIX_STORE")))) {
     # set back library paths to state before calling `with_nix()`
@@ -112,6 +102,10 @@ nix_build <- function(project_path = ".",
       on.exit(Sys.setenv(LD_LIBRARY_PATH=LD_LIBRARY_PATH_default))
     }
   }
+  
+  on.exit({
+    tools::pskill(pid = proc)
+  }, add = TRUE)
 
   return(invisible(proc))
 }

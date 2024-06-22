@@ -225,3 +225,4 @@ Lackerbauer](https://github.com/ciil),
 - [Blog post: Nix with R and devtools](https://rgoswami.me/posts/nix-r-devtools/)
 - [Blog post: Statistical Rethinking and Nix](https://rgoswami.me/posts/rethinking-r-nix/)
 - [Blog post: Searching and installing old versions of Nix packages](https://lazamar.github.io/download-specific-package-version-with-nix/)
+
