@@ -10,7 +10,7 @@ generate_header <- function(nix_repo,
   if(identical(Sys.getenv("TESTTHAT"), "true")){
     sprintf('
 let
- pkgs = import (fetchTarball "%s") {};
+  pkgs = import (fetchTarball "%s") {};
 ',
 nix_repo$url)
     } else {
