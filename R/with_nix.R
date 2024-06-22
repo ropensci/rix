@@ -70,13 +70,6 @@
 #' @param program String stating where to evaluate the expression. Either `"R"`,
 #' the default, or `"shell"`. `where = "R"` will evaluate the expression via
 #' `RScript` and `where = "shell"` will run the system command in `nix-shell`.
-#' @param exec_mode Either `"blocking"` (default) or `"non-blocking`. This
-#' will either block the R session while `expr` is running in a `nix-shell`
-#' environment, oor running it in the background ("non-blocking"). While
-#' `program = R` will yield identical results for foreground and background
-#' evaluation (R object), `program = "shell"` will return list of exit status,
-#' standard output and standard error of the system command and as text in
-#' blocking mode.
 #' @param project_path Path to the folder where the `default.nix` file resides. 
 #' The default is `"."`, which is the working directory in the current R
 #' session. This approach also useful when you have different subfolders 
@@ -112,7 +105,7 @@
 #' # stream messages, and bring output back to current R session
 #' out <- with_nix(
 #'   expr = function(mtcars) nrow(mtcars),
-#'   program = "R", exec_mode = "non-blocking", project_path = project_path,
+#'   program = "R", project_path = project_path,
 #'   message_type = "simple"
 #' )
 #' 
@@ -128,7 +121,7 @@
 #' 
 #' out <- with_nix(
 #'   expr = get_sample(seed = 1234, n = 5),
-#'   program = "R", exec_mode = "non-blocking",
+#'   program = "R",
 #'   project_path = ".",
 #'   message_type = "simple"
 #' )
@@ -139,7 +132,6 @@
 #' }
 with_nix <- function(expr,
                      program = c("R", "shell"),
-                     exec_mode = c("blocking", "non-blocking"),
                      project_path = ".",
                      message_type = c("simple", "quiet", "verbose")) {
   nix_file <- file.path(project_path, "default.nix")
@@ -154,7 +146,6 @@ with_nix <- function(expr,
   )
 
   program <- match.arg(program, choices = c("R", "shell"))
-  exec_mode <- match.arg(exec_mode, choices = c("blocking", "non-blocking"))
   message_type <- match.arg(message_type,
     choices = c("simple", "quiet", "verbose"))
   
@@ -278,8 +269,7 @@ with_nix <- function(expr,
     
     # 3) run expression in nix session, based on temporary script
     if (isFALSE(is_quiet)) {
-      cat(paste0("\n==> running deparsed expression via `nix-shell`", " in ",
-        exec_mode, " mode ...\n\n"
+      cat(paste0("\n==> running deparsed expression via `nix-shell`...\n\n"
       ))
     }
 
@@ -294,20 +284,11 @@ with_nix <- function(expr,
       )
     )
     
-    proc <- switch(exec_mode,
-      "blocking" = sys::exec_internal(cmd = "nix-shell", cmd_rnix_deparsed),
-      "non-blocking" = sys::exec_background(
-        cmd = "nix-shell", cmd_rnix_deparsed),
-      stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
-    )
-    if (exec_mode == "non-blocking") {
-      poll_sys_proc_nonblocking(
-        cmd = cmd_rnix_deparsed, proc, what = "expr",
-        message_type = message_type)
-    } else if (exec_mode == "blocking") {
-      poll_sys_proc_blocking(cmd = cmd_rnix_deparsed, proc, what = "expr",
-        message_type = message_type)
-    }
+    proc <- sys::exec_background(cmd = "nix-shell", cmd_rnix_deparsed)
+  
+    poll_sys_proc_nonblocking(cmd = cmd_rnix_deparsed, proc, what = "expr",
+      message_type)
+    
   } else if (program == "shell") { # end of `if (program == "R")`
     shell_cmd <- c(
       file.path(project_path, "default.nix"),
@@ -315,12 +296,7 @@ with_nix <- function(expr,
       "--run",
       expr
     )
-    proc <- switch(exec_mode,
-      "blocking" = sys::exec_internal(cmd = "nix-shell", shell_cmd),
-      "non-blocking" = sys::exec_background(
-        cmd = "nix-shell", shell_cmd),
-      stop('invalid `exec_mode`. Either use "blocking" or "non-blocking"')
-    )
+    proc <- sys::exec_internal(cmd = "nix-shell", shell_cmd)
   }
   
   # 5) deserialize final output of `expr` evaluated in nix-shell
@@ -328,17 +304,10 @@ with_nix <- function(expr,
   if (program == "R") {
     out <- readRDS(file = file.path(temp_dir, "_out.Rds"))
   } else if (program == "shell") {
-    if (exec_mode == "non-blocking") {
-      status <- poll_sys_proc_nonblocking(
-        cmd = shell_cmd, proc, what = "expr"
-      )
-      out <- status
-    } else if (exec_mode == "blocking") {
-      poll_sys_proc_blocking(cmd = shell_cmd, proc, what = "expr")
-      out <- proc
-      out$stdout <- sys::as_text(out$stdout)
-      out$stderr <- sys::as_text(out$stderr)
-    }
+    status <- poll_sys_proc_blocking(
+      cmd = shell_cmd, proc, what = "expr", message_type
+    )
+    out <- sys::as_text(proc$stdout)
   }
   
   if (isFALSE(is_quiet)) {
@@ -367,12 +336,18 @@ with_nix <- function(expr,
     }
   } else if (program == "shell") {
     if (isFALSE(is_quiet)) {
-      print(out$stdout)
+      print(out)
     }
   }
   cat("")
   
-  on.exit(unlink(temp_dir, recursive = TRUE, force = TRUE), after = FALSE)
+  on.exit({
+    if (program == "R") {
+      unlink(temp_dir, recursive = TRUE, force = TRUE)
+      # only R expressions are nonblockings
+      tools::pskill(pid = proc)
+    }
+  }, after = FALSE)
   
   return(out)
 }

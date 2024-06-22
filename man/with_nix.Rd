@@ -7,7 +7,6 @@
 with_nix(
   expr,
   program = c("R", "shell"),
-  exec_mode = c("blocking", "non-blocking"),
   project_path = ".",
   message_type = c("simple", "quiet", "verbose")
 )
@@ -24,14 +23,6 @@ sure \code{expr} is a function (see details and examples).}
 \item{program}{String stating where to evaluate the expression. Either \code{"R"},
 the default, or \code{"shell"}. \code{where = "R"} will evaluate the expression via
 \code{RScript} and \code{where = "shell"} will run the system command in \code{nix-shell}.}
-
-\item{exec_mode}{Either \code{"blocking"} (default) or \verb{"non-blocking}. This
-will either block the R session while \code{expr} is running in a \code{nix-shell}
-environment, oor running it in the background ("non-blocking"). While
-\code{program = R} will yield identical results for foreground and background
-evaluation (R object), \code{program = "shell"} will return list of exit status,
-standard output and standard error of the system command and as text in
-blocking mode.}
 
 \item{project_path}{Path to the folder where the \code{default.nix} file resides.
 The default is \code{"."}, which is the working directory in the current R
@@ -137,7 +128,7 @@ rix(
 # stream messages, and bring output back to current R session
 out <- with_nix(
   expr = function(mtcars) nrow(mtcars),
-  program = "R", exec_mode = "non-blocking", project_path = project_path,
+  program = "R", project_path = project_path,
   message_type = "simple"
 )
 

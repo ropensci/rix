@@ -104,7 +104,6 @@ nix_build <- function(project_path = ".",
   }
   
   on.exit({
-    message("Terminating process with ID", proc)
     tools::pskill(pid = proc)
   }, add = TRUE)
 
