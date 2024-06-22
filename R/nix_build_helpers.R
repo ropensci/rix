@@ -97,7 +97,8 @@ poll_sys_proc_blocking <- function(cmd, proc,
 #' with an error code. The waiting is implemented to not create race conditions
 #' 
 #' @noRd
-poll_sys_proc_nonblocking <- function(cmd, proc, 
+poll_sys_proc_nonblocking <- function(cmd,
+                                      proc, 
                                       what = c("nix-build", "expr"),
                                       message_type = 
                                         c("simple", "quiet", "verbose")) {

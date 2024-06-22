@@ -192,8 +192,7 @@ messages and errors into the R session. Thereby, the {sys} package facilitates
 capturing standard outputs and errors as text output messages. Please be aware
 that `with_nix()` will invoke `nix-shell`, which will itself run `nix-build` in
 case the Nix derivation (package) for R version 4.1.3 is not yet in your Nix
-store. This will take a bit of time to get the cache. When you use the
-`exec_mode == "non-blocking"` argument of `with_nix()`, you will see in your
+store. This will take a bit of time to get the cache. You will see in your
 current R console the specific Nix paths that will be downloaded and copied into
 your Nix store automatically.
 
@@ -204,7 +203,6 @@ your Nix store automatically.
 out_nix_1 <- with_nix(
   expr = function() df_as_vector(x = df), # wrap to avoid evaluation
   program = "R", 
-  exec_mode = "non-blocking", # run as background process
   project_path = path_env_1, 
   message_type = "simple" # you can do `"verbose"`, too
 )
@@ -239,7 +237,6 @@ arguments.
 out_nix_1_b <- with_nix(
   expr = df_as_vector, # provide name of function
   program = "R", 
-  exec_mode = "non-blocking", # run as background process
   project_path = path_env_1, 
   message_type = "simple" # you can do `"verbose"`, too
 )
@@ -315,7 +312,6 @@ df_as_vector <- function(x) {
 out_nix_1_2 <- with_nix(
   expr = function() df_as_vector(x = df),
   program = "R",
-  exec_mode = "non-blocking", # run as background process
   project_path = path_env_1_2, 
   message_type = "simple" # you can do `"verbose"`, too
 )
@@ -398,7 +394,6 @@ We can now run the code in the subshell
 out_nix_stringr <- with_nix(
   expr = function() stringr::str_subset(c("", "a"), ""),
   program = "R",
-  exec_mode = "non-blocking",
   project_path = path_env_stringr,
   message_type = "simple"
 )
@@ -503,7 +498,6 @@ Which we can then run in the subshell:
 out_nix_arrow <- with_nix(
   expr = function() arrow_script(),
   program = "R",
-  exec_mode = "non-blocking",
   project_path = path_env_arrow,
   message_type = "simple"
 )
