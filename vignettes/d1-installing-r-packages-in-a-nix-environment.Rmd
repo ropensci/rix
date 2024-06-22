@@ -24,7 +24,6 @@ You now know how to declare and build reproducible development environments
 using `{rix}` and Nix. This vignette will explain how to install specific
 versions of CRAN packages and how to install packages from GitHub.
 
-
 ## Installing old packages archived on CRAN
 
 It is possible to install an arbitrary version of a package that has been
@@ -55,7 +54,6 @@ use the version of R that was current at that time. This will ensure that every
 package that gets installed is at a version compatible with that version of R,
 which might not be the case if you need to install a very old version of one
 particular package.
-
 
 ## Installing packages from Github
 
@@ -90,6 +88,23 @@ specifically the code as it is in the `fusen` branch. The commit is also
 provided, to pin the exact version of the package needed. The `{fusen}` package
 is also installed, from the main branch at commit `d617172447d`.
 
+## Installing local archives
+
+It is also possible to install packages from a local `tar.gz` file. For this,
+place the package in the same folder where the `default.nix` will be generated, and
+write something like this:
+
+```
+rix(r_ver = '4.3.1',
+    local_pkgs = c('chronicler_0.2.1.tar.gz', 'knitr_1.43.tar.gz'), 
+    overwrite = TRUE)
+```
+
+This assumes that both `chronicler_0.2.1.tar.gz` and `knitr_1.43.tar.gz` have been
+downloaded beforehand. If you want to include a local package that you are developing,
+make sure to first build it using `devtools::build()` to build the `.tar.gz` archive, but
+if you can, consider uploading the source code to your package on Github and installing
+it from Github instead.
 
 ## A complete example
 
