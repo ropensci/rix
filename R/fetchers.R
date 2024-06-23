@@ -137,7 +137,7 @@ fetchlocal <- function(local_pkg){
   package_name <- package_name[1]
 
   # Remove rest of path from name
-  package_name <- unlist(strsplit(package_name, split = "/")) |> tail(1)
+  package_name <- tail(unlist(strsplit(package_name, split = "/")), 1)
 
   sprintf('
   (pkgs.rPackages.buildRPackage {
