@@ -162,39 +162,53 @@ you, you could use the following <code><a href="../reference/rix.html">rix::rix(
 <span><span class="co">#&gt; let</span></span>
 <span><span class="co">#&gt;  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/9693852a2070b398ee123a329e68f0dab5526681.tar.gz") {};</span></span>
 <span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt;  git_archive_pkgs = [</span></span>
-<span><span class="co">#&gt;   (pkgs.rPackages.buildRPackage {</span></span>
-<span><span class="co">#&gt;     name = "lookup";</span></span>
-<span><span class="co">#&gt;     src = pkgs.fetchgit {</span></span>
-<span><span class="co">#&gt;      url = "https://github.com/jimhester/lookup/";</span></span>
-<span><span class="co">#&gt;      branchName = "master";</span></span>
-<span><span class="co">#&gt;      rev = "eba63db477dd2f20153b75e2949eb333a36cccfc";</span></span>
-<span><span class="co">#&gt;      sha256 = "sha256-arl7LVxL8xGUW3LhuDCSUjcfswX0rdofL/7v8Klw8FM=";</span></span>
-<span><span class="co">#&gt;     };</span></span>
-<span><span class="co">#&gt;     propagatedBuildInputs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;      inherit (pkgs.rPackages) gh memoise Rcpp codetools crayon rex highlite jsonlite rstudioapi withr httr;</span></span>
-<span><span class="co">#&gt;     };</span></span>
-<span><span class="co">#&gt;   })</span></span>
-<span><span class="co">#&gt;  ];</span></span>
+<span><span class="co">#&gt;   git_archive_pkgs = [</span></span>
+<span><span class="co">#&gt;     (pkgs.rPackages.buildRPackage {</span></span>
+<span><span class="co">#&gt;       name = "lookup";</span></span>
+<span><span class="co">#&gt;       src = pkgs.fetchgit {</span></span>
+<span><span class="co">#&gt;         url = "https://github.com/jimhester/lookup/";</span></span>
+<span><span class="co">#&gt;         branchName = "master";</span></span>
+<span><span class="co">#&gt;         rev = "eba63db477dd2f20153b75e2949eb333a36cccfc";</span></span>
+<span><span class="co">#&gt;         sha256 = "sha256-arl7LVxL8xGUW3LhuDCSUjcfswX0rdofL/7v8Klw8FM=";</span></span>
+<span><span class="co">#&gt;       };</span></span>
+<span><span class="co">#&gt;       propagatedBuildInputs = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;         inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;           gh</span></span>
+<span><span class="co">#&gt;           memoise</span></span>
+<span><span class="co">#&gt;           Rcpp</span></span>
+<span><span class="co">#&gt;           codetools</span></span>
+<span><span class="co">#&gt;           crayon</span></span>
+<span><span class="co">#&gt;           rex</span></span>
+<span><span class="co">#&gt;           highlite</span></span>
+<span><span class="co">#&gt;           jsonlite</span></span>
+<span><span class="co">#&gt;           rstudioapi</span></span>
+<span><span class="co">#&gt;           withr</span></span>
+<span><span class="co">#&gt;           httr;</span></span>
+<span><span class="co">#&gt;       };</span></span>
+<span><span class="co">#&gt;     })</span></span>
+<span><span class="co">#&gt;    ];</span></span>
 <span><span class="co">#&gt;    </span></span>
-<span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) R glibcLocales nix;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   system_packages = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs) </span></span>
+<span><span class="co">#&gt;       R</span></span>
+<span><span class="co">#&gt;       glibcLocales</span></span>
+<span><span class="co">#&gt;       nix;</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;   </span></span>
 <span><span class="co">#&gt; in</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;    LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
-<span><span class="co">#&gt;    LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt; pkgs.mkShell {</span></span>
+<span><span class="co">#&gt;   LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;   LANG = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_ALL = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_TIME = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MONETARY = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_PAPER = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MEASUREMENT = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;    buildInputs = [ git_archive_pkgs   system_packages   ];</span></span>
-<span><span class="co">#&gt;    </span></span>
-<span><span class="co">#&gt;  }</span></span></code></pre></div>
+<span><span class="co">#&gt;   buildInputs = [ git_archive_pkgs   system_packages   ];</span></span>
+<span><span class="co">#&gt;   </span></span>
+<span><span class="co">#&gt; }</span></span></code></pre></div>
 <p>Trying to build this environment will fail with following error
 message:</p>
 <pre><code>error: attribute 'highlite' missing</code></pre>

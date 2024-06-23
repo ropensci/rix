@@ -153,46 +153,58 @@ that environment:</p>
 <span><span class="co">#&gt; let</span></span>
 <span><span class="co">#&gt;  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/8ad5e8132c5dcf977e308e7bf5517cc6cc0bf7d8.tar.gz") {};</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt;  rpkgs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;   rpkgs = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs.rPackages) </span></span>
 <span><span class="co">#&gt;       targets</span></span>
 <span><span class="co">#&gt;       tarchetypes</span></span>
 <span><span class="co">#&gt;       rmarkdown;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt;  git_archive_pkgs = [</span></span>
-<span><span class="co">#&gt;   (pkgs.rPackages.buildRPackage {</span></span>
-<span><span class="co">#&gt;     name = "housing";</span></span>
-<span><span class="co">#&gt;     src = pkgs.fetchgit {</span></span>
-<span><span class="co">#&gt;      url = "https://github.com/rap4all/housing/";</span></span>
-<span><span class="co">#&gt;      branchName = "fusen";</span></span>
-<span><span class="co">#&gt;      rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";</span></span>
-<span><span class="co">#&gt;      sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";</span></span>
-<span><span class="co">#&gt;     };</span></span>
-<span><span class="co">#&gt;     propagatedBuildInputs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;      inherit (pkgs.rPackages) dplyr ggplot2 janitor purrr readxl rlang rvest stringr tidyr;</span></span>
-<span><span class="co">#&gt;     };</span></span>
-<span><span class="co">#&gt;   })</span></span>
-<span><span class="co">#&gt;  ];</span></span>
+<span><span class="co">#&gt;   git_archive_pkgs = [</span></span>
+<span><span class="co">#&gt;     (pkgs.rPackages.buildRPackage {</span></span>
+<span><span class="co">#&gt;       name = "housing";</span></span>
+<span><span class="co">#&gt;       src = pkgs.fetchgit {</span></span>
+<span><span class="co">#&gt;         url = "https://github.com/rap4all/housing/";</span></span>
+<span><span class="co">#&gt;         branchName = "fusen";</span></span>
+<span><span class="co">#&gt;         rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";</span></span>
+<span><span class="co">#&gt;         sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";</span></span>
+<span><span class="co">#&gt;       };</span></span>
+<span><span class="co">#&gt;       propagatedBuildInputs = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;         inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;           dplyr</span></span>
+<span><span class="co">#&gt;           ggplot2</span></span>
+<span><span class="co">#&gt;           janitor</span></span>
+<span><span class="co">#&gt;           purrr</span></span>
+<span><span class="co">#&gt;           readxl</span></span>
+<span><span class="co">#&gt;           rlang</span></span>
+<span><span class="co">#&gt;           rvest</span></span>
+<span><span class="co">#&gt;           stringr</span></span>
+<span><span class="co">#&gt;           tidyr;</span></span>
+<span><span class="co">#&gt;       };</span></span>
+<span><span class="co">#&gt;     })</span></span>
+<span><span class="co">#&gt;    ];</span></span>
 <span><span class="co">#&gt;    </span></span>
-<span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) R glibcLocales nix;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   system_packages = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs) </span></span>
+<span><span class="co">#&gt;       R</span></span>
+<span><span class="co">#&gt;       glibcLocales</span></span>
+<span><span class="co">#&gt;       nix;</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;   </span></span>
 <span><span class="co">#&gt; in</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;    LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
-<span><span class="co">#&gt;    LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt; pkgs.mkShell {</span></span>
+<span><span class="co">#&gt;   LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;   LANG = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_ALL = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_TIME = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MONETARY = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_PAPER = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MEASUREMENT = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;    buildInputs = [ git_archive_pkgs rpkgs  system_packages   ];</span></span>
-<span><span class="co">#&gt;    </span></span>
-<span><span class="co">#&gt;  }</span></span></code></pre>
+<span><span class="co">#&gt;   buildInputs = [ git_archive_pkgs rpkgs  system_packages   ];</span></span>
+<span><span class="co">#&gt;   </span></span>
+<span><span class="co">#&gt; }</span></span></code></pre>
 <p>The environment that gets built from this <code>default.nix</code>
 file contains R version 4.2.2, the <a href="https://docs.ropensci.org/targets/" class="external-link">targets</a> and
 <a href="https://docs.ropensci.org/tarchetypes/" class="external-link">tarchetypes</a> packages, as well as the

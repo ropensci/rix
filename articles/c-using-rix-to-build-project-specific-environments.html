@@ -178,31 +178,34 @@ file to the console or not.</li>
 <span><span class="co">#&gt; let</span></span>
 <span><span class="co">#&gt;  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/9693852a2070b398ee123a329e68f0dab5526681.tar.gz") {};</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt;  rpkgs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;   rpkgs = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs.rPackages) </span></span>
 <span><span class="co">#&gt;       dplyr</span></span>
 <span><span class="co">#&gt;       ggplot2</span></span>
 <span><span class="co">#&gt;       languageserver;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;     </span></span>
-<span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) R glibcLocales nix;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   system_packages = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs) </span></span>
+<span><span class="co">#&gt;       R</span></span>
+<span><span class="co">#&gt;       glibcLocales</span></span>
+<span><span class="co">#&gt;       nix;</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;   </span></span>
 <span><span class="co">#&gt; in</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;    LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
-<span><span class="co">#&gt;    LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt; pkgs.mkShell {</span></span>
+<span><span class="co">#&gt;   LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;   LANG = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_ALL = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_TIME = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MONETARY = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_PAPER = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MEASUREMENT = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;    buildInputs = [  rpkgs  system_packages   ];</span></span>
-<span><span class="co">#&gt;    </span></span>
-<span><span class="co">#&gt;  }</span></span></code></pre></div>
+<span><span class="co">#&gt;   buildInputs = [  rpkgs  system_packages   ];</span></span>
+<span><span class="co">#&gt;   </span></span>
+<span><span class="co">#&gt; }</span></span></code></pre></div>
 <p>To start using this environment, open a terminal in the folder
 containing <code>default.nix</code> and use the following Nix
 command:</p>
@@ -260,30 +263,34 @@ IDE:</p>
 <span><span class="co">#&gt; let</span></span>
 <span><span class="co">#&gt;  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/79b3d4bcae8c7007c9fd51c279a8a67acfa73a2a.tar.gz") {};</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt;  rpkgs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;   rpkgs = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs.rPackages) </span></span>
 <span><span class="co">#&gt;       dplyr</span></span>
 <span><span class="co">#&gt;       janitor;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;     </span></span>
-<span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) quarto R glibcLocales nix;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   system_packages = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs) </span></span>
+<span><span class="co">#&gt;       quarto</span></span>
+<span><span class="co">#&gt;       R</span></span>
+<span><span class="co">#&gt;       glibcLocales</span></span>
+<span><span class="co">#&gt;       nix;</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;   </span></span>
 <span><span class="co">#&gt; in</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;    LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
-<span><span class="co">#&gt;    LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt; pkgs.mkShell {</span></span>
+<span><span class="co">#&gt;   LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;   LANG = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_ALL = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_TIME = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MONETARY = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_PAPER = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MEASUREMENT = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;    buildInputs = [  rpkgs  system_packages   ];</span></span>
-<span><span class="co">#&gt;    </span></span>
-<span><span class="co">#&gt;  }</span></span></code></pre>
+<span><span class="co">#&gt;   buildInputs = [  rpkgs  system_packages   ];</span></span>
+<span><span class="co">#&gt;   </span></span>
+<span><span class="co">#&gt; }</span></span></code></pre>
 <p>The first line is quite important, as it shows which
 <em>revision</em> of <code>nixpkgs</code> is being used for this
 environment. The <em>revision</em> is the commit hash of that particular

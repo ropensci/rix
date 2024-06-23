@@ -161,29 +161,34 @@ line tool (required to edit Quarto documents from R using the
 <span><span class="co">#&gt; let</span></span>
 <span><span class="co">#&gt;  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/9693852a2070b398ee123a329e68f0dab5526681.tar.gz") {};</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt;  rpkgs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;   rpkgs = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs.rPackages) </span></span>
 <span><span class="co">#&gt;       quarto;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;     </span></span>
-<span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) quarto git R glibcLocales nix;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   system_packages = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs) </span></span>
+<span><span class="co">#&gt;       quarto</span></span>
+<span><span class="co">#&gt;       git</span></span>
+<span><span class="co">#&gt;       R</span></span>
+<span><span class="co">#&gt;       glibcLocales</span></span>
+<span><span class="co">#&gt;       nix;</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;   </span></span>
 <span><span class="co">#&gt; in</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;    LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
-<span><span class="co">#&gt;    LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt; pkgs.mkShell {</span></span>
+<span><span class="co">#&gt;   LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;   LANG = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_ALL = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_TIME = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MONETARY = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_PAPER = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MEASUREMENT = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;    buildInputs = [  rpkgs  system_packages   ];</span></span>
-<span><span class="co">#&gt;    </span></span>
-<span><span class="co">#&gt;  }</span></span></code></pre>
+<span><span class="co">#&gt;   buildInputs = [  rpkgs  system_packages   ];</span></span>
+<span><span class="co">#&gt;   </span></span>
+<span><span class="co">#&gt; }</span></span></code></pre>
 <p>You can look for all the available software <a href="https://search.nixos.org/packages?channel=unstable&amp;from=0&amp;size=50&amp;sort=relevance&amp;type=packages&amp;query=" class="external-link">here</a>.
 Simply look for the right package name, and add it to the
 <code>system_pkgs</code> argument of <code><a href="../reference/rix.html">rix()</a></code>. If you have
@@ -226,33 +231,39 @@ add a TexLive package to the <code>tex_pkgs</code> argument of
 <span><span class="co">#&gt; let</span></span>
 <span><span class="co">#&gt;  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/9693852a2070b398ee123a329e68f0dab5526681.tar.gz") {};</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt;  rpkgs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;   rpkgs = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs.rPackages) </span></span>
 <span><span class="co">#&gt;       quarto;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt;  tex = (pkgs.texlive.combine {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.texlive) scheme-small amsmath;</span></span>
-<span><span class="co">#&gt;  });</span></span>
+<span><span class="co">#&gt;   tex = (pkgs.texlive.combine {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs.texlive) </span></span>
+<span><span class="co">#&gt;       scheme-small</span></span>
+<span><span class="co">#&gt;       amsmath;</span></span>
+<span><span class="co">#&gt;   });</span></span>
 <span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) quarto R glibcLocales nix;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   system_packages = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs) </span></span>
+<span><span class="co">#&gt;       quarto</span></span>
+<span><span class="co">#&gt;       R</span></span>
+<span><span class="co">#&gt;       glibcLocales</span></span>
+<span><span class="co">#&gt;       nix;</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;   </span></span>
 <span><span class="co">#&gt; in</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;    LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
-<span><span class="co">#&gt;    LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt; pkgs.mkShell {</span></span>
+<span><span class="co">#&gt;   LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;   LANG = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_ALL = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_TIME = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MONETARY = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_PAPER = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MEASUREMENT = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;    buildInputs = [  rpkgs tex system_packages   ];</span></span>
-<span><span class="co">#&gt;    </span></span>
-<span><span class="co">#&gt;  }</span></span></code></pre></div>
+<span><span class="co">#&gt;   buildInputs = [  rpkgs tex system_packages   ];</span></span>
+<span><span class="co">#&gt;   </span></span>
+<span><span class="co">#&gt; }</span></span></code></pre></div>
 <p>This will automically add the <em>small</em> TexLive distribution
 available through <code>nixpkgs</code> with the <code>amsmath</code>
 LaTex package. To know more about setting up environments for literate

@@ -159,33 +159,39 @@ this, we use the <code>tex_pkgs</code> argument:</p>
 <span><span class="co">#&gt; let</span></span>
 <span><span class="co">#&gt;  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/976fa3369d722e76f37c77493d99829540d43845.tar.gz") {};</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt;  rpkgs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;   rpkgs = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs.rPackages) </span></span>
 <span><span class="co">#&gt;       quarto;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt;  tex = (pkgs.texlive.combine {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.texlive) scheme-small amsmath;</span></span>
-<span><span class="co">#&gt;  });</span></span>
+<span><span class="co">#&gt;   tex = (pkgs.texlive.combine {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs.texlive) </span></span>
+<span><span class="co">#&gt;       scheme-small</span></span>
+<span><span class="co">#&gt;       amsmath;</span></span>
+<span><span class="co">#&gt;   });</span></span>
 <span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) quarto R glibcLocales nix;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   system_packages = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs) </span></span>
+<span><span class="co">#&gt;       quarto</span></span>
+<span><span class="co">#&gt;       R</span></span>
+<span><span class="co">#&gt;       glibcLocales</span></span>
+<span><span class="co">#&gt;       nix;</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;   </span></span>
 <span><span class="co">#&gt; in</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;    LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
-<span><span class="co">#&gt;    LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt; pkgs.mkShell {</span></span>
+<span><span class="co">#&gt;   LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;   LANG = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_ALL = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_TIME = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MONETARY = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_PAPER = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MEASUREMENT = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;    buildInputs = [  rpkgs tex system_packages   ];</span></span>
-<span><span class="co">#&gt;    </span></span>
-<span><span class="co">#&gt;  }</span></span></code></pre></div>
+<span><span class="co">#&gt;   buildInputs = [  rpkgs tex system_packages   ];</span></span>
+<span><span class="co">#&gt;   </span></span>
+<span><span class="co">#&gt; }</span></span></code></pre></div>
 <p>(Save these lines into a script called <code>build_env.R</code> for
 instance, and run the script into a new folder made for this
 project.)</p>
@@ -251,34 +257,40 @@ a new <code>default.nix</code> file that will now add
 <span><span class="co">#&gt; let</span></span>
 <span><span class="co">#&gt;  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/976fa3369d722e76f37c77493d99829540d43845.tar.gz") {};</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt;  rpkgs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;   rpkgs = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs.rPackages) </span></span>
 <span><span class="co">#&gt;       quarto</span></span>
 <span><span class="co">#&gt;       MASS;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt;  tex = (pkgs.texlive.combine {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.texlive) scheme-small amsmath;</span></span>
-<span><span class="co">#&gt;  });</span></span>
+<span><span class="co">#&gt;   tex = (pkgs.texlive.combine {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs.texlive) </span></span>
+<span><span class="co">#&gt;       scheme-small</span></span>
+<span><span class="co">#&gt;       amsmath;</span></span>
+<span><span class="co">#&gt;   });</span></span>
 <span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) quarto R glibcLocales nix;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   system_packages = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs) </span></span>
+<span><span class="co">#&gt;       quarto</span></span>
+<span><span class="co">#&gt;       R</span></span>
+<span><span class="co">#&gt;       glibcLocales</span></span>
+<span><span class="co">#&gt;       nix;</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;   </span></span>
 <span><span class="co">#&gt; in</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;    LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
-<span><span class="co">#&gt;    LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt; pkgs.mkShell {</span></span>
+<span><span class="co">#&gt;   LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;   LANG = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_ALL = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_TIME = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MONETARY = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_PAPER = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MEASUREMENT = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;    buildInputs = [  rpkgs tex system_packages   ];</span></span>
-<span><span class="co">#&gt;    </span></span>
-<span><span class="co">#&gt;  }</span></span></code></pre></div>
+<span><span class="co">#&gt;   buildInputs = [  rpkgs tex system_packages   ];</span></span>
+<span><span class="co">#&gt;   </span></span>
+<span><span class="co">#&gt; }</span></span></code></pre></div>
 <p>Trying to compile the document results now in another error
 message:</p>
 <pre><code>compilation failed- no matching packages
@@ -337,34 +349,46 @@ like:</p>
 <span><span class="co">#&gt; let</span></span>
 <span><span class="co">#&gt;  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/976fa3369d722e76f37c77493d99829540d43845.tar.gz") {};</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt;  rpkgs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;   rpkgs = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs.rPackages) </span></span>
 <span><span class="co">#&gt;       quarto</span></span>
 <span><span class="co">#&gt;       MASS;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt;  tex = (pkgs.texlive.combine {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.texlive) scheme-small amsmath environ fontawesome5 orcidlink pdfcol tcolorbox tikzfill;</span></span>
-<span><span class="co">#&gt;  });</span></span>
+<span><span class="co">#&gt;   tex = (pkgs.texlive.combine {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs.texlive) </span></span>
+<span><span class="co">#&gt;       scheme-small</span></span>
+<span><span class="co">#&gt;       amsmath</span></span>
+<span><span class="co">#&gt;       environ</span></span>
+<span><span class="co">#&gt;       fontawesome5</span></span>
+<span><span class="co">#&gt;       orcidlink</span></span>
+<span><span class="co">#&gt;       pdfcol</span></span>
+<span><span class="co">#&gt;       tcolorbox</span></span>
+<span><span class="co">#&gt;       tikzfill;</span></span>
+<span><span class="co">#&gt;   });</span></span>
 <span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) quarto R glibcLocales nix;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   system_packages = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs) </span></span>
+<span><span class="co">#&gt;       quarto</span></span>
+<span><span class="co">#&gt;       R</span></span>
+<span><span class="co">#&gt;       glibcLocales</span></span>
+<span><span class="co">#&gt;       nix;</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;   </span></span>
 <span><span class="co">#&gt; in</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;    LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
-<span><span class="co">#&gt;    LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt; pkgs.mkShell {</span></span>
+<span><span class="co">#&gt;   LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;   LANG = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_ALL = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_TIME = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MONETARY = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_PAPER = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MEASUREMENT = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;    buildInputs = [  rpkgs tex system_packages   ];</span></span>
-<span><span class="co">#&gt;    </span></span>
-<span><span class="co">#&gt;  }</span></span></code></pre></div>
+<span><span class="co">#&gt;   buildInputs = [  rpkgs tex system_packages   ];</span></span>
+<span><span class="co">#&gt;   </span></span>
+<span><span class="co">#&gt; }</span></span></code></pre></div>
 <p>The template will now compile with this environment. To look for a
 LaTeX package, you can use the <a href="https://ctan.org/pkg/orcidlink?lang=en" class="external-link">search engine on
 CTAN</a>.</p>

@@ -142,49 +142,69 @@ been archived on CRAN:</p>
 <span><span class="co">#&gt; let</span></span>
 <span><span class="co">#&gt;  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/79b3d4bcae8c7007c9fd51c279a8a67acfa73a2a.tar.gz") {};</span></span>
 <span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt;  git_archive_pkgs = [ </span></span>
-<span><span class="co">#&gt;   (pkgs.rPackages.buildRPackage {</span></span>
-<span><span class="co">#&gt;     name = "dplyr";</span></span>
-<span><span class="co">#&gt;     src = pkgs.fetchzip {</span></span>
-<span><span class="co">#&gt;      url = "https://cran.r-project.org/src/contrib/Archive/dplyr/dplyr_0.8.0.tar.gz";</span></span>
-<span><span class="co">#&gt;      sha256 = "sha256-f30raalLd9KoZKZSxeTN71PG6BczXRIiP6g7EZeH09U=";</span></span>
-<span><span class="co">#&gt;     };</span></span>
-<span><span class="co">#&gt;     propagatedBuildInputs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;      inherit (pkgs.rPackages) assertthat glue magrittr pkgconfig R6 Rcpp rlang tibble tidyselect BH plogr;</span></span>
-<span><span class="co">#&gt;     };</span></span>
-<span><span class="co">#&gt;   })</span></span>
+<span><span class="co">#&gt;   git_archive_pkgs = [ </span></span>
+<span><span class="co">#&gt;     (pkgs.rPackages.buildRPackage {</span></span>
+<span><span class="co">#&gt;       name = "dplyr";</span></span>
+<span><span class="co">#&gt;       src = pkgs.fetchzip {</span></span>
+<span><span class="co">#&gt;        url = "https://cran.r-project.org/src/contrib/Archive/dplyr/dplyr_0.8.0.tar.gz";</span></span>
+<span><span class="co">#&gt;        sha256 = "sha256-f30raalLd9KoZKZSxeTN71PG6BczXRIiP6g7EZeH09U=";</span></span>
+<span><span class="co">#&gt;       };</span></span>
+<span><span class="co">#&gt;       propagatedBuildInputs = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;         inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;           assertthat</span></span>
+<span><span class="co">#&gt;           glue</span></span>
+<span><span class="co">#&gt;           magrittr</span></span>
+<span><span class="co">#&gt;           pkgconfig</span></span>
+<span><span class="co">#&gt;           R6</span></span>
+<span><span class="co">#&gt;           Rcpp</span></span>
+<span><span class="co">#&gt;           rlang</span></span>
+<span><span class="co">#&gt;           tibble</span></span>
+<span><span class="co">#&gt;           tidyselect</span></span>
+<span><span class="co">#&gt;           BH</span></span>
+<span><span class="co">#&gt;           plogr;</span></span>
+<span><span class="co">#&gt;       };</span></span>
+<span><span class="co">#&gt;     })</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   (pkgs.rPackages.buildRPackage {</span></span>
-<span><span class="co">#&gt;     name = "janitor";</span></span>
-<span><span class="co">#&gt;     src = pkgs.fetchzip {</span></span>
-<span><span class="co">#&gt;      url = "https://cran.r-project.org/src/contrib/Archive/janitor/janitor_1.0.0.tar.gz";</span></span>
-<span><span class="co">#&gt;      sha256 = "sha256-3NJomE/CNbOZ+ohuVZJWe2n1RVGUm8x8a0A0qzLmdN4=";</span></span>
-<span><span class="co">#&gt;     };</span></span>
-<span><span class="co">#&gt;     propagatedBuildInputs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;      inherit (pkgs.rPackages) dplyr tidyr snakecase magrittr purrr rlang;</span></span>
-<span><span class="co">#&gt;     };</span></span>
-<span><span class="co">#&gt;   })</span></span>
-<span><span class="co">#&gt; ];</span></span>
+<span><span class="co">#&gt;     (pkgs.rPackages.buildRPackage {</span></span>
+<span><span class="co">#&gt;       name = "janitor";</span></span>
+<span><span class="co">#&gt;       src = pkgs.fetchzip {</span></span>
+<span><span class="co">#&gt;        url = "https://cran.r-project.org/src/contrib/Archive/janitor/janitor_1.0.0.tar.gz";</span></span>
+<span><span class="co">#&gt;        sha256 = "sha256-3NJomE/CNbOZ+ohuVZJWe2n1RVGUm8x8a0A0qzLmdN4=";</span></span>
+<span><span class="co">#&gt;       };</span></span>
+<span><span class="co">#&gt;       propagatedBuildInputs = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;         inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;           dplyr</span></span>
+<span><span class="co">#&gt;           tidyr</span></span>
+<span><span class="co">#&gt;           snakecase</span></span>
+<span><span class="co">#&gt;           magrittr</span></span>
+<span><span class="co">#&gt;           purrr</span></span>
+<span><span class="co">#&gt;           rlang;</span></span>
+<span><span class="co">#&gt;       };</span></span>
+<span><span class="co">#&gt;     })</span></span>
+<span><span class="co">#&gt;   ];</span></span>
 <span><span class="co">#&gt;    </span></span>
-<span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) R glibcLocales nix;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   system_packages = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs) </span></span>
+<span><span class="co">#&gt;       R</span></span>
+<span><span class="co">#&gt;       glibcLocales</span></span>
+<span><span class="co">#&gt;       nix;</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;   </span></span>
 <span><span class="co">#&gt; in</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;    LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
-<span><span class="co">#&gt;    LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt; pkgs.mkShell {</span></span>
+<span><span class="co">#&gt;   LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;   LANG = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_ALL = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_TIME = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MONETARY = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_PAPER = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MEASUREMENT = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;    buildInputs = [ git_archive_pkgs   system_packages   ];</span></span>
-<span><span class="co">#&gt;    </span></span>
-<span><span class="co">#&gt;  }</span></span></code></pre>
+<span><span class="co">#&gt;   buildInputs = [ git_archive_pkgs   system_packages   ];</span></span>
+<span><span class="co">#&gt;   </span></span>
+<span><span class="co">#&gt; }</span></span></code></pre>
 <p>The above expression will install R version 4.2.1, and
 <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> at version 0.8.0 and <a href="https://github.com/sfirke/janitor" class="external-link">janitor</a> at
 version 1.0.0. This can be useful, especially for packages that have
@@ -237,59 +257,85 @@ install a very old version of one particular package.</p>
 <span><span class="co">#&gt; let</span></span>
 <span><span class="co">#&gt;  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/79b3d4bcae8c7007c9fd51c279a8a67acfa73a2a.tar.gz") {};</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt;  rpkgs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;   rpkgs = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs.rPackages) </span></span>
 <span><span class="co">#&gt;       dplyr</span></span>
 <span><span class="co">#&gt;       janitor;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt;  git_archive_pkgs = [</span></span>
-<span><span class="co">#&gt;   (pkgs.rPackages.buildRPackage {</span></span>
-<span><span class="co">#&gt;     name = "housing";</span></span>
-<span><span class="co">#&gt;     src = pkgs.fetchgit {</span></span>
-<span><span class="co">#&gt;      url = "https://github.com/rap4all/housing/";</span></span>
-<span><span class="co">#&gt;      branchName = "fusen";</span></span>
-<span><span class="co">#&gt;      rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";</span></span>
-<span><span class="co">#&gt;      sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";</span></span>
-<span><span class="co">#&gt;     };</span></span>
-<span><span class="co">#&gt;     propagatedBuildInputs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;      inherit (pkgs.rPackages) dplyr ggplot2 janitor purrr readxl rlang rvest stringr tidyr;</span></span>
-<span><span class="co">#&gt;     };</span></span>
-<span><span class="co">#&gt;   })</span></span>
+<span><span class="co">#&gt;   git_archive_pkgs = [</span></span>
+<span><span class="co">#&gt;     (pkgs.rPackages.buildRPackage {</span></span>
+<span><span class="co">#&gt;       name = "housing";</span></span>
+<span><span class="co">#&gt;       src = pkgs.fetchgit {</span></span>
+<span><span class="co">#&gt;         url = "https://github.com/rap4all/housing/";</span></span>
+<span><span class="co">#&gt;         branchName = "fusen";</span></span>
+<span><span class="co">#&gt;         rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";</span></span>
+<span><span class="co">#&gt;         sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";</span></span>
+<span><span class="co">#&gt;       };</span></span>
+<span><span class="co">#&gt;       propagatedBuildInputs = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;         inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;           dplyr</span></span>
+<span><span class="co">#&gt;           ggplot2</span></span>
+<span><span class="co">#&gt;           janitor</span></span>
+<span><span class="co">#&gt;           purrr</span></span>
+<span><span class="co">#&gt;           readxl</span></span>
+<span><span class="co">#&gt;           rlang</span></span>
+<span><span class="co">#&gt;           rvest</span></span>
+<span><span class="co">#&gt;           stringr</span></span>
+<span><span class="co">#&gt;           tidyr;</span></span>
+<span><span class="co">#&gt;       };</span></span>
+<span><span class="co">#&gt;     })</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   (pkgs.rPackages.buildRPackage {</span></span>
-<span><span class="co">#&gt;     name = "fusen";</span></span>
-<span><span class="co">#&gt;     src = pkgs.fetchgit {</span></span>
-<span><span class="co">#&gt;      url = "https://github.com/ThinkR-open/fusen";</span></span>
-<span><span class="co">#&gt;      branchName = "main";</span></span>
-<span><span class="co">#&gt;      rev = "d617172447d2947efb20ad6a4463742b8a5d79dc";</span></span>
-<span><span class="co">#&gt;      sha256 = "sha256-TOHA1ymLUSgZMYIA1a2yvuv0799svaDOl3zOhNRxcmw=";</span></span>
-<span><span class="co">#&gt;     };</span></span>
-<span><span class="co">#&gt;     propagatedBuildInputs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;      inherit (pkgs.rPackages) attachment cli desc devtools glue here magrittr parsermd roxygen2 stringi tibble tidyr usethis yaml;</span></span>
-<span><span class="co">#&gt;     };</span></span>
-<span><span class="co">#&gt;   })</span></span>
-<span><span class="co">#&gt;  ];</span></span>
+<span><span class="co">#&gt;     (pkgs.rPackages.buildRPackage {</span></span>
+<span><span class="co">#&gt;       name = "fusen";</span></span>
+<span><span class="co">#&gt;       src = pkgs.fetchgit {</span></span>
+<span><span class="co">#&gt;         url = "https://github.com/ThinkR-open/fusen";</span></span>
+<span><span class="co">#&gt;         branchName = "main";</span></span>
+<span><span class="co">#&gt;         rev = "d617172447d2947efb20ad6a4463742b8a5d79dc";</span></span>
+<span><span class="co">#&gt;         sha256 = "sha256-TOHA1ymLUSgZMYIA1a2yvuv0799svaDOl3zOhNRxcmw=";</span></span>
+<span><span class="co">#&gt;       };</span></span>
+<span><span class="co">#&gt;       propagatedBuildInputs = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;         inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;           attachment</span></span>
+<span><span class="co">#&gt;           cli</span></span>
+<span><span class="co">#&gt;           desc</span></span>
+<span><span class="co">#&gt;           devtools</span></span>
+<span><span class="co">#&gt;           glue</span></span>
+<span><span class="co">#&gt;           here</span></span>
+<span><span class="co">#&gt;           magrittr</span></span>
+<span><span class="co">#&gt;           parsermd</span></span>
+<span><span class="co">#&gt;           roxygen2</span></span>
+<span><span class="co">#&gt;           stringi</span></span>
+<span><span class="co">#&gt;           tibble</span></span>
+<span><span class="co">#&gt;           tidyr</span></span>
+<span><span class="co">#&gt;           usethis</span></span>
+<span><span class="co">#&gt;           yaml;</span></span>
+<span><span class="co">#&gt;       };</span></span>
+<span><span class="co">#&gt;     })</span></span>
+<span><span class="co">#&gt;    ];</span></span>
 <span><span class="co">#&gt;    </span></span>
-<span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) R glibcLocales nix;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   system_packages = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs) </span></span>
+<span><span class="co">#&gt;       R</span></span>
+<span><span class="co">#&gt;       glibcLocales</span></span>
+<span><span class="co">#&gt;       nix;</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;   </span></span>
 <span><span class="co">#&gt; in</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;    LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
-<span><span class="co">#&gt;    LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt; pkgs.mkShell {</span></span>
+<span><span class="co">#&gt;   LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;   LANG = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_ALL = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_TIME = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MONETARY = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_PAPER = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MEASUREMENT = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;    buildInputs = [ git_archive_pkgs rpkgs  system_packages   ];</span></span>
-<span><span class="co">#&gt;    </span></span>
-<span><span class="co">#&gt;  }</span></span></code></pre>
+<span><span class="co">#&gt;   buildInputs = [ git_archive_pkgs rpkgs  system_packages   ];</span></span>
+<span><span class="co">#&gt;   </span></span>
+<span><span class="co">#&gt; }</span></span></code></pre>
 <p>This will install two packages from Github: the
 <code>{housing}</code> package and more specifically the code as it is
 in the <code>fusen</code> branch. The commit is also provided, to pin
@@ -310,7 +356,7 @@ something like this:</p>
 <p>This assumes that both <code>chronicler_0.2.1.tar.gz</code> and
 <code>knitr_1.43.tar.gz</code> have been downloaded beforehand. If you
 want to include a local package that you are developing, make sure to
-first build it using <code><a href="https://devtools.r-lib.org/reference/build.html" class="external-link">devtools::build()</a></code> to build the
+first build it using <code>devtools::build()</code> to build the
 <code>.tar.gz</code> archive, but if you can, consider uploading the
 source code to your package on Github and installing it from Github
 instead.</p>
@@ -359,70 +405,102 @@ archives and from GitHub:</p>
 <span><span class="co">#&gt; let</span></span>
 <span><span class="co">#&gt;  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/79b3d4bcae8c7007c9fd51c279a8a67acfa73a2a.tar.gz") {};</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt;  rpkgs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;   rpkgs = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs.rPackages) </span></span>
 <span><span class="co">#&gt;       dplyr</span></span>
 <span><span class="co">#&gt;       janitor;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt;  git_archive_pkgs = [</span></span>
-<span><span class="co">#&gt;   (pkgs.rPackages.buildRPackage {</span></span>
-<span><span class="co">#&gt;     name = "housing";</span></span>
-<span><span class="co">#&gt;     src = pkgs.fetchgit {</span></span>
-<span><span class="co">#&gt;      url = "https://github.com/rap4all/housing/";</span></span>
-<span><span class="co">#&gt;      branchName = "fusen";</span></span>
-<span><span class="co">#&gt;      rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";</span></span>
-<span><span class="co">#&gt;      sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";</span></span>
-<span><span class="co">#&gt;     };</span></span>
-<span><span class="co">#&gt;     propagatedBuildInputs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;      inherit (pkgs.rPackages) dplyr ggplot2 janitor purrr readxl rlang rvest stringr tidyr;</span></span>
-<span><span class="co">#&gt;     };</span></span>
-<span><span class="co">#&gt;   })</span></span>
+<span><span class="co">#&gt;   git_archive_pkgs = [</span></span>
+<span><span class="co">#&gt;     (pkgs.rPackages.buildRPackage {</span></span>
+<span><span class="co">#&gt;       name = "housing";</span></span>
+<span><span class="co">#&gt;       src = pkgs.fetchgit {</span></span>
+<span><span class="co">#&gt;         url = "https://github.com/rap4all/housing/";</span></span>
+<span><span class="co">#&gt;         branchName = "fusen";</span></span>
+<span><span class="co">#&gt;         rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";</span></span>
+<span><span class="co">#&gt;         sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";</span></span>
+<span><span class="co">#&gt;       };</span></span>
+<span><span class="co">#&gt;       propagatedBuildInputs = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;         inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;           dplyr</span></span>
+<span><span class="co">#&gt;           ggplot2</span></span>
+<span><span class="co">#&gt;           janitor</span></span>
+<span><span class="co">#&gt;           purrr</span></span>
+<span><span class="co">#&gt;           readxl</span></span>
+<span><span class="co">#&gt;           rlang</span></span>
+<span><span class="co">#&gt;           rvest</span></span>
+<span><span class="co">#&gt;           stringr</span></span>
+<span><span class="co">#&gt;           tidyr;</span></span>
+<span><span class="co">#&gt;       };</span></span>
+<span><span class="co">#&gt;     })</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   (pkgs.rPackages.buildRPackage {</span></span>
-<span><span class="co">#&gt;     name = "fusen";</span></span>
-<span><span class="co">#&gt;     src = pkgs.fetchgit {</span></span>
-<span><span class="co">#&gt;      url = "https://github.com/ThinkR-open/fusen";</span></span>
-<span><span class="co">#&gt;      branchName = "main";</span></span>
-<span><span class="co">#&gt;      rev = "d617172447d2947efb20ad6a4463742b8a5d79dc";</span></span>
-<span><span class="co">#&gt;      sha256 = "sha256-TOHA1ymLUSgZMYIA1a2yvuv0799svaDOl3zOhNRxcmw=";</span></span>
-<span><span class="co">#&gt;     };</span></span>
-<span><span class="co">#&gt;     propagatedBuildInputs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;      inherit (pkgs.rPackages) attachment cli desc devtools glue here magrittr parsermd roxygen2 stringi tibble tidyr usethis yaml;</span></span>
-<span><span class="co">#&gt;     };</span></span>
-<span><span class="co">#&gt;   })</span></span>
+<span><span class="co">#&gt;     (pkgs.rPackages.buildRPackage {</span></span>
+<span><span class="co">#&gt;       name = "fusen";</span></span>
+<span><span class="co">#&gt;       src = pkgs.fetchgit {</span></span>
+<span><span class="co">#&gt;         url = "https://github.com/ThinkR-open/fusen";</span></span>
+<span><span class="co">#&gt;         branchName = "main";</span></span>
+<span><span class="co">#&gt;         rev = "d617172447d2947efb20ad6a4463742b8a5d79dc";</span></span>
+<span><span class="co">#&gt;         sha256 = "sha256-TOHA1ymLUSgZMYIA1a2yvuv0799svaDOl3zOhNRxcmw=";</span></span>
+<span><span class="co">#&gt;       };</span></span>
+<span><span class="co">#&gt;       propagatedBuildInputs = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;         inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;           attachment</span></span>
+<span><span class="co">#&gt;           cli</span></span>
+<span><span class="co">#&gt;           desc</span></span>
+<span><span class="co">#&gt;           devtools</span></span>
+<span><span class="co">#&gt;           glue</span></span>
+<span><span class="co">#&gt;           here</span></span>
+<span><span class="co">#&gt;           magrittr</span></span>
+<span><span class="co">#&gt;           parsermd</span></span>
+<span><span class="co">#&gt;           roxygen2</span></span>
+<span><span class="co">#&gt;           stringi</span></span>
+<span><span class="co">#&gt;           tibble</span></span>
+<span><span class="co">#&gt;           tidyr</span></span>
+<span><span class="co">#&gt;           usethis</span></span>
+<span><span class="co">#&gt;           yaml;</span></span>
+<span><span class="co">#&gt;       };</span></span>
+<span><span class="co">#&gt;     })</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt;   (pkgs.rPackages.buildRPackage {</span></span>
-<span><span class="co">#&gt;     name = "AER";</span></span>
-<span><span class="co">#&gt;     src = pkgs.fetchzip {</span></span>
-<span><span class="co">#&gt;      url = "https://cran.r-project.org/src/contrib/Archive/AER/AER_1.2-8.tar.gz";</span></span>
-<span><span class="co">#&gt;      sha256 = "sha256-OqxXcnUX/2C6wfD5fuNayc8OU+mstI3tt4eBVGQZ2S0=";</span></span>
-<span><span class="co">#&gt;     };</span></span>
-<span><span class="co">#&gt;     propagatedBuildInputs = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;      inherit (pkgs.rPackages) car lmtest sandwich survival zoo Formula;</span></span>
-<span><span class="co">#&gt;     };</span></span>
-<span><span class="co">#&gt;   })</span></span>
-<span><span class="co">#&gt; ];</span></span>
+<span><span class="co">#&gt;     (pkgs.rPackages.buildRPackage {</span></span>
+<span><span class="co">#&gt;       name = "AER";</span></span>
+<span><span class="co">#&gt;       src = pkgs.fetchzip {</span></span>
+<span><span class="co">#&gt;        url = "https://cran.r-project.org/src/contrib/Archive/AER/AER_1.2-8.tar.gz";</span></span>
+<span><span class="co">#&gt;        sha256 = "sha256-OqxXcnUX/2C6wfD5fuNayc8OU+mstI3tt4eBVGQZ2S0=";</span></span>
+<span><span class="co">#&gt;       };</span></span>
+<span><span class="co">#&gt;       propagatedBuildInputs = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;         inherit (pkgs.rPackages) </span></span>
+<span><span class="co">#&gt;           car</span></span>
+<span><span class="co">#&gt;           lmtest</span></span>
+<span><span class="co">#&gt;           sandwich</span></span>
+<span><span class="co">#&gt;           survival</span></span>
+<span><span class="co">#&gt;           zoo</span></span>
+<span><span class="co">#&gt;           Formula;</span></span>
+<span><span class="co">#&gt;       };</span></span>
+<span><span class="co">#&gt;     })</span></span>
+<span><span class="co">#&gt;   ];</span></span>
 <span><span class="co">#&gt;    </span></span>
-<span><span class="co">#&gt;  system_packages = builtins.attrValues {</span></span>
-<span><span class="co">#&gt;   inherit (pkgs) R glibcLocales nix;</span></span>
-<span><span class="co">#&gt;  };</span></span>
+<span><span class="co">#&gt;   system_packages = builtins.attrValues {</span></span>
+<span><span class="co">#&gt;     inherit (pkgs) </span></span>
+<span><span class="co">#&gt;       R</span></span>
+<span><span class="co">#&gt;       glibcLocales</span></span>
+<span><span class="co">#&gt;       nix;</span></span>
+<span><span class="co">#&gt;   };</span></span>
 <span><span class="co">#&gt;   </span></span>
 <span><span class="co">#&gt; in</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  pkgs.mkShell {</span></span>
-<span><span class="co">#&gt;    LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
-<span><span class="co">#&gt;    LANG = "en_US.UTF-8";</span></span>
+<span><span class="co">#&gt; pkgs.mkShell {</span></span>
+<span><span class="co">#&gt;   LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";</span></span>
+<span><span class="co">#&gt;   LANG = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_ALL = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_TIME = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MONETARY = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_PAPER = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt;    LC_MEASUREMENT = "en_US.UTF-8";</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;    buildInputs = [ git_archive_pkgs rpkgs  system_packages   ];</span></span>
-<span><span class="co">#&gt;    </span></span>
-<span><span class="co">#&gt;  }</span></span></code></pre>
+<span><span class="co">#&gt;   buildInputs = [ git_archive_pkgs rpkgs  system_packages   ];</span></span>
+<span><span class="co">#&gt;   </span></span>
+<span><span class="co">#&gt; }</span></span></code></pre>
 <p>The next vignette,
 <code><a href="../articles/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment.html">vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")</a></code>,
 explains how you can install tools such as text editors, git, Quarto,
