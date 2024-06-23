@@ -165,7 +165,7 @@ generate_tex_pkgs <- function(tex_pkgs) {
 
     tex_pkgs <- unique(c("scheme-small", tex_pkgs))
 
-    tex_pkgs <- paste(tex_pkgs, collapse = ' ')
+    tex_pkgs <- paste(c("", tex_pkgs), collapse = '\n      ')
 
     sprintf('
   tex = (pkgs.texlive.combine {
@@ -191,8 +191,7 @@ get_system_pkgs <- function(system_pkgs, r_pkgs){
                  } else {
                    unique(system_pkgs)
                  }
-
-  paste(system_pkgs, collapse = ' ')
+  paste(c("", system_pkgs), collapse = '\n      ')
 }
 
 
@@ -272,19 +271,23 @@ generate_locale_variables <- function() {
 #' @param flag_rpkgs Character, are there any R packages at all?
 #' @param flag_local_pkgs Character, are there any local R packages at all?
 #' @noRd
-generate_wrapped_pkgs <- function(ide, attrib, flag_git_archive, flag_rpkgs, flag_local_pkgs){
+generate_wrapped_pkgs <- function(ide,
+                                  attrib,
+                                  flag_git_archive,
+                                  flag_rpkgs,
+                                  flag_local_pkgs){
   if (flag_rpkgs == ""){
     return(NULL)
   } else if(ide %in% names(attrib)){
     sprintf('
- wrapped_pkgs = pkgs.%s.override {
-  packages = [ %s %s %s ];
- };
+  wrapped_pkgs = pkgs.%s.override {
+    packages = [ %s %s %s ];
+  };
 ',
-attrib[ide],
-flag_git_archive,
-flag_rpkgs,
-flag_local_pkgs
+      attrib[ide],
+      flag_git_archive,
+      flag_rpkgs,
+      flag_local_pkgs
 )
   } else {
     NULL

@@ -79,16 +79,22 @@ let
   ];
  
   tex = (pkgs.texlive.combine {
-    inherit (pkgs.texlive) scheme-small amsmath;
+    inherit (pkgs.texlive) 
+      scheme-small
+      amsmath;
   });
   
   system_packages = builtins.attrValues {
-    inherit (pkgs) R glibcLocales nix quarto;
+    inherit (pkgs) 
+      R
+      glibcLocales
+      nix
+      quarto;
   };
  
- wrapped_pkgs = pkgs.rstudioWrapper.override {
-  packages = [ git_archive_pkgs rpkgs  ];
- };
+  wrapped_pkgs = pkgs.rstudioWrapper.override {
+    packages = [ git_archive_pkgs rpkgs  ];
+  };
  
 in
 

@@ -1,6 +1,6 @@
 
 let
-  pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/ca76d6f475f2df1711f1321ed5f48ab849a25e81.tar.gz") {};
+  pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/REVISION.tar.gz") {};
  
   rpkgs = builtins.attrValues {
     inherit (pkgs.rPackages) 
@@ -79,11 +79,17 @@ let
   ];
  
   tex = (pkgs.texlive.combine {
-    inherit (pkgs.texlive) scheme-small amsmath;
+    inherit (pkgs.texlive) 
+      scheme-small
+      amsmath;
   });
   
   system_packages = builtins.attrValues {
-    inherit (pkgs) R glibcLocales nix quarto;
+    inherit (pkgs) 
+      R
+      glibcLocales
+      nix
+      quarto;
   };
   
 in
