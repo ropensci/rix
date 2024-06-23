@@ -138,15 +138,17 @@ highly recommend you read the vignette titled
 \dontrun{
 # Build an environment with the latest version of R
 # and the dplyr and ggplot2 packages
-rix(r_ver = "latest",
-    r_pkgs = c("dplyr", "ggplot2"),
-    system_pkgs = NULL,
-    git_pkgs = NULL,
-    local_pkgs = NULL,
-    ide = "code",
-    project_path = path_default_nix,
-    overwrite = TRUE,
-    print = TRUE,
-    shell_hook = NULL)
+rix(
+  r_ver = "latest",
+  r_pkgs = c("dplyr", "ggplot2"),
+  system_pkgs = NULL,
+  git_pkgs = NULL,
+  local_pkgs = NULL,
+  ide = "code",
+  project_path = path_default_nix,
+  overwrite = TRUE,
+  print = TRUE,
+  shell_hook = NULL
+)
 }
 }

@@ -37,6 +37,6 @@ with \verb{options(rix.nix_build_max_jobs = <integer>)}. Once you call
 }
 \examples{
 \dontrun{
-  nix_build()
+nix_build()
 }
 }
