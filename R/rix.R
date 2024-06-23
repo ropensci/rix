@@ -1,24 +1,29 @@
-#' rix Generates a Nix expression that builds a reproducible development environment
+#' Generate a Nix expression that builds a reproducible development
+#' environment
 #' @return Nothing, this function only has the side-effect of writing a file
 #'   called "default.nix" in the working directory. This file contains the
 #'   expression to build a reproducible environment using the Nix package
 #'   manager.
-#' @param r_ver Character, defaults to "latest". The required R version, for example "4.0.0".
-#'   You can check which R versions are available using `available_r`.
-#'   For reproducibility purposes, you can also provide a nixpkgs revision directly.
-#'   It is also possible to provide either "bleeding_edge" or "frozen_edge" if you
-#'   need an environment with bleeding edge packages. Read more in the "Details" below.
+#' @param r_ver Character, defaults to "latest". The required R version, for
+#'   example "4.0.0". You can check which R versions are available using
+#'   `available_r`. For reproducibility purposes, you can also provide a nixpkgs
+#'   revision directly. It is also possible to provide either "bleeding_edge" or
+#'   "frozen_edge" if you need an environment with bleeding edge packages. Read
+#'   more in the "Details" below.
 #' @param r_pkgs Vector of characters. List the required R packages for your
 #'   analysis here.
-#' @param system_pkgs Vector of characters. List further software you wish to install that
-#'   are not R packages such as command line applications for example. You can look for
-#'   available software on the NixOS website \url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=}
-#' @param git_pkgs List. A list of packages to install from Git. See details for more information.
-#' @param local_pkgs List. A list of paths to local packages to install. These packages need to be in the `.tar.gz` or `.zip` formats.
-#' @param tex_pkgs Vector of characters. A set of tex packages to install.
-#'   Use this if you need to compile `.tex` documents,
-#'   or build PDF documents using Quarto. If you don't know which package to add,
-#'   start by adding "amsmath". See the Vignette "Authoring LaTeX documents" for more details.
+#' @param system_pkgs Vector of characters. List further software you wish to
+#'   install that are not R packages such as command line applications for
+#'   example. You can look for available software on the NixOS website
+#'   \url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=}
+#' @param git_pkgs List. A list of packages to install from Git. See details for
+#' more information.
+#' @param local_pkgs List. A list of paths to local packages to install. These
+#' packages need to be in the `.tar.gz` or `.zip` formats.
+#' @param tex_pkgs Vector of characters. A set of tex packages to install. Use
+#'   this if you need to compile `.tex` documents, or build PDF documents using
+#'   Quarto. If you don't know which package to add, start by adding "amsmath".
+#'   See the Vignette "Authoring LaTeX documents" for more details.
 #' @param ide Character, defaults to "other". If you wish to use RStudio to work
 #'   interactively use "rstudio" or "rserver" for the server version. Use "code"
 #'   for Visual Studio Code. You can also use "radian", an interactive REPL. For
@@ -28,9 +33,10 @@
 #'   Where to write `default.nix`, for example "/home/path/to/project".
 #'   The file will thus be written to the file
 #'   "/home/path/to/project/default.nix".
-#' @param overwrite Logical, defaults to FALSE. If TRUE, overwrite the `default.nix`
-#'   file in the specified path.
-#' @param print Logical, defaults to FALSE. If TRUE, print `default.nix` to console.
+#' @param overwrite Logical, defaults to FALSE. If TRUE, overwrite the
+#'   `default.nix` file in the specified path.
+#' @param print Logical, defaults to FALSE. If TRUE, print `default.nix` to
+#' console.
 #' @param shell_hook Character of length 1, defaults to `NULL`. Commands added
 #'   to the `shellHook` variable executed when the Nix shell starts. So
 #'   by default, using `nix-shell default.nix` (or path with `shell.nix`) will
@@ -44,47 +50,51 @@
 #'   interfere with any other installed version (via Nix or not) on your
 #'   machine. Every dependency, including both R package dependencies but also
 #'   system dependencies like compilers will get installed as well in that
-#'   environment. If you use RStudio for interactive work, then set the
-#'   `rstudio` parameter to `TRUE`. If you use another IDE (for example Emacs or
-#'   Visual Studio Code), you do not need to add it to the `default.nix` file,
-#'   you can simply use the version that is installed on your computer. Once you built
-#'   the environment using `nix-build`, you can drop into an interactive session
-#'   using `nix-shell`. See the "Building reproducible development environments with rix"
-#'   vignette for detailled instructions.
+#'   environment.
+#' 
+#' If you use RStudio for interactive work, then set the `rstudio` parameter to
+#'   `TRUE`. If you use another IDE (for example Emacs or Visual Studio Code),
+#'   you do not need to add it to the `default.nix` file, you can simply use the
+#'   version that is installed on your computer. Once you built the environment
+#'   using `nix-build`, you can drop into an interactive session using
+#'   `nix-shell`. See the "Building reproducible development environments with
+#'   rix" vignette for detailled instructions.
+#' 
 #'   Packages to install from Github must be provided in a list of 4 elements:
-#'   "package_name", "repo_url", "branch_name" and "commit".
-#'   This argument can also be a list of lists of these 4 elements. It is also possible to install old versions
-#'   of packages by specifying a version. For example, to install the latest
-#'   version of `{AER}` but an old version of `{ggplot2}`, you could
-#'   write: `r_pkgs = c("AER", "ggplot2@2.2.1")`. Note
-#'   however that doing this could result in dependency hell, because an older
-#'   version of a package might need older versions of its dependencies, but other
-#'   packages might need more recent versions of the same dependencies. If instead you
-#'   want to use an environment as it would have looked at the time of `{ggplot2}`'s
-#'   version 2.2.1 release, then use the Nix revision closest to that date, by setting
-#'   `r_ver = "3.1.0"`, which was the version of R current at the time. This
-#'   ensures that Nix builds a completely coherent environment.
+#'   "package_name", "repo_url", "branch_name" and "commit". This argument can
+#'   also be a list of lists of these 4 elements. It is also possible to install
+#'   old versions of packages by specifying a version. For example, to install
+#'   the latest version of `{AER}` but an old version of `{ggplot2}`, you could
+#'   write: `r_pkgs = c("AER", "ggplot2@2.2.1")`. Note however that doing this
+#'   could result in dependency hell, because an older version of a package
+#'   might need older versions of its dependencies, but other packages might
+#'   need more recent versions of the same dependencies. If instead you want to
+#'   use an environment as it would have looked at the time of `{ggplot2}`'s
+#'   version 2.2.1 release, then use the Nix revision closest to that date, by
+#'   setting `r_ver = "3.1.0"`, which was the version of R current at the time.
+#'   This ensures that Nix builds a completely coherent environment.
+#'
 #'   By default, the nix shell will be configured with `"en_US.UTF-8"` for the
 #'   relevant locale variables (`LANG`, `LC_ALL`, `LC_TIME`, `LC_MONETARY`,
 #'   `LC_PAPER`, `LC_MEASUREMENT`). This is done to ensure locale
-#'   reproducibility by default in Nix environments created with `rix()`.
-#'   If there are good reasons to not stick to the default, you can set your
-#'   preferred locale variables via
-#'   `options(rix.nix_locale_variables = list(LANG = "de_CH.UTF-8", <...>)`
-#'   and the aforementioned locale variable names.
-#'   It is possible to use "bleeding_edge" or "frozen_edge" as the value for
-#'   the `r_ver` argument. This will create an environment with the very
-#'   latest R packages. "bleeding_edge" means that every time you will build
-#'   the environment, the packages will get updated. This is especially useful
-#'   for environments that need to be constantly updated, for example when
-#'   developing a package. In contrast, "frozen_edge" will create an
-#'   environment that will remain stable at build time. So if you create
-#'   a `default.nix` file using "bleeding_edge", each time you build it
-#'   using `nix-build` that environment will be up-to-date. With "frozen_edge"
-#'   that environment will be up-to-date on the date that the `default.nix`
-#'   will be generated, and then each subsequent call to `nix-build` will
-#'   result in the same environment. We highly recommend you read the
-#'   vignette titled
+#'   reproducibility by default in Nix environments created with `rix()`. If
+#'   there are good reasons to not stick to the default, you can set your
+#'   preferred locale variables via `options(rix.nix_locale_variables =
+#'   list(LANG = "de_CH.UTF-8", <...>)` and the aforementioned locale variable
+#'   names.
+#'
+#'   It is possible to use "bleeding_edge" or "frozen_edge" as the value for the
+#'   `r_ver` argument. This will create an environment with the very latest R
+#'   packages. "bleeding_edge" means that every time you will build the
+#'   environment, the packages will get updated. This is especially useful for
+#'   environments that need to be constantly updated, for example when
+#'   developing a package. In contrast, "frozen_edge" will create an environment
+#'   that will remain stable at build time. So if you create a `default.nix`
+#'   file using "bleeding_edge", each time you build it using `nix-build` that
+#'   environment will be up-to-date. With "frozen_edge" that environment will be
+#'   up-to-date on the date that the `default.nix` will be generated, and then
+#'   each subsequent call to `nix-build` will result in the same environment. We
+#'   highly recommend you read the vignette titled
 #'   "z - Advanced topic: Understanding the rPackages set release cycle and using bleeding edge packages".
 #' @export
 #' @examples
