@@ -10,7 +10,7 @@ generate_header <- function(nix_repo,
   if(identical(Sys.getenv("TESTTHAT"), "true")){
     sprintf('
 let
- pkgs = import (fetchTarball "%s") {};
+  pkgs = import (fetchTarball "%s") {};
 ',
 nix_repo$url)
     } else {
@@ -130,9 +130,9 @@ generate_rpkgs <- function(rPackages, flag_rpkgs) {
     NULL
   } else {
     sprintf('
- rpkgs = builtins.attrValues {
-  inherit (pkgs.rPackages) %s;
- };
+  rpkgs = builtins.attrValues {
+    inherit (pkgs.rPackages) %s;
+  };
 ',
 rPackages)
   }
@@ -148,9 +148,9 @@ generate_local_pkgs <- function(local_pkgs, flag_local_pkgs) {
     NULL
   } else {
     sprintf('
- local_pkgs = [
-   %s
- ];
+  local_pkgs = [
+    %s
+  ];
 ',
 fetchlocals(local_pkgs))
   }
@@ -165,12 +165,12 @@ generate_tex_pkgs <- function(tex_pkgs) {
 
     tex_pkgs <- unique(c("scheme-small", tex_pkgs))
 
-    tex_pkgs <- paste(tex_pkgs, collapse = ' ')
+    tex_pkgs <- paste(c("", tex_pkgs), collapse = '\n      ')
 
     sprintf('
- tex = (pkgs.texlive.combine {
-  inherit (pkgs.texlive) %s;
- });
+  tex = (pkgs.texlive.combine {
+    inherit (pkgs.texlive) %s;
+  });
 ',
 tex_pkgs)
   }
@@ -191,8 +191,7 @@ get_system_pkgs <- function(system_pkgs, r_pkgs){
                  } else {
                    unique(system_pkgs)
                  }
-
-  paste(system_pkgs, collapse = ' ')
+  paste(c("", system_pkgs), collapse = '\n      ')
 }
 
 
@@ -202,9 +201,9 @@ get_system_pkgs <- function(system_pkgs, r_pkgs){
 #' @noRd
 generate_system_pkgs <- function(system_pkgs, r_pkgs){
   sprintf('
- system_packages = builtins.attrValues {
-  inherit (pkgs) %s;
- };
+  system_packages = builtins.attrValues {
+    inherit (pkgs) %s;
+  };
 ',
 get_system_pkgs(system_pkgs, r_pkgs))
 }
@@ -220,7 +219,7 @@ generate_git_archived_pkgs <- function(git_pkgs, archive_pkgs, flag_git_archive)
     NULL
   } else {
     sprintf('
- git_archive_pkgs = [%s];\n', fetchpkgs(git_pkgs, archive_pkgs))
+  git_archive_pkgs = [%s  ];\n', fetchpkgs(git_pkgs, archive_pkgs))
   }
 }
 
@@ -272,19 +271,23 @@ generate_locale_variables <- function() {
 #' @param flag_rpkgs Character, are there any R packages at all?
 #' @param flag_local_pkgs Character, are there any local R packages at all?
 #' @noRd
-generate_wrapped_pkgs <- function(ide, attrib, flag_git_archive, flag_rpkgs, flag_local_pkgs){
+generate_wrapped_pkgs <- function(ide,
+                                  attrib,
+                                  flag_git_archive,
+                                  flag_rpkgs,
+                                  flag_local_pkgs){
   if (flag_rpkgs == ""){
     return(NULL)
   } else if(ide %in% names(attrib)){
     sprintf('
- wrapped_pkgs = pkgs.%s.override {
-  packages = [ %s %s %s ];
- };
+  wrapped_pkgs = pkgs.%s.override {
+    packages = [ %s %s %s ];
+  };
 ',
-attrib[ide],
-flag_git_archive,
-flag_rpkgs,
-flag_local_pkgs
+      attrib[ide],
+      flag_git_archive,
+      flag_rpkgs,
+      flag_local_pkgs
 )
   } else {
     NULL
@@ -309,12 +312,12 @@ generate_shell <- function(flag_git_archive,
   sprintf('
 in
 
- pkgs.mkShell {
-   %s
-   %s
-   buildInputs = [ %s %s %s system_packages %s %s ];
-   %s
- }',
+pkgs.mkShell {
+  %s
+  %s
+  buildInputs = [ %s %s %s system_packages %s %s ];
+  %s
+}',
 generate_locale_archive(detect_os()),
 generate_locale_variables(),
 flag_git_archive,

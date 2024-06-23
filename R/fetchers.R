@@ -12,20 +12,22 @@ fetchgit <- function(git_pkg){
   output <- get_sri_hash_deps(repo_url, branch_name, commit)
   sri_hash <- output$sri_hash
   imports <- output$deps
+  imports <- unlist(strsplit(imports, split = " "))
+  imports <- paste(c("", imports), collapse = '\n          ')
 
   sprintf('
-  (pkgs.rPackages.buildRPackage {
-    name = \"%s\";
-    src = pkgs.fetchgit {
-     url = \"%s\";
-     branchName = \"%s\";
-     rev = \"%s\";
-     sha256 = \"%s\";
-    };
-    propagatedBuildInputs = builtins.attrValues {
-     inherit (pkgs.rPackages) %s;
-    };
-  })
+    (pkgs.rPackages.buildRPackage {
+      name = \"%s\";
+      src = pkgs.fetchgit {
+        url = \"%s\";
+        branchName = \"%s\";
+        rev = \"%s\";
+        sha256 = \"%s\";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages) %s;
+      };
+    })
 ',
   package_name,
   repo_url,
@@ -59,22 +61,24 @@ fetchzip <- function(archive_pkg, sri_hash = NULL){
     output <- get_sri_hash_deps(repo_url, branch_name = NULL, commit = NULL)
     sri_hash <- output$sri_hash
     imports <- output$deps
+    imports <- unlist(strsplit(imports, split = " "))
+    imports <- paste(c("", imports), collapse = '\n          ')
   } else {
     sri_hash <- sri_hash
     imports <- NULL
   }
 
   sprintf('
-  (pkgs.rPackages.buildRPackage {
-    name = \"%s\";
-    src = pkgs.fetchzip {
-     url = \"%s\";
-     sha256 = \"%s\";
-    };
-    propagatedBuildInputs = builtins.attrValues {
-     inherit (pkgs.rPackages) %s;
-    };
-  })
+    (pkgs.rPackages.buildRPackage {
+      name = \"%s\";
+      src = pkgs.fetchzip {
+       url = \"%s\";
+       sha256 = \"%s\";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages) %s;
+      };
+    })
 ',
   package_name,
   repo_url,
@@ -148,7 +152,7 @@ fetchlocal <- function(local_pkg){
   package_name <- package_name[1]
 
   # Remove rest of path from name
-  package_name <- unlist(strsplit(package_name, split = "/")) |> tail(1)
+  package_name <- tail(unlist(strsplit(package_name, split = "/")), 1)
 
   sprintf('
   (pkgs.rPackages.buildRPackage {

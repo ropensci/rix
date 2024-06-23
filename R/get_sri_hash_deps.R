@@ -26,7 +26,7 @@ get_sri_hash_deps <- function(repo_url, branch_name, commit) {
   
   # plumber endpoint delivers list with
   # - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
-  # - `deps`: string with R package dependencies separarated by `" "`
+  # - `deps`: string with R package dependencies separated by `" "`
   sri_hash_deps_list <- jsonlite::fromJSON(rawToChar(req$content))
   
   return(sri_hash_deps_list)
