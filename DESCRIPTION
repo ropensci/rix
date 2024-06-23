@@ -17,7 +17,6 @@ Depends:
 Imports:
     codetools,
     curl,
-    desc,
     jsonlite,
     sys,
     utils
