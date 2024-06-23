@@ -95,12 +95,13 @@ fetchzip <- function(archive_pkg, sri_hash = NULL){
 #' @noRd
 remove_base <- function(list_imports){
 
-  gsub("(^base$)|(^compiler$)|(^datasets$)|(^grDevices$)|(^graphics$)|(^grid$)|(^methods$)|(^parallel$)|(^profile$)|(^splines$)|(^stats$)|(^stats4$)|(^tcltk$)|(^tools$)|(^translations$)|(^utils$)",
-       NA_character_,
-       list_imports) |>
-    na.omit()  |>
-    paste(collapse = " ")
-
+  imports_nobase <- gsub(
+    "(^base$)|(^compiler$)|(^datasets$)|(^grDevices$)|(^graphics$)|(^grid$)|(^methods$)|(^parallel$)|(^profile$)|(^splines$)|(^stats$)|(^stats4$)|(^tcltk$)|(^tools$)|(^translations$)|(^utils$)",
+    NA_character_,
+    list_imports
+  )
+  
+  paste(na.omit(imports_nobase), collapse = " ")
 }
 
 
