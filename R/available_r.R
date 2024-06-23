@@ -4,16 +4,16 @@
 #'
 #' @examples
 #' available_r()
-available_r <- function(){
-
+available_r <- function() {
   temp <- new.env(parent = emptyenv())
 
-  data(list = "r_nix_revs",
-       package = "rix",
-       envir = temp)
+  data(
+    list = "r_nix_revs",
+    package = "rix",
+    envir = temp
+  )
 
   get("r_nix_revs", envir = temp)
 
   c("latest", r_nix_revs$version)
 }
-

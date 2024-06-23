@@ -8,17 +8,15 @@
 #' @export
 #' @examples
 #' \dontrun{
-#'   tar_nix_ga()
+#' tar_nix_ga()
 #' }
-tar_nix_ga <- function(){
-
+tar_nix_ga <- function() {
   # is this being tested? If no, set the path to ".github/workflows"
   # if yes, set it to a temporary directory
-  if(!identical(Sys.getenv("TESTTHAT"), "true")){
-
+  if (!identical(Sys.getenv("TESTTHAT"), "true")) {
     # Add an empty .gitignore file if there isn’t any
 
-    if(file.exists(".gitignore")){
+    if (file.exists(".gitignore")) {
       NULL
     } else {
       file.create(".gitignore")
@@ -32,12 +30,12 @@ tar_nix_ga <- function(){
   }
 
   source <- system.file(
-        file.path("extdata", "run-pipeline.yaml"),
-        package = "rix",
+    file.path("extdata", "run-pipeline.yaml"),
+    package = "rix",
     mustWork = TRUE
   )
 
   file.copy(source, path, overwrite = TRUE)
   message("GitHub Actions workflow file saved to: ", path)
-  if(identical(Sys.getenv("TESTTHAT"), "true")) paste0(path, "/run-pipeline.yaml")
-  }
+  if (identical(Sys.getenv("TESTTHAT"), "true")) paste0(path, "/run-pipeline.yaml")
+}

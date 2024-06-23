@@ -51,7 +51,7 @@
 #'   machine. Every dependency, including both R package dependencies but also
 #'   system dependencies like compilers will get installed as well in that
 #'   environment.
-#' 
+#'
 #' If you use RStudio for interactive work, then set the `rstudio` parameter to
 #'   `TRUE`. If you use another IDE (for example Emacs or Visual Studio Code),
 #'   you do not need to add it to the `default.nix` file, you can simply use the
@@ -59,7 +59,7 @@
 #'   using `nix-build`, you can drop into an interactive session using
 #'   `nix-shell`. See the "Building reproducible development environments with
 #'   rix" vignette for detailled instructions.
-#' 
+#'
 #'   Packages to install from Github must be provided in a list of 4 elements:
 #'   "package_name", "repo_url", "branch_name" and "commit". This argument can
 #'   also be a list of lists of these 4 elements. It is also possible to install
@@ -101,16 +101,18 @@
 #' \dontrun{
 #' # Build an environment with the latest version of R
 #' # and the dplyr and ggplot2 packages
-#' rix(r_ver = "latest",
-#'     r_pkgs = c("dplyr", "ggplot2"),
-#'     system_pkgs = NULL,
-#'     git_pkgs = NULL,
-#'     local_pkgs = NULL,
-#'     ide = "code",
-#'     project_path = path_default_nix,
-#'     overwrite = TRUE,
-#'     print = TRUE,
-#'     shell_hook = NULL)
+#' rix(
+#'   r_ver = "latest",
+#'   r_pkgs = c("dplyr", "ggplot2"),
+#'   system_pkgs = NULL,
+#'   git_pkgs = NULL,
+#'   local_pkgs = NULL,
+#'   ide = "code",
+#'   project_path = path_default_nix,
+#'   overwrite = TRUE,
+#'   print = TRUE,
+#'   shell_hook = NULL
+#' )
 #' }
 rix <- function(r_ver = "latest",
                 r_pkgs = NULL,
@@ -122,9 +124,8 @@ rix <- function(r_ver = "latest",
                 project_path = ".",
                 overwrite = FALSE,
                 print = FALSE,
-                shell_hook = NULL){
-
-  if(r_ver %in% c("bleeding_edge", "frozen_edge")){
+                shell_hook = NULL) {
+  if (r_ver %in% c("bleeding_edge", "frozen_edge")) {
     warning(
       "You chose 'bleeding_edge' or 'frozen_edge' as the value for
 `r_ver`. Please read the vignette
@@ -136,13 +137,13 @@ before continuing."
   ide <- match.arg(ide, c("other", "code", "radian", "rstudio", "rserver"))
 
   # Wrapper attributes to be used later
-  attrib = c(
+  attrib <- c(
     radian = "radianWrapper",
     rstudio = "rstudioWrapper",
     rserver = "rstudioServerWrapper"
   )
 
-  if(Sys.info()["sysname"] == "Darwin" & ide == "rstudio"){
+  if (Sys.info()["sysname"] == "Darwin" & ide == "rstudio") {
     warning(
       "Your detected operating system is macOS, and you chose
 'rstudio' as the IDE. Please note that 'rstudio' is not
@@ -151,11 +152,12 @@ generated will not build on macOS. If you wish to build this
 expression on macOS, change the 'ide =' argument to either
 'code' or 'other'. Please refer to the macOS-specific vignette
 https://b-rodrigues.github.io/rix/articles/b2-setting-up-and-using-rix-on-macos.html
-for more details.")
+for more details."
+    )
   }
 
-  project_path <- if(project_path == "."){
-     "default.nix"
+  project_path <- if (project_path == ".") {
+    "default.nix"
   } else {
     paste0(project_path, "/default.nix")
   }
@@ -174,32 +176,32 @@ for more details.")
   cran_pkgs <- get_rpkgs(r_pkgs, ide)
 
   # If there are R packages, passes the string "rpkgs" to buildInputs
-  flag_rpkgs <- if(is.null(cran_pkgs$rPackages) | cran_pkgs$rPackages == ""){
-                  ""
-                } else {
-                  "rpkgs"
-                }
+  flag_rpkgs <- if (is.null(cran_pkgs$rPackages) | cran_pkgs$rPackages == "") {
+    ""
+  } else {
+    "rpkgs"
+  }
 
   # If there are LaTeX packages, passes the string "tex" to buildInputs
-  flag_tex_pkgs <- if(is.null(tex_pkgs)){
-                     ""
-                   } else {
-                     "tex"
-                   }
+  flag_tex_pkgs <- if (is.null(tex_pkgs)) {
+    ""
+  } else {
+    "tex"
+  }
 
   # If there are R packages from Git, passes the string "git_archive_pkgs" to buildInputs
-  flag_git_archive <- if(!is.null(cran_pkgs$archive_pkgs) | !is.null(git_pkgs)){
-                        "git_archive_pkgs"
-                      } else {
-                        ""
-                      }
+  flag_git_archive <- if (!is.null(cran_pkgs$archive_pkgs) | !is.null(git_pkgs)) {
+    "git_archive_pkgs"
+  } else {
+    ""
+  }
 
   # If there are R packages local packages, passes the string "local_pkgs" to buildInputs
-  flag_local_pkgs <- if(is.null(local_pkgs)){
-                       ""
-                     } else {
-                       "local_pkgs"
-                     }
+  flag_local_pkgs <- if (is.null(local_pkgs)) {
+    ""
+  } else {
+    "local_pkgs"
+  }
 
   # If there are wrapped packages (for example for RStudio), passes the "wrapped_pkgs"
   # to buildInputs
@@ -207,36 +209,40 @@ for more details.")
 
   # Correctly formats shellHook for Nix's mkShell
   shell_hook <- if (!is.null(shell_hook) && nzchar(shell_hook)) {
-                  paste0('shellHook = "', shell_hook, '";')
-                } else {''}
+    paste0('shellHook = "', shell_hook, '";')
+  } else {
+    ""
+  }
 
   # Generate default.nix file
   default.nix <- paste(
-    generate_header(nix_repo,
-                    r_ver,
-                    rix_call),
+    generate_header(
+      nix_repo,
+      r_ver,
+      rix_call
+    ),
     generate_rpkgs(cran_pkgs$rPackages, flag_rpkgs),
     generate_git_archived_pkgs(git_pkgs, cran_pkgs$archive_pkgs, flag_git_archive),
     generate_tex_pkgs(tex_pkgs),
     generate_local_pkgs(local_pkgs, flag_local_pkgs),
     generate_system_pkgs(system_pkgs, r_pkgs),
     generate_wrapped_pkgs(ide, attrib, flag_git_archive, flag_rpkgs, flag_local_pkgs),
-    generate_shell(flag_git_archive, flag_rpkgs, flag_tex_pkgs,
-                   flag_local_pkgs, flag_wrapper, shell_hook),
+    generate_shell(
+      flag_git_archive, flag_rpkgs, flag_tex_pkgs,
+      flag_local_pkgs, flag_wrapper, shell_hook
+    ),
     collapse = "\n"
-    )
+  )
 
   default.nix <- readLines(textConnection(default.nix))
 
-  if(print){
+  if (print) {
     cat(default.nix, sep = "\n")
   }
 
-  if(!file.exists(project_path) || overwrite){
+  if (!file.exists(project_path) || overwrite) {
     writeLines(default.nix, project_path)
   } else {
     stop(paste0("File exists at ", project_path, ". Set `overwrite == TRUE` to overwrite."))
   }
-
 }
-

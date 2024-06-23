@@ -1,11 +1,11 @@
 #' Invoke shell command `nix-build` from an R session
-#' @param project_path Path to the folder where the `default.nix` file resides. 
+#' @param project_path Path to the folder where the `default.nix` file resides.
 #' The default is `"."`, which is the working directory in the current R
 #' session.
 #' @param message_type Character vector with messaging type, Either `"simple"`
 #' (default), `"quiet"` for no messaging, or `"verbose"`.
 #' @return integer of the process ID (PID) of `nix-build` shell command
-#' launched, if `nix_build()` call is assigned to an R object. Otherwise, it 
+#' launched, if `nix_build()` call is assigned to an R object. Otherwise, it
 #' will be returned invisibly.
 #' @details The `nix-build` command line interface has more arguments. We will
 #' probably not support all of them in this R wrapper, but currently we have
@@ -20,7 +20,7 @@
 #' @export
 #' @examples
 #' \dontrun{
-#'   nix_build()
+#' nix_build()
 #' }
 nix_build <- function(project_path = ".",
                       message_type = c("simple", "quiet", "verbose")) {
@@ -30,7 +30,7 @@ nix_build <- function(project_path = ".",
   # if nix store is not PATH variable; e.g. on macOS (system's) RStudio
   PATH <- set_nix_path()
   if (isTRUE(nzchar(Sys.getenv("NIX_STORE")))) {
-    # for Nix R sessions, guarantee that the system's user library 
+    # for Nix R sessions, guarantee that the system's user library
     # (R_LIBS_USER) is not in the search path for packages => run-time purity
     current_libpaths <- .libPaths()
     # don't do this in covr test environment, because this sets R_LIBS_USER
@@ -42,10 +42,10 @@ nix_build <- function(project_path = ".",
   } else {
     LD_LIBRARY_PATH_default <- Sys.getenv("LD_LIBRARY_PATH")
     if (nzchar(LD_LIBRARY_PATH_default)) {
-      # On some systems, like Ubuntu 22.04, we found that a preset 
+      # On some systems, like Ubuntu 22.04, we found that a preset
       # `LD_LIBRARY_PATH` environment variable in the system's R session
       # (R installed via apt) is responsible for causing  a segmentation fault
-      # for both `nix-build` and `nix-shell` when invoked via 
+      # for both `nix-build` and `nix-shell` when invoked via
       # `sys::exec_internal`, `base::system()` or `base::system2()` from R.
       # This seems due to incompatible linked libraries or permission issue that
       # conflict when mixing Nix packages and libraries from the system.
@@ -54,8 +54,10 @@ nix_build <- function(project_path = ".",
       # LD_LIBRARY_PATH is not `""` anymore
       # https://github.com/rstudio/rstudio/issues/12585
       fix_ld_library_path()
-      cat("* Current LD_LIBRARY_PATH in system R session is:",
-        LD_LIBRARY_PATH_default)
+      cat(
+        "* Current LD_LIBRARY_PATH in system R session is:",
+        LD_LIBRARY_PATH_default
+      )
       cat("\n", "Setting `LD_LIBRARY_PATH` to `''` during `nix_build()`")
     }
   }
@@ -71,12 +73,14 @@ nix_build <- function(project_path = ".",
     "`nix-build` not available. To install, we suggest you follow https://zero-to-nix.com/start/install ." =
       isTRUE(has_nix_build)
   )
- 
+
   max_jobs <- getOption("rix.nix_build_max_jobs", default = 1L)
-  stopifnot("option `rix.nix_build_max_jobs` is not integerish" =
-    is_integerish(max_jobs))
+  stopifnot(
+    "option `rix.nix_build_max_jobs` is not integerish" =
+      is_integerish(max_jobs)
+  )
   max_jobs <- as.integer(max_jobs)
-  
+
   cmd <- "nix-build"
 
   if (max_jobs == 1L) {
@@ -85,27 +89,32 @@ nix_build <- function(project_path = ".",
     args <- c("--max-jobs", as.character(max_jobs), nix_dir)
   }
 
-  cat(paste0("Running `", paste0(cmd, " ", args, collapse = " "), "`", 
-    " ...\n"))
-  
+  cat(paste0(
+    "Running `", paste0(cmd, " ", args, collapse = " "), "`",
+    " ...\n"
+  ))
+
   proc <- sys::exec_background(cmd = cmd, args = args)
 
   poll_sys_proc_nonblocking(cmd, proc, what = "nix-build", message_type)
-  
+
   if (isTRUE(nzchar(Sys.getenv("NIX_STORE")))) {
     # set back library paths to state before calling `with_nix()`
     .libPaths(new = current_libpaths)
   } else {
     if (nzchar(LD_LIBRARY_PATH_default)) {
-       # set old LD_LIBRARY_PATH (only if system's R session and if it wasn't
-       # `""`)
-      on.exit(Sys.setenv(LD_LIBRARY_PATH=LD_LIBRARY_PATH_default))
+      # set old LD_LIBRARY_PATH (only if system's R session and if it wasn't
+      # `""`)
+      on.exit(Sys.setenv(LD_LIBRARY_PATH = LD_LIBRARY_PATH_default))
     }
   }
-  
-  on.exit({
-    tools::pskill(pid = proc)
-  }, add = TRUE)
+
+  on.exit(
+    {
+      tools::pskill(pid = proc)
+    },
+    add = TRUE
+  )
 
   return(invisible(proc))
 }

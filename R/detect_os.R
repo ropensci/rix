@@ -4,9 +4,9 @@
 #' @examples
 #' detect_os()
 #' @noRd
-detect_os <- function(){
+detect_os <- function() {
   os <- Sys.info()["sysname"]
-  if(os == "Windows"){
+  if (os == "Windows") {
     "Linux"
   } else {
     os
@@ -19,7 +19,7 @@ detect_os <- function(){
 #' @examples
 #' generate_locale_archive("Linux")
 #' @noRd
-generate_locale_archive <- function(os){
+generate_locale_archive <- function(os) {
   if (os == "Linux" || os == "Darwin") {
     'LOCALE_ARCHIVE = if pkgs.system == \"x86_64-linux\" then  \"${pkgs.glibcLocales}/lib/locale/locale-archive\" else \"\";'
   } else {

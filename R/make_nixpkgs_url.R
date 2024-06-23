@@ -5,9 +5,8 @@
 #' @examples
 #' make_nixpkgs_url("4.2.0")
 #' @noRd
-make_nixpkgs_url <- function(r_ver){
-
-  if(r_ver %in% c("bleeding_edge", "frozen_edge")){
+make_nixpkgs_url <- function(r_ver) {
+  if (r_ver %in% c("bleeding_edge", "frozen_edge")) {
     github_repo <- "rstats-on-nix/nixpkgs/"
   } else {
     github_repo <- "NixOS/nixpkgs/"
@@ -20,5 +19,4 @@ make_nixpkgs_url <- function(r_ver){
     "latest_commit" = latest_commit,
     "r_ver" = r_ver
   )
-
 }
