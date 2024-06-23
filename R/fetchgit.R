@@ -99,18 +99,33 @@ remove_base <- function(list_imports){
 
 }
 
-#' finds dependencies of a package
+
+#' Finds dependencies of a package from the DESCRIPTION file
 #' @param path path to package
 #' @return Atomic vector of packages
-#' @importFrom desc description
 #' @noRd
 get_imports <- function(path){
 
-  output <- desc::description$new(path)$get_deps() |>
-              subset(type %in% c("Depends", "Imports", "LinkingTo")) |>
-              subset(package != "R")
+  tmp_dir <- tempdir()
+  untar(path, exdir = tmp_dir)
 
-  output <- output$package
+  paths <- list.files(tmp_dir, full.names = TRUE, recursive = TRUE)
+  desc_path <- grep("DESCRIPTION", paths, value = TRUE)
+
+  columns_of_interest <- c("Depends", "Imports", "LinkingTo")
+
+  imports <- as.data.frame(read.dcf(desc_path))
+
+  existing_columns <- intersect(columns_of_interest, colnames(imports))
+
+  on.exit(unlink(tmp_dir, recursive = TRUE))
+
+  imports <- imports[, existing_columns, drop = FALSE]
+
+  output <- unname(trimws(unlist(strsplit(unlist(imports), split = ","))))
+
+  # Remove version of R that may be listed in 'Depends'
+  output <- Filter(function(x)!grepl("R \\(.*\\)", x), output)
 
   output <- remove_base(unique(output))
 
