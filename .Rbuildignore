@@ -11,6 +11,7 @@
 ^rix\.Rproj$
 ^result$
 ^default.nix$
+^.lintr$
 ^doc$
 ^Meta$
 ^default.nix$
@@ -19,3 +20,4 @@
 ^CONTRIBUTING.md$
 create_dev_env.R
 ^.*.tar.gz
+^\.pre-commit-config\.yaml$
