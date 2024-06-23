@@ -1,5 +1,5 @@
 #' Evaluate function in R or shell command via `nix-shell` environment
-#' 
+#'
 #' This function needs an installation of Nix. `with_nix()` has two effects
 #' to run code in isolated and reproducible environments.
 #' 1. Evaluate a function in R or a shell command via the `nix-shell`
@@ -9,27 +9,27 @@
 #'   current R session.
 #'
 #'
-#' 
+#'
 #' `with_nix()` gives you the power of evaluating a main function `expr` 
 #' and its function call stack that are defined in the current R session
 #' in an encapsulated nix-R session defined by Nix expression (`default.nix`),
 #' which is located in at a distinct project path (`project_path`).
-#' 
-#' `with_nix()` is very convenient because it gives direct code feedback in 
-#' read-eval-print-loop style, which gives a direct interface to the very 
+#'
+#' `with_nix()` is very convenient because it gives direct code feedback in
+#' read-eval-print-loop style, which gives a direct interface to the very
 #' reproducible infrastructure-as-code approach offered by Nix and Nixpkgs. You
 #' don't need extra efforts such as setting up DevOps tooling like Docker and
-#' domain specific tools like \{renv\} to control complex software environments in
-#' R and any other language. It is for example useful for the following
+#' domain specific tools like \{renv\} to control complex software environments
+#' in R and any other language. It is for example useful for the following
 #' purposes.
-#' 
+#'
 #' 1. test compatibility of custom R code and software/package dependencies in
 #'   development and production environments
 #' 2. directly stream outputs (returned objects), messages and errors from any
 #'   command line tool offered in Nixpkgs into an R session.
 #' 3. Test if evolving R packages change their behavior for given unchanged
 #'   R code, and whether they give identical results or not.
-#' 
+#'
 #' `with_nix()` can evaluate both R code from a nix-R session within
 #' another nix-R session, and also from a host R session (i.e., on macOS or
 #' Linux) within a specific nix-R session. This feature is useful for testing
@@ -37,17 +37,17 @@
 #' environments. If testing of different sets of environments is necessary, you
 #' can easily do so by providing Nix expressions in custom `.nix` or
 #' `default.nix` files in different subfolders of the project.
-#' 
+#'
 #' It is recommended that you use `rix_init()` to generate a custom `.Rprofile`
 #' file for the subshell in `project_dir`. The defaults in that file ensure
 #' that only R packages from the Nix store, that are defined in the subshell
 #' `.nix` file are loaded and system's libraries are excluded.
-#' 
-#' 
+#'
+#'
 #' To do its job, `with_nix()` heavily relies on patterns that manipulate
 #' language expressions (aka computing on the language) offered in base R as
 #' well as the \{codetools\} package by Luke Tierney.
-#' 
+#'
 #' Some of the key steps that are done behind the scene:
 #' 1. recursively find, classify, and export global objects (globals) in the 
 #' call stack of `expr` as well as propagate R package environments found.
@@ -148,7 +148,7 @@ with_nix <- function(expr,
   program <- match.arg(program, choices = c("R", "shell"))
   message_type <- match.arg(message_type,
     choices = c("simple", "quiet", "verbose"))
-  
+
   is_quiet <- message_type == "quiet"
   
   # ad-hoc solution for RStudio's limitation that R sessions cannot yet inherit
