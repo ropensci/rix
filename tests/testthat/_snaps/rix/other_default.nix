@@ -19,7 +19,16 @@ let
         sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";
       };
       propagatedBuildInputs = builtins.attrValues {
-        inherit (pkgs.rPackages) dplyr ggplot2 janitor purrr readxl rlang rvest stringr tidyr;
+        inherit (pkgs.rPackages) 
+          dplyr
+          ggplot2
+          janitor
+          purrr
+          readxl
+          rlang
+          rvest
+          stringr
+          tidyr;
       };
     })
 
@@ -33,7 +42,21 @@ let
         sha256 = "sha256-TOHA1ymLUSgZMYIA1a2yvuv0799svaDOl3zOhNRxcmw=";
       };
       propagatedBuildInputs = builtins.attrValues {
-        inherit (pkgs.rPackages) attachment cli desc devtools glue here magrittr parsermd roxygen2 stringi tibble tidyr usethis yaml;
+        inherit (pkgs.rPackages) 
+          attachment
+          cli
+          desc
+          devtools
+          glue
+          here
+          magrittr
+          parsermd
+          roxygen2
+          stringi
+          tibble
+          tidyr
+          usethis
+          yaml;
       };
     })
  
@@ -44,7 +67,13 @@ let
        sha256 = "sha256-OqxXcnUX/2C6wfD5fuNayc8OU+mstI3tt4eBVGQZ2S0=";
       };
       propagatedBuildInputs = builtins.attrValues {
-        inherit (pkgs.rPackages) car lmtest sandwich survival zoo Formula;
+        inherit (pkgs.rPackages) 
+          car
+          lmtest
+          sandwich
+          survival
+          zoo
+          Formula;
       };
     })
   ];

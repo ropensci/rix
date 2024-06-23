@@ -12,6 +12,8 @@ fetchgit <- function(git_pkg){
   output <- get_sri_hash_deps(repo_url, branch_name, commit)
   sri_hash <- output$sri_hash
   imports <- output$deps
+  imports <- unlist(strsplit(imports, split = " "))
+  imports <- paste(c("", imports), collapse = '\n          ')
 
   sprintf('
     (pkgs.rPackages.buildRPackage {
@@ -59,6 +61,8 @@ fetchzip <- function(archive_pkg, sri_hash = NULL){
     output <- get_sri_hash_deps(repo_url, branch_name = NULL, commit = NULL)
     sri_hash <- output$sri_hash
     imports <- output$deps
+    imports <- unlist(strsplit(imports, split = " "))
+    imports <- paste(c("", imports), collapse = '\n          ')
   } else {
     sri_hash <- sri_hash
     imports <- NULL
