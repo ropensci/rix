@@ -1,7 +1,13 @@
-get_imports <- function(path){
-  tempdir <- tempdir()
-  untar(path, exdir = tempdir)
-  paths <- list.files(tempdir, full.names = TRUE, recursive = TRUE)
-  desc_path <- 
-  as.data.frame(read.dcf(desc_path))$Imports
+get_deps <- function(path){
+  tmp_dir <- tempdir()
+  untar(path, exdir = tmp_dir)
+
+  paths <- list.files(tmp_dir, full.names = TRUE, recursive = TRUE)
+  desc_path <- grep("DESCRIPTION", paths, value = TRUE)
+
+  imports <- as.data.frame(read.dcf(desc_path))$Imports
+
+  on.exit(unlink(tmp_dir, recursive = TRUE))
+
+  trimws(unlist(strsplit(imports, split = ",")))
 }

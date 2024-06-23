@@ -3,7 +3,6 @@ let
  rpkgs = builtins.attrValues {
   inherit (pkgs.rPackages)
     codetools
-    desc
     devtools
     diffviewer
     fledge
