@@ -76,7 +76,7 @@ rix(r_ver = "latest",
 ```{r parsermd-chunk-2, eval = FALSE}
 library(rix)
 
-path_to_project <- ~/Documents/kmeans
+path_to_project <- "~/Documents/kmeans"
 
 rix(r_ver = "latest",
     r_pkgs = c("dplyr", "ggplot2"),
