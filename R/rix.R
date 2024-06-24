@@ -52,13 +52,10 @@
 #'   system dependencies like compilers will get installed as well in that
 #'   environment.
 #'
-#' If you use RStudio for interactive work, then set the `rstudio` parameter to
-#'   `TRUE`. If you use another IDE (for example Emacs or Visual Studio Code),
-#'   you do not need to add it to the `default.nix` file, you can simply use the
-#'   version that is installed on your computer. Once you built the environment
-#'   using `nix-build`, you can drop into an interactive session using
-#'   `nix-shell`. See the "Building reproducible development environments with
-#'   rix" vignette for detailled instructions.
+#'   It is possible to use environments built with Nix interactively, either
+#'   from the terminal, or using an interface such as RStudio. We
+#'   you read the `vignette("e-interactive-use")` to learn how, which will
+#'   explain the process in detail.
 #'
 #'   Packages to install from Github must be provided in a list of 4 elements:
 #'   "package_name", "repo_url", "branch_name" and "commit". This argument can
