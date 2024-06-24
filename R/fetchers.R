@@ -106,6 +106,7 @@ remove_base <- function(list_imports) {
 
 #' Finds dependencies of a package from the DESCRIPTION file
 #' @param path path to package
+#' @importFrom utils untar
 #' @return Atomic vector of packages
 #' @noRd
 get_imports <- function(path) {
@@ -127,10 +128,10 @@ get_imports <- function(path) {
 
   output <- unname(trimws(unlist(strsplit(unlist(imports), split = ","))))
 
-  # Remove version of R that may be listed in 'Depends'
+                                        # Remove version of R that may be listed in 'Depends'
   output <- Filter(function(x) !grepl("R \\(.*\\)", x), output)
 
-  # Remove minimum package version for example 'packagename ( > 1.0.0)'
+                                        # Remove minimum package version for example 'packagename ( > 1.0.0)'
   output <- trimws(gsub("\\(.*?\\)", "", output))
 
   output <- remove_base(unique(output))
