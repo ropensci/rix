@@ -450,7 +450,7 @@ rix_init(
 )
 
 rix(
-  r_ver = "af63e7a15daf283b4ce634006b3767f9c0eb0c58",
+  r_ver = "4.1.1",
   r_pkgs = c("dplyr", "arrow"),
   overwrite = TRUE,
   project_path = path_env_arrow
