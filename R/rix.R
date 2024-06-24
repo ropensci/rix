@@ -53,7 +53,7 @@
 #'   environment.
 #'
 #'   It is possible to use environments built with Nix interactively, either
-#'   from the terminal, or using an interface such as RStudio. We
+#'   from the terminal, or using an interface such as RStudio. We recommend
 #'   you read the `vignette("e-interactive-use")` to learn how, which will
 #'   explain the process in detail.
 #'
