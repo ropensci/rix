@@ -18,7 +18,7 @@ articles:
   z-bleeding_edge: z-bleeding_edge.html
   z-contributing_to_nixpkgs: z-contributing_to_nixpkgs.html
   z-developers-vignette-generate-an-environment-with-rix-only: z-developers-vignette-generate-an-environment-with-rix-only.html
-last_built: 2024-06-24T13:59Z
+last_built: 2024-06-24T15:04Z
 urls:
   reference: https://b-rodrigues.github.io/rix/reference
   article: https://b-rodrigues.github.io/rix/articles
