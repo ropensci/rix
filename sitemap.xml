@@ -61,9 +61,6 @@
     <loc>https://b-rodrigues.github.io/rix/articles/z-developers-vignette-generate-an-environment-with-rix-only.html</loc>
   </url>
   <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/z-developers-vignette-save-the-nix-package-versions-data.html</loc>
-  </url>
-  <url>
     <loc>https://b-rodrigues.github.io/rix/authors.html</loc>
   </url>
   <url>
@@ -85,13 +82,13 @@
     <loc>https://b-rodrigues.github.io/rix/reference/nix_build.html</loc>
   </url>
   <url>
-    <loc>https://b-rodrigues.github.io/rix/reference/r_nix_revs.html</loc>
-  </url>
-  <url>
     <loc>https://b-rodrigues.github.io/rix/reference/rix.html</loc>
   </url>
   <url>
     <loc>https://b-rodrigues.github.io/rix/reference/rix_init.html</loc>
+  </url>
+  <url>
+    <loc>https://b-rodrigues.github.io/rix/reference/sysdata.html</loc>
   </url>
   <url>
     <loc>https://b-rodrigues.github.io/rix/reference/tar_nix_ga.html</loc>
