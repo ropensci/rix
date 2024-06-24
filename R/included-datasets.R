@@ -9,4 +9,4 @@
 #'   \item{ date }{ Date when this revision was available }
 #' }
 #' @source Nix Package Version, by Marcelo Lazaroni
-"sysdata"
+"available_r"
