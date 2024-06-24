@@ -5,13 +5,6 @@
 #' @examples
 #' available_r()
 available_r <- function() {
-  temp <- new.env(parent = emptyenv())
 
-  data(list = "sysdata",
-       package = "rix",
-       envir = temp)
-
-  get("sysdata", envir = temp)
-
-  c("latest", sysdata$version)
+  c("latest", rix::sysdata$version)
 }
