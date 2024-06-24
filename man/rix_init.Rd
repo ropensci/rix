@@ -93,7 +93,7 @@ code ran between two software environments with \code{rix::with_nix()}.
 \dontrun{
 # create an isolated, runtime-pure R setup via Nix
 project_path <- "./sub_shell"
-if (!dir.exist(project_path)) dir.create(project_path)
+if (!dir.exists(project_path)) dir.create(project_path)
 rix_init(
   project_path = project_path,
   rprofile_action = "create_missing",

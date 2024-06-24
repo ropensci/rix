@@ -23,7 +23,10 @@ rix(
 \item{r_ver}{Character, defaults to "latest". The required R version, for
 example "4.0.0". You can check which R versions are available using
 \code{available_r}. For reproducibility purposes, you can also provide a nixpkgs
-revision directly. It is also possible to provide either "bleeding_edge" or
+revision directly. For older versions of R, \code{nix-build} might fail with an
+error stating 'this derivation is not meant to be built'. In this case,
+simply drop into the shell with \code{nix-shell} instead of building it first.
+It is also possible to provide either "bleeding_edge" or
 "frozen_edge" if you need an environment with bleeding edge packages. Read
 more in the "Details" below.}
 
