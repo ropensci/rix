@@ -184,13 +184,18 @@ interfere with any other installed version (via Nix or not) on your
 machine. Every dependency, including both R package dependencies but also
 system dependencies like compilers will get installed as well in that
 environment.</p>
-<p>If you use RStudio for interactive work, then set the <code>rstudio</code> parameter to
-<code>TRUE</code>. If you use another IDE (for example Emacs or Visual Studio Code),
-you do not need to add it to the <code>default.nix</code> file, you can simply use the
-version that is installed on your computer. Once you built the environment
-using <code>nix-build</code>, you can drop into an interactive session using
-<code>nix-shell</code>. See the "Building reproducible development environments with
-rix" vignette for detailled instructions.</p>
+<p>It is possible to use environments built with Nix interactively, either
+from the terminal, or using an interface such as RStudio.  If you
+want to use RStudio, set it to <code>"rstudio"</code>. Please be aware that RStudio
+is not available for macOS through Nix. As such, you may want to use another
+editor on macOS. To use Visual Studio Code (or Codium), set the <code>ide</code>
+argument to <code>"code"</code>, which will add the <code>{languageserver}</code> R package
+to the list of R packages to be installed by Nix in that environment. You can
+use the version of Visual Studio Code or Codium you already use, or also install
+it using Nix (by adding "vscode" or "vscodium" to the list of <code>system_pkgs</code>).
+For non-interactive use, or to use the environment from the command line, or from another
+editor (such as Emacs or Vim), set the <code>ide</code> argument to <code>"other"</code>.
+We recommend reading the <code><a href="../articles/e-interactive-use.html">vignette("e-interactive-use")</a></code> for more details.</p>
 <p>Packages to install from Github must be provided in a list of 4 elements:
 "package_name", "repo_url", "branch_name" and "commit". This argument can
 also be a list of lists of these 4 elements. It is also possible to install
