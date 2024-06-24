@@ -30,7 +30,7 @@ library(rix)
 # ensures that a maximum of packages are in a working state.
 
 
-data("r_nix_revs")
+#data("r_nix_revs")
 
 # This was added already, so it's commented now
 #revision_4.3.2 <- as.data.frame(
@@ -41,23 +41,32 @@ data("r_nix_revs")
 #  )
 #)
 
-revision_4.3.3 <- as.data.frame(
-  list(
-    "version" = "4.3.3",
-    "revision" = "019f5c29c5afeb215587e17bf1ec31dc1913595b",
-    "date" = "2024-06-17"
-  )
-)
+#revision_4.3.3 <- as.data.frame(
+#  list(
+#    "version" = "4.3.3",
+#    "revision" = "019f5c29c5afeb215587e17bf1ec31dc1913595b",
+#    "date" = "2024-06-17"
+#  )
+#)
+#
+#revision_4.4.0 <- as.data.frame(
+#  list(
+#    "version" = "4.4.0",
+#    "revision" = "6f3340bf0f888d0fda9a3b91dd5b3a9b05d08212",
+#    "date" = "2024-06-20"
+#  )
+                                        #)
 
-revision_4.4.0 <- as.data.frame(
-  list(
-    "version" = "4.4.0",
-    "revision" = "6f3340bf0f888d0fda9a3b91dd5b3a9b05d08212",
-    "date" = "2024-06-20"
-  )
-)
+# uncomment to update
+#revision_4.4.0 <- as.data.frame(
+#  list(
+#    "version" = "4.4.0",
+#    "revision" = "6f3340bf0f888d0fda9a3b91dd5b3a9b05d08212",
+#    "date" = "2024-06-20"
+#  )
+#)
 
-sysdata <- rbind(r_nix_revs,
+sysdata <- rbind(sysdata,
                  revision_4.3.3,
                  revision_4.4.0)
 

@@ -6,5 +6,5 @@
 #' available_r()
 available_r <- function() {
 
-  c("latest", sysdata$version)
+  c("latest", rix::sysdata$version)
 }
