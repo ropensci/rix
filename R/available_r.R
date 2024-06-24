@@ -7,13 +7,11 @@
 available_r <- function() {
   temp <- new.env(parent = emptyenv())
 
-  data(
-    list = "r_nix_revs",
-    package = "rix",
-    envir = temp
-  )
+  data(list = "sysdata",
+       package = "rix",
+       envir = temp)
 
-  get("r_nix_revs", envir = temp)
+  get("sysdata", envir = temp)
 
-  c("latest", r_nix_revs$version)
+  c("latest", sysdata$version)
 }

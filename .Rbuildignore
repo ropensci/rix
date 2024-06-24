@@ -21,3 +21,4 @@
 create_dev_env.R
 ^.*.tar.gz
 ^\.pre-commit-config\.yaml$
+^data-raw$
