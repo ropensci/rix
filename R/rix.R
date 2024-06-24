@@ -53,11 +53,17 @@
 #'   environment.
 #'
 #'   It is possible to use environments built with Nix interactively, either
-#'   from the terminal, or using an interface such as RStudio. For non-interactive
-#'   use, or to use the environment from the command line, or from a generic
-#'   editor (such as Emacs or Vim), set the `ide` argument to `"other"`. If you 
-#'   want to use RStudio, set it to `"rstudio"`. We recommend
-#'   you read the `vignette("e-interactive-use")` for more details.
+#'   from the terminal, or using an interface such as RStudio.  If you 
+#'   want to use RStudio, set it to `"rstudio"`. Please be aware that RStudio
+#'   is not available for macOS through Nix. As such, you may want to use another
+#'   editor on macOS. To use Visual Studio Code (or Codium), set the `ide`
+#'   argument to `"code"`, which will add the `{languageserver}` R package
+#'   to the list of R packages to be installed by Nix in that environment. You can
+#'   use the version of Visual Studio Code or Codium you already use, or also install
+#'   it using Nix (by adding "vscode" or "vscodium" to the list of `system_pkgs`).
+#'   For non-interactive use, or to use the environment from the command line, or from another
+#'   editor (such as Emacs or Vim), set the `ide` argument to `"other"`.
+#'   We recommend reading the `vignette("e-interactive-use")` for more details.
 #'
 #'   Packages to install from Github must be provided in a list of 4 elements:
 #'   "package_name", "repo_url", "branch_name" and "commit". This argument can
