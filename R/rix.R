@@ -53,9 +53,11 @@
 #'   environment.
 #'
 #'   It is possible to use environments built with Nix interactively, either
-#'   from the terminal, or using an interface such as RStudio. We recommend
-#'   you read the `vignette("e-interactive-use")` to learn how, which will
-#'   explain the process in detail.
+#'   from the terminal, or using an interface such as RStudio. For non-interactive
+#'   use, or to use the environment from the command line, or from a generic
+#'   editor (such as Emacs or Vim), set the `ide` argument to `"other"`. If you 
+#'   want to use RStudio, set it to `"rstudio"`. We recommend
+#'   you read the `vignette("e-interactive-use")` for more details.
 #'
 #'   Packages to install from Github must be provided in a list of 4 elements:
 #'   "package_name", "repo_url", "branch_name" and "commit". This argument can
