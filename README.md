@@ -180,22 +180,13 @@ vignettes. Don’t hesitate to open an issue if something is not clear.
 
 ### Docker
 
-You can also try out Nix inside Docker. To do so, you can start your
-image from the [NixOS Docker
-image](https://hub.docker.com/r/nixos/nix/). NixOS is a full GNU/Linux
-distribution that uses Nix as its system package manager.
+You can also try out Nix inside Docker. To know more, read
+`vignette("z-advanced-topic-using-nix-inside-docker")`
+[link](https://github.com/b-rodrigues/rix/blob/HEAD/vignettes/z-advanced-topic-using-nix-inside-docker.Rmd).
 
 ## Contributing
 
-This package is developed using the `{fusen}` package. If you want to
-contribute, please edit the `.Rmd` files found in the `dev/` folder.
-Then, inflate the package using `fusen::inflate_all()`. If no errors are
-found (warning and notes are OK), then commit and open a PR. To learn
-how to use `{fusen}` (don’t worry, it’s super easy), refer to this
-[vignette](https://thinkr-open.github.io/fusen/articles/How-to-use-fusen.html).
-In our development workflow, we use [semantic
-versioning](https://semver.org) via
-[{fledge}](https://fledge.cynkra.com).
+Refer to `Contributing.md` to learn how to contribute to the package.
 
 ## Thanks
 
