@@ -2,7 +2,8 @@
 % Please edit documentation in R/rix.R
 \name{rix}
 \alias{rix}
-\title{rix Generates a Nix expression that builds a reproducible development environment}
+\title{Generate a Nix expression that builds a reproducible development
+environment}
 \usage{
 rix(
   r_ver = "latest",
@@ -19,27 +20,31 @@ rix(
 )
 }
 \arguments{
-\item{r_ver}{Character, defaults to "latest". The required R version, for example "4.0.0".
-You can check which R versions are available using \code{available_r}.
-For reproducibility purposes, you can also provide a nixpkgs revision directly.
-It is also possible to provide either "bleeding_edge" or "frozen_edge" if you
-need an environment with bleeding edge packages. Read more in the "Details" below.}
+\item{r_ver}{Character, defaults to "latest". The required R version, for
+example "4.0.0". You can check which R versions are available using
+\code{available_r}. For reproducibility purposes, you can also provide a nixpkgs
+revision directly. It is also possible to provide either "bleeding_edge" or
+"frozen_edge" if you need an environment with bleeding edge packages. Read
+more in the "Details" below.}
 
 \item{r_pkgs}{Vector of characters. List the required R packages for your
 analysis here.}
 
-\item{system_pkgs}{Vector of characters. List further software you wish to install that
-are not R packages such as command line applications for example. You can look for
-available software on the NixOS website \url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=}}
+\item{system_pkgs}{Vector of characters. List further software you wish to
+install that are not R packages such as command line applications for
+example. You can look for available software on the NixOS website
+\url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=}}
 
-\item{git_pkgs}{List. A list of packages to install from Git. See details for more information.}
+\item{git_pkgs}{List. A list of packages to install from Git. See details for
+more information.}
 
-\item{local_pkgs}{List. A list of paths to local packages to install. These packages need to be in the \code{.tar.gz} or \code{.zip} formats.}
+\item{local_pkgs}{List. A list of paths to local packages to install. These
+packages need to be in the \code{.tar.gz} or \code{.zip} formats.}
 
-\item{tex_pkgs}{Vector of characters. A set of tex packages to install.
-Use this if you need to compile \code{.tex} documents,
-or build PDF documents using Quarto. If you don't know which package to add,
-start by adding "amsmath". See the Vignette "Authoring LaTeX documents" for more details.}
+\item{tex_pkgs}{Vector of characters. A set of tex packages to install. Use
+this if you need to compile \code{.tex} documents, or build PDF documents using
+Quarto. If you don't know which package to add, start by adding "amsmath".
+See the Vignette "Authoring LaTeX documents" for more details.}
 
 \item{ide}{Character, defaults to "other". If you wish to use RStudio to work
 interactively use "rstudio" or "rserver" for the server version. Use "code"
@@ -52,10 +57,11 @@ Where to write \code{default.nix}, for example "/home/path/to/project".
 The file will thus be written to the file
 "/home/path/to/project/default.nix".}
 
-\item{overwrite}{Logical, defaults to FALSE. If TRUE, overwrite the \code{default.nix}
-file in the specified path.}
+\item{overwrite}{Logical, defaults to FALSE. If TRUE, overwrite the
+\code{default.nix} file in the specified path.}
 
-\item{print}{Logical, defaults to FALSE. If TRUE, print \code{default.nix} to console.}
+\item{print}{Logical, defaults to FALSE. If TRUE, print \code{default.nix} to
+console.}
 
 \item{shell_hook}{Character of length 1, defaults to \code{NULL}. Commands added
 to the \code{shellHook} variable executed when the Nix shell starts. So
@@ -71,7 +77,8 @@ expression to build a reproducible environment using the Nix package
 manager.
 }
 \description{
-rix Generates a Nix expression that builds a reproducible development environment
+Generate a Nix expression that builds a reproducible development
+environment
 }
 \details{
 This function will write a \code{default.nix} in the chosen path. Using
@@ -81,62 +88,67 @@ environment will contain the chosen version of R and packages, and will not
 interfere with any other installed version (via Nix or not) on your
 machine. Every dependency, including both R package dependencies but also
 system dependencies like compilers will get installed as well in that
-environment. If you use RStudio for interactive work, then set the
-\code{rstudio} parameter to \code{TRUE}. If you use another IDE (for example Emacs or
-Visual Studio Code), you do not need to add it to the \code{default.nix} file,
-you can simply use the version that is installed on your computer. Once you built
-the environment using \code{nix-build}, you can drop into an interactive session
-using \code{nix-shell}. See the "Building reproducible development environments with rix"
-vignette for detailled instructions.
+environment.
+
+If you use RStudio for interactive work, then set the \code{rstudio} parameter to
+\code{TRUE}. If you use another IDE (for example Emacs or Visual Studio Code),
+you do not need to add it to the \code{default.nix} file, you can simply use the
+version that is installed on your computer. Once you built the environment
+using \code{nix-build}, you can drop into an interactive session using
+\code{nix-shell}. See the "Building reproducible development environments with
+rix" vignette for detailled instructions.
+
 Packages to install from Github must be provided in a list of 4 elements:
-"package_name", "repo_url", "branch_name" and "commit".
-This argument can also be a list of lists of these 4 elements. It is also possible to install old versions
-of packages by specifying a version. For example, to install the latest
-version of \code{{AER}} but an old version of \code{{ggplot2}}, you could
-write: \code{r_pkgs = c("AER", "ggplot2@2.2.1")}. Note
-however that doing this could result in dependency hell, because an older
-version of a package might need older versions of its dependencies, but other
-packages might need more recent versions of the same dependencies. If instead you
-want to use an environment as it would have looked at the time of \code{{ggplot2}}'s
-version 2.2.1 release, then use the Nix revision closest to that date, by setting
-\code{r_ver = "3.1.0"}, which was the version of R current at the time. This
-ensures that Nix builds a completely coherent environment.
+"package_name", "repo_url", "branch_name" and "commit". This argument can
+also be a list of lists of these 4 elements. It is also possible to install
+old versions of packages by specifying a version. For example, to install
+the latest version of \code{{AER}} but an old version of \code{{ggplot2}}, you could
+write: \code{r_pkgs = c("AER", "ggplot2@2.2.1")}. Note however that doing this
+could result in dependency hell, because an older version of a package
+might need older versions of its dependencies, but other packages might
+need more recent versions of the same dependencies. If instead you want to
+use an environment as it would have looked at the time of \code{{ggplot2}}'s
+version 2.2.1 release, then use the Nix revision closest to that date, by
+setting \code{r_ver = "3.1.0"}, which was the version of R current at the time.
+This ensures that Nix builds a completely coherent environment.
+
 By default, the nix shell will be configured with \code{"en_US.UTF-8"} for the
 relevant locale variables (\code{LANG}, \code{LC_ALL}, \code{LC_TIME}, \code{LC_MONETARY},
 \code{LC_PAPER}, \code{LC_MEASUREMENT}). This is done to ensure locale
-reproducibility by default in Nix environments created with \code{rix()}.
-If there are good reasons to not stick to the default, you can set your
-preferred locale variables via
-\verb{options(rix.nix_locale_variables = list(LANG = "de_CH.UTF-8", <...>)}
-and the aforementioned locale variable names.
-It is possible to use "bleeding_edge" or "frozen_edge" as the value for
-the \code{r_ver} argument. This will create an environment with the very
-latest R packages. "bleeding_edge" means that every time you will build
-the environment, the packages will get updated. This is especially useful
-for environments that need to be constantly updated, for example when
-developing a package. In contrast, "frozen_edge" will create an
-environment that will remain stable at build time. So if you create
-a \code{default.nix} file using "bleeding_edge", each time you build it
-using \code{nix-build} that environment will be up-to-date. With "frozen_edge"
-that environment will be up-to-date on the date that the \code{default.nix}
-will be generated, and then each subsequent call to \code{nix-build} will
-result in the same environment. We highly recommend you read the
-vignette titled
+reproducibility by default in Nix environments created with \code{rix()}. If
+there are good reasons to not stick to the default, you can set your
+preferred locale variables via \verb{options(rix.nix_locale_variables = list(LANG = "de_CH.UTF-8", <...>)} and the aforementioned locale variable
+names.
+
+It is possible to use "bleeding_edge" or "frozen_edge" as the value for the
+\code{r_ver} argument. This will create an environment with the very latest R
+packages. "bleeding_edge" means that every time you will build the
+environment, the packages will get updated. This is especially useful for
+environments that need to be constantly updated, for example when
+developing a package. In contrast, "frozen_edge" will create an environment
+that will remain stable at build time. So if you create a \code{default.nix}
+file using "bleeding_edge", each time you build it using \code{nix-build} that
+environment will be up-to-date. With "frozen_edge" that environment will be
+up-to-date on the date that the \code{default.nix} will be generated, and then
+each subsequent call to \code{nix-build} will result in the same environment. We
+highly recommend you read the vignette titled
 "z - Advanced topic: Understanding the rPackages set release cycle and using bleeding edge packages".
 }
 \examples{
 \dontrun{
 # Build an environment with the latest version of R
 # and the dplyr and ggplot2 packages
-rix(r_ver = "latest",
-    r_pkgs = c("dplyr", "ggplot2"),
-    system_pkgs = NULL,
-    git_pkgs = NULL,
-    local_pkgs = NULL,
-    ide = "code",
-    project_path = path_default_nix,
-    overwrite = TRUE,
-    print = TRUE,
-    shell_hook = NULL)
+rix(
+  r_ver = "latest",
+  r_pkgs = c("dplyr", "ggplot2"),
+  system_pkgs = NULL,
+  git_pkgs = NULL,
+  local_pkgs = NULL,
+  ide = "code",
+  project_path = path_default_nix,
+  overwrite = TRUE,
+  print = TRUE,
+  shell_hook = NULL
+)
 }
 }

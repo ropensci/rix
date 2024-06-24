@@ -68,8 +68,8 @@ which is located in at a distinct project path (\code{project_path}).
 read-eval-print-loop style, which gives a direct interface to the very
 reproducible infrastructure-as-code approach offered by Nix and Nixpkgs. You
 don't need extra efforts such as setting up DevOps tooling like Docker and
-domain specific tools like \{renv\} to control complex software environments in
-R and any other language. It is for example useful for the following
+domain specific tools like \{renv\} to control complex software environments
+in R and any other language. It is for example useful for the following
 purposes.
 \enumerate{
 \item test compatibility of custom R code and software/package dependencies in
@@ -133,7 +133,7 @@ out <- with_nix(
 )
 
 # There no limit in the complexity of function call stacks that `with_nix()`
-# can possibly handle; however, `expr` should not evaluate and 
+# can possibly handle; however, `expr` should not evaluate and
 # needs to be a function for `program = "R"`. If you want to pass the
 # a function with arguments, you can do like this
 get_sample <- function(seed, n) {
@@ -149,7 +149,7 @@ out <- with_nix(
   message_type = "simple"
 )
 
-## You can also attach packages with `library()` calls in the current R 
+## You can also attach packages with `library()` calls in the current R
 ## session, which will be exported to the nix-R session.
 ## Other option: running system commands through `nix-shell` environment.
 }

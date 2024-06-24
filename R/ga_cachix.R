@@ -13,17 +13,15 @@
 #' @export
 #' @examples
 #' \dontrun{
-#'   ga_cachix("my-cachix", path_default = "default.nix")
+#' ga_cachix("my-cachix", path_default = "default.nix")
 #' }
-ga_cachix <- function(cache_name, path_default){
-
+ga_cachix <- function(cache_name, path_default) {
   # is this being tested? If no, set the path to ".github/workflows"
   # if yes, set it to a temporary directory
-  if(!identical(Sys.getenv("TESTTHAT"), "true")){
-
+  if (!identical(Sys.getenv("TESTTHAT"), "true")) {
     # Add an empty .gitignore file if there isn’t any
 
-    if(file.exists(".gitignore")){
+    if (file.exists(".gitignore")) {
       NULL
     } else {
       file.create(".gitignore")
@@ -37,8 +35,8 @@ ga_cachix <- function(cache_name, path_default){
   }
 
   source <- system.file(
-        file.path("extdata", "cachix-dev-env.yaml"),
-        package = "rix",
+    file.path("extdata", "cachix-dev-env.yaml"),
+    package = "rix",
     mustWork = TRUE
   )
 
@@ -47,20 +45,22 @@ ga_cachix <- function(cache_name, path_default){
 
   # The sed command for Darwin is of the form "sed -i '' s/foo/bar"
   # while on Linux it's "sed -i s/foo/bar"
-  darwin_specific_quotes <- if(Sys.info()["sysname"] == "Darwin"){
-                              "'' "
-                            } else {
-                              ""
-                            }
+  darwin_specific_quotes <- if (Sys.info()["sysname"] == "Darwin") {
+    "'' "
+  } else {
+    ""
+  }
 
   system(
-    paste0("sed -i ", darwin_specific_quotes, "'s/CACHE_NAME/", cache_name, "/g' ",
-           paste0(path, "/cachix-dev-env.yaml"))
+    paste0(
+      "sed -i ", darwin_specific_quotes, "'s/CACHE_NAME/", cache_name, "/g' ",
+      paste0(path, "/cachix-dev-env.yaml")
+    )
   )
 
   system(
     paste0("sed -i ", darwin_specific_quotes, "'s/PATH_TO_DEFAULT_NIX/", path_default, "/g' ", paste0(path, "/cachix-dev-env.yaml"))
   )
 
-  if(identical(Sys.getenv("TESTTHAT"), "true")) paste0(path, "/cachix-dev-env.yaml")
-  }
+  if (identical(Sys.getenv("TESTTHAT"), "true")) paste0(path, "/cachix-dev-env.yaml")
+}

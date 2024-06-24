@@ -7,22 +7,21 @@
 #'
 #' @noRd
 get_latest <- function(r_version) {
-  
   is_online <- has_internet()
-  
+
   stopifnot("r_version has to be a character." = is.character(r_version))
-  
+
   # If the use provides a commit, then the commit gets used.
   # User needs to know which repo it belongs to
-  if(nchar(r_version) == 40){
+  if (nchar(r_version) == 40) {
     return(r_version)
-  } else if(
+  } else if (
     !(r_version %in% c("bleeding_edge", "frozen_edge", available_r()))
-  ){
+  ) {
     stop("The provided R version is likely wrong.\nPlease check that you provided a correct R version.\nYou can list available versions using `available_r()`.\nYou can also directly provide a commit, but you need to make sure it points to the right repo used by `rix()`.\nYou can also use 'bleeding_edge' and 'frozen_edge'.")
-  } else if(!is_online){
+  } else if (!is_online) {
     stop("ERROR! You don't seem to be connected to the internet.")
-  } else if(r_version == "bleeding_edge"){
+  } else if (r_version == "bleeding_edge") {
     latest_commit <- "refs/heads/r-daily"
   } else {
     latest_commit <- get_right_commit(r_version)
@@ -33,35 +32,34 @@ get_latest <- function(r_version) {
 
 #' @noRd
 get_right_commit <- function(r_version) {
-  
-  if(r_version == "frozen_edge"){
+  if (r_version == "frozen_edge") {
     api_url <- "https://api.github.com/repos/rstats-on-nix/nixpkgs/commits?sha=r-daily"
-  
-  } else if(r_version %in% Filter(function(x)`!=`(x, "latest"), available_r())){ #all but latest
+  } else if (r_version %in% Filter(function(x) `!=`(x, "latest"), available_r())) { # all but latest
     temp <- new.env(parent = emptyenv())
-    
-    data(list = "r_nix_revs",
-         package = "rix",
-         envir = temp)
-    
+
+    data(
+      list = "r_nix_revs",
+      package = "rix",
+      envir = temp
+    )
+
     get("r_nix_revs", envir = temp)
-    
+
     return(r_nix_revs$revision[r_nix_revs$version == r_version])
-    
   } else {
     api_url <- "https://api.github.com/repos/NixOS/nixpkgs/commits?sha=nixpkgs-unstable"
   }
-  
+
   # handle to get error for status code 404
   h <- curl::new_handle(failonerror = TRUE)
-  
+
   req <- try_get_request(url = api_url, handle = h)
-  
+
   curl::handle_reset(h)
-  
+
   commit_data <- jsonlite::fromJSON(rawToChar(req$content))
   latest_commit <- commit_data$sha[1]
-  
+
   return(latest_commit)
 }
 
@@ -72,13 +70,18 @@ get_right_commit <- function(r_version) {
 try_get_request <- function(url,
                             handle,
                             extra_diagnostics = NULL) {
-  tryCatch({
-    req <- curl::curl_fetch_memory(url, handle)
-  }, error = function(e) {
-    stop("Request `curl::curl_fetch_memory(",
-         paste0("url = ", "'", url, "'", ")` "), "failed:\n ",
-         e$message[1], extra_diagnostics, call. = FALSE)
-  })
-  
+  tryCatch(
+    {
+      req <- curl::curl_fetch_memory(url, handle)
+    },
+    error = function(e) {
+      stop("Request `curl::curl_fetch_memory(",
+        paste0("url = ", "'", url, "'", ")` "), "failed:\n ",
+        e$message[1], extra_diagnostics,
+        call. = FALSE
+      )
+    }
+  )
+
   return(req)
 }

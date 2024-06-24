@@ -2,8 +2,8 @@
 #' setup via Nix.
 #'
 #' Creates an isolated project folder for a Nix-R configuration. `rix::rix_init()`
-#' also adds, appends, or updates with or without backup a custom `.Rprofile` 
-#' file with code that initializes a startup R environment without system's user 
+#' also adds, appends, or updates with or without backup a custom `.Rprofile`
+#' file with code that initializes a startup R environment without system's user
 #' libraries within a Nix software environment. Instead, it restricts search
 #' paths to load R packages exclusively from the Nix store. Additionally, it
 #' makes Nix utilities like `nix-shell` available to run system commands from
@@ -21,13 +21,13 @@
 #'
 #' 1. **Adjusting `R_LIBS_USER` path:**
 #'    By default, the first path of `R_LIBS_USER` points to the user library
-#'    outside the Nix store (see also [base::.libPaths()]). This creates 
+#'    outside the Nix store (see also [base::.libPaths()]). This creates
 #'    friction and potential impurity as R packages from the system's R user
 #'    library are loaded. While this feature can be useful for interactively
 #'    testing an R package in a Nix environment before adding it to a `.nix`
-#'    configuration, it can have undesired effects if not managed carefully. 
+#'    configuration, it can have undesired effects if not managed carefully.
 #'    A major drawback is that all R packages in the `R_LIBS_USER` location need
-#'    to be cleaned to avoid loading packages outside the Nix configuration. 
+#'    to be cleaned to avoid loading packages outside the Nix configuration.
 #'    Issues, especially on macOS, may arise due to segmentation faults or
 #'    incompatible linked system libraries. These problems can also occur
 #'    if one of the (reverse) dependencies of an R package is loaded  along the
@@ -39,8 +39,8 @@
 #'    inherited. Consequently, Nix command line interfaces like `nix-shell`
 #'    might not be found. The `.Rprofile` code written by `rix::rix_init()` ensures
 #'    that Nix command line programs are accessible by adding the path of the
-#'    "bin" directory of the default Nix profile, 
-#'    `"/nix/var/nix/profiles/default/bin"`, to the `PATH` variable in an 
+#'    "bin" directory of the default Nix profile,
+#'    `"/nix/var/nix/profiles/default/bin"`, to the `PATH` variable in an
 #'    RStudio R session.
 #'
 #' These side effects are particularly recommended when working in flexible R
@@ -51,21 +51,21 @@
 #' packaged for macOS. We recommend calling `rix::rix_init()` prior to comparing R
 #' code ran between two software environments with `rix::with_nix()`.
 #'
-#' @param project_path Character with the folder path to the isolated nix-R project. 
-#' Defaults to `"."`, which is the current working directory path. If the folder 
+#' @param project_path Character with the folder path to the isolated nix-R project.
+#' Defaults to `"."`, which is the current working directory path. If the folder
 #' does not exist yet, it will be created.
-#' @param rprofile_action Character. Action to take with `.Rprofile` file 
-#' destined for `project_path` folder. Possible values include 
+#' @param rprofile_action Character. Action to take with `.Rprofile` file
+#' destined for `project_path` folder. Possible values include
 #' `"create_missing"`, which only writes `.Rprofile` if it
 #' does not yet exist (otherwise does nothing); `"create_backup"`, which copies
-#' the existing `.Rprofile` to a new backup file, generating names with 
+#' the existing `.Rprofile` to a new backup file, generating names with
 #' POSIXct-derived strings that include the time zone information. A new
 #' `.Rprofile` file will be written with default code from `rix::rix_init()`;
-#' `"overwrite"` overwrites the `.Rprofile` file if it does exist; `"append"` 
+#' `"overwrite"` overwrites the `.Rprofile` file if it does exist; `"append"`
 #' appends the existing file with code that is tailored to an isolated Nix-R
 #' project setup.
-#' @param message_type Character. Message type, defaults to `"simple"`, which 
-#' gives minimal but sufficient feedback. Other values are currently 
+#' @param message_type Character. Message type, defaults to `"simple"`, which
+#' gives minimal but sufficient feedback. Other values are currently
 #' `"quiet`, which writes `.Rprofile` without message, and
 #' `"verbose"`, which displays the mechanisms implemented to achieve fully
 #' controlled R project environments in Nix.
@@ -85,23 +85,29 @@
 #' )
 #' }
 rix_init <- function(project_path = ".",
-                 rprofile_action = c("create_missing", "create_backup",
-                   "overwrite", "append"),
-                 message_type = c("simple", "quiet", "verbose")) {
+                     rprofile_action = c(
+                       "create_missing", "create_backup",
+                       "overwrite", "append"
+                     ),
+                     message_type = c("simple", "quiet", "verbose")) {
   message_type <- match.arg(message_type,
-    choices = c("simple", "quiet", "verbose"))
+    choices = c("simple", "quiet", "verbose")
+  )
   is_quiet <- message_type == "quiet"
-  
+
   rprofile_action <- match.arg(rprofile_action,
-    choices = c("create_missing", "create_backup", "overwrite", "append"))
+    choices = c("create_missing", "create_backup", "overwrite", "append")
+  )
   stopifnot(
     "`project_path` needs to be character of length 1" =
       is.character(project_path) && length(project_path) == 1L
   )
-  
+
   if (isFALSE(is_quiet)) {
-    cat("\n### Bootstrapping isolated, project-specific, and runtime-pure",
-        "R setup via Nix ###\n\n")
+    cat(
+      "\n### Bootstrapping isolated, project-specific, and runtime-pure",
+      "R setup via Nix ###\n\n"
+    )
   }
   if (isFALSE(dir.exists(project_path))) {
     dir.create(path = project_path, recursive = TRUE)
@@ -112,17 +118,19 @@ rix_init <- function(project_path = ".",
   } else {
     project_path <- normalizePath(path = project_path)
     if (isFALSE(is_quiet)) {
-      cat("==> Existing isolated nix-R project folder:\n", project_path,
-        "\n")
+      cat(
+        "==> Existing isolated nix-R project folder:\n", project_path,
+        "\n"
+      )
     }
   }
-  
+
   # create project-local `.Rprofile` with pure settings
   # first create the call, deparse it, and write it to .Rprofile
   rprofile_quoted <- nix_rprofile()
   rprofile_deparsed <- deparse_chr1(expr = rprofile_quoted, collapse = "\n")
   rprofile_file <- file.path(project_path, ".Rprofile")
-  
+
   rprofile_text <- get_rprofile_text(rprofile_deparsed)
   write_rprofile <- function(rprofile_text, rprofile_file) {
     writeLines(
@@ -130,17 +138,17 @@ rix_init <- function(project_path = ".",
       con = file(rprofile_file)
     )
   }
-  
+
   is_nix_r <- is_nix_r_session()
   is_rstudio <- is_rstudio_session()
-  
+
   # signal message if not quiet
   message_r_session_nix_rstudio(is_nix_r, is_rstudio, message_type)
 
   rprofile_exists <- file.exists(rprofile_file)
   timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")
   rprofile_backup <- paste0(rprofile_file, "_backup_", timestamp)
-  
+
   switch(rprofile_action,
     create_missing = {
       if (isTRUE(rprofile_exists)) {
@@ -172,7 +180,7 @@ rix_init <- function(project_path = ".",
             project_path = project_path
           )
         }
-        
+
         if (message_type == "verbose") {
           cat("\n* Current lines of local `.Rprofile` are\n:")
           cat(readLines(con = file(rprofile_file)), sep = "\n")
@@ -199,31 +207,31 @@ rix_init <- function(project_path = ".",
       )
     }
   )
-      
+
   if (message_type == "verbose") {
     cat("\n\n* Current lines of local `.Rprofile` are:\n\n")
     cat(readLines(con = file(rprofile_file)), sep = "\n")
   }
-  
+
   on.exit(close(file(rprofile_file)))
 }
 
 #' Get character vector of length two with comment and code write `.Rprofile`
 #' to evaluate R expressions in a pure R library runtime and also RStudio IDE
 #' on macOS
-#' 
+#'
 #' @param rprofile_deparsed deparsed string with containing `.Rprofile` code.
 #' @return Character vector of length 2.
 #' @noRd
 get_rprofile_text <- function(rprofile_deparsed) {
   c(
-"### File generated by `rix::rix_init()` ###
+    "### File generated by `rix::rix_init()` ###
 # 1. Currently, system RStudio does not inherit environmental variables
-#   defined in `$HOME/.zshrc`, `$HOME/.bashrc` and alike. This is workaround to 
+#   defined in `$HOME/.zshrc`, `$HOME/.bashrc` and alike. This is workaround to
 #   make the path of the nix store and hence basic nix commands available
 #   in an RStudio session
 # 2. For nix-R session, remove `R_LIBS_USER`, system's R user library.`.
-#   This guarantees no user libraries from the system are loaded and only 
+#   This guarantees no user libraries from the system are loaded and only
 #   R packages in the Nix store are used. This makes Nix-R behave in pure manner
 #   at run-time.",
     rprofile_deparsed
@@ -237,7 +245,7 @@ get_rprofile_text <- function(rprofile_deparsed) {
 message_rprofile <- function(action_string = "Added",
                              project_path = ".") {
   msg <- paste0(
-    "\n==> ", action_string, 
+    "\n==> ", action_string,
     " `.Rprofile` file and code lines for new R sessions launched from:\n",
     project_path,
     "\n\n* Added the location of the Nix store to `PATH` ",
@@ -249,8 +257,8 @@ message_rprofile <- function(action_string = "Added",
 
 #' Get current `PATH` entries, report and modify to include default Nix profile
 #' path
-#' 
-#' Print `PATH` environent variable, and modfiy it as as side effect so that `` 
+#'
+#' Print `PATH` environent variable, and modfiy it as as side effect so that ``
 #' `"/nix/var/nix/profiles/default/bin"` is included. Confirm message with
 #' by printing modified PATH.
 #' @return Character vector that lists `PATH` entries after modification, which
@@ -259,15 +267,18 @@ message_rprofile <- function(action_string = "Added",
 set_message_session_PATH <- function(message_type =
                                        c("simple", "quiet", "verbose")) {
   message_type <- match.arg(message_type,
-    choices = c("simple", "quiet", "verbose"))
+    choices = c("simple", "quiet", "verbose")
+  )
   if (message_type == "verbose") {
     cat("\n\n* Current `PATH` variable set in R session is:\n\n")
     cat(Sys.getenv("PATH"))
   }
   if (message_type != "quiet") {
-    cat("\n\n==> Also adjusting `PATH` via `Sys.setenv()`, so that",
-        "system commands can invoke key Nix commands like `nix-build` in this",
-        "RStudio session outside Nix")
+    cat(
+      "\n\n==> Also adjusting `PATH` via `Sys.setenv()`, so that",
+      "system commands can invoke key Nix commands like `nix-build` in this",
+      "RStudio session outside Nix"
+    )
   }
   PATH <- set_nix_path()
   if (message_type == "verbose") {
@@ -284,11 +295,10 @@ set_message_session_PATH <- function(message_type =
 #' create identical messages, while `"quiet"` omits diagnostics messages
 #' @return NULL
 #' @noRd
-message_r_session_nix_rstudio <- function(is_nix_r, 
+message_r_session_nix_rstudio <- function(is_nix_r,
                                           is_rstudio,
                                           message_type =
-                                            c("simple", "quiet", "verbose")
-                                          ) {
+                                            c("simple", "quiet", "verbose")) {
   stopifnot(
     "`is_nix_r` needs to be TRUE or FALSE" =
       is.logical(is_nix_r) && length(is_nix_r) == 1L,
@@ -296,8 +306,9 @@ message_r_session_nix_rstudio <- function(is_nix_r,
       is.logical(is_rstudio) && length(is_rstudio) == 1L
   )
   message_type <- match.arg(message_type,
-    choices = c("simple", "quiet", "verbose"))
-  
+    choices = c("simple", "quiet", "verbose")
+  )
+
   if (isTRUE(is_nix_r)) {
     nix_r_msg <-
       "\n* current R session running inside Nix environment"
@@ -305,16 +316,16 @@ message_r_session_nix_rstudio <- function(is_nix_r,
     nix_r_msg <-
       "\n* current R session running outside Nix environment"
   }
-  
+
   if (isTRUE(is_rstudio)) {
     rstudio_msg <- "from RStudio\n"
   } else {
     rstudio_msg <- "not from RStudio\n"
   }
-  
+
   # derive compound message
   msg <- paste0(nix_r_msg, " and ", rstudio_msg)
-  
+
   switch(message_type,
     simple = cat(msg),
     verbose = cat(msg)
@@ -323,7 +334,7 @@ message_r_session_nix_rstudio <- function(is_nix_r,
 
 
 #' Is the current R session running in a Nix software environment or not?
-#' 
+#'
 #' Query `NIX_STORE` environmental variable in current R session. Only nonzero
 #' if inside a Nix R.
 #' session.
@@ -336,7 +347,7 @@ is_nix_r_session <- function() {
 
 
 #' Has the current R session been launched from RStudio or not?
-#' 
+#'
 #' Query `RSTUDIO` environmental variable in current R session. Value is `"1"`
 #' if inside RStudio R session.
 #' @noRd
@@ -346,10 +357,10 @@ is_rstudio_session <- function(message_type = c("simple", "quiet", "verbose")) {
 }
 
 
-#' If not yet present, add the Nix default path of the system-wide profile to 
+#' If not yet present, add the Nix default path of the system-wide profile to
 #' `PATH` environment variable inside R session.
-#' 
-#' The default profile for the system is typically located at 
+#'
+#' The default profile for the system is typically located at
 #' `/nix/var/nix/profiles/default`.
 #' @details creates the side effect of adding the .
 #' `"/nix/var/nix/profiles/default/bin"`, when it is not yet part of `PATH`
@@ -362,23 +373,23 @@ set_nix_path <- function() {
   if (isFALSE(has_nix_path)) {
     Sys.setenv(
       PATH = paste(old_path, "/nix/var/nix/profiles/default/bin", sep = ":")
-    ) 
+    )
   }
   invisible(Sys.getenv("PATH"))
 }
 
 
-#¨ Construct expression of `.Rprofile` used by `rix_init()` by quoting
+# ¨ Construct expression of `.Rprofile` used by `rix_init()` by quoting
 #' expressions via `quote()`.
 #' @return language object with parsed expression
 #' @noRd
 nix_rprofile <- function() {
-  quote( {
+  quote({
     is_rstudio <- Sys.getenv("RSTUDIO") == "1"
     is_nix_r <- nzchar(Sys.getenv("NIX_STORE"))
     if (isFALSE(is_nix_r) && isTRUE(is_rstudio)) {
-      # Currently, RStudio does not propagate environmental variables defined in 
-      # `$HOME/.zshrc`, `$HOME/.bashrc` and alike. This is workaround to 
+      # Currently, RStudio does not propagate environmental variables defined in
+      # `$HOME/.zshrc`, `$HOME/.bashrc` and alike. This is workaround to
       # make the path of the nix store and hence basic nix commands available
       # in an RStudio session
       cat("{rix} detected RStudio R session")
@@ -388,25 +399,25 @@ nix_rprofile <- function() {
       if (isFALSE(has_nix_path)) {
         Sys.setenv(
           PATH = paste(
-            old_path, nix_path, sep = ":"
+            old_path, nix_path,
+            sep = ":"
           )
         )
       }
       rm(old_path, nix_path)
     }
-    
+
     if (isTRUE(is_nix_r)) {
       current_paths <- .libPaths()
       userlib_paths <- Sys.getenv("R_LIBS_USER")
       user_dir <- grep(paste(userlib_paths, collapse = "|"), current_paths, fixed = TRUE)
       new_paths <- current_paths[-user_dir]
-      # sets new library path without user library, making nix-R pure at 
+      # sets new library path without user library, making nix-R pure at
       # run-time
       .libPaths(new_paths)
       rm(current_paths, userlib_paths, user_dir, new_paths)
     }
-    
-    rm(is_rstudio, is_nix_r)
-  } )
-}
 
+    rm(is_rstudio, is_nix_r)
+  })
+}

@@ -25,7 +25,7 @@ To install old versions of R, specific Nix revisions must be used. This tool
 web-interface to look for packages and get their revisions.
 
 It is possible to scrape the table and get the data, but the code below
-should not be executed and is instead kept for historcial reasons:
+should not be executed and is instead kept for historical reasons:
 
 ```
 library(rvest)

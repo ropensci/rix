@@ -21,6 +21,6 @@ sure to give read and write permissions to the Github Actions bot.
 }
 \examples{
 \dontrun{
-  tar_nix_ga()
+tar_nix_ga()
 }
 }
