@@ -130,6 +130,8 @@ get_imports <- function(path) {
   # Remove version of R that may be listed in 'Depends'
   output <- Filter(function(x) !grepl("R \\(.*\\)", x), output)
 
+  output <- trimws(gsub("\\(.*?\\)", "", output))
+
   output <- remove_base(unique(output))
 
   gsub("\\.", "_", output)
