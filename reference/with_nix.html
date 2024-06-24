@@ -156,8 +156,8 @@ which is located in at a distinct project path (<code>project_path</code>).</p>
 read-eval-print-loop style, which gives a direct interface to the very
 reproducible infrastructure-as-code approach offered by Nix and Nixpkgs. You
 don't need extra efforts such as setting up DevOps tooling like Docker and
-domain specific tools like {renv} to control complex software environments in
-R and any other language. It is for example useful for the following
+domain specific tools like {renv} to control complex software environments
+in R and any other language. It is for example useful for the following
 purposes.</p><ol><li><p>test compatibility of custom R code and software/package dependencies in
 development and production environments</p></li>
 <li><p>directly stream outputs (returned objects), messages and errors from any
@@ -213,7 +213,7 @@ like this via <code>{sys}</code> by Jeroen Ooms:
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># There no limit in the complexity of function call stacks that `with_nix()`</span></span></span>
-<span class="r-in"><span><span class="co"># can possibly handle; however, `expr` should not evaluate and </span></span></span>
+<span class="r-in"><span><span class="co"># can possibly handle; however, `expr` should not evaluate and</span></span></span>
 <span class="r-in"><span><span class="co"># needs to be a function for `program = "R"`. If you want to pass the</span></span></span>
 <span class="r-in"><span><span class="co"># a function with arguments, you can do like this</span></span></span>
 <span class="r-in"><span><span class="va">get_sample</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">seed</span>, <span class="va">n</span><span class="op">)</span> <span class="op">{</span></span></span>
@@ -229,7 +229,7 @@ like this via <code>{sys}</code> by Jeroen Ooms:
 <span class="r-in"><span>  message_type <span class="op">=</span> <span class="st">"simple"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## You can also attach packages with `library()` calls in the current R </span></span></span>
+<span class="r-in"><span><span class="co">## You can also attach packages with `library()` calls in the current R</span></span></span>
 <span class="r-in"><span><span class="co">## session, which will be exported to the nix-R session.</span></span></span>
 <span class="r-in"><span><span class="co">## Other option: running system commands through `nix-shell` environment.</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
