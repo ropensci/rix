@@ -90,13 +90,18 @@ machine. Every dependency, including both R package dependencies but also
 system dependencies like compilers will get installed as well in that
 environment.
 
-If you use RStudio for interactive work, then set the \code{rstudio} parameter to
-\code{TRUE}. If you use another IDE (for example Emacs or Visual Studio Code),
-you do not need to add it to the \code{default.nix} file, you can simply use the
-version that is installed on your computer. Once you built the environment
-using \code{nix-build}, you can drop into an interactive session using
-\code{nix-shell}. See the "Building reproducible development environments with
-rix" vignette for detailled instructions.
+It is possible to use environments built with Nix interactively, either
+from the terminal, or using an interface such as RStudio.  If you
+want to use RStudio, set it to \code{"rstudio"}. Please be aware that RStudio
+is not available for macOS through Nix. As such, you may want to use another
+editor on macOS. To use Visual Studio Code (or Codium), set the \code{ide}
+argument to \code{"code"}, which will add the \code{{languageserver}} R package
+to the list of R packages to be installed by Nix in that environment. You can
+use the version of Visual Studio Code or Codium you already use, or also install
+it using Nix (by adding "vscode" or "vscodium" to the list of \code{system_pkgs}).
+For non-interactive use, or to use the environment from the command line, or from another
+editor (such as Emacs or Vim), set the \code{ide} argument to \code{"other"}.
+We recommend reading the \code{vignette("e-interactive-use")} for more details.
 
 Packages to install from Github must be provided in a list of 4 elements:
 "package_name", "repo_url", "branch_name" and "commit". This argument can
