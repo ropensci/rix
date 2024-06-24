@@ -49,7 +49,7 @@ them in a reproducible development environment. These environments can
 be used for interactive data analysis, or reproduced when running
 pipelines in CI/CD systems. On the [Nixpkgs
 collection](https://github.com/nixos/nixpkgs), there are currently more
-than 80.000 pieces of software available through the Nix package
+than 100.000 pieces of software available through the Nix package
 manager. Through {rix}, you can define and build isolated R environments
 through Nix package manager with ease. Like this, environments contain R
 and all the required packages that you need for your project. You can

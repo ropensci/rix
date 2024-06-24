@@ -206,3 +206,10 @@ and run a container with:
 ```
 docker run --rm -p 3838:3838 --name my_container shiny_app
 ```
+
+## NixOS
+
+You can also your image from the [NixOS Docker
+image](https://hub.docker.com/r/nixos/nix/) instead of Ubuntu, in which
+case you don't need to install Nix. NixOS is a full GNU/Linux
+distribution that uses Nix as its system package manager.
