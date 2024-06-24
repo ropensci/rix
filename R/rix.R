@@ -139,6 +139,12 @@ before continuing."
     )
   }
 
+  if(r_ver == "4.4.0"){
+    warning(
+      "You chose '4.4.0' as the R version, however this version is not available in nixpkgs. The generated expression will thus install R version 4.4.1."
+    )
+  }
+
   ide <- match.arg(ide, c("other", "code", "radian", "rstudio", "rserver"))
 
   # Wrapper attributes to be used later

@@ -37,15 +37,14 @@ get_right_commit <- function(r_version) {
   } else if (r_version %in% Filter(function(x) `!=`(x, "latest"), available_r())) { # all but latest
     temp <- new.env(parent = emptyenv())
 
-    data(
-      list = "r_nix_revs",
-      package = "rix",
-      envir = temp
-    )
+    data(list = "sysdata",
+         package = "rix",
+         envir = temp)
 
-    get("r_nix_revs", envir = temp)
+    get("sysdata", envir = temp)
 
-    return(r_nix_revs$revision[r_nix_revs$version == r_version])
+    return(sysdata$revision[sysdata$version == r_version])
+
   } else {
     api_url <- "https://api.github.com/repos/NixOS/nixpkgs/commits?sha=nixpkgs-unstable"
   }
