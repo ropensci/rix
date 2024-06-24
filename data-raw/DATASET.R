@@ -44,7 +44,7 @@ data("r_nix_revs")
 revision_4.3.3 <- as.data.frame(
   list(
     "version" = "4.3.3",
-    "revision" = "714ee4a63689babac85d6806b678fa16dbbcbd61",
+    "revision" = "019f5c29c5afeb215587e17bf1ec31dc1913595b",
     "date" = "2024-06-17"
   )
 )
