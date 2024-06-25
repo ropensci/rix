@@ -104,17 +104,34 @@ remove_base <- function(list_imports) {
 }
 
 
+
+
 #' Finds dependencies of a package from the DESCRIPTION file
 #' @param path path to package
 #' @importFrom utils untar
 #' @return Atomic vector of packages
 #' @noRd
 get_imports <- function(path) {
-  tmp_dir <- tempdir()
-  untar(path, exdir = tmp_dir)
 
-  paths <- list.files(tmp_dir, full.names = TRUE, recursive = TRUE)
-  desc_path <- grep("DESCRIPTION", paths, value = TRUE)
+  tmp_dir <- tempdir()
+
+  # Is the path pointing to a tar.gz archive
+  # or directly to a DESCRIPTION file?
+  if(grepl("\\.tar\\.gz", path)){
+
+    untar(path, exdir = tmp_dir)
+    paths <- list.files(tmp_dir, full.names = TRUE, recursive = TRUE)
+    desc_path <- grep("DESCRIPTION", paths, value = TRUE)
+
+  } else if(grepl("DESCRIPTION", path)){
+
+    desc_path <- path
+
+  } else {
+
+    stop("Path is neither a .tar.gz archive, nor pointing to a DESCRIPTION file directly.")
+
+  }
 
   columns_of_interest <- c("Depends", "Imports", "LinkingTo")
 

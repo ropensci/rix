@@ -57,6 +57,7 @@ hash_cran <- function(repo_url){
 #' @param commit Commit hash
 #' @importFrom git2r clone checkout
 hash_git <- function(repo_url, branchName, commit){
+
   path_to_repo <- paste0(tempdir(), "repo",
                          paste0(sample(letters, 5), collapse = ""))
 
