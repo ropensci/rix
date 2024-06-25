@@ -37,6 +37,7 @@ let
       devtools
       diffviewer
       fledge
+      git2r
       lintr
       styler
       codetools
