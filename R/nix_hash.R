@@ -112,12 +112,8 @@ nix_hash_online <- function(repo_url, branch_name, commit) {
   )
 
   # extra diagnostics
-  extra_diagnostics <-
-    c(
-      "\nIf it's a Github repo, check the url, branch name and commit.\n",
-      "Are these correct? If it's an archived CRAN package, check the name\n",
-      "of the package and the version number."
-    )
+  extra_diagnostics <- c("SRI hash of the NAR serialization could not be",
+    "computed via git2nixsha.dev API endpoint.")
 
   req <- try_get_request(
     url = url, handle = h,
