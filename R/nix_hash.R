@@ -75,7 +75,10 @@ hash_git <- function(repo_url, branchName, commit){
 
   sri_hash <- system(command, intern = TRUE)
 
-  deps <- get_imports(paste0(path_to_repo, "/DESCRIPTION"))
+  paths <- list.files(path_to_repo, full.names = TRUE, recursive = TRUE)
+  desc_path <- grep("DESCRIPTION", paths, value = TRUE)
+
+  deps <- get_imports(desc_path)
 
   unlink(path_to_repo, recursive = TRUE, force = TRUE)
 
