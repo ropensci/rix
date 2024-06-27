@@ -111,11 +111,63 @@ explain how to install specific versions of CRAN packages and how to
 install packages from GitHub.</p>
 </div>
 <div class="section level2">
+<h2 id="a-word-of-caution">A word of caution<a class="anchor" aria-label="anchor" href="#a-word-of-caution"></a>
+</h2>
+<p>It is important at this stage to understand that you should not call
+<code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> from a running Nix environment. If you
+want to add packages while analyzing data, you need to add it the
+<code>default.nix</code> expression and rebuild the environment. The
+same goes for installing packages from Github; use the method described
+in this vignette instead of using something like
+<code>remotes::install_github()</code>.</p>
+<p>We recommend you create a script called <code>create_env.R</code> or
+similar, and add the call to <code><a href="../reference/rix.html">rix()</a></code> there:</p>
+<pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://b-rodrigues.github.io/rix/">rix</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"4.4.0"</span>,</span>
+<span>    r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span><span class="op">)</span>,</span>
+<span>    system_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    git_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    ide <span class="op">=</span> <span class="st">"code"</span>,</span>
+<span>    project_path <span class="op">=</span> <span class="va">path_default_nix</span>,</span>
+<span>    overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    print <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre>
+<p>Then, add the packages you need to <code>r_pkgs</code> and run the
+script again. Then, build the environment using <code>nix-build</code>
+again, and drop into it using <code>nix-shell</code>. Calling
+<code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> is a bad idea for several reasons:</p>
+<ul>
+<li>it goes against the idea of defining an environment in a declarative
+way. If you were able to add packages using
+<code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code>, your environment would end up in a
+state where the <code>default.nix</code> definition of the environment
+and the actual environment don’t match anymore.</li>
+<li>using <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> will likely simply not work,
+and if it does, will cause issues. For example, if you call
+<code>install.packages("ggplot2")</code> from one Nix shell, it will not
+install <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> “inside” the Nix shell, but will install
+it on your user’s system library of packages. This is because the Nix
+shell cannot be changed at run-time, and so, R will instead install the
+packages in the user’s library. This version of <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>,
+because it is in that system-wide library of packages, will be available
+to any other Nix shell. If you call
+<code>install.packages("ggplot2")</code> again from another Nix shell,
+say 6 months later, this will replace the first version of
+<a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> with the latest version.</li>
+</ul>
+<p>Ideally, you should only manage R versions and R packages using Nix,
+and uninstall any system-managed version of R and R packages. If you do
+wish to keep a system-managed version of R and R packages, we highly
+recommend that you call <code><a href="../reference/rix_init.html">rix_init()</a></code> from all the Nix shells.
+This should ensure that your Nix projects and your system library of
+packages don’t interfere with each other.</p>
+</div>
+<div class="section level2">
 <h2 id="installing-old-packages-archived-on-cran">Installing old packages archived on CRAN<a class="anchor" aria-label="anchor" href="#installing-old-packages-archived-on-cran"></a>
 </h2>
 <p>It is possible to install an arbitrary version of a package that has
 been archived on CRAN:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">path_default_nix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"4.2.1"</span>,</span>
@@ -218,7 +270,7 @@ install a very old version of one particular package.</p>
 <h2 id="installing-packages-from-github">Installing packages from Github<a class="anchor" aria-label="anchor" href="#installing-packages-from-github"></a>
 </h2>
 <p>It is also possible to install packages from Github:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"4.2.1"</span>,</span>
 <span>    r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"janitor"</span><span class="op">)</span>,</span>
 <span>    git_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -365,7 +417,7 @@ instead.</p>
 </h2>
 <p>This example shows how to install packages from CRAN, from the CRAN
 archives and from GitHub:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"4.2.1"</span>,</span>
 <span>    r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"janitor"</span>, <span class="st">"AER@1.2-8"</span><span class="op">)</span>,</span>
 <span>    git_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
