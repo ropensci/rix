@@ -105,13 +105,6 @@ hash_url <- function(url) {
       "deps" = deps
     )
   )
-
-  return(
-    list(
-      "sri_hash" = sri_hash,
-      "deps" = deps
-    )
-  )
 }
 
 
