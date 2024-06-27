@@ -24,6 +24,54 @@ You now know how to declare and build reproducible development environments
 using `{rix}` and Nix. This vignette will explain how to install specific
 versions of CRAN packages and how to install packages from GitHub.
 
+## A word of caution
+
+It is important at this stage to understand that you should not call
+`install.packages()` from a running Nix environment. If you want to add
+packages while analyzing data, you need to add it the `default.nix` 
+expression and rebuild the environment. The same goes for installing
+packages from Github; use the method described in this vignette instead 
+of using something like `remotes::install_github()`.
+
+We recommend you create a script called `create_env.R` or similar, and add the call to `rix()` there:
+
+```
+library(rix)
+
+rix(r_ver = "4.4.0",
+    r_pkgs = c("dplyr", "ggplot2"),
+    system_pkgs = NULL,
+    git_pkgs = NULL,
+    ide = "code",
+    project_path = path_default_nix,
+    overwrite = TRUE,
+    print = TRUE)
+```
+
+Then, add the packages you need to `r_pkgs` and run the script again. Then, build
+the environment using `nix-build` again, and drop into it using `nix-shell`.
+Calling `install.packages()` is a bad idea for several reasons:
+
+- it goes against the idea of defining an environment in a declarative way. If you 
+  were able to add packages using `install.packages()`, your environment would end
+  up in a state where the `default.nix` definition of the environment and the actual
+  environment don't match anymore.
+- using `install.packages()` will likely simply not work, and if it does, will cause
+  issues. For example, if you call `install.packages("ggplot2")` from one Nix shell,
+  it will not install `{ggplot2}` "inside" the Nix shell, but will install it on
+  your user's system library of packages. This is because the Nix shell cannot be changed
+  at run-time, and so, R will instead install the packages in the user's library. 
+  This version of `{ggplot2}`, because it is in that system-wide library of packages,
+  will be available to any other Nix shell.
+  If you call `install.packages("ggplot2")` again from another Nix shell, say 6 months
+  later, this will replace the first version of `{ggplot2}` with the latest version.
+
+Ideally, you should only manage R versions and R packages using Nix, and uninstall
+any system-managed version of R and R packages. If you do wish to keep a system-managed
+version of R and R packages, we highly recommend that you call `rix_init()` from all 
+the Nix shells. This should ensure that your Nix projects and your system library of
+packages don't interfere with each other.
+
 ## Installing old packages archived on CRAN
 
 It is possible to install an arbitrary version of a package that has been
