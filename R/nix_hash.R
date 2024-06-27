@@ -35,8 +35,6 @@ hash_url <- function(url) {
   dir.create(path_to_tarfile, recursive = TRUE)
   path_to_tarfile <- normalizePath(path_to_tarfile)
 
-  cat(path_to_tarfile)
-
   h <- curl::new_handle(failonerror = TRUE, followlocation = TRUE)
 
   # extra diagnostics
@@ -54,20 +52,19 @@ hash_url <- function(url) {
     extra_diagnostics = extra_diagnostics
   )
 
-  tar_command <- paste("tar", "-xvf", tar_file, "-C", path_to_src,
-    "--strip-components", 1
-  )
-
-  # system(tar_command)
-
   untar(tar_file, exdir = path_to_src)
 
-  cmd_1 <- paste0(
-    " nix-hash --type sha256 ", path_to_folder
+  # when fetching from GitHub archive; e.g.,
+  # https://github.com/rap4all/housing/archive/1c860959310b80e67c41f7bbdc3e84cef00df18e.tar.gz")
+  # package_src will uncompressed contents in
+  # subfolder "housing-1c860959310b80e67c41f7bbdc3e84cef00df18e"
+  path_to_source_root <- file.path(
+    path_to_src,
+    list.files(path_to_src)
   )
 
   cmd <- "nix-hash"
-  args_1 <- c("--type", "sha256", path_to_folder)
+  args_1 <- c("--type", "sha256", path_to_source_root)
   proc_1 <- sys::exec_internal(
     cmd = cmd, args = args_1
   )
