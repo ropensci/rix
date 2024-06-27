@@ -95,7 +95,6 @@ or on a CI/CD environment to build the project there.
 If you have R installed, you can start straight away from your R session by
 first installing `{rix}`:
 
-
 ```{r, eval=FALSE}
 install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
   "https://cloud.r-project.org"))
@@ -118,7 +117,10 @@ rix(r_ver = "latest",
 
 This generates a file called `default.nix` in the path `path_default_nix` with
 the correct expression to build this environment. To build the environment,
-the Nix package manager must be installed.
+the Nix package manager must be installed. If you have Nix installed, you can
+build the expression above using the `nix-build` terminal command and then enter
+the environment using `nix-shell`. The vignettes included in the package walk you
+through the whole workflow.
 
 ## Quick start for returning users
 
