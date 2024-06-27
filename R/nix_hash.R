@@ -1,36 +1,144 @@
-#' Return the sri hash of a path using `nix hash path --sri path` if Nix is available locally
+#' Return the sri hash of a path using `nix hash path --sri path` if Nix is
+#' available locally
 #' @param repo_url URL to Github repository
 #' @param branch_name Branch to checkout
 #' @param commit Commit hash
 nix_hash <- function(repo_url, branch_name, commit) {
-
-  if(grepl("github", repo_url)){
+  if (grepl("github", repo_url)) {
     hash_git(repo_url, branch_name, commit)
-  } else if(grepl("cran.*Archive.*", repo_url)){
+  } else if (grepl("cran.*Archive.*", repo_url)) {
     hash_cran(repo_url)
   } else {
-    stop("repo_url argument is wrong. Please provide an url to a Github repo to install a package from Github, or to the CRAN Archive to install a package from the CRAN archive.")
+    stop(
+      "repo_url argument is wrong. Please provide an url to a Github repo",
+      "to install a package from Github, or to the CRAN Archive to install a",
+      "package from the CRAN archive."
+    )
   }
-
 }
+
+
+#' Return the SRI hash of an URL with tar.gz
+#' @param url
+#' @importFrom git2r clone checkout
+hash_url <- function(url) {
+  path_to_folder <- paste0(
+    tempdir(), "repo",
+    paste0(sample(letters, 5), collapse = "")
+  )
+
+  path_to_tarfile <- paste0(path_to_folder, "/package_tar_gz")
+  path_to_src <- paste0(path_to_folder, "/package_src")
+
+  dir.create(path_to_src, recursive = TRUE)
+  path_to_src <- normalizePath(path_to_src)
+  dir.create(path_to_tarfile, recursive = TRUE)
+  path_to_tarfile <- normalizePath(path_to_tarfile)
+
+  cat(path_to_tarfile)
+
+  h <- curl::new_handle(failonerror = TRUE, followlocation = TRUE)
+
+  # extra diagnostics
+  extra_diagnostics <-
+    c(
+      "\nIf it's a Github repo, check the url, branch name and commit.\n",
+      "Are these correct? If it's an archived CRAN package, check the name\n",
+      "of the package and the version number."
+    )
+
+  tar_file <- file.path(path_to_tarfile, "package.tar.gz")
+
+  try_download(
+    url = url, file = tar_file, handle = h,
+    extra_diagnostics = extra_diagnostics
+  )
+
+  tar_command <- paste("tar", "-xvf", tar_file, "-C", path_to_src,
+    "--strip-components", 1
+  )
+
+  # system(tar_command)
+
+  untar(tar_file, exdir = path_to_src)
+
+  cmd_1 <- paste0(
+    " nix-hash --type sha256 ", path_to_folder
+  )
+
+  cmd <- "nix-hash"
+  args_1 <- c("--type", "sha256", path_to_folder)
+  proc_1 <- sys::exec_internal(
+    cmd = cmd, args = args_1
+  )
+
+  poll_sys_proc_blocking(
+    cmd = paste(cmd, paste(args_1, collapse = " ")),
+    proc = proc_1,
+    what = cmd,
+    message_type = "quiet"
+  )
+
+  base16_hash <- sys::as_text(proc_1$stdout)
+
+  args_2 <- c("--type", "sha256", "--to-sri", base16_hash)
+  proc_2 <- sys::exec_internal(
+    cmd = cmd, args = args_2
+  )
+
+  poll_sys_proc_blocking(
+    cmd = paste(cmd, paste(args_2, collapse = " ")),
+    proc = proc_2,
+    what = cmd,
+    message_type = "quiet"
+  )
+
+  sri_hash <- sys::as_text(proc_2$stdout)
+
+  paths <- list.files(path_to_src, full.names = TRUE, recursive = TRUE)
+  desc_path <- grep("DESCRIPTION", paths, value = TRUE)
+
+  deps <- get_imports(desc_path)
+
+  # unlink(path_to_folder, recursive = TRUE, force = TRUE)
+
+  return(
+    list(
+      "sri_hash" = sri_hash,
+      "deps" = deps
+    )
+  )
+
+  return(
+    list(
+      "sri_hash" = sri_hash,
+      "deps" = deps
+    )
+  )
+}
+
 
 #' Return the sri hash of a CRAN package source using `nix hash path --sri path`
 #' @param repo_url URL to CRAN package source
-hash_cran <- function(repo_url){
+hash_cran <- function(repo_url) {
+  path_to_folder <- paste0(
+    tempdir(), "repo",
+    paste0(sample(letters, 5), collapse = "")
+  )
 
-  path_to_folder <- paste0(tempdir(), "repo",
-                        paste0(sample(letters, 5), collapse = ""))
+  dir.create(path_to_folder, recursive = TRUE)
 
-  dir.create(path_to_folder)
+  path_to_tarfile <- file.path(path_to_folder, "package_tar")
 
-  path_to_tarfile <- paste0(path_to_folder, "/package.tar.gz")
+  path_to_src <- file.path(path_to_folder, "package_src")
 
-  path_to_src <- paste0(path_to_folder, "/package_src")
+  dir.create(path_to_tarfile, recursive = TRUE)
+  dir.create(path_to_src, recursive = TRUE)
 
-  dir.create(path_to_src)
-
-  download.file(url = repo_url,
-                destfile = path_to_tarfile)
+  try_download(
+    url = url,
+    file = file.path(path_to_tarfile, "package.tar.gz")
+  )
 
   untar(path_to_tarfile, exdir = path_to_src)
 
@@ -49,27 +157,28 @@ hash_cran <- function(repo_url){
   return(
     list(
       "sri_hash" = sri_hash,
-      "deps" = deps)
+      "deps" = deps
+    )
   )
-
-      }
+}
 
 #' Return the sri hash of a Github repository
 #' @param repo_url URL to Github repository
 #' @param branch_name Branch to checkout
 #' @param commit Commit hash
 #' @importFrom git2r clone checkout
-hash_git <- function(repo_url, branch_name, commit){
-
-  path_to_repo <- paste0(tempdir(), "repo",
-                         paste0(sample(letters, 5), collapse = ""))
+hash_git <- function(repo_url, branch_name, commit) {
+  path_to_repo <- paste0(
+    tempdir(), "repo",
+    paste0(sample(letters, 5), collapse = "")
+  )
 
   git2r::clone(
-           url = repo_url,
-           local_path = path_to_repo,
-           branch = branch_name,
-           progress = FALSE
-         )
+    url = repo_url,
+    local_path = path_to_repo,
+    branch = branch_name,
+    progress = FALSE
+  )
 
   git2r::checkout(path_to_repo, branch = commit)
 
@@ -89,7 +198,8 @@ hash_git <- function(repo_url, branch_name, commit){
   return(
     list(
       "sri_hash" = sri_hash,
-      "deps" = deps)
+      "deps" = deps
+    )
   )
 }
 
@@ -141,11 +251,31 @@ nix_hash_online <- function(repo_url, branch_name, commit) {
 #' - `deps`: string with R package dependencies separarated by space.
 #' @noRd
 get_sri_hash_deps <- function(repo_url, branch_name, commit) {
-
-  if(nix_shell_available()){
+  if (nix_shell_available()) {
     nix_hash(repo_url, branch_name, commit)
   } else {
     nix_hash_online(repo_url, branch_name, commit)
   }
+}
 
+#' Try download contents of an URL onto file on disk
+#'
+#' Fetch if available and stop with propagating the curl error. Also show URL
+#' for context
+#' @noRd
+try_download <- function(url,
+                         file,
+                         handle = curl::new_handle(failonerror = TRUE),
+                         extra_diagnostics = NULL) {
+  tryCatch(
+    {
+      req <- curl::curl_fetch_disk(url, path = file, handle = handle)
+    },
+    error = function(e) {
+      stop("Request `curl::curl_fetch_disk()` failed:\n",
+        e$message[1], extra_diagnostics,
+        call. = FALSE
+      )
+    }
+  )
 }
