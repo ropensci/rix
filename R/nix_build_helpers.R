@@ -63,11 +63,11 @@ fix_ld_library_path <- function() {
 #' 
 #' @noRd
 poll_sys_proc_blocking <- function(cmd, proc,
-                                   what = c("nix-build", "expr"),
+                                   what = c("nix-build", "expr", "nix-hash"),
                                    message_type = 
                                      c("simple", "quiet", "verbose")
                                    ) {
-  what <- match.arg(what, choices = c("nix-build", "expr"))
+  what <- match.arg(what, choices = c("nix-build", "expr", "nix-hash"))
   message_type <- match.arg(message_type,
     choices = c("simple", "quiet", "verbose"))
   is_quiet <- message_type == "quiet"
@@ -99,10 +99,10 @@ poll_sys_proc_blocking <- function(cmd, proc,
 #' @noRd
 poll_sys_proc_nonblocking <- function(cmd,
                                       proc, 
-                                      what = c("nix-build", "expr"),
+                                      what = c("nix-build", "expr", "nix-hash"),
                                       message_type = 
                                         c("simple", "quiet", "verbose")) {
-  what <- match.arg(what, choices = c("nix-build", "expr"))
+  what <- match.arg(what, choices = c("nix-build", "expr", "nix-hash"))
   message_type <- match.arg(message_type,
     choices = c("simple", "quiet", "verbose"))
   is_quiet <- message_type == "quiet"
