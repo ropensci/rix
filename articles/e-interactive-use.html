@@ -161,11 +161,30 @@ example, here is how you could use <a href="https://b-rodrigues.github.io/rix/">
 <span>    project_path <span class="op">=</span> <span class="va">path_to_project</span>,</span>
 <span>    overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>    print <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>Because you also have R installed through the usual method for your
+operating system, you also have a system or user library of packages.
+This library of packages will interfere with the library of packages of
+your R environments managed by Nix. We thus highly recommend to also run
+<code><a href="../reference/rix_init.html">rix::rix_init()</a></code> in your project’s path (in the example
+above, in <code>path_to_project</code> to generate a .Rprofile that will
+prevent clashes between your user library of packages ar the Nix
+environments’ library of packages.</p>
 <p>Navigate to that folder using your terminal, and then run
+<code>nix-build</code> to build the environment, and then
 <code>nix-shell</code>. You will then be <em>dropped into</em> a Nix
-shell. From there you can type <code>rstudio</code> to run this project
-specific version of R and RStudio with all the required packages for
-this project, in this case <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> and
+shell. You can also use <code>nix-shell --pure</code> instead, if you
+want to increase the isolation of your Nix-R environments. The
+difference is that in an environment started with
+<code>nix-shell</code>, you will still be able to access programs from
+your system, while with <code>nix-shell --pure</code>, only programs
+installed for that Nix-R environment will be available. Try something
+like <code>which wget</code> from a shell started with
+<code>nix-shell</code> and then from a shell started with
+<code>nix-shell --pure</code> as an example (replace <code>wget</code>
+by any other tool you have installed on your computer).</p>
+<p>Once in the shell, you can type <code>rstudio</code> to run this
+project specific version of R and RStudio with all the required packages
+for this project, in this case <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> and
 <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>. If you get an error</p>
 <pre><code>qt.glx: qglx_findConfig: Failed to finding... 
 qt.glx: qglx_findConfig: Failed to finding...
@@ -223,7 +242,10 @@ generate an environment with R, Rstudio, <a href="https://dplyr.tidyverse.org" c
 rerun the command above, but add the needed packages to
 <code>r_pkgs</code>. If you need to create a new environment, you could
 rerun the command above, or you could install <a href="https://b-rodrigues.github.io/rix/">rix</a> in that
-environment to generate new <code>default.nix</code> files.</p>
+environment to generate new <code>default.nix</code> files. Here, there
+is no need to use <code><a href="../reference/rix_init.html">rix_init()</a></code> as there won’t be any clash
+between your user library of R packages (since you don’t have any), and
+the R environments managed by Nix.</p>
 </div>
 <div class="section level2">
 <h2 id="scenario-3-you-use-some-ide-other-than-rstudio">Scenario 3: you use some IDE other than RStudio<a class="anchor" aria-label="anchor" href="#scenario-3-you-use-some-ide-other-than-rstudio"></a>
@@ -254,6 +276,10 @@ Code. For any other editor such as Emacs or Vim, set
 <code>ide = "other"</code>. Also use <code>ide = "other"</code> if you
 want to run scripts non-interactively, for example on a CI/CD
 service.</p>
+<p>Just as in scenario 1, if you already have R installed through the
+usual means for your operating system, we highly recommend using
+<code><a href="../reference/rix_init.html">rix::rix_init()</a></code> to avoid your system or user library of R
+packages to clash with the library of environments managed by Nix.</p>
 </div>
 <div class="section level2">
 <h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
