@@ -142,6 +142,12 @@ before continuing."
     )
   }
 
+  if(identical(ide, "rstudio") & (is.null(r_pkgs) & is.null(git_pkgs) & is.null(local_pkgs))){
+      stop(
+        "You chose 'rstudio' as the IDE, but didn't add any R packages to the environment.\nThis expression will not build successfully. Consider adding R packages, or changing 'ide' argument."
+      )
+  }
+
   if(r_ver == "4.4.0"){
     warning(
       "You chose '4.4.0' as the R version, however this version is not available in nixpkgs. The generated expression will thus install R version 4.4.1."
