@@ -18,9 +18,8 @@ nix_hash <- function(repo_url, branch_name, commit) {
 }
 
 
-#' Return the SRI hash of an URL with tar.gz
-#' @param url
-#' @importFrom git2r clone checkout
+#' Return the SRI hash of an URL with .tar.gz
+#' @param url String with URL ending with `.tar.gz`
 hash_url <- function(url) {
   path_to_folder <- paste0(
     tempdir(), "repo",
@@ -126,7 +125,7 @@ nix_sri_hash <- function(path) {
 }
 
 
-#' Return the sri hash of a CRAN package source using `nix hash path --sri path`
+#' Return the SRI hash of a CRAN package source using `nix hash path --sri path`
 #' @param url URL to CRAN package source
 hash_cran <- function(repo_url) {
   path_to_repo <- paste0(
@@ -144,7 +143,6 @@ hash_cran <- function(repo_url) {
 #' @param repo_url URL to GitHub repository
 #' @param branch_name Branch to checkout
 #' @param commit Commit hash
-#' @importFrom git2r clone checkout
 hash_git <- function(repo_url, branch_name, commit) {
   path_to_repo <- paste0(
     tempdir(), "repo",
