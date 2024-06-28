@@ -5,9 +5,9 @@
 #' @param commit Commit hash
 nix_hash <- function(repo_url, branch_name, commit) {
   if (grepl("github", repo_url)) {
-    hash_git(repo_url, branch_name, commit)
+    hash_git(repo_url = repo_url, branch_name, commit)
   } else if (grepl("cran.*Archive.*", repo_url)) {
-    hash_cran(repo_url)
+    hash_cran(repo_url = repo_url)
   } else {
     stop(
       "repo_url argument is wrong. Please provide an url to a Github repo",
@@ -127,51 +127,21 @@ nix_sri_hash <- function(path) {
 
 
 #' Return the sri hash of a CRAN package source using `nix hash path --sri path`
-#' @param repo_url URL to CRAN package source
+#' @param url URL to CRAN package source
 hash_cran <- function(repo_url) {
-  path_to_folder <- paste0(
+  path_to_repo <- paste0(
     tempdir(), "repo",
     paste0(sample(letters, 5), collapse = "")
   )
 
-  dir.create(path_to_folder, recursive = TRUE)
+  # list contains `sri_hash` and `deps` elements
+  list_sri_hash_deps <- hash_url(url = repo_url)
 
-  path_to_tarfile <- file.path(path_to_folder, "package_tar")
-
-  path_to_src <- file.path(path_to_folder, "package_src")
-
-  dir.create(path_to_tarfile, recursive = TRUE)
-  dir.create(path_to_src, recursive = TRUE)
-
-  try_download(
-    url = url,
-    file = file.path(path_to_tarfile, "package.tar.gz")
-  )
-
-  untar(path_to_tarfile, exdir = path_to_src)
-
-  # Compute hash of subfolder
-  command <- paste0("nix hash path --sri ", path_to_src, "/*/")
-
-  sri_hash <- system(command, intern = TRUE)
-
-  paths <- list.files(path_to_src, full.names = TRUE, recursive = TRUE)
-  desc_path <- grep("DESCRIPTION", paths, value = TRUE)
-
-  deps <- get_imports(desc_path)
-
-  unlink(path_to_folder, recursive = TRUE, force = TRUE)
-
-  return(
-    list(
-      "sri_hash" = sri_hash,
-      "deps" = deps
-    )
-  )
+  return(list_sri_hash_deps)
 }
 
-#' Return the sri hash of a Github repository
-#' @param repo_url URL to Github repository
+#' Return the SRI hash of a GitHub repository
+#' @param repo_url URL to GitHub repository
 #' @param branch_name Branch to checkout
 #' @param commit Commit hash
 #' @importFrom git2r clone checkout
@@ -181,34 +151,18 @@ hash_git <- function(repo_url, branch_name, commit) {
     paste0(sample(letters, 5), collapse = "")
   )
 
-  git2r::clone(
-    url = repo_url,
-    local_path = path_to_repo,
-    branch = branch_name,
-    progress = FALSE
-  )
+  trailing_slash <- grepl("/$", repo_url)
+  if (isTRUE(trailing_slash)) {
+    slash <- ""
+  } else {
+    slash <- "/"
+  }
+  url <- paste0(repo_url, slash, "archive/", commit, ".tar.gz")
 
-  git2r::checkout(path_to_repo, branch = commit)
+  # list contains `sri_hash` and `deps` elements
+  list_sri_hash_deps <- hash_url(url)
 
-  unlink(paste0(path_to_repo, "/.git"), recursive = TRUE, force = TRUE)
-
-  command <- paste0("nix hash path --sri ", path_to_repo)
-
-  sri_hash <- system(command, intern = TRUE)
-
-  paths <- list.files(path_to_repo, full.names = TRUE, recursive = TRUE)
-  desc_path <- grep("DESCRIPTION", paths, value = TRUE)
-
-  deps <- get_imports(desc_path)
-
-  unlink(path_to_repo, recursive = TRUE, force = TRUE)
-
-  return(
-    list(
-      "sri_hash" = sri_hash,
-      "deps" = deps
-    )
-  )
+  return(list_sri_hash_deps)
 }
 
 
