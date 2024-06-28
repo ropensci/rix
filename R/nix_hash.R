@@ -194,10 +194,14 @@ hash_git <- function(repo_url, branch_name, commit) {
 }
 
 
-#' Get the SRI hash of the NAR serialization of a Github repo, if nix is not available locally
-#' @param repo_url A character. The URL to the package's Github repository or to the `.tar.gz` package hosted on CRAN.
-#' @param branch_name A character. The branch of interest, NULL for archived CRAN packages.
-#' @param commit A character. The commit hash of interest, for reproducibility's sake, NULL for archived CRAN packages.
+#' Get the SRI hash of the NAR serialization of a Github repo, if nix is not
+#' available locally
+#' @param repo_url A character. The URL to the package's Github repository or to
+#' the `.tar.gz` package hosted on CRAN.
+#' @param branch_name A character. The branch of interest, NULL for archived
+#' CRAN packages.
+#' @param commit A character. The commit hash of interest, for reproducibility's
+#' sake, NULL for archived CRAN packages.
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
 #' - `deps`: string with R package dependencies separarated by space.
@@ -232,10 +236,14 @@ nix_hash_online <- function(repo_url, branch_name, commit) {
   return(sri_hash_deps_list)
 }
 
-#' Return the sri hash of a path using `nix hash path --sri path` either with local Nix, or using an online service if Nix is not available
-#' @param repo_url A character. The URL to the package's Github repository or to the `.tar.gz` package hosted on CRAN.
-#' @param branch_name A character. The branch of interest, NULL for archived CRAN packages.
-#' @param commit A character. The commit hash of interest, for reproducibility's sake, NULL for archived CRAN packages.
+#' Return the sri hash of a path using `nix hash path --sri path` either with
+#' local Nix, or using an online service if Nix is not available
+#' @param repo_url A character. The URL to the package's Github repository or to
+#' the `.tar.gz` package hosted on CRAN.
+#' @param branch_name A character. The branch of interest, NULL for archived
+#' CRAN packages.
+#' @param commit A character. The commit hash of interest, for reproducibility's
+#' sake, NULL for archived CRAN packages.
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
 #' - `deps`: string with R package dependencies separarated by space.
