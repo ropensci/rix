@@ -41,7 +41,7 @@ testthat::test_that("rix(), ide is 'rstudio', Linux", {
 
 testthat::test_that("rix(), ide is 'other' or 'code'", {
 
-  path_default_nix <- tempdir()
+  path_default_nix <- normalizePath(tempdir())
 
   save_default_nix_test <- function(ide, path_default_nix) {
 
@@ -63,7 +63,7 @@ testthat::test_that("rix(), ide is 'other' or 'code'", {
         overwrite = TRUE,
         shell_hook = NULL)
 
-    paste0(path_default_nix, "/default.nix")
+    file.path(path_default_nix, "default.nix")
 
   }
 
@@ -89,7 +89,7 @@ testthat::test_that("rix(), ide is 'other' or 'code'", {
 
 testthat::test_that("Quarto gets added to sys packages", {
 
-  path_default_nix <- tempdir()
+  path_default_nix <- normalizePath(tempdir())
 
   save_default_nix_test <- function(pkgs, interface, path_default_nix) {
 
@@ -101,7 +101,7 @@ testthat::test_that("Quarto gets added to sys packages", {
           shell_hook = NULL
           )
 
-      paste0(path_default_nix, "/default.nix")
+      file.path(path_default_nix, "default.nix")
 
   }
 
@@ -141,7 +141,7 @@ testthat::test_that("r_pkgs = NULL and ide = 'rstudio' work together", {
         shell_hook = NULL
         )
 
-    paste0(path_default_nix, "/default.nix")
+    file.path(path_default_nix, "default.nix")
 
   }
 
@@ -161,7 +161,7 @@ testthat::test_that("If on darwin and ide = rstudio, raise warning", {
 
   skip_if(Sys.info()["sysname"] != "Darwin")
 
-  path_default_nix <- tempdir()
+  path_default_nix <- normalizePath(tempdir())
 
   save_default_nix_test <- function(path_default_nix) {
 
@@ -173,7 +173,7 @@ testthat::test_that("If on darwin and ide = rstudio, raise warning", {
         shell_hook = NULL
       )
 
-    paste0(path_default_nix, "/default.nix")
+    file.path(path_default_nix, "default.nix")
 
   }
 
@@ -198,7 +198,7 @@ testthat::test_that("If R version is 4.4.0, raise warning", {
         shell_hook = NULL
       )
 
-    paste0(path_default_nix, "/default.nix")
+    file.path(path_default_nix, "default.nix")
 
   }
 
@@ -212,7 +212,7 @@ testthat::test_that("If R version is 4.4.0, raise warning", {
 
 testthat::test_that("rix(), bleeding_edge", {
 
-  path_default_nix <- tempdir()
+  path_default_nix <- normalizePath(tempdir())
 
   save_default_nix_test <- function(ide, path_default_nix) {
 
@@ -237,7 +237,7 @@ testthat::test_that("rix(), bleeding_edge", {
           shell_hook = NULL)
     )
 
-    paste0(path_default_nix, "/default.nix")
+    file.path(path_default_nix, "default.nix")
 
   }
 
@@ -256,7 +256,7 @@ testthat::test_that("rix(), frozen_edge", {
   # because of the sed command, this will only work on Linux
   skip_if(Sys.info()["sysname"] != "Linux")
 
-  path_default_nix <- tempdir()
+  path_default_nix <- normalizePath(tempdir())
 
   save_default_nix_test <- function(ide, path_default_nix) {
 
