@@ -213,7 +213,7 @@ software. On macOS, you may have used <code>homebrew</code> for similar
 purposes. Nix functions in a similar way, but has many advantages over
 classic package managers. The main advantage of Nix, at least for our
 purposes, is that its repository of software is huge. As of writing, it
-contains more than 80.000 packages, and the entirety of CRAN and
+contains more than 100.000 packages, and the entirety of CRAN and
 Bioconductor is available through Nix’s repositories.</p>
 <p>This means that using Nix, it is possible to install not only R, but
 also all the packages required for your project. The obvious question is
@@ -308,16 +308,29 @@ you chose to write it (ideally in a new, empty folder that will be the
 root folder of your project) and use the Nix package manager to build
 the environment. Call the following function in a terminal:</p>
 <pre><code><span><span class="va">nix</span><span class="op">-</span><span class="va">build</span></span></code></pre>
+<p>Nix install packages in a dedicated folder on your computer, called
+the <em>Nix store</em>.</p>
 <p>Once Nix is done building the environment, you can start working on
 it interactively by using the following command in a terminal emulator
 (not the R console):</p>
 <pre><code><span><span class="va">nix</span><span class="op">-</span><span class="va">shell</span></span></code></pre>
 <p>You will <em>drop</em> into a Nix shell which provides the installed
-software.</p>
+software. It is not mandatory to call <code>nix-build</code> first: you
+can immediately call <code>nix-shell</code>. The advantage of using
+<code>nix-build</code> first is that it create a file called
+<code>result</code> which will prevent the environment to get garbage
+collected if you clean the Nix store.</p>
+<p>If you want to build an environment for an older version of R, you
+might get a warning telling you that you cannot build the expression,
+but that you can directly drop into it.</p>
 <p>If you want to completely isolate your Nix environment from the rest
 of the system, we recommend using <code>nix-shell --pure</code> to drop
 into the environment, as described in the documentation of
 <code><a href="../reference/rix_init.html">rix_init()</a></code>.</p>
+<p>Finally, if you want to delete an environment, delete the
+<code>result</code> file first (if you used <code>nix-build</code>) and
+then call <code>nix-store --gc</code>, which will delete all the
+orphaned packages.</p>
 <p>Now that you know more about Nix and <a href="https://b-rodrigues.github.io/rix/">rix</a>, it is time
 to get these tools installed on your system.</p>
 <ul>
