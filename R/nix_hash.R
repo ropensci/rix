@@ -63,12 +63,43 @@ hash_url <- function(url) {
     list.files(path_to_src)
   )
 
+  sri_hash <- nix_sri_hash(path = path_to_source_root)
+
+  paths <- list.files(path_to_src, full.names = TRUE, recursive = TRUE)
+  desc_path <- grep("DESCRIPTION", paths, value = TRUE)
+
+  deps <- get_imports(desc_path)
+
+  unlink(path_to_folder, recursive = TRUE, force = TRUE)
+
+  return(
+    list(
+      "sri_hash" = sri_hash,
+      "deps" = deps
+    )
+  )
+}
+
+#' Obtain Nix SHA-256 hash of a directory in SRI format (base64)
+#' 
+#' @param path Path to directory to hash
+#' @return string with SRI hash specification
+#' @noRd
+nix_sri_hash <- function(path) {
+  if (!dir.exists(path)) {
+    stop("Directory", path, "does not exist", call. = FALSE)
+  }
+  has_nix_shell <- nix_shell_available()
+  if (isFALSE(has_nix_shell)) {
+    stop_no_nix_shell()
+  }
+
   cmd <- "nix-hash"
-  args_1 <- c("--type", "sha256", path_to_source_root)
+  args_1 <- c("--type", "sha256", path)
   proc_1 <- sys::exec_internal(
     cmd = cmd, args = args_1
   )
-
+  
   poll_sys_proc_blocking(
     cmd = paste(cmd, paste(args_1, collapse = " ")),
     proc = proc_1,
@@ -91,20 +122,7 @@ hash_url <- function(url) {
   )
 
   sri_hash <- sys::as_text(proc_2$stdout)
-
-  paths <- list.files(path_to_src, full.names = TRUE, recursive = TRUE)
-  desc_path <- grep("DESCRIPTION", paths, value = TRUE)
-
-  deps <- get_imports(desc_path)
-
-  unlink(path_to_folder, recursive = TRUE, force = TRUE)
-
-  return(
-    list(
-      "sri_hash" = sri_hash,
-      "deps" = deps
-    )
-  )
+  return(sri_hash)
 }
 
 
