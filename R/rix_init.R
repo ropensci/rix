@@ -412,6 +412,9 @@ nix_rprofile <- function() {
     }
 
     if (isTRUE(is_nix_r)) {
+      install.packages <- function(...){
+          stop("You are currently in an R session running from Nix.\nDon't install packages using install.packages(),\nadd them to the default.nix file instead.")
+        }
       current_paths <- .libPaths()
       userlib_paths <- Sys.getenv("R_LIBS_USER")
       user_dir <- grep(paste(userlib_paths, collapse = "|"), current_paths, fixed = TRUE)
