@@ -152,7 +152,6 @@ packages' repository (called `nixpkgs`) for our project. Pinning a revision
 ensures that every package that Nix installs will always be at exactly the same
 versions, regardless of when in the future the packages get installed.
 
-
 ## rix workflow
 
 The idea of `{rix}` is for you to declare the environment you need using the
@@ -166,8 +165,18 @@ not get re-installed to save space. Environments are isolated for each other,
 but can still interact with your system's files, unlike with Docker where a
 volume must be mounted. Environments can also interact with the software
 installed on your computer through the usual means, which can sometimes lead to
-issues. We have provided functions and documentation to avoid this, so take your
-time read through the vignettes and you should be fine.
+issues. For example, if you already have R installed, and a user library
+of R packages, more caution is required to properly use environments managed
+by Nix. 
+
+It is important at this stage to understand that you should not call
+`install.packages()` from a running Nix environment. If you want to add
+packages to a Nix environment while analyzing data, you need to add it the `default.nix` 
+expression and rebuild the environment. This is explained in greater detail
+in `vignette("d1-installing-r-packages-in-a-nix-environment")`.
+
+To avoid interference between your main R library of packages and your
+Nix environments, we recommend you read the documentation of `rix_init()`.
 
 `rix()` has several arguments:
 
@@ -175,12 +184,12 @@ time read through the vignettes and you should be fine.
 - a list of R packages that your project needs;
 - an optional list of additional software (for example a Python interpreter, or Quarto);
 - an optional list with packages to install from Github;
+- an optional list of local packages in `.tar.gz` format to install;
 - an optional list of LaTeX packages;
 - whether you want to use RStudio as an IDE for your project (or VS Code, or another environment);
 - the path to save the `default.nix` file (by default the current working directory)
 
 For example:
-
 
 ```{r parsermd-chunk-1, eval = FALSE}
 rix(r_ver = "latest",
@@ -195,7 +204,6 @@ the latest version of R, with the `{dplyr}` and `{chronicler}` packages.
 Take note of the `ide = "other"` argument: this argument, and the values it
 can take, are further discussed in the vignette `vignette("e-interactive-use")`
 but continue reading this vignette and then vignettes numbered by a "d".
-
 
 ### Using default.nix files
 
@@ -224,6 +232,10 @@ nix-shell
 ```
 
 You will *drop* into a Nix shell which provides the installed software.
+
+If you want to completely isolate your Nix environment from the rest of 
+the system, we recommend using `nix-shell --pure` to drop into the environment,
+as described in the documentation of `rix_init()`.
 
 Now that you know more about Nix and `{rix}`, it is time to get these tools
 installed on your system.
