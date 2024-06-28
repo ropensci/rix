@@ -176,7 +176,7 @@ for more details."
     )
   }
 
-  project_path <- if (project_path == ".") {
+  default.nix_path <- if (project_path == ".") {
     "default.nix"
   } else {
     paste0(project_path, "/default.nix")
@@ -187,7 +187,7 @@ for more details."
   # fork is used. Otherwise, upstream NixOS/nixpkgs
   nix_repo <- make_nixpkgs_url(r_ver)
 
-  project_path <- file.path(project_path)
+  default.nix_path <- file.path(default.nix_path)
 
   rix_call <- match.call()
 
@@ -260,12 +260,17 @@ for more details."
     cat(default.nix, sep = "\n")
   }
 
-  if (!file.exists(project_path) || overwrite) {
-    writeLines(default.nix, project_path)
+  if (!file.exists(default.nix_path) || overwrite) {
+    writeLines(default.nix, default.nix_path)
     rix_init(project_path = project_path,
-             rprofile_action = "append",
-             message_type = "simple", "quiet", "verbose")
+             rprofile_action = "create_missing",
+             message_type = "quiet")
   } else {
-    stop(paste0("File exists at ", project_path, ". Set `overwrite == TRUE` to overwrite."))
+    project_path <- if(project_path == ".") {
+                      "current folder"
+                    }  else {
+                      project_path
+                    }
+    stop(paste0("default.nix exists in ", project_path, ". Set `overwrite == TRUE` to overwrite."))
   }
 }
