@@ -234,6 +234,31 @@ testthat::test_that("If R version is <= 4.1.1, raise warning", {
 
 })
 
+testthat::test_that("If R version is == 3.5.3, raise warning", {
+
+  path_default_nix <- tempdir()
+
+  save_default_nix_test <- function(path_default_nix) {
+
+    rix(r_ver = "3.5.3",
+        ide = "other",
+        r_pkgs = NULL,
+        project_path = path_default_nix,
+        overwrite = TRUE,
+        shell_hook = NULL
+      )
+
+    paste0(path_default_nix, "/default.nix")
+
+  }
+
+  testthat::expect_warning(
+    save_default_nix_test(path_default_nix),
+    regexp = "older version of R"
+  )
+
+})
+
 testthat::test_that("rix(), bleeding_edge", {
 
   path_default_nix <- tempdir()
