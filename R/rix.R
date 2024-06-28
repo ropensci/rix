@@ -262,6 +262,9 @@ for more details."
 
   if (!file.exists(project_path) || overwrite) {
     writeLines(default.nix, project_path)
+    rix_init(project_path = project_path,
+             rprofile_action = "append",
+             message_type = "simple", "quiet", "verbose")
   } else {
     stop(paste0("File exists at ", project_path, ". Set `overwrite == TRUE` to overwrite."))
   }
