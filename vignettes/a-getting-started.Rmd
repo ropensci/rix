@@ -174,8 +174,12 @@ to a Nix environment while analyzing data, you need to add it the `default.nix`
 expression and rebuild the environment. This is explained in greater detail in
 `vignette("d1-installing-r-packages-in-a-nix-environment")`.
 
-To avoid interference between your main R library of packages and your
-Nix environments, we recommend you read the documentation of `rix_init()`.
+To avoid interference between your main R library of packages and your Nix
+environments, calling `rix()` will also run `rix_init()`, which will create a
+custom `.Rprofile` in the project's directory. This `.Rprofile` will ensure that
+if you have a user library of packages, these won't get loaded by an R version
+running in a Nix shell. It will also redefine `install.packages()` to throw an
+error if you try to use it.
 
 `rix()` has several arguments:
 

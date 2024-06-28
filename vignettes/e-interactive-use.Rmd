@@ -31,7 +31,6 @@ It is also possible to evaluate single functions inside a dedicated, separate,
 environment from another, main, interactive R session. For more details
 regarding this, refer to the vignette `vignette("z-advanced-topic-running-r-or-shell-code-in-nix-from-r")`.
 
-
 ## Scenario 1: you installed R and RStudio using the usual installers
 
 Let's suppose that you are already running R and RStudio and that you wish to
@@ -89,30 +88,30 @@ rix(r_ver = "latest",
 ```
 
 Because you also have R installed through the usual method for your operating
-system, you also have a system or user library of packages. This library of 
+system, you also have a system or user library of packages. This library of
 packages will interfere with the library of packages of your R environments
-managed by Nix. We thus highly recommend to also run `rix::rix_init()` in your
-project’s path (in the example above, in `path_to_project` to generate a .Rprofile
-that will prevent clashes between your user library of packages ar the Nix
-environments’ library of packages.
+managed by Nix. To avoid this, running `rix()` not only writes a `default.nix`
+file in your project's path, but also a custom `.Rprofile` file as well by
+calling `rix_init()`. This `.Rprofile` will prevent clashes between your user
+library of packages and the Nix environments’ library of packages.
 
 Navigate to that folder using your terminal, and then run `nix-build` to build
-the environment, and then `nix-shell`. You will
-then be *dropped into* a Nix shell. You can also use `nix-shell --pure` instead, 
-if you want to increase the isolation of your Nix-R environments. 
-The difference is that in an environment started with `nix-shell`, you will still
-be able to access programs from your system, while with `nix-shell --pure`, only
-programs installed for that Nix-R environment will be available. Try something like
-`which wget` from a shell started with `nix-shell` and then from a shell started
-with `nix-shell --pure` as an example (replace `wget` by any other tool you have
-installed on your computer). 
+the environment, and then `nix-shell`. You will then be *dropped into* a Nix
+shell. You can also use `nix-shell --pure` instead, if you want to increase the
+isolation of your Nix-R environments. The difference is that in an environment
+started with `nix-shell`, you will still be able to access programs from your
+system, while with `nix-shell --pure`, only programs installed for that Nix-R
+environment will be available. Try something like `which wget` from a shell
+started with `nix-shell` and then from a shell started with `nix-shell --pure`
+as an example (replace `wget` by any other tool you have installed on your
+computer).
 
-Once in the shell, you can type `rstudio` to run
-this project specific version of R and RStudio with all the required packages
-for this project, in this case `{dplyr}` and `{ggplot2}`. If you get an error
+Once in the shell, you can type `rstudio` to run this project specific version
+of R and RStudio with all the required packages for this project, in this case
+`{dplyr}` and `{ggplot2}`. If you get an error
 
 ```
-qt.glx: qglx_findConfig: Failed to finding... 
+qt.glx: qglx_findConfig: Failed to finding...
 qt.glx: qglx_findConfig: Failed to finding...
 Could not initialize GLX
 Aborted (core dumped)
@@ -125,7 +124,7 @@ export QT_XCB_GL_INTEGRATION=none
 ```
 
 This should solve the issue. In any case, we would be thankful if you opened
-an issue if you encountered this bug and if the fix worked for you. 
+an issue if you encountered this bug and if the fix worked for you.
 
 You can then work on it as usual.
 
@@ -173,12 +172,12 @@ session inside your terminal. You can now run something like this:
 
 to generate a `default.nix`, and then use that file to generate an environment
 with R, Rstudio, `{dplyr}` and `{ggplot2}`. If you need to add packages for your
-project, rerun the command above, but add the needed packages to `r_pkgs`. If you
-need to create a new environment, you could rerun the command above, or you
+project, rerun the command above, but add the needed packages to `r_pkgs`. If
+you need to create a new environment, you could rerun the command above, or you
 could install `{rix}` in that environment to generate new `default.nix` files.
 Here, there is no need to use `rix_init()` as there won’t be any clash between
-your user library of R packages (since you don’t have any), and the R environments
-managed by Nix.
+your user library of R packages (since you don’t have any), and the R
+environments managed by Nix.
 
 ## Scenario 3: you use some IDE other than RStudio
 
@@ -209,14 +208,8 @@ Codium over VS Code. For any other editor such as Emacs or Vim, set `ide =
 "other"`. Also use `ide = "other"` if you want to run scripts non-interactively,
 for example on a CI/CD service.
 
-Just as in scenario 1, if you already have R installed through the usual means
-for your operating system, we highly recommend using `rix::rix_init()` to avoid
-your system or user library of R packages to clash with the library of environments
-managed by Nix.
-
 ## Conclusion
 
 You now know the basics of Nix and `{rix}` and can start using it for your
 projects! There are still some more vignettes that we recommend you read which
 cover advanced topics.
-

@@ -23,8 +23,8 @@ let
       src = pkgs.fetchgit {
         url = "https://github.com/b-rodrigues/rix/";
         branchName = "master";
-        rev = "1a9680f892024ca08d2b5af737baba0a9a042339";
-        sha256 = "sha256-HkNE+4VrtqEOOMxyxqz6jnSMg/1SOppdTyKif/yR0ss=";
+        rev = "9e3bdfa6c508a2a549aae9e41c14d2ead0a9191d";
+        sha256 = "sha256-uYjCuH7z7enk6i0Kb2inErXdfDA2OkKei8jr3HvKNh0=";
       };
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) 

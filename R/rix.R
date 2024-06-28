@@ -176,6 +176,11 @@ for more details."
     )
   }
 
+  if (isFALSE(dir.exists(project_path))) {
+    dir.create(path = project_path, recursive = TRUE)
+    project_path <- normalizePath(path = project_path)
+  } 
+
   default.nix_path <- if (project_path == ".") {
     "default.nix"
   } else {
