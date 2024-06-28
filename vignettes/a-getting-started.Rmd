@@ -79,7 +79,7 @@ programming language that we need). But why use Nix instead of the usual ways to
 install software on our operating systems?
 
 The first thing that you should know is that Nix's repository, `nixpkgs`, is
-huge. Humongously huge. As I'm writing these lines, [there's more than 80'000
+huge. Humongously huge. As I'm writing these lines, [there's more than 100'000
 pieces of software available](https://search.nixos.org/packages), and the
 *entirety of CRAN* is also available through `nixpkgs`. So instead of installing
 R as you usually do and then use `install.packages()` to install packages, you
