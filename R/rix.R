@@ -144,7 +144,7 @@ before continuing."
 
   if(identical(ide, "rstudio") & (is.null(r_pkgs) & is.null(git_pkgs) & is.null(local_pkgs))){
       stop(
-        "You chose 'rstudio' as the IDE, but didn't add any R packages to the environment.\nThis expression will not build successfully. Consider adding R packages, or changing 'ide' argument."
+        "You chose 'rstudio' as the IDE, but didn't add any R packages to the environment.\nThis expression will not build successfully. Consider adding R packages, or changing the 'ide' argument."
       )
   }
 
