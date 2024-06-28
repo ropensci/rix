@@ -20,11 +20,15 @@ testthat::test_that("Testing `with_nix()` if Nix is installed", {
     message_type = "simple"
   )
 
-  rix(
-    r_ver = "3.5.3",
-    overwrite = TRUE,
-    project_path = path_subshell,
-    shell_hook = NULL
+  # Suppress the warning related to generating an expression
+  # for an old version of R
+  suppressWarnings(
+    rix(
+      r_ver = "3.5.3",
+      overwrite = TRUE,
+      project_path = path_subshell,
+      shell_hook = NULL
+    )
   )
 
   out_subshell <- with_nix(
