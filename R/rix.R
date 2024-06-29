@@ -142,6 +142,12 @@ before continuing."
     )
   }
 
+  if(r_ver %in% available_r() & r_ver != "latest" & r_ver <= "4.1.1"){
+    warning(
+      "You are generating an expression for an older version of R.\n To use this environment, you should directly use `nix-shell` and not try to build it first using `nix-build`."
+    )
+  }
+
   if(r_ver == "4.4.0"){
     warning(
       "You chose '4.4.0' as the R version, however this version is not available in nixpkgs. The generated expression will thus install R version 4.4.1."

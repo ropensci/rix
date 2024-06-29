@@ -29,35 +29,74 @@ Review](https://badges.ropensci.org/625_status.svg)](https://github.com/ropensci
 powerful package manager focusing on reproducible builds. With Nix, it
 is possible to create project-specific environments that contain a
 project-specific version of R and R packages (as well as other tools or
-languages, if needed). You can use `{rix}` and Nix to replace `{renv}`
-and Docker with one single tool. Nix is an incredibly useful piece of
-software for ensuring reproducibility of projects, in research or
+languages, if needed). This project-specific environment will also
+include all the required system-level dependencies that can be difficult
+to install, such as `GDAL` for packages for geospatial analysis for
+example. This is how Nix installs software: it installs software as a
+complete “bundle” that include all of its dependencies, and all of the
+dependencies’ dependencies and so on. Nix is an incredibly useful piece
+of software for ensuring reproducibility of projects, in research or
 otherwise. For example, it allows you run web applications like Shiny
-apps or `{plumber}` APIs in a controlled environment.
+apps or `{plumber}` APIs in a controlled environment, or run `{targets}`
+pipelines with the right version of R and dependencies, and it is also
+possible to use environments managed by Nix to work interactively using
+an IDE.
+
+In essence, this means that you can use `{rix}` and Nix to replace
+`{renv}` and Docker with one single tool, but the approach is quite
+different: `{renv}` records specific versions of individual packages,
+while `{rix}` provides a complete snapshot of the R ecosystem at a
+specific point in time, but also snapshots all the required dependencies
+to make your project-specific R environment work. To ensure complete
+reproducibility with `{renv}`, it must be combined with Docker, in order
+to include system-level dependencies (like `GDAL`, as per the example
+above).
 
 Nix has a fairly high entry cost though. Nix is a complex piece of
 software that comes with its own programming language, which is also
 called Nix. Its purpose is to solve a complex problem: defining
 instructions on how to build software packages and manage configurations
-in a declarative way. This makes sure that software gets installed in
-fully reproducible manner, on any operating system or hardware.
+in a declarative and way. This makes sure that software gets installed
+in fully reproducible manner, on any operating system or hardware.
 
-`{rix}` provides functions to help you write and deploy Nix expressions
-(written in the Nix language). These expressions will be the inputs for
-the Nix package manager, to build sets of software packages and provide
-them in a reproducible development environment. These environments can
-be used for interactive data analysis, or reproduced when running
-pipelines in CI/CD systems. On the [Nixpkgs
-collection](https://github.com/nixos/nixpkgs), there are currently more
+`{rix}` provides functions to help you write Nix expressions (written in
+the Nix language). These expressions will be the inputs for the Nix
+package manager, to build sets of software packages and provide them in
+a reproducible development environment. These environments can be used
+for interactive data analysis, or reproduced when running pipelines in
+CI/CD systems. The [Nixpkgs
+collection](https://github.com/nixos/nixpkgs) includes currently more
 than 100.000 pieces of software available through the Nix package
-manager. Through {rix}, you can define and build isolated R environments
-through Nix package manager with ease. Like this, environments contain R
-and all the required packages that you need for your project. You can
-also add any other software tool available. The Nix R ecosystem
-currently includes the entirety of CRAN and Bioconductor packages. Like
-with any other programming language and software, it is also possible to
-install older releases of R packages, or install packages from GitHub at
-defined states.
+manager.
+
+With `{rix}`, you can define development environments, or shells, that
+contain the required tools needed to analyze data using R. These
+environments are isolated from each other and project-specific: this
+means that a project can use one version of R and R packages, and
+another environment another version of R and R packages. However, extra
+care is required if you already have R installed through the usual
+method for your operating system, as these development environments are
+not totally isolated from the rest of your system. Unlike Docker, where
+a running container cannot acces anything from the host system, unless
+explicitely configured to do so, Nix development shells are nothing but
+environments that add more software to the list of already available
+software (the so-called `PATH`). As such, it is possible to access
+anything (files and software) already present on the system from a
+running Nix shell. Thus, `{rix}` also provides a function called
+`rix_init()` that helps isolate R sessions running inside Nix
+environments from the rest of your system. This avoids clashes between
+the Nix-specific library of R packages and the user library of R
+packages should you already have R installed and managed by the usual
+method for your operating system.
+
+It is also possible to add any other software package available on
+Nixpkgs to a Nix environment, for example IDEs such as RStudio or VS
+Code. The Nix R ecosystem currently includes almost the entirety of CRAN
+and Bioconductor packages (there is around a hundred CRAN or
+Biocondcuctor packages that are unavailable through Nix). Like with any
+other programming language or software, it is also possible to install
+older releases of R packages, or install packages from GitHub at defined
+states, as well as local packages in the `.tar.gz` format.
 
 The Nix package manager is extremely powerful. Not only does it handle
 all the dependencies of any package extremely well in a deterministic
@@ -66,17 +105,14 @@ old releases of software. It is thus possible to build environments
 containing R version 4.0.0 (for example) to run an old project that was
 originally developed on that version of R.
 
-As stated above, with Nix, it is essentially possible to replace
-[`{renv}`](https://rstudio.github.io/renv/) and Docker combined. If you
-need other tools or languages like Python or Julia, this can also be
-done easily. Nix is available for Linux, macOS and Windows (via WSL2)
+If you need other tools or languages like Python or Julia, this can also
+be done easily. Nix is available for Linux, macOS and Windows (via WSL2)
 and `{rix}` comes with the following features:
 
-- install any version of R and R packages for specific projects;
-- have several versions of R and R packages installed at the same time
-  on the same system;
 - define complete development environments as code and use them
   anywhere;
+- install project-specific complete R environments, which can be
+  different from each other;
 - run single R functions (and objects in the call stack) in a different
   environment (potentially with a different R version and R packages)
   for an interactive R session, and get back the output of that function
@@ -101,7 +137,7 @@ library("rix")
 ``` r
 path_default_nix <- "."
 
-rix(r_ver = "latest",
+rix(r_ver = "4.3.3",
     r_pkgs = c("dplyr", "ggplot2"),
     system_pkgs = NULL,
     git_pkgs = NULL,
@@ -114,7 +150,10 @@ rix(r_ver = "latest",
 This generates a file called `default.nix` in the path
 `path_default_nix` with the correct expression to build this
 environment. To build the environment, the Nix package manager must be
-installed.
+installed. If you have Nix installed, you can build the expression above
+using the `nix-build` terminal command and then enter the environment
+using `nix-shell`. The vignettes included in the package walk you
+through the whole workflow.
 
 ## Quick start for returning users
 

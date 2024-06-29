@@ -12,8 +12,12 @@
 #' **Enhancement of computational reproducibility for Nix-R environments:**
 #'
 #' The primary goal of `rix::rix_init()` is to enhance the computational
-#' reproducibility of Nix-R environments during runtime. Notably, no restart is
-#' required as environmental variables are set in the current session, in
+#' reproducibility of Nix-R environments during runtime. Concretely, if you
+#' already have a system or user library of R packages (if you have R installed
+#' through the usual means for your operating system), using `rix::rix_init()`
+#' will prevent Nix-R environments to load packages from the user library
+#' which would cause issues. 
+#' Notably, no restart is required as environmental variables are set in the current session, in
 #' addition to writing an `.Rprofile` file. This is particularly useful to make
 #' [rix::with_nix()] evaluate custom R functions from any "Nix-to-Nix" or
 #' "System-to-Nix" R setups. It introduces two side-effects that

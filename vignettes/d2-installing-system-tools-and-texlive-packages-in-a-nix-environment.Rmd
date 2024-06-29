@@ -20,7 +20,7 @@ library(rix)
 
 ## Introduction
 
-More than 80'000 pieces of software are available through the Nix package
+More than 100'000 pieces of software are available through the Nix package
 manager. Nix’s repository of packages is called `nixpkgs` and it includes the
 entirety of CRAN and Bioconductor. `nixpkgs` is actually "just" a Github
 repository containing thousands upon thousands of Nix expressions. When
