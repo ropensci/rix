@@ -134,5 +134,5 @@ NixOS's public cache, our `rstats-on-nix` cache, and your own, so your cache
 will only end up holding the binaries not found in the other two caches!
 
 Take a look at
-[this package’s](https://github.com/b-rodrigues/rix/blob/master/.github/workflows/cachix-dev-env.yml)
+[this package’s](https://github.com/b-rodrigues/rix/blob/master/.github/workflows/cachix_dev_env.yml)
 repository for an example of how this is done in practice.
