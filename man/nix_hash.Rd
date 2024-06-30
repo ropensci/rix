@@ -5,14 +5,12 @@
 \title{Return the sri hash of a path using \verb{nix hash path --sri path} if Nix is
 available locally}
 \usage{
-nix_hash(repo_url, branch_name, commit)
+nix_hash(repo_url, commit)
 }
 \arguments{
 \item{repo_url}{URL to Github repository}
 
-\item{branch_name}{Branch to checkout}
-
-\item{commit}{Commit hash}
+\item{commit}{Commit hash (SHA-1)}
 }
 \description{
 Return the sri hash of a path using \verb{nix hash path --sri path} if Nix is

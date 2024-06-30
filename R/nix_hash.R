@@ -1,11 +1,10 @@
 #' Return the sri hash of a path using `nix hash path --sri path` if Nix is
 #' available locally
 #' @param repo_url URL to Github repository
-#' @param branch_name Branch to checkout
-#' @param commit Commit hash
-nix_hash <- function(repo_url, branch_name, commit) {
+#' @param commit Commit hash (SHA-1)
+nix_hash <- function(repo_url, commit) {
   if (grepl("github", repo_url)) {
-    hash_git(repo_url = repo_url, branch_name, commit)
+    hash_git(repo_url = repo_url, commit)
   } else if (grepl("cran.*Archive.*", repo_url)) {
     hash_cran(repo_url = repo_url)
   } else {
@@ -137,7 +136,7 @@ hash_cran <- function(repo_url) {
 #' NAR
 #' @param repo_url URL to GitHub repository
 #' @param commit Commit hash
-hash_git <- function(repo_url, branch_name, commit) {
+hash_git <- function(repo_url, commit) {
   path_to_repo <- paste0(
     tempdir(), "repo",
     paste0(sample(letters, 5), collapse = "")
@@ -230,7 +229,7 @@ get_sri_hash_deps <- function(repo_url, branch_name, commit) {
             'You set `options(rix.sri_hash="locally")`, but Nix seems not',
             "installed.\n", "Either switch to",
             '`options(rix.sri_hash="api_server")`', "to compute the SRI hashes",
-            "through the http://git2nixsha.dev API server, or install nix\n",
+            "through the http://git2nixsha.dev API server, or install Nix.\n",
             no_nix_shell_msg,
             call. = FALSE
           )

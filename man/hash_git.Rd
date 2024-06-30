@@ -4,7 +4,7 @@
 \alias{hash_git}
 \title{Return the SRI hash of a GitHub repository at a given unique commmit ID}
 \usage{
-hash_git(repo_url, branch_name, commit)
+hash_git(repo_url, commit)
 }
 \arguments{
 \item{repo_url}{URL to GitHub repository}
