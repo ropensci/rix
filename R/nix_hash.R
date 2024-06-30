@@ -216,16 +216,37 @@ nix_hash_online <- function(repo_url, branch_name, commit) {
 #' - `deps`: string with R package dependencies separarated by space.
 get_sri_hash_deps <- function(repo_url, branch_name, commit) {
   sri_hash_option <- get_sri_hash_option()
-  if (nix_shell_available()) {
+  has_nix_shell <- nix_shell_available()
+  if (isTRUE(has_nix_shell)) {
     switch(sri_hash_option,
       "locally" = nix_hash(repo_url, branch_name, commit),
       "api_server" = nix_hash_online(repo_url, branch_name, commit)
     )
   } else {
+    switch(sri_hash_option,
+      "locally" = {
+        if (isFALSE(has_nix_shell)) {
+          stop(
+            'You set `options(rix.sri_hash="locally")`, but Nix seems not',
+            "installed.\n", "Either switch to",
+            '`options(rix.sri_hash="api_server")`', "to compute the SRI hashes",
+            "through the http://git2nixsha.dev API server, or install nix\n",
+            no_nix_shell_msg,
+            call. = FALSE
+          )
+        }
+        nix_hash(repo_url, branch_name, commit)
+      },
+      "api_server" = nix_hash_online(repo_url, branch_name, commit)
+    )
     nix_hash_online(repo_url, branch_name, commit)
   }
 }
 
+#' Retrieve validated value for options(rix.sri_hash=)
+#' @return validated `rix.sri_hash` option. Currently, either `"locally"` or
+#' `"api_server"`.
+#' @noRd
 get_sri_hash_option <- function() {
   sri_hash_options <- c(
     "locally",
@@ -233,7 +254,7 @@ get_sri_hash_option <- function() {
   )
   sri_hash <- getOption(
     "rix.sri_hash",
-    default = "locally"
+    default = "api_server"
   )
 
   valid_vars <- all(sri_hash %in% sri_hash_options)
