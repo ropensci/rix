@@ -56,8 +56,10 @@ get_right_commit <- function(r_version) {
 }
 
 
-#' Try fetch contents of an URL with handle and stop with propagating the curl
-#' error and also show URL for context
+#' Fetch contents from an URL into memory
+#' 
+#' Fetch if available and stop with propagating the curl error. Also show URL
+#' for context
 #' @noRd
 try_get_request <- function(url,
                             handle,
