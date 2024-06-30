@@ -7,7 +7,7 @@
 hash_cran(repo_url)
 }
 \arguments{
-\item{url}{URL to CRAN package source}
+\item{repo_url}{URL to CRAN package source}
 }
 \description{
 Return the SRI hash of a CRAN package source using \verb{nix hash path --sri path}
