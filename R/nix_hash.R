@@ -111,7 +111,7 @@ nix_sri_hash <- function(path) {
 
 
 #' Return the SRI hash of a CRAN package source using `nix hash path --sri path`
-#' @param url URL to CRAN package source
+#' @param repo_url URL to CRAN package source
 hash_cran <- function(repo_url) {
   path_to_repo <- paste0(
     tempdir(), "repo",
@@ -214,15 +214,18 @@ nix_hash_online <- function(repo_url, branch_name, commit) {
 #'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: string with R package dependencies separarated by space.
 get_sri_hash_deps <- function(repo_url, branch_name, commit) {
+  # if no `options(rix.sri_hash=)` is set, default is `"check_nix"`
   sri_hash_option <- get_sri_hash_option()
   has_nix_shell <- nix_shell_available()
   if (isTRUE(has_nix_shell)) {
     switch(sri_hash_option,
-      "locally" = nix_hash(repo_url, branch_name, commit),
+      "check_nix" = nix_hash(repo_url, commit),
+      "locally" = nix_hash(repo_url, commit),
       "api_server" = nix_hash_online(repo_url, branch_name, commit)
     )
   } else {
     switch(sri_hash_option,
+      "check_nix" = nix_hash_online(repo_url, branch_name, commit),
       "locally" = {
         if (isFALSE(has_nix_shell)) {
           stop(
@@ -234,26 +237,25 @@ get_sri_hash_deps <- function(repo_url, branch_name, commit) {
             call. = FALSE
           )
         }
-        nix_hash(repo_url, branch_name, commit)
       },
       "api_server" = nix_hash_online(repo_url, branch_name, commit)
     )
-    nix_hash_online(repo_url, branch_name, commit)
   }
 }
 
 #' Retrieve validated value for options(rix.sri_hash=)
-#' @return validated `rix.sri_hash` option. Currently, either `"locally"` or
-#' `"api_server"`.
+#' @return validated `rix.sri_hash` option. Currently, either `"check_nix"` 
+#' if option is not set, `"locally"` or `"api_server"` if the option is set.
 #' @noRd
 get_sri_hash_option <- function() {
   sri_hash_options <- c(
+    "check_nix",
     "locally",
     "api_server"
   )
   sri_hash <- getOption(
     "rix.sri_hash",
-    default = "api_server"
+    default = "check_nix"
   )
 
   valid_vars <- all(sri_hash %in% sri_hash_options)
