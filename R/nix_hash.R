@@ -94,33 +94,19 @@ nix_sri_hash <- function(path) {
   }
 
   cmd <- "nix-hash"
-  args_1 <- c("--type", "sha256", path)
-  proc_1 <- sys::exec_internal(
-    cmd = cmd, args = args_1
+  args <- c("--type", "sha256", "--sri", path)
+  proc <- sys::exec_internal(
+    cmd = cmd, args = args
   )
-  
+
   poll_sys_proc_blocking(
-    cmd = paste(cmd, paste(args_1, collapse = " ")),
-    proc = proc_1,
+    cmd = paste(cmd, paste(args, collapse = " ")),
+    proc = proc,
     what = cmd,
     message_type = "quiet"
   )
 
-  base16_hash <- sys::as_text(proc_1$stdout)
-
-  args_2 <- c("--type", "sha256", "--to-sri", base16_hash)
-  proc_2 <- sys::exec_internal(
-    cmd = cmd, args = args_2
-  )
-
-  poll_sys_proc_blocking(
-    cmd = paste(cmd, paste(args_2, collapse = " ")),
-    proc = proc_2,
-    what = cmd,
-    message_type = "quiet"
-  )
-
-  sri_hash <- sys::as_text(proc_2$stdout)
+  sri_hash <- sys::as_text(proc$stdout)
   return(sri_hash)
 }
 
@@ -139,9 +125,17 @@ hash_cran <- function(repo_url) {
   return(list_sri_hash_deps)
 }
 
-#' Return the SRI hash of a GitHub repository
+#' Return the SRI hash of a GitHub repository at a given unique commmit ID
+#' 
+#' @details `hash_git` will retrieve an archive of the repository URL
+#' <https://github.com/<user>/<repo> at a given commit ID. It will fetch 
+#' a .tar.gz file from
+#' <https://github.com/<user>/<repo>/archive/<commit-id>.tar.gz. Then, it will
+#' ungzip and unarchive the downloaded `tar.gz` file. Then, on the extracted
+#' directory, it will run `nix-hash`
+#' (NAR) hash 
+#' NAR
 #' @param repo_url URL to GitHub repository
-#' @param branch_name Branch to checkout
 #' @param commit Commit hash
 hash_git <- function(repo_url, branch_name, commit) {
   path_to_repo <- paste0(
@@ -199,15 +193,17 @@ nix_hash_online <- function(repo_url, branch_name, commit) {
   )
 
   # plumber endpoint delivers list with
-  # - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
+  # - `sri_hash`: string with SHA256 hash in base-64 and SRI format of a
+  # GitHub repository at a given commit ID
   # - `deps`: string with R package dependencies separated by `" "`
   sri_hash_deps_list <- jsonlite::fromJSON(rawToChar(req$content))
 
   return(sri_hash_deps_list)
 }
 
-#' Return the sri hash of a path using `nix hash path --sri path` either with
-#' local Nix, or using an online service if Nix is not available
+#' Return the sri hash of a path using `nix-hash --type sha256 --sri <path>` 
+#' with local Nix, or using an online API service (equivalent
+#' `nix hash path --sri <path>`) if Nix is not available
 #' @param repo_url A character. The URL to the package's Github repository or to
 #' the `.tar.gz` package hosted on CRAN.
 #' @param branch_name A character. The branch of interest, NULL for archived
@@ -216,14 +212,41 @@ nix_hash_online <- function(repo_url, branch_name, commit) {
 #' sake, NULL for archived CRAN packages.
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
+#'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: string with R package dependencies separarated by space.
-#' @noRd
 get_sri_hash_deps <- function(repo_url, branch_name, commit) {
+  sri_hash_option <- get_sri_hash_option()
   if (nix_shell_available()) {
-    nix_hash(repo_url, branch_name, commit)
+    switch(sri_hash_option,
+      "locally" = nix_hash(repo_url, branch_name, commit),
+      "api_server" = nix_hash_online(repo_url, branch_name, commit)
+    )
   } else {
     nix_hash_online(repo_url, branch_name, commit)
   }
+}
+
+get_sri_hash_option <- function() {
+  sri_hash_options <- c(
+    "locally",
+    "api_server"
+  )
+  sri_hash <- getOption(
+    "rix.sri_hash",
+    default = "locally"
+  )
+
+  valid_vars <- all(sri_hash %in% sri_hash_options)
+
+  if (!isTRUE(valid_vars)) {
+    stop("`options(rix.sri_hash=)` ",
+      "only allows the following values:\n",
+      paste(sri_hash_options, collapse = "; "),
+      call. = FALSE
+    )
+  }
+
+  return(sri_hash)
 }
 
 #' Try download contents of an URL onto file on disk
