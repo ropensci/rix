@@ -172,9 +172,6 @@ rix(r_ver = "4.2.1",
 #> }
 ```
 
-```{r, include = FALSE}
-unlink(path_default_nix, recursive = TRUE, force = TRUE)
-```
 
 The above expression will install R version 4.2.1, and `{dplyr}` at version
 0.8.0 and `{janitor}` at version 1.0.0. This can be useful, especially for
