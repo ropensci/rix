@@ -1,7 +1,11 @@
 testthat::test_that("rix(), ide is 'rstudio', Linux", {
   skip_if(Sys.info()["sysname"] == "Darwin")
 
-  path_default_nix <- tempdir()
+  path_default_nix <- paste0(
+    tempdir(), paste0(sample(letters, 5), collapse = "")
+  )
+  dir.create(path_default_nix)
+  path_default_nix <- normalizePath(path_default_nix)
 
   save_default_nix_test <- function(ide, path_default_nix) {
     rix(
@@ -28,7 +32,7 @@ testthat::test_that("rix(), ide is 'rstudio', Linux", {
       shell_hook = NULL
     )
 
-    paste0(path_default_nix, "/default.nix")
+    file.path(path_default_nix, "default.nix")
   }
 
   testthat::announce_snapshot_file("rix/rstudio_default.nix")
@@ -37,6 +41,10 @@ testthat::test_that("rix(), ide is 'rstudio', Linux", {
     path = save_default_nix_test(ide = "rstudio", path_default_nix),
     name = "rstudio_default.nix",
   )
+
+  on.exit({
+    unlink(path_default_nix, recursive = TRUE, force = TRUE)
+  })
 })
 
 
