@@ -421,3 +421,30 @@ testthat::test_that("rix(), only one Github package", {
     unlink(path_default_nix, recursive = TRUE, force = TRUE)
   })
 })
+
+
+testthat::test_that("rix(), conclusion message", {
+
+  path_default_nix <- paste0(
+    tempdir(), paste0(sample(letters, 5), collapse = "")
+  )
+  dir.create(path_default_nix)
+  path_default_nix <- normalizePath(path_default_nix)
+
+  save_default_nix_test <- function(path_default_nix) {
+
+    rix(r_ver = "latest",
+      ide = "other",
+      project_path = path_default_nix,
+      message_type = "simple",
+      overwrite = TRUE
+    )
+
+    file.path(path_default_nix, "default.nix")
+  }
+
+  testthat::expect_message(
+    save_default_nix_test(path_default_nix),
+    regexp = "Successfully"
+  )
+})

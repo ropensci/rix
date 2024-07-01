@@ -42,6 +42,10 @@
 #'   `default.nix` file in the specified path.
 #' @param print Logical, defaults to FALSE. If TRUE, print `default.nix` to
 #'   console.
+#' @param message_type Character. Message type, defaults to `"simple"`, which
+#'   gives minimal but sufficient feedback. Other values are currently
+#'   `"quiet`, which generates the files without message, and `"verbose"`,
+#'   displays all the messages.
 #' @param shell_hook Character of length 1, defaults to `NULL`. Commands added
 #'   to the `shellHook` variable are executed when the Nix shell starts. So by
 #'   default, using `nix-shell default.nix` will start a specific program,
@@ -128,6 +132,7 @@
 #'   project_path = path_default_nix,
 #'   overwrite = TRUE,
 #'   print = TRUE,
+#'   message_type = "simple"
 #'   shell_hook = NULL
 #' )
 #' }
@@ -141,9 +146,14 @@ rix <- function(r_ver = "latest",
                 project_path = ".",
                 overwrite = FALSE,
                 print = FALSE,
+                message_type = "verbose",
                 shell_hook = NULL) {
 
-  if (r_ver %in% c("bleeding_edge", "frozen_edge")) {
+  message_type <- match.arg(message_type,
+                            choices = c("quiet", "simple", "verbose")
+                            )
+
+  if (!(message_type %in% c("simple", "quiet")) & r_ver %in% c("bleeding_edge", "frozen_edge")) {
     warning(
       "You chose 'bleeding_edge' or 'frozen_edge' as the value for
 `r_ver`. Please read the vignette
@@ -152,13 +162,13 @@ before continuing."
     )
   }
 
-  if(r_ver %in% available_r() & r_ver != "latest" & r_ver <= "4.1.1"){
+ if(message_type != "quiet" & r_ver %in% available_r() & r_ver != "latest" & r_ver <= "4.1.1"){
     warning(
       "You are generating an expression for an older version of R.\n To use this environment, you should directly use `nix-shell` and not try to build it first using `nix-build`."
     )
   }
 
-  if(r_ver == "4.4.0"){
+ if(message_type != "quiet" & r_ver == "4.4.0"){
     warning(
       "You chose '4.4.0' as the R version, however this version is not available in nixpkgs. The generated expression will thus install R version 4.4.1."
     )
@@ -173,7 +183,7 @@ before continuing."
     rserver = "rstudioServerWrapper"
   )
 
-  if (Sys.info()["sysname"] == "Darwin" & ide == "rstudio") {
+  if (message_type != "quiet" & Sys.info()["sysname"] == "Darwin" & ide == "rstudio") {
     warning(
       "Your detected operating system is macOS, and you chose
 'rstudio' as the IDE. Please note that 'rstudio' is not
@@ -277,10 +287,18 @@ for more details."
 
   if (!file.exists(default.nix_path) || overwrite) {
     writeLines(default.nix, default.nix_path)
+
     rix_init(project_path = project_path,
              rprofile_action = "create_missing",
-             message_type = "quiet")
-    cat("\nSuccessfully generated `default.nix` and `.Rprofile`\n")
+             # 'verbose' is too chatty for rix()
+             # hence why it's transformed to "simple"
+             message_type = ifelse(message_type == "verbose",
+                                   "simple", message_type))
+
+    if(message_type != "quiet"){
+      message("\n\n### Successfully generated `default.nix` and `.Rprofile` ###\n\n")
+   }
+
   } else {
     project_path <- if(project_path == ".") {
                       "current folder"
