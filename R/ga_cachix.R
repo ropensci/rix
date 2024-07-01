@@ -29,13 +29,15 @@ ga_cachix <- function(cache_name, path_default) {
 
     path <- ".github/workflows"
 
-    dir.create(path, recursive = TRUE)
+    if (!dir.exists(path)) {
+      dir.create(path, recursive = TRUE)
+    }
   } else {
     path <- tempdir()
   }
 
   source <- system.file(
-    file.path("extdata", "cachix-dev-env.yaml"),
+    file.path("extdata", "cachix_dev_env.yaml"),
     package = "rix",
     mustWork = TRUE
   )
@@ -54,13 +56,16 @@ ga_cachix <- function(cache_name, path_default) {
   system(
     paste0(
       "sed -i ", darwin_specific_quotes, "'s/CACHE_NAME/", cache_name, "/g' ",
-      paste0(path, "/cachix-dev-env.yaml")
+      paste0(path, "/cachix_dev_env.yaml")
     )
   )
 
   system(
-    paste0("sed -i ", darwin_specific_quotes, "'s/PATH_TO_DEFAULT_NIX/", path_default, "/g' ", paste0(path, "/cachix-dev-env.yaml"))
+    paste0("sed -i ", darwin_specific_quotes, "'s/PATH_TO_DEFAULT_NIX/",
+    path_default, "/g' ", file.path(path, "cachix_dev_env.yaml"))
   )
 
-  if (identical(Sys.getenv("TESTTHAT"), "true")) paste0(path, "/cachix-dev-env.yaml")
+  if (identical(Sys.getenv("TESTTHAT"), "true")) {
+    file.path(path, "cachix_dev_env.yaml")
+  }
 }

@@ -1,25 +1,29 @@
 #' Stop with descriptive error how to solve when `nix-shell` cannot be found
 #' in current shell environment or R session
 #' @noRd
-stop_no_nix_shell <- function() {
+stop_no_nix_shell <- function(msg = no_nix_shell_msg()) {
   stop(
-    paste0(
-      "`nix-shell` is needed but is not available in your current ",
-      "shell environment.\n",
-      "* If you are in an R session of your host operating system, you
-      either\n1a) need to install Nix first, or if you have already done so ",
-      "\n",
-      "To install, we suggest you follow https://zero-to-nix.com/start/install .",
-      "\n",
-      "1b) make sure that the location of the nix store is in the `PATH`
-      variable of this R session (mostly necessary in RStudio).\n",
-      "* If you ran `with_nix()` from R launched in a `nix-shell`, you need
-      to make sure that `pkgs.nix` is in the `buildInput` for ",
-      "`pkgs.mkShell`.\nIf you used `rix::rix()` to generate your main nix
-      configuration of this session, just regenerate it with the additonal
-      argument `system_pkgs = 'nix'."
-    ),
+    msg,
     call. = FALSE
+  )
+}
+
+no_nix_shell_msg <- function() {
+  paste0(
+    "`nix-shell` is needed but is not available in your current ",
+    "shell environment.\n",
+    "* If you are in an R session of your host operating system, you
+    either\n1a) need to install Nix first, or if you have already done so ",
+    "\n",
+    "To install, we suggest you follow https://zero-to-nix.com/start/install .",
+    "\n",
+    "1b) make sure that the location of the nix store is in the `PATH`
+    variable of this R session (mostly necessary in RStudio).\n",
+    "* If you ran `with_nix()` from R launched in a `nix-shell`, you need
+    to make sure that `pkgs.nix` is in the `buildInput` for ",
+    "`pkgs.mkShell`.\nIf you used `rix::rix()` to generate your main nix
+    configuration of this session, just regenerate it with the additonal
+    argument `system_pkgs = 'nix'."
   )
 }
 
