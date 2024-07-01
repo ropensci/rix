@@ -12,7 +12,7 @@ testthat::test_that("Testing that `nix_build()` builds derivation", {
   path_subshell <- tempdir()
 
   rix(
-    r_ver = "latest",
+    r_ver = "4.3.1",
     overwrite = TRUE,
     project_path = path_subshell,
     shell_hook = NULL
