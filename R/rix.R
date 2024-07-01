@@ -1,18 +1,19 @@
-#' Generate a Nix expression that builds a reproducible development
-#' environment
-#' @return Nothing, this function only has the side-effect of writing a file
-#'   called "default.nix" in the working directory. This file contains the
-#'   expression to build a reproducible environment using the Nix package
-#'   manager.
+#' Generate a Nix expression that builds a reproducible development environment
+#' @return Nothing, this function only has the side-effect of writing two files:
+#'   `default.nix` and `.Rprofile` in the working directory. `default.nix`
+#'   contains a Nix expression to build a reproducible environment using the Nix
+#'   package manager, and `.Rprofile` ensures that a running R session from a
+#'   Nix environment cannot access local libraries, nor install packages using
+#'   `install.packages()`.
 #' @param r_ver Character, defaults to "latest". The required R version, for
 #'   example "4.0.0". You can check which R versions are available using
-#'   `available_r`. For reproducibility purposes, you can also provide a nixpkgs
-#'   revision directly. For older versions of R, `nix-build` might fail with an
-#'   error stating 'this derivation is not meant to be built'. In this case,
-#'   simply drop into the shell with `nix-shell` instead of building it first.
-#'   It is also possible to provide either "bleeding_edge" or
+#'   `available_r()`. For reproducibility purposes, you can also provide a
+#'   `nixpkgs` revision directly. For older versions of R, `nix-build` might
+#'   fail with an error stating 'this derivation is not meant to be built'. In
+#'   this case, simply drop into the shell with `nix-shell` instead of building
+#'   it first. It is also possible to provide either "bleeding_edge" or
 #'   "frozen_edge" if you need an environment with bleeding edge packages. Read
-#'   more in the "Details" below.
+#'   more in the "Details" section below.
 #' @param r_pkgs Vector of characters. List the required R packages for your
 #'   analysis here.
 #' @param system_pkgs Vector of characters. List further software you wish to
@@ -20,10 +21,11 @@
 #'   example. You can look for available software on the NixOS website
 #'   \url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=}
 #' @param git_pkgs List. A list of packages to install from Git. See details for
-#' more information.
-#' @param local_pkgs List. A list of paths to local packages to install. These
-#' packages need to be in the `.tar.gz` or `.zip` formats.
-#' @param tex_pkgs Vector of characters. A set of tex packages to install. Use
+#'   more information.
+#' @param local_pkgs List. A list of local packages to install. These packages
+#'   need to be in the `.tar.gz` or `.zip` formats and must be in the same
+#'   folder as the generated "default.nix" file.
+#' @param tex_pkgs Vector of characters. A set of TeX packages to install. Use
 #'   this if you need to compile `.tex` documents, or build PDF documents using
 #'   Quarto. If you don't know which package to add, start by adding "amsmath".
 #'   See the Vignette "Authoring LaTeX documents" for more details.
@@ -33,26 +35,25 @@
 #'   other editors, use "other". This has been tested with RStudio, VS Code and
 #'   Emacs. If other editors don't work, please open an issue.
 #' @param project_path Character, defaults to the current working directory.
-#'   Where to write `default.nix`, for example "/home/path/to/project".
-#'   The file will thus be written to the file
-#'   "/home/path/to/project/default.nix".
+#'   Where to write `default.nix`, for example "/home/path/to/project". The file
+#'   will thus be written to the file "/home/path/to/project/default.nix".
 #' @param overwrite Logical, defaults to FALSE. If TRUE, overwrite the
 #'   `default.nix` file in the specified path.
 #' @param print Logical, defaults to FALSE. If TRUE, print `default.nix` to
-#' console.
+#'   console.
 #' @param shell_hook Character of length 1, defaults to `NULL`. Commands added
-#'   to the `shellHook` variable executed when the Nix shell starts. So
-#'   by default, using `nix-shell default.nix` (or path with `shell.nix`) will
-#'   start a specific program, possibly with flags (separated by space), and/or
-#'   do shell actions. You can for example use `shell_hook = R`, if you want to
-#'   directly enter the declared Nix R session.
-#' @details This function will write a `default.nix` in the chosen path. Using
-#'   the Nix package manager, it is then possible to build a reproducible
-#'   development environment using the `nix-build` command in the path. This
-#'   environment will contain the chosen version of R and packages, and will not
-#'   interfere with any other installed version (via Nix or not) on your
-#'   machine. Every dependency, including both R package dependencies but also
-#'   system dependencies like compilers will get installed as well in that
+#'   to the `shellHook` variable are executed when the Nix shell starts. So by
+#'   default, using `nix-shell default.nix` will start a specific program,
+#'   possibly with flags (separated by space), and/or do shell actions. You can
+#'   for example use `shell_hook = R`, if you want to directly enter the
+#'   declared Nix R session when dropping into the Nix shell.
+#' @details This function will write a `default.nix` and an `.Rprofile` in the
+#'   chosen path. Using the Nix package manager, it is then possible to build a
+#'   reproducible development environment using the `nix-build` command in the
+#'   path. This environment will contain the chosen version of R and packages,
+#'   and will not interfere with any other installed version (via Nix or not) on
+#'   your machine. Every dependency, including both R package dependencies but
+#'   also system dependencies like compilers will get installed as well in that
 #'   environment.
 #'
 #'   It is possible to use environments built with Nix interactively, either
