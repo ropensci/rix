@@ -118,6 +118,10 @@ remove_base <- function(list_imports) {
 get_imports <- function(path) {
   tmp_dir <- tempdir()
 
+  # Some packages have a Description file in the testthat folder
+  # (see jimhester/lookup) so we need to get rid of that
+  path <- Filter(function(x)!grepl("testthat", x), path)
+
   # Is the path pointing to a tar.gz archive
   # or directly to a DESCRIPTION file?
   if (grepl("\\.tar\\.gz", path)) {

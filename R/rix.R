@@ -36,7 +36,8 @@
 #'   Emacs. If other editors don't work, please open an issue.
 #' @param project_path Character, defaults to the current working directory.
 #'   Where to write `default.nix`, for example "/home/path/to/project". The file
-#'   will thus be written to the file "/home/path/to/project/default.nix".
+#'   will thus be written to the file "/home/path/to/project/default.nix". If
+#'   the folder does not exist, it will be created.
 #' @param overwrite Logical, defaults to FALSE. If TRUE, overwrite the
 #'   `default.nix` file in the specified path.
 #' @param print Logical, defaults to FALSE. If TRUE, print `default.nix` to
@@ -57,17 +58,18 @@
 #'   environment.
 #'
 #'   It is possible to use environments built with Nix interactively, either
-#'   from the terminal, or using an interface such as RStudio.  If you 
-#'   want to use RStudio, set it to `"rstudio"`. Please be aware that RStudio
-#'   is not available for macOS through Nix. As such, you may want to use another
-#'   editor on macOS. To use Visual Studio Code (or Codium), set the `ide`
-#'   argument to `"code"`, which will add the `{languageserver}` R package
-#'   to the list of R packages to be installed by Nix in that environment. You can
-#'   use the version of Visual Studio Code or Codium you already use, or also install
-#'   it using Nix (by adding "vscode" or "vscodium" to the list of `system_pkgs`).
-#'   For non-interactive use, or to use the environment from the command line, or from another
-#'   editor (such as Emacs or Vim), set the `ide` argument to `"other"`.
-#'   We recommend reading the `vignette("e-interactive-use")` for more details.
+#'   from the terminal, or using an interface such as RStudio. If you want to
+#'   use RStudio, set the `ide` argument to `"rstudio"`. Please be aware that
+#'   RStudio is not available for macOS through Nix. As such, you may want to
+#'   use another editor on macOS. To use Visual Studio Code (or Codium), set the
+#'   `ide` argument to `"code"`, which will add the `{languageserver}` R package
+#'   to the list of R packages to be installed by Nix in that environment. You
+#'   can use the version of Visual Studio Code or Codium you already use, or
+#'   also install it using Nix (by adding "vscode" or "vscodium" to the list of
+#'   `system_pkgs`). For non-interactive use, or to use the environment from the
+#'   command line, or from another editor (such as Emacs or Vim), set the `ide`
+#'   argument to `"other"`. We recommend reading the
+#'   `vignette("e-interactive-use")` for more details.
 #'
 #'   Packages to install from Github must be provided in a list of 4 elements:
 #'   "package_name", "repo_url", "branch_name" and "commit". This argument can
@@ -83,7 +85,13 @@
 #'   setting `r_ver = "3.1.0"`, which was the version of R current at the time.
 #'   This ensures that Nix builds a completely coherent environment.
 #'
-#'   By default, the nix shell will be configured with `"en_US.UTF-8"` for the
+#'   Note that installing packages from Git or old versions using the `"@"`
+#'   notation or local packages, does not leverage Nix's capabilities for
+#'   dependency solving. As such, you might have trouble installing these
+#'   packages. If that is the case, open an issue on `{rix}`'s Github
+#'   repository.
+#'
+#'   By default, the Nix shell will be configured with `"en_US.UTF-8"` for the
 #'   relevant locale variables (`LANG`, `LC_ALL`, `LC_TIME`, `LC_MONETARY`,
 #'   `LC_PAPER`, `LC_MEASUREMENT`). This is done to ensure locale
 #'   reproducibility by default in Nix environments created with `rix()`. If
@@ -92,18 +100,18 @@
 #'   list(LANG = "de_CH.UTF-8", <...>)` and the aforementioned locale variable
 #'   names.
 #'
-#'   It is possible to use "bleeding_edge" or "frozen_edge" as the value for the
-#'   `r_ver` argument. This will create an environment with the very latest R
-#'   packages. "bleeding_edge" means that every time you will build the
+#'   It is possible to use `"bleeding_edge`" or `"frozen_edge`" as the value for
+#'   the `r_ver` argument. This will create an environment with the very latest
+#'   R packages. `"bleeding_edge`" means that every time you will build the
 #'   environment, the packages will get updated. This is especially useful for
 #'   environments that need to be constantly updated, for example when
-#'   developing a package. In contrast, "frozen_edge" will create an environment
-#'   that will remain stable at build time. So if you create a `default.nix`
-#'   file using "bleeding_edge", each time you build it using `nix-build` that
-#'   environment will be up-to-date. With "frozen_edge" that environment will be
-#'   up-to-date on the date that the `default.nix` will be generated, and then
-#'   each subsequent call to `nix-build` will result in the same environment. We
-#'   highly recommend you read the vignette titled
+#'   developing a package. In contrast, `"frozen_edge`" will create an
+#'   environment that will remain stable at build time. So if you create a
+#'   `default.nix` file using `"bleeding_edge`", each time you build it using
+#'   `nix-build` that environment will be up-to-date. With `"frozen_edge`" that
+#'   environment will be up-to-date on the date that the `default.nix` will be
+#'   generated, and then each subsequent call to `nix-build` will result in the
+#'   same environment. We highly recommend you read the vignette titled
 #'   "z - Advanced topic: Understanding the rPackages set release cycle and using bleeding edge packages".
 #' @export
 #' @examples
@@ -134,6 +142,7 @@ rix <- function(r_ver = "latest",
                 overwrite = FALSE,
                 print = FALSE,
                 shell_hook = NULL) {
+
   if (r_ver %in% c("bleeding_edge", "frozen_edge")) {
     warning(
       "You chose 'bleeding_edge' or 'frozen_edge' as the value for
@@ -180,7 +189,7 @@ for more details."
   if (isFALSE(dir.exists(project_path))) {
     dir.create(path = project_path, recursive = TRUE)
     project_path <- normalizePath(path = project_path)
-  } 
+  }
 
   default.nix_path <- if (project_path == ".") {
     "default.nix"
@@ -271,6 +280,7 @@ for more details."
     rix_init(project_path = project_path,
              rprofile_action = "create_missing",
              message_type = "quiet")
+    cat("\nSuccessfully generated `default.nix` and `.Rprofile`\n")
   } else {
     project_path <- if(project_path == ".") {
                       "current folder"

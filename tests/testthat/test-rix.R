@@ -383,3 +383,41 @@ testthat::test_that("rix(), frozen_edge", {
     unlink(path_default_nix, recursive = TRUE, force = FALSE)
   })
 })
+
+
+testthat::test_that("rix(), only one Github package", {
+
+  path_default_nix <- paste0(
+    tempdir(), paste0(sample(letters, 5), collapse = "")
+  )
+  dir.create(path_default_nix)
+  path_default_nix <- normalizePath(path_default_nix)
+
+  save_default_nix_test <- function(path_default_nix) {
+
+    rix(r_ver = "latest",
+      r_pkgs = NULL,
+      system_pkgs = NULL,
+      git_pkgs = list(package_name = "lookup",
+                      repo_url = "https://github.com/jimhester/lookup/",
+                      branch_name = "master",
+                      commit = "eba63db477dd2f20153b75e2949eb333a36cccfc"),
+      ide = "other",
+      project_path = path_default_nix,
+      overwrite = TRUE
+    )
+
+    file.path(path_default_nix, "default.nix")
+  }
+
+  testthat::announce_snapshot_file("rix/one_git_default.nix")
+
+  testthat::expect_snapshot_file(
+    path = save_default_nix_test(path_default_nix),
+    name = "one_git_default.nix",
+  )
+
+  on.exit({
+    unlink(path_default_nix, recursive = TRUE, force = TRUE)
+  })
+})
