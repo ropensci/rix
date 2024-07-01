@@ -15,7 +15,7 @@ rix(
   project_path = ".",
   overwrite = FALSE,
   print = FALSE,
-  message_type = "verbose",
+  message_type = "simple",
   shell_hook = NULL
 )
 }
