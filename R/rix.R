@@ -153,7 +153,7 @@ rix <- function(r_ver = "latest",
                             choices = c("quiet", "simple", "verbose")
                             )
 
-  if (!(message_type %in% c("simple", "quiet")) & r_ver %in% c("bleeding_edge", "frozen_edge")) {
+  if (!(message_type %in% c("simple", "quiet")) && r_ver %in% c("bleeding_edge", "frozen_edge")) {
     warning(
       "You chose 'bleeding_edge' or 'frozen_edge' as the value for
 `r_ver`. Please read the vignette
@@ -162,13 +162,13 @@ before continuing."
     )
   }
 
- if(message_type != "quiet" & r_ver %in% available_r() & r_ver != "latest" & r_ver <= "4.1.1"){
+ if(message_type != "quiet" && r_ver %in% available_r() && r_ver != "latest" && r_ver <= "4.1.1"){
     warning(
       "You are generating an expression for an older version of R.\n To use this environment, you should directly use `nix-shell` and not try to build it first using `nix-build`."
     )
   }
 
- if(message_type != "quiet" & r_ver == "4.4.0"){
+ if(message_type != "quiet" && r_ver == "4.4.0"){
     warning(
       "You chose '4.4.0' as the R version, however this version is not available in nixpkgs. The generated expression will thus install R version 4.4.1."
     )
