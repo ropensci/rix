@@ -301,7 +301,9 @@ for more details."
         if (message_type != "quiet"){
           message("\n\n### Successfully generated `default.nix` ###\n\n")
         }
-        warning("\n\n### .Rprofile file already exists. You may want to call rix_init(profile_action = 'append') manually to ensure correct functioning of your Nix environment. ###\n\n")
+        warning("\n\n### .Rprofile file already exists. ",
+          "You may want to call rix_init(rprofile_action = 'append') manually ",
+          "to ensure correct functioning of your Nix environment. ###\n\n")
       } else {
         if (message_type != "quiet"){
           message("\n\n### Successfully generated `default.nix` in . ",
