@@ -113,10 +113,6 @@ nix_sri_hash <- function(path) {
 #' Return the SRI hash of a CRAN package source using `nix hash path --sri path`
 #' @param repo_url URL to CRAN package source
 hash_cran <- function(repo_url) {
-  path_to_repo <- paste0(
-    tempdir(), "repo",
-    paste0(sample(letters, 5), collapse = "")
-  )
 
   # list contains `sri_hash` and `deps` elements
   list_sri_hash_deps <- hash_url(url = repo_url)
@@ -137,10 +133,6 @@ hash_cran <- function(repo_url) {
 #' @param repo_url URL to GitHub repository
 #' @param commit Commit hash
 hash_git <- function(repo_url, commit) {
-  path_to_repo <- paste0(
-    tempdir(), "repo",
-    paste0(sample(letters, 5), collapse = "")
-  )
 
   trailing_slash <- grepl("/$", repo_url)
   if (isTRUE(trailing_slash)) {
