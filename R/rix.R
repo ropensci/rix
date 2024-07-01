@@ -146,7 +146,7 @@ rix <- function(r_ver = "latest",
                 project_path = ".",
                 overwrite = FALSE,
                 print = FALSE,
-                message_type = "verbose",
+                message_type = "simple",
                 shell_hook = NULL) {
 
   message_type <- match.arg(message_type,
