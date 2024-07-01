@@ -183,7 +183,7 @@ before continuing."
     rserver = "rstudioServerWrapper"
   )
 
-  if (message_type != "quiet" & Sys.info()["sysname"] == "Darwin" & ide == "rstudio") {
+  if (message_type != "quiet" && Sys.info()["sysname"] == "Darwin" && ide == "rstudio") {
     warning(
       "Your detected operating system is macOS, and you chose
 'rstudio' as the IDE. Please note that 'rstudio' is not
@@ -257,7 +257,7 @@ for more details."
 
   # If there are wrapped packages (for example for RStudio), passes the "wrapped_pkgs"
   # to buildInputs
-  flag_wrapper <- if (ide %in% names(attrib) & flag_rpkgs != "") "wrapped_pkgs" else ""
+  flag_wrapper <- if (ide %in% names(attrib) && flag_rpkgs != "") "wrapped_pkgs" else ""
 
   # Correctly formats shellHook for Nix's mkShell
   shell_hook <- if (!is.null(shell_hook) && nzchar(shell_hook)) {
