@@ -11,12 +11,6 @@ testthat::test_that("Testing that `nix_build()` builds derivation", {
 
   path_subshell <- tempdir()
 
-  rix_init(
-    project_path = path_subshell,
-    rprofile_action = "overwrite",
-    message_type = "simple"
-  )
-
   rix(
     r_ver = "latest",
     overwrite = TRUE,
@@ -29,4 +23,8 @@ testthat::test_that("Testing that `nix_build()` builds derivation", {
       project_path = path_subshell
     )
   )
+
+  on.exit({
+    unlink(path_subshell, recursive = TRUE, force = TRUE)
+  })
 })
