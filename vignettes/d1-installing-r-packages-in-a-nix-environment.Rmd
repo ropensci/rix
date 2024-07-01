@@ -80,7 +80,10 @@ archived on CRAN:
 
 
 ```{r parsermd-chunk-1}
-path_default_nix <- tempdir()
+path_default_nix <- paste0(
+  tempdir(), "repo",
+  paste0(sample(letters, 5), collapse = "")
+)
 
 rix(r_ver = "4.2.1",
     r_pkgs = c("dplyr@0.8.0", "janitor@1.0.0"),
@@ -110,6 +113,11 @@ It is also possible to install packages from Github:
 
 
 ```{r parsermd-chunk-3}
+path_default_nix <- paste0(
+  tempdir(), "repo",
+  paste0(sample(letters, 5), collapse = "")
+)
+
 rix(r_ver = "4.2.1",
     r_pkgs = c("dplyr", "janitor"),
     git_pkgs = list(
@@ -162,6 +170,11 @@ from GitHub:
 
 
 ```{r parsermd-chunk-5}
+path_default_nix <- paste0(
+  tempdir(), "repo",
+  paste0(sample(letters, 5), collapse = "")
+)
+
 rix(r_ver = "4.2.1",
     r_pkgs = c("dplyr", "janitor", "AER@1.2-8"),
     git_pkgs = list(

@@ -46,7 +46,10 @@ the following `rix::rix()` call:
 
 
 ```{r parsermd-chunk-1}
-path_default_nix <- tempdir()
+path_default_nix <- paste0(
+  tempdir(), "repo",
+  paste0(sample(letters, 5), collapse = "")
+)
 
 rix(r_ver = "latest",
     r_pkgs = NULL,
@@ -89,6 +92,11 @@ however, because it never got released on CRAN. Doing so is fairly easy: first,
 create a new expression using `{rix}` to install `{highlite}`:
 
 ```
+path_default_nix <- paste0(
+  tempdir(), "repo",
+  paste0(sample(letters, 5), collapse = "")
+)
+
 rix(r_ver = "latest",
     r_pkgs = NULL,
     system_pkgs = NULL,

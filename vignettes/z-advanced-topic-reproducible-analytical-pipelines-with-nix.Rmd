@@ -34,7 +34,10 @@ you could have used to build that environment:
 
 
 ```{r parsermd-chunk-1}
-path_default_nix <- tempdir()
+path_default_nix <- paste0(
+  tempdir(), "repo",
+  paste0(sample(letters, 5), collapse = "")
+)
 
 rix(r_ver = "4.2.2",
     r_pkgs = c("targets", "tarchetypes", "rmarkdown"),
@@ -77,6 +80,11 @@ add a *Shell-hook* to the generated `default.nix` file:
 
 
 ```{r parsermd-chunk-3, eval = FALSE}
+path_default_nix <- paste0(
+  tempdir(), "repo",
+  paste0(sample(letters, 5), collapse = "")
+)
+
 rix(r_ver = "4.2.2",
     r_pkgs = c("targets", "tarchetypes", "rmarkdown"),
     system_pkgs = NULL,
