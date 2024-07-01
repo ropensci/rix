@@ -45,11 +45,8 @@ Fortran. To create a reproducible development environment that makes
 the following `rix::rix()` call:
 
 
-```{r parsermd-chunk-1}
-path_default_nix <- paste0(
-  tempdir(), "repo",
-  paste0(sample(letters, 5), collapse = "")
-)
+```{r, include = F }
+path_default_nix <- tempdir()
 
 rix(r_ver = "latest",
     r_pkgs = NULL,
@@ -71,7 +68,6 @@ Trying to build this environment will fail with following error message:
 error: attribute 'highlite' missing
 ```
 
-
 ## Building remote dependencies
 
 `{highlite}` is a dependency of [{lookup}](https://github.com/jimhester/lookup)
@@ -91,11 +87,8 @@ they are also available through `nixpkgs`. We have to deal with `{highlite}`
 however, because it never got released on CRAN. Doing so is fairly easy: first,
 create a new expression using `{rix}` to install `{highlite}`:
 
-```
-path_default_nix <- paste0(
-  tempdir(), "repo",
-  paste0(sample(letters, 5), collapse = "")
-)
+```{r, eval = F}
+path_default_nix <- tempdir()
 
 rix(r_ver = "latest",
     r_pkgs = NULL,

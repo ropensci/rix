@@ -59,19 +59,6 @@ like `C:\Users\Billy\Documents\kmeans`). For example, here is how you could use
 `{rix}` to generate the `default.nix` for this environment:
 
 
-```{r parsermd-chunk-1, include = FALSE}
-path_default_nix <- tempdir()
-
-rix(r_ver = "latest",
-    r_pkgs = c("dplyr", "ggplot2"),
-    system_pkgs = NULL,
-    git_pkgs = NULL,
-    ide = "rstudio",
-    project_path = path_default_nix,
-    overwrite = TRUE,
-    print = TRUE)
-```
-
 ```{r parsermd-chunk-2, eval = FALSE}
 library(rix)
 
@@ -190,13 +177,13 @@ environment, since these are globally defined at the level of your system.
 This means that to work on a project using VS Code, you would use a call to
 `rix()` like so:
 
-```
+```{r, eval = FALSE}
 rix(r_ver = "latest",
     r_pkgs = c("dplyr", "ggplot2"),
     system_pkgs = NULL,
     git_pkgs = NULL,
     ide = "code",
-    project_path = ".", 
+    project_path = ".",
     overwrite = TRUE)
 ```
 

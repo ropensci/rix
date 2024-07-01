@@ -28,7 +28,6 @@ this, which will also be ideal for interactive development (writing the doc).
 The second section will discuss a way to build the document in a completely
 reproducible manner once it's done.
 
-
 ## Starting with the basics (simple but not entirely reproducible)
 
 This approach will not be the most optimal, but it will be the simplest. We will
@@ -42,9 +41,9 @@ add both of them to the `r_pkgs` and `system_pkgs` of arguments of `{rix}`.
 Because we want to compile a PDF, we also need to have `texlive` installed, as
 well as some LaTeX packages. For this, we use the `tex_pkgs` argument:
 
-
-```{r parsermd-chunk-1}
+```{r, eval = F}
 path_default_nix <- tempdir()
+
 
 rix(r_ver = "4.3.1",
     r_pkgs = c("quarto"),
@@ -106,8 +105,7 @@ So there's an R chunk in `template.qmd` that uses the `{MASS}` package. Change
 `build_env.R` to generate a new `default.nix` file that will now add `{MASS}` to
 the environment when built:
 
-
-```{r parsermd-chunk-2}
+```{r, eval = FALSE}
 rix(r_ver = "4.3.1",
     r_pkgs = c("quarto", "MASS"),
     system_pkgs = "quarto",
@@ -143,7 +141,7 @@ easier way to list the dependencies and requirements of a LaTeX document.
 This is what the final script to build the environment looks like:
 
 
-```{r parsermd-chunk-3}
+```{r, eval = FALSE}
 rix(r_ver = "4.3.1",
     r_pkgs = c("quarto", "MASS"),
     system_pkgs = "quarto",
@@ -351,7 +349,6 @@ PDF in your PDF viewer application (on Linux at least):
 ```
 xdg-open $(readlink result)/template.pdf
 ```
-
 
 ## Conclusion
 

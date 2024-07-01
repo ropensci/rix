@@ -15,6 +15,7 @@ rix(
   project_path = ".",
   overwrite = FALSE,
   print = FALSE,
+  message_type = "verbose",
   shell_hook = NULL
 )
 }
@@ -65,6 +66,11 @@ the folder does not exist, it will be created.}
 
 \item{print}{Logical, defaults to FALSE. If TRUE, print \code{default.nix} to
 console.}
+
+\item{message_type}{Character. Message type, defaults to \code{"simple"}, which
+gives minimal but sufficient feedback. Other values are currently
+\verb{"quiet}, which generates the files without message, and \code{"verbose"},
+displays all the messages.}
 
 \item{shell_hook}{Character of length 1, defaults to \code{NULL}. Commands added
 to the \code{shellHook} variable are executed when the Nix shell starts. So by
@@ -164,6 +170,7 @@ rix(
   project_path = path_default_nix,
   overwrite = TRUE,
   print = TRUE,
+  message_type = "simple"
   shell_hook = NULL
 )
 }

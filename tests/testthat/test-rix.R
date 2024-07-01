@@ -447,4 +447,8 @@ testthat::test_that("rix(), conclusion message", {
     save_default_nix_test(path_default_nix),
     regexp = "Successfully"
   )
+
+  on.exit({
+    unlink(path_default_nix, recursive = TRUE, force = TRUE)
+  })
 })

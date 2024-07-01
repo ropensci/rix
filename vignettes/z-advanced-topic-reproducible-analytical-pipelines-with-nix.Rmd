@@ -32,8 +32,7 @@ Suppose that you've used `{targets}` to build a pipeline for a project and that
 you did so using a tailor-made Nix environment. Here is the call to `rix()` that
 you could have used to build that environment:
 
-
-```{r parsermd-chunk-1}
+```{r, include = F}
 path_default_nix <- paste0(
   tempdir(), "repo",
   paste0(sample(letters, 5), collapse = "")
@@ -52,11 +51,30 @@ rix(r_ver = "4.2.2",
 
 ```
 
-This call to `rix()` generates the following `default.nix` file:
+```{r, eval = F}
+path_default_nix <- tempdir()
 
+rix(r_ver = "4.2.2",
+    r_pkgs = c("targets", "tarchetypes", "rmarkdown"),
+    system_pkgs = NULL,
+    git_pkgs = list(package_name = "housing",
+                    repo_url = "https://github.com/rap4all/housing/",
+                    branch_name = "fusen",
+                    commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
+    ide = "other",
+    project_path = path_default_nix,
+    overwrite = TRUE)
+
+```
+
+This call to `rix()` generates the following `default.nix` file:
 
 ```{r parsermd-chunk-2, echo = F}
 cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
+```
+
+```{r, include = FALSE}
+unlink(path_default_nix, recursive = TRUE, force = TRUE)
 ```
 
 The environment that gets built from this `default.nix` file contains R version
@@ -78,12 +96,8 @@ cd /absolute/path/to/housing/ && nix-shell default.nix --run "Rscript -e 'target
 If you wish to run the pipeline whenever you drop into the Nix shell, you could
 add a *Shell-hook* to the generated `default.nix` file:
 
-
 ```{r parsermd-chunk-3, eval = FALSE}
-path_default_nix <- paste0(
-  tempdir(), "repo",
-  paste0(sample(letters, 5), collapse = "")
-)
+path_default_nix <- tempdir()
 
 rix(r_ver = "4.2.2",
     r_pkgs = c("targets", "tarchetypes", "rmarkdown"),
