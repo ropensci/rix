@@ -10,11 +10,11 @@
 ## User-facing changes
 
 - `rix()` now runs `rix_init()` to ensure runtime purity
+- stabilize API: get rid of `exec_mode` in core functions
 
 ## Chores
 
 - Chores before releasing rix 0.8.0
-- stabilize API: get rid of `exec_mode` in core functions
 - Fine-tune formatting of *.nix files generated
 - low-level requests with {curl} -> remove {httr} dependency
 - ROpenSci review: complete documentation of internal functions
