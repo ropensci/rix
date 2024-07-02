@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rix</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,6 +65,31 @@
       <small>Source: <a href="https://github.com/b-rodrigues/rix/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.8.0" id="rix-080-2024-07-02">rix 0.8.0 (2024-07-02)<a class="anchor" aria-label="anchor" href="#rix-080-2024-07-02"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-8-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-8-0"></a></h3>
+<ul><li>Compute hash of git and CRAN archive packages locally if nix is installed</li>
+<li>Added possibility to install local archives</li>
+</ul></div>
+<div class="section level3">
+<h3 id="user-facing-changes-0-8-0">User-facing changes<a class="anchor" aria-label="anchor" href="#user-facing-changes-0-8-0"></a></h3>
+<ul><li>
+<code><a href="../reference/rix.html">rix()</a></code> now runs <code><a href="../reference/rix_init.html">rix_init()</a></code> to ensure runtime purity</li>
+</ul></div>
+<div class="section level3">
+<h3 id="chores-0-8-0">Chores<a class="anchor" aria-label="anchor" href="#chores-0-8-0"></a></h3>
+<ul><li>Chores before releasing rix 0.8.0</li>
+<li>stabilize API: get rid of <code>exec_mode</code> in core functions</li>
+<li>Fine-tune formatting of *.nix files generated</li>
+<li>low-level requests with {curl} -&gt; remove {httr} dependency</li>
+<li>ROpenSci review: complete documentation of internal functions</li>
+<li>remove <code>nix_file</code> interface for <code><a href="../reference/with_nix.html">with_nix()</a></code>
+</li>
+<li>
+<code><a href="../reference/with_nix.html">with_nix()</a></code>, <code><a href="../reference/nix_build.html">nix_build()</a></code>, <code><a href="../reference/rix_init.html">rix_init()</a></code>: refactor, simplify and separate internal messaging helpers</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.7.1" id="rix-071-2024-05-24">rix 0.7.1 (2024-05-24)<a class="anchor" aria-label="anchor" href="#rix-071-2024-05-24"></a></h2>
 <ul><li>Better messages of comments on top of the generated <code>default.nix</code> files.</li>
