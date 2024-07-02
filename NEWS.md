@@ -1,5 +1,27 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.8.0 (2024-07-02)
+
+## New features
+
+- Compute hash of git and CRAN archive packages locally if nix is installed
+- Added possibility to install local archives
+
+## User-facing changes
+
+- `rix()` now runs `rix_init()` to ensure runtime purity
+
+## Chores
+
+- Chores before releasing rix 0.8.0
+- stabilize API: get rid of `exec_mode` in core functions
+- Fine-tune formatting of *.nix files generated
+- low-level requests with {curl} -> remove {httr} dependency
+- ROpenSci review: complete documentation of internal functions
+- remove `nix_file` interface for `with_nix()`
+- `with_nix()`, `nix_build()`, `rix_init()`: refactor, simplify and separate internal messaging helpers
+
+
 # rix 0.7.1 (2024-05-24)
 
 - Better messages of comments on top of the generated `default.nix` files.
