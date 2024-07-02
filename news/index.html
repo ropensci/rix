@@ -69,25 +69,32 @@
 <h2 class="pkg-version" data-toc-text="0.8.0" id="rix-080-2024-07-02">rix 0.8.0 (2024-07-02)<a class="anchor" aria-label="anchor" href="#rix-080-2024-07-02"></a></h2>
 <div class="section level3">
 <h3 id="new-features-0-8-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-8-0"></a></h3>
-<ul><li>Compute hash of git and CRAN archive packages locally if nix is installed</li>
-<li>Added possibility to install local archives</li>
+<ul><li>
+<code><a href="../reference/rix.html">rix()</a></code>:
+<ul><li>Added possibility to install local archives via <code>local_r_pkgs</code> argument.</li>
+<li>Compute hash of git and CRAN archive packages locally if nix is installed. There also a new <code>options(rix.sri_hash="API_server")</code>, so that online hashing via <a href="http://git2nixsha.dev" class="external-link uri">http://git2nixsha.dev</a> can be requested even when Nix is installed locally.</li>
+</ul></li>
 </ul></div>
 <div class="section level3">
 <h3 id="user-facing-changes-0-8-0">User-facing changes<a class="anchor" aria-label="anchor" href="#user-facing-changes-0-8-0"></a></h3>
 <ul><li>
-<code><a href="../reference/rix.html">rix()</a></code> now runs <code><a href="../reference/rix_init.html">rix_init()</a></code> to ensure runtime purity</li>
-<li>stabilize API: get rid of <code>exec_mode</code> in core functions</li>
+<code><a href="../reference/rix.html">rix()</a></code>:
+<ul><li>Now runs <code><a href="../reference/rix_init.html">rix_init()</a></code> to ensure runtime purity via <code>.Rprofile</code>. This will exclude the system’s user library from <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code>, so that the search path will only contain a path each per package in the Nix store.</li>
+<li>New <code>message_type</code> option to control signalling what is done.</li>
+</ul></li>
+<li>
+<code><a href="../reference/nix_build.html">nix_build()</a></code>, <code><a href="../reference/with_nix.html">with_nix()</a></code>: stabilize API; get rid of <code>exec_mode</code> in core functions. In most cases, “non-blocking” system calls are being run for system commands like <code>nix-shell</code> or <code>nix-build</code>.</li>
+<li>
+<code><a href="../reference/rix_init.html">rix_init()</a></code>, <code><a href="../reference/nix_build.html">nix_build()</a></code>, and <code><a href="../reference/with_nix.html">with_nix()</a></code>: gain a <code>message_type = "quiet"</code>, which suppresses messages. Further, messaging is standardized via internal helpers called.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="chores-0-8-0">Chores<a class="anchor" aria-label="anchor" href="#chores-0-8-0"></a></h3>
-<ul><li>Chores before releasing rix 0.8.0</li>
-<li>Fine-tune formatting of *.nix files generated</li>
+<ul><li>Fine-tune formatting of *.nix files generated</li>
 <li>low-level requests with {curl} -&gt; remove {httr} dependency</li>
 <li>ROpenSci review: complete documentation of internal functions</li>
 <li>remove <code>nix_file</code> interface for <code><a href="../reference/with_nix.html">with_nix()</a></code>
 </li>
-<li>
-<code><a href="../reference/with_nix.html">with_nix()</a></code>, <code><a href="../reference/nix_build.html">nix_build()</a></code>, <code><a href="../reference/rix_init.html">rix_init()</a></code>: refactor, simplify and separate internal messaging helpers</li>
+<li>document</li>
 </ul></div>
 </div>
     <div class="section level2">
