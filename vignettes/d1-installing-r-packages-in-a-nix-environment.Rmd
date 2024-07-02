@@ -325,7 +325,7 @@ and write something like this:
 
 ```{r, eval = F}
 rix(r_ver = '4.3.1',
-    local_pkgs = c('chronicler_0.2.1.tar.gz', 'knitr_1.43.tar.gz'), 
+    local_r_pkgs = c('chronicler_0.2.1.tar.gz', 'knitr_1.43.tar.gz'), 
     overwrite = TRUE)
 ```
 

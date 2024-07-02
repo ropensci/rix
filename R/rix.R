@@ -22,7 +22,7 @@
 #'   \url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=}
 #' @param git_pkgs List. A list of packages to install from Git. See details for
 #'   more information.
-#' @param local_pkgs List. A list of local packages to install. These packages
+#' @param local_r_pkgs List. A list of local packages to install. These packages
 #'   need to be in the `.tar.gz` or `.zip` formats and must be in the same
 #'   folder as the generated "default.nix" file.
 #' @param tex_pkgs Vector of characters. A set of TeX packages to install. Use
@@ -127,7 +127,7 @@
 #'   r_pkgs = c("dplyr", "ggplot2"),
 #'   system_pkgs = NULL,
 #'   git_pkgs = NULL,
-#'   local_pkgs = NULL,
+#'   local_r_pkgs = NULL,
 #'   ide = "code",
 #'   project_path = path_default_nix,
 #'   overwrite = TRUE,
@@ -140,7 +140,7 @@ rix <- function(r_ver = "latest",
                 r_pkgs = NULL,
                 system_pkgs = NULL,
                 git_pkgs = NULL,
-                local_pkgs = NULL,
+                local_r_pkgs = NULL,
                 tex_pkgs = NULL,
                 ide = c("other", "code", "radian", "rstudio", "rserver"),
                 project_path = ".",
@@ -248,11 +248,11 @@ for more details."
     ""
   }
 
-  # If there are R packages local packages, passes the string "local_pkgs" to buildInputs
-  flag_local_pkgs <- if (is.null(local_pkgs)) {
+  # If there are R packages local packages, passes the string "local_r_pkgs" to buildInputs
+  flag_local_r_pkgs <- if (is.null(local_r_pkgs)) {
     ""
   } else {
-    "local_pkgs"
+    "local_r_pkgs"
   }
 
   # If there are wrapped packages (for example for RStudio), passes the "wrapped_pkgs"
@@ -276,12 +276,12 @@ for more details."
     generate_rpkgs(cran_pkgs$rPackages, flag_rpkgs),
     generate_git_archived_pkgs(git_pkgs, cran_pkgs$archive_pkgs, flag_git_archive),
     generate_tex_pkgs(tex_pkgs),
-    generate_local_pkgs(local_pkgs, flag_local_pkgs),
+    generate_local_r_pkgs(local_r_pkgs, flag_local_r_pkgs),
     generate_system_pkgs(system_pkgs, r_pkgs),
-    generate_wrapped_pkgs(ide, attrib, flag_git_archive, flag_rpkgs, flag_local_pkgs),
+    generate_wrapped_pkgs(ide, attrib, flag_git_archive, flag_rpkgs, flag_local_r_pkgs),
     generate_shell(
       flag_git_archive, flag_rpkgs, flag_tex_pkgs,
-      flag_local_pkgs, flag_wrapper, shell_hook
+      flag_local_r_pkgs, flag_wrapper, shell_hook
     ),
     collapse = "\n"
   )

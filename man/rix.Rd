@@ -9,7 +9,7 @@ rix(
   r_pkgs = NULL,
   system_pkgs = NULL,
   git_pkgs = NULL,
-  local_pkgs = NULL,
+  local_r_pkgs = NULL,
   tex_pkgs = NULL,
   ide = c("other", "code", "radian", "rstudio", "rserver"),
   project_path = ".",
@@ -41,7 +41,7 @@ example. You can look for available software on the NixOS website
 \item{git_pkgs}{List. A list of packages to install from Git. See details for
 more information.}
 
-\item{local_pkgs}{List. A list of local packages to install. These packages
+\item{local_r_pkgs}{List. A list of local packages to install. These packages
 need to be in the \code{.tar.gz} or \code{.zip} formats and must be in the same
 folder as the generated "default.nix" file.}
 
@@ -165,7 +165,7 @@ rix(
   r_pkgs = c("dplyr", "ggplot2"),
   system_pkgs = NULL,
   git_pkgs = NULL,
-  local_pkgs = NULL,
+  local_r_pkgs = NULL,
   ide = "code",
   project_path = path_default_nix,
   overwrite = TRUE,
