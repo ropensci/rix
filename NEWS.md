@@ -4,22 +4,32 @@
 
 ## New features
 
-- Compute hash of git and CRAN archive packages locally if nix is installed
-- Added possibility to install local archives
+- `rix()`:
+  - Added possibility to install local archives via `local_r_pkgs` argument.
+  - Compute hash of git and CRAN archive packages locally if nix is installed.
+    There also a new `options(rix.sri_hash="API_server")`, so that online
+    hashing via http://git2nixsha.dev can be requested even when Nix is 
+    installed locally.
 
 ## User-facing changes
 
-- `rix()` now runs `rix_init()` to ensure runtime purity
-- stabilize API: get rid of `exec_mode` in core functions
+- `rix()`:
+  - Now runs `rix_init()` to ensure runtime purity via `.Rprofile`. 
+    This will exclude the system's user library from `.libPaths()`, so that the
+    search path will only contain a path each per package in the Nix store.
+  - New `message_type` option to control signalling what is done.
+- `nix_build()`, `with_nix()`: stabilize API; get rid of `exec_mode` in core functions. In most cases, "non-blocking" system calls are being run for system commands like `nix-shell` or `nix-build`.
+- `rix_init()`, `nix_build()`, and `with_nix()`: gain a 
+  `message_type = "quiet"`, which suppresses messages. Further, messaging is 
+  standardized via internal helpers called.
 
 ## Chores
 
-- Chores before releasing rix 0.8.0
 - Fine-tune formatting of *.nix files generated
 - low-level requests with {curl} -> remove {httr} dependency
 - ROpenSci review: complete documentation of internal functions
 - remove `nix_file` interface for `with_nix()`
-- `with_nix()`, `nix_build()`, `rix_init()`: refactor, simplify and separate internal messaging helpers
+- document 
 
 
 # rix 0.7.1 (2024-05-24)
