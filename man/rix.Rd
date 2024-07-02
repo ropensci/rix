@@ -2,33 +2,33 @@
 % Please edit documentation in R/rix.R
 \name{rix}
 \alias{rix}
-\title{Generate a Nix expression that builds a reproducible development
-environment}
+\title{Generate a Nix expression that builds a reproducible development environment}
 \usage{
 rix(
   r_ver = "latest",
   r_pkgs = NULL,
   system_pkgs = NULL,
   git_pkgs = NULL,
-  local_pkgs = NULL,
+  local_r_pkgs = NULL,
   tex_pkgs = NULL,
   ide = c("other", "code", "radian", "rstudio", "rserver"),
   project_path = ".",
   overwrite = FALSE,
   print = FALSE,
+  message_type = "simple",
   shell_hook = NULL
 )
 }
 \arguments{
 \item{r_ver}{Character, defaults to "latest". The required R version, for
 example "4.0.0". You can check which R versions are available using
-\code{available_r}. For reproducibility purposes, you can also provide a nixpkgs
-revision directly. For older versions of R, \code{nix-build} might fail with an
-error stating 'this derivation is not meant to be built'. In this case,
-simply drop into the shell with \code{nix-shell} instead of building it first.
-It is also possible to provide either "bleeding_edge" or
+\code{available_r()}. For reproducibility purposes, you can also provide a
+\code{nixpkgs} revision directly. For older versions of R, \code{nix-build} might
+fail with an error stating 'this derivation is not meant to be built'. In
+this case, simply drop into the shell with \code{nix-shell} instead of building
+it first. It is also possible to provide either "bleeding_edge" or
 "frozen_edge" if you need an environment with bleeding edge packages. Read
-more in the "Details" below.}
+more in the "Details" section below.}
 
 \item{r_pkgs}{Vector of characters. List the required R packages for your
 analysis here.}
@@ -41,10 +41,11 @@ example. You can look for available software on the NixOS website
 \item{git_pkgs}{List. A list of packages to install from Git. See details for
 more information.}
 
-\item{local_pkgs}{List. A list of paths to local packages to install. These
-packages need to be in the \code{.tar.gz} or \code{.zip} formats.}
+\item{local_r_pkgs}{List. A list of local packages to install. These packages
+need to be in the \code{.tar.gz} or \code{.zip} formats and must be in the same
+folder as the generated "default.nix" file.}
 
-\item{tex_pkgs}{Vector of characters. A set of tex packages to install. Use
+\item{tex_pkgs}{Vector of characters. A set of TeX packages to install. Use
 this if you need to compile \code{.tex} documents, or build PDF documents using
 Quarto. If you don't know which package to add, start by adding "amsmath".
 See the Vignette "Authoring LaTeX documents" for more details.}
@@ -56,9 +57,9 @@ other editors, use "other". This has been tested with RStudio, VS Code and
 Emacs. If other editors don't work, please open an issue.}
 
 \item{project_path}{Character, defaults to the current working directory.
-Where to write \code{default.nix}, for example "/home/path/to/project".
-The file will thus be written to the file
-"/home/path/to/project/default.nix".}
+Where to write \code{default.nix}, for example "/home/path/to/project". The file
+will thus be written to the file "/home/path/to/project/default.nix". If
+the folder does not exist, it will be created.}
 
 \item{overwrite}{Logical, defaults to FALSE. If TRUE, overwrite the
 \code{default.nix} file in the specified path.}
@@ -66,45 +67,52 @@ The file will thus be written to the file
 \item{print}{Logical, defaults to FALSE. If TRUE, print \code{default.nix} to
 console.}
 
+\item{message_type}{Character. Message type, defaults to \code{"simple"}, which
+gives minimal but sufficient feedback. Other values are currently
+\verb{"quiet}, which generates the files without message, and \code{"verbose"},
+displays all the messages.}
+
 \item{shell_hook}{Character of length 1, defaults to \code{NULL}. Commands added
-to the \code{shellHook} variable executed when the Nix shell starts. So
-by default, using \verb{nix-shell default.nix} (or path with \code{shell.nix}) will
-start a specific program, possibly with flags (separated by space), and/or
-do shell actions. You can for example use \code{shell_hook = R}, if you want to
-directly enter the declared Nix R session.}
+to the \code{shellHook} variable are executed when the Nix shell starts. So by
+default, using \verb{nix-shell default.nix} will start a specific program,
+possibly with flags (separated by space), and/or do shell actions. You can
+for example use \code{shell_hook = R}, if you want to directly enter the
+declared Nix R session when dropping into the Nix shell.}
 }
 \value{
-Nothing, this function only has the side-effect of writing a file
-called "default.nix" in the working directory. This file contains the
-expression to build a reproducible environment using the Nix package
-manager.
+Nothing, this function only has the side-effect of writing two files:
+\code{default.nix} and \code{.Rprofile} in the working directory. \code{default.nix}
+contains a Nix expression to build a reproducible environment using the Nix
+package manager, and \code{.Rprofile} ensures that a running R session from a
+Nix environment cannot access local libraries, nor install packages using
+\code{install.packages()}.
 }
 \description{
-Generate a Nix expression that builds a reproducible development
-environment
+Generate a Nix expression that builds a reproducible development environment
 }
 \details{
-This function will write a \code{default.nix} in the chosen path. Using
-the Nix package manager, it is then possible to build a reproducible
-development environment using the \code{nix-build} command in the path. This
-environment will contain the chosen version of R and packages, and will not
-interfere with any other installed version (via Nix or not) on your
-machine. Every dependency, including both R package dependencies but also
-system dependencies like compilers will get installed as well in that
+This function will write a \code{default.nix} and an \code{.Rprofile} in the
+chosen path. Using the Nix package manager, it is then possible to build a
+reproducible development environment using the \code{nix-build} command in the
+path. This environment will contain the chosen version of R and packages,
+and will not interfere with any other installed version (via Nix or not) on
+your machine. Every dependency, including both R package dependencies but
+also system dependencies like compilers will get installed as well in that
 environment.
 
 It is possible to use environments built with Nix interactively, either
-from the terminal, or using an interface such as RStudio.  If you
-want to use RStudio, set it to \code{"rstudio"}. Please be aware that RStudio
-is not available for macOS through Nix. As such, you may want to use another
-editor on macOS. To use Visual Studio Code (or Codium), set the \code{ide}
-argument to \code{"code"}, which will add the \code{{languageserver}} R package
-to the list of R packages to be installed by Nix in that environment. You can
-use the version of Visual Studio Code or Codium you already use, or also install
-it using Nix (by adding "vscode" or "vscodium" to the list of \code{system_pkgs}).
-For non-interactive use, or to use the environment from the command line, or from another
-editor (such as Emacs or Vim), set the \code{ide} argument to \code{"other"}.
-We recommend reading the \code{vignette("e-interactive-use")} for more details.
+from the terminal, or using an interface such as RStudio. If you want to
+use RStudio, set the \code{ide} argument to \code{"rstudio"}. Please be aware that
+RStudio is not available for macOS through Nix. As such, you may want to
+use another editor on macOS. To use Visual Studio Code (or Codium), set the
+\code{ide} argument to \code{"code"}, which will add the \code{{languageserver}} R package
+to the list of R packages to be installed by Nix in that environment. You
+can use the version of Visual Studio Code or Codium you already use, or
+also install it using Nix (by adding "vscode" or "vscodium" to the list of
+\code{system_pkgs}). For non-interactive use, or to use the environment from the
+command line, or from another editor (such as Emacs or Vim), set the \code{ide}
+argument to \code{"other"}. We recommend reading the
+\code{vignette("e-interactive-use")} for more details.
 
 Packages to install from Github must be provided in a list of 4 elements:
 "package_name", "repo_url", "branch_name" and "commit". This argument can
@@ -120,7 +128,13 @@ version 2.2.1 release, then use the Nix revision closest to that date, by
 setting \code{r_ver = "3.1.0"}, which was the version of R current at the time.
 This ensures that Nix builds a completely coherent environment.
 
-By default, the nix shell will be configured with \code{"en_US.UTF-8"} for the
+Note that installing packages from Git or old versions using the \code{"@"}
+notation or local packages, does not leverage Nix's capabilities for
+dependency solving. As such, you might have trouble installing these
+packages. If that is the case, open an issue on \code{{rix}}'s Github
+repository.
+
+By default, the Nix shell will be configured with \code{"en_US.UTF-8"} for the
 relevant locale variables (\code{LANG}, \code{LC_ALL}, \code{LC_TIME}, \code{LC_MONETARY},
 \code{LC_PAPER}, \code{LC_MEASUREMENT}). This is done to ensure locale
 reproducibility by default in Nix environments created with \code{rix()}. If
@@ -128,18 +142,18 @@ there are good reasons to not stick to the default, you can set your
 preferred locale variables via \verb{options(rix.nix_locale_variables = list(LANG = "de_CH.UTF-8", <...>)} and the aforementioned locale variable
 names.
 
-It is possible to use "bleeding_edge" or "frozen_edge" as the value for the
-\code{r_ver} argument. This will create an environment with the very latest R
-packages. "bleeding_edge" means that every time you will build the
+It is possible to use \verb{"bleeding_edge}" or \verb{"frozen_edge}" as the value for
+the \code{r_ver} argument. This will create an environment with the very latest
+R packages. \verb{"bleeding_edge}" means that every time you will build the
 environment, the packages will get updated. This is especially useful for
 environments that need to be constantly updated, for example when
-developing a package. In contrast, "frozen_edge" will create an environment
-that will remain stable at build time. So if you create a \code{default.nix}
-file using "bleeding_edge", each time you build it using \code{nix-build} that
-environment will be up-to-date. With "frozen_edge" that environment will be
-up-to-date on the date that the \code{default.nix} will be generated, and then
-each subsequent call to \code{nix-build} will result in the same environment. We
-highly recommend you read the vignette titled
+developing a package. In contrast, \verb{"frozen_edge}" will create an
+environment that will remain stable at build time. So if you create a
+\code{default.nix} file using \verb{"bleeding_edge}", each time you build it using
+\code{nix-build} that environment will be up-to-date. With \verb{"frozen_edge}" that
+environment will be up-to-date on the date that the \code{default.nix} will be
+generated, and then each subsequent call to \code{nix-build} will result in the
+same environment. We highly recommend you read the vignette titled
 "z - Advanced topic: Understanding the rPackages set release cycle and using bleeding edge packages".
 }
 \examples{
@@ -151,11 +165,12 @@ rix(
   r_pkgs = c("dplyr", "ggplot2"),
   system_pkgs = NULL,
   git_pkgs = NULL,
-  local_pkgs = NULL,
+  local_r_pkgs = NULL,
   ide = "code",
   project_path = path_default_nix,
   overwrite = TRUE,
   print = TRUE,
+  message_type = "simple"
   shell_hook = NULL
 )
 }

@@ -118,6 +118,10 @@ remove_base <- function(list_imports) {
 get_imports <- function(path) {
   tmp_dir <- tempdir()
 
+  # Some packages have a Description file in the testthat folder
+  # (see jimhester/lookup) so we need to get rid of that
+  path <- Filter(function(x)!grepl("testthat", x), path)
+
   # Is the path pointing to a tar.gz archive
   # or directly to a DESCRIPTION file?
   if (grepl("\\.tar\\.gz", path)) {
@@ -189,25 +193,25 @@ fetchlocal <- function(local_pkg) {
 }
 
 #' fetchlocals Installs a local R package
-#' @param local_pkgs Either a list of paths to local packages, or a path to a
+#' @param local_r_pkgs Either a list of paths to local packages, or a path to a
 #' single package
 #' @return A character. The Nix definition to build the local R packages from
 #' local sources.
 #' @noRd
-fetchlocals <- function(local_pkgs) {
-  paths_exist <- file.exists(local_pkgs)
+fetchlocals <- function(local_r_pkgs) {
+  paths_exist <- file.exists(local_r_pkgs)
 
   if (!all(paths_exist)) {
     stop(
       paste0(
-        "local_pkgs: The following paths are incorrect:\n",
-        paste(local_pkgs[!paths_exist], collapse = "\n")
+        "local_r_pkgs: The following paths are incorrect:\n",
+        paste(local_r_pkgs[!paths_exist], collapse = "\n")
       )
     )
-  } else if (length(local_pkgs) == 1) {
-    fetchlocal(local_pkgs)
+  } else if (length(local_r_pkgs) == 1) {
+    fetchlocal(local_r_pkgs)
   } else {
-    paste(lapply(local_pkgs, fetchlocal), collapse = "\n")
+    paste(lapply(local_r_pkgs, fetchlocal), collapse = "\n")
   }
 }
 

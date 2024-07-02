@@ -15,13 +15,13 @@
 #' reproducibility of Nix-R environments during runtime. Concretely, if you
 #' already have a system or user library of R packages (if you have R installed
 #' through the usual means for your operating system), using `rix::rix_init()`
-#' will prevent Nix-R environments to load packages from the user library
-#' which would cause issues. 
-#' Notably, no restart is required as environmental variables are set in the current session, in
-#' addition to writing an `.Rprofile` file. This is particularly useful to make
-#' [rix::with_nix()] evaluate custom R functions from any "Nix-to-Nix" or
-#' "System-to-Nix" R setups. It introduces two side-effects that
-#' take effect both in a current or later R session setup:
+#' will prevent Nix-R environments to load packages from the user library which
+#' would cause issues. Notably, no restart is required as environmental
+#' variables are set in the current session, in addition to writing an
+#' `.Rprofile` file. This is particularly useful to make [rix::with_nix()]
+#' evaluate custom R functions from any "Nix-to-Nix" or "System-to-Nix" R
+#' setups. It introduces two side-effects that take effect both in a current or
+#' later R session setup:
 #'
 #' 1. **Adjusting `R_LIBS_USER` path:**
 #'    By default, the first path of `R_LIBS_USER` points to the user library
@@ -41,9 +41,9 @@
 #'    In a host RStudio session not launched via Nix (`nix-shell`), the
 #'    environmental variables from `~/.zshrc` or `~/.bashrc` may not be
 #'    inherited. Consequently, Nix command line interfaces like `nix-shell`
-#'    might not be found. The `.Rprofile` code written by `rix::rix_init()` ensures
-#'    that Nix command line programs are accessible by adding the path of the
-#'    "bin" directory of the default Nix profile,
+#'    might not be found. The `.Rprofile` code written by `rix::rix_init()`
+#'    ensures that Nix command line programs are accessible by adding the path
+#'    of the "bin" directory of the default Nix profile,
 #'    `"/nix/var/nix/profiles/default/bin"`, to the `PATH` variable in an
 #'    RStudio R session.
 #'
@@ -55,28 +55,32 @@
 #' packaged for macOS. We recommend calling `rix::rix_init()` prior to comparing R
 #' code ran between two software environments with `rix::with_nix()`.
 #'
-#' @param project_path Character with the folder path to the isolated nix-R project.
-#' Defaults to `"."`, which is the current working directory path. If the folder
-#' does not exist yet, it will be created.
+#' `rix::rix_init()` is called automatically by `rix::rix()` when generating a
+#' `default.nix` file, and when called by `rix::rix()` will only add the `.Rprofile`
+#' if none exists. In case you have a custom `.Rprofile` that you wish to keep
+#' using, but also want to benefit from what `rix_init()` offers, manually call
+#' it and set the `rprofile_action` to `"append"`.
+#'
+#' @param project_path Character with the folder path to the isolated nix-R
+#'   project. Defaults to `"."`, which is the current working directory path. If
+#'   the folder does not exist yet, it will be created.
 #' @param rprofile_action Character. Action to take with `.Rprofile` file
-#' destined for `project_path` folder. Possible values include
-#' `"create_missing"`, which only writes `.Rprofile` if it
-#' does not yet exist (otherwise does nothing); `"create_backup"`, which copies
-#' the existing `.Rprofile` to a new backup file, generating names with
-#' POSIXct-derived strings that include the time zone information. A new
-#' `.Rprofile` file will be written with default code from `rix::rix_init()`;
-#' `"overwrite"` overwrites the `.Rprofile` file if it does exist; `"append"`
-#' appends the existing file with code that is tailored to an isolated Nix-R
-#' project setup.
+#'   destined for `project_path` folder. Possible values include
+#'   `"create_missing"`, which only writes `.Rprofile` if it does not yet exist
+#'   (otherwise does nothing) - this is the action set when using `rix()` - ;
+#'   `"create_backup"`, which copies the existing `.Rprofile` to a new backup
+#'   file, generating names with POSIXct-derived strings that include the time
+#'   zone information. A new `.Rprofile` file will be written with default code
+#'   from `rix::rix_init()`; `"overwrite"` overwrites the `.Rprofile` file if it
+#'   does exist; `"append"` appends the existing file with code that is tailored
+#'   to an isolated Nix-R project setup.
 #' @param message_type Character. Message type, defaults to `"simple"`, which
-#' gives minimal but sufficient feedback. Other values are currently
-#' `"quiet`, which writes `.Rprofile` without message, and
-#' `"verbose"`, which displays the mechanisms implemented to achieve fully
-#' controlled R project environments in Nix.
+#'   gives minimal but sufficient feedback. Other values are currently
+#'   `"quiet`, which writes `.Rprofile` without message, and `"verbose"`,
+#'   which displays the mechanisms implemented to achieve fully controlled R project environments in Nix.
 #' @export
 #' @seealso [with_nix()]
-#' @return Nothing, this function only has the side-effect of writing a file
-#'   called ".Rprofile" to the specified path.
+#' @return Nothing, this function only has the side-effect of writing a file called ".Rprofile" to the specified path.
 #' @examples
 #' \dontrun{
 #' # create an isolated, runtime-pure R setup via Nix
@@ -412,6 +416,9 @@ nix_rprofile <- function() {
     }
 
     if (isTRUE(is_nix_r)) {
+      install.packages <- function(...){
+          stop("You are currently in an R session running from Nix.\nDon't install packages using install.packages(),\nadd them to the default.nix file instead.")
+        }
       current_paths <- .libPaths()
       userlib_paths <- Sys.getenv("R_LIBS_USER")
       user_dir <- grep(paste(userlib_paths, collapse = "|"), current_paths, fixed = TRUE)

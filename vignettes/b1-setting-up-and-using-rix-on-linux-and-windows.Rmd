@@ -141,7 +141,7 @@ nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/b-rodrigues/rix/m
 This should immediately start an R session inside your terminal. You can now run
 something like this:
 
-```
+```{r, eval = F}
 rix(r_ver = "latest",
     r_pkgs = c("dplyr", "ggplot2"),
     system_pkgs = NULL,
@@ -162,10 +162,10 @@ More details about managing project-specific `default.nix` are detailled in the
 vignette `vignette("d1-installing-r-packages-in-a-nix-environment")` and
 `vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")`.
 
-You could also include `{rix}` in your project-specific environments, by generating
-a `default.nix` like so:
+You could also include `{rix}` in your project-specific environments, by
+generating a `default.nix` like so:
 
-```
+```{r, eval = F}
 rix(r_ver = "latest",
     r_pkgs = NULL,
     git_pkgs = list(package_name = "rix",

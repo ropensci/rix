@@ -20,4 +20,8 @@ testthat::test_that("Snapshot test of rix_init()", {
               path = save_rix_init_test(path_env_nix),
               name = "golden_Rprofile.txt",
               )
+
+  on.exit({
+    unlink(path_env_nix, recursive = TRUE, force = TRUE)
+  })
 })
