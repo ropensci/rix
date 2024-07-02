@@ -56,7 +56,7 @@ Nix has a fairly high entry cost though. Nix is a complex piece of
 software that comes with its own programming language, which is also
 called Nix. Its purpose is to solve a complex problem: defining
 instructions on how to build software packages and manage configurations
-in a declarative way. This makes sure that software gets installed in
+in a declarative way. This makes sure that software gets installed in a
 fully reproducible manner, on any operating system or hardware.
 
 `{rix}` provides functions to help you write Nix expressions (written in
