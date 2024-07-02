@@ -135,7 +135,25 @@ only.</p>
 <span>    <span class="co"># path is "./vignettes/" so need to go one up</span></span>
 <span>    project_path <span class="op">=</span> <span class="st">"../inst/extdata"</span>,</span>
 <span>    overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>    shell_hook <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span>    shell_hook <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ### Bootstrapping isolated, project-specific, and runtime-pure R setup via Nix ###</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ==&gt; Existing isolated nix-R project folder:</span></span>
+<span><span class="co">#&gt;  /home/runner/work/rix/rix/inst/extdata </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; * current R session running outside Nix environment and not from RStudio</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ==&gt; Added `.Rprofile` file and code lines for new R sessions launched from:</span></span>
+<span><span class="co">#&gt; /home/runner/work/rix/rix/inst/extdata</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; * Added the location of the Nix store to `PATH` environmental variable for new R sessions on host/docker RStudio:</span></span>
+<span><span class="co">#&gt; /nix/var/nix/profiles/default/bin</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ==&gt; Also adjusting `PATH` via `Sys.setenv()`, so that system commands can invoke key Nix commands like `nix-build` in this RStudio session outside Nix</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ### Successfully generated `default.nix` and `.Rprofile` ###</span></span></code></pre></div>
   </main>
 </div>
 

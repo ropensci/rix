@@ -205,23 +205,13 @@ packaged R by default includes appears in the search paths (check
 we have observed crashes with R packages that depend on system
 libraries, such as {data.table} or {dplyr}, and their (reverse)
 dependencies. Because user libraries from the system would also appear
-on the search path in R from <code>nixpkgs</code> for Linux, we think
-its a good idea to force isolation of R packages by making them behave
-in a runtime-pure manner. To make this happen, we recommend that you set
-up a project-specific <code>.Rprofile</code> using
-<code><a href="../reference/rix_init.html">rix::rix_init()</a></code>. This way, only packages declaratively
-defined in your <code>default.nix</code> and built to be part of the Nix
-store (one R package is one separate derivation listed in a unique Nix
-path) appear on the R library path.</p>
-<p>As an example, call <code><a href="../reference/rix.html">rix::rix()</a></code> like this.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># see ?rix_init for more details</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/rix_init.html">rix_init</a></span><span class="op">(</span></span>
-<span>  project_path <span class="op">=</span> <span class="st">"./rix_darwin"</span>,</span>
-<span>  rprofile_action <span class="op">=</span> <span class="st">"create_missing"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+on the search path in R from <code>nixpkgs</code> for Linux, running
+<code><a href="../reference/rix.html">rix()</a></code> also runs <code><a href="../reference/rix_init.html">rix_init()</a></code> which creates a
+custom <code>.Rprofile</code> in your project’s path. This custom
+<code>.Rprofile</code> ensure that only packages declaratively defined
+in your <code>default.nix</code> and built to be part of the Nix store
+(one R package is one separate derivation listed in a unique Nix path)
+appear on the R library path.</p>
 </div>
 <div class="section level3">
 <h3 id="rstudio-and-other-development-interfaces-on-macos">RStudio and other development interfaces on macOS<a class="anchor" aria-label="anchor" href="#rstudio-and-other-development-interfaces-on-macos"></a>

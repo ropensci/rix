@@ -170,7 +170,7 @@ the reproducibility and compatibility of given code across different software
 environments. If testing of different sets of environments is necessary, you
 can easily do so by providing Nix expressions in custom <code>.nix</code> or
 <code>default.nix</code> files in different subfolders of the project.</p>
-<p>It is recommended that you use <code><a href="rix_init.html">rix_init()</a></code> to generate a custom <code>.Rprofile</code>
+<p><code><a href="rix_init.html">rix_init()</a></code> is run automatically to generate a custom <code>.Rprofile</code>
 file for the subshell in <code>project_dir</code>. The defaults in that file ensure
 that only R packages from the Nix store, that are defined in the subshell
 <code>.nix</code> file are loaded and system's libraries are excluded.</p>

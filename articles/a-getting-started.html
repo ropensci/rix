@@ -262,8 +262,13 @@ to add it the <code>default.nix</code> expression and rebuild the
 environment. This is explained in greater detail in
 <code><a href="../articles/d1-installing-r-packages-in-a-nix-environment.html">vignette("d1-installing-r-packages-in-a-nix-environment")</a></code>.</p>
 <p>To avoid interference between your main R library of packages and
-your Nix environments, we recommend you read the documentation of
-<code><a href="../reference/rix_init.html">rix_init()</a></code>.</p>
+your Nix environments, calling <code><a href="../reference/rix.html">rix()</a></code> will also run
+<code><a href="../reference/rix_init.html">rix_init()</a></code>, which will create a custom
+<code>.Rprofile</code> in the project’s directory. This
+<code>.Rprofile</code> will ensure that if you have a user library of
+packages, these won’t get loaded by an R version running in a Nix shell.
+It will also redefine <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> to throw an error
+if you try to use it.</p>
 <p><code><a href="../reference/rix.html">rix()</a></code> has several arguments:</p>
 <ul>
 <li>the R version you need for your project;</li>

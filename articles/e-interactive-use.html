@@ -164,10 +164,11 @@ example, here is how you could use <a href="https://b-rodrigues.github.io/rix/">
 <p>Because you also have R installed through the usual method for your
 operating system, you also have a system or user library of packages.
 This library of packages will interfere with the library of packages of
-your R environments managed by Nix. We thus highly recommend to also run
-<code><a href="../reference/rix_init.html">rix::rix_init()</a></code> in your project’s path (in the example
-above, in <code>path_to_project</code> to generate a .Rprofile that will
-prevent clashes between your user library of packages ar the Nix
+your R environments managed by Nix. To avoid this, running
+<code><a href="../reference/rix.html">rix()</a></code> not only writes a <code>default.nix</code> file in
+your project’s path, but also a custom <code>.Rprofile</code> file as
+well by calling <code><a href="../reference/rix_init.html">rix_init()</a></code>. This <code>.Rprofile</code>
+will prevent clashes between your user library of packages and the Nix
 environments’ library of packages.</p>
 <p>Navigate to that folder using your terminal, and then run
 <code>nix-build</code> to build the environment, and then
@@ -186,7 +187,7 @@ by any other tool you have installed on your computer).</p>
 project specific version of R and RStudio with all the required packages
 for this project, in this case <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> and
 <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>. If you get an error</p>
-<pre><code>qt.glx: qglx_findConfig: Failed to finding... 
+<pre><code>qt.glx: qglx_findConfig: Failed to finding...
 qt.glx: qglx_findConfig: Failed to finding...
 Could not initialize GLX
 Aborted (core dumped)</code></pre>
@@ -259,13 +260,14 @@ accessible across every version from every environment, since these are
 globally defined at the level of your system. This means that to work on
 a project using VS Code, you would use a call to <code><a href="../reference/rix.html">rix()</a></code> like
 so:</p>
-<pre><code><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"latest"</span>,</span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"latest"</span>,</span>
 <span>    r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span><span class="op">)</span>,</span>
 <span>    system_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    git_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    ide <span class="op">=</span> <span class="st">"code"</span>,</span>
-<span>    project_path <span class="op">=</span> <span class="st">"."</span>, </span>
-<span>    overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre>
+<span>    project_path <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>    overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Notice the <code>ide = "code"</code> argument. This will not install
 VS Code from Nix, but will install the <a href="https://github.com/REditorSupport/languageserver/" class="external-link">languageserver</a>
 package that is needed for using R with VS Code. If you want to also
@@ -276,10 +278,6 @@ Code. For any other editor such as Emacs or Vim, set
 <code>ide = "other"</code>. Also use <code>ide = "other"</code> if you
 want to run scripts non-interactively, for example on a CI/CD
 service.</p>
-<p>Just as in scenario 1, if you already have R installed through the
-usual means for your operating system, we highly recommend using
-<code><a href="../reference/rix_init.html">rix::rix_init()</a></code> to avoid your system or user library of R
-packages to clash with the library of environments managed by Nix.</p>
 </div>
 <div class="section level2">
 <h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>

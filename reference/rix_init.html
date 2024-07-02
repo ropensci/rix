@@ -100,38 +100,36 @@ the system's RStudio R session, for both Linux and macOS.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>project_path</dt>
-<dd><p>Character with the folder path to the isolated nix-R project.
-Defaults to <code>"."</code>, which is the current working directory path. If the folder
-does not exist yet, it will be created.</p></dd>
+<dd><p>Character with the folder path to the isolated nix-R
+project. Defaults to <code>"."</code>, which is the current working directory path. If
+the folder does not exist yet, it will be created.</p></dd>
 
 
 <dt>rprofile_action</dt>
 <dd><p>Character. Action to take with <code>.Rprofile</code> file
 destined for <code>project_path</code> folder. Possible values include
-<code>"create_missing"</code>, which only writes <code>.Rprofile</code> if it
-does not yet exist (otherwise does nothing); <code>"create_backup"</code>, which copies
-the existing <code>.Rprofile</code> to a new backup file, generating names with
-POSIXct-derived strings that include the time zone information. A new
-<code>.Rprofile</code> file will be written with default code from <code>rix::rix_init()</code>;
-<code>"overwrite"</code> overwrites the <code>.Rprofile</code> file if it does exist; <code>"append"</code>
-appends the existing file with code that is tailored to an isolated Nix-R
-project setup.</p></dd>
+<code>"create_missing"</code>, which only writes <code>.Rprofile</code> if it does not yet exist
+(otherwise does nothing) - this is the action set when using <code><a href="rix.html">rix()</a></code> - ;
+<code>"create_backup"</code>, which copies the existing <code>.Rprofile</code> to a new backup
+file, generating names with POSIXct-derived strings that include the time
+zone information. A new <code>.Rprofile</code> file will be written with default code
+from <code>rix::rix_init()</code>; <code>"overwrite"</code> overwrites the <code>.Rprofile</code> file if it
+does exist; <code>"append"</code> appends the existing file with code that is tailored
+to an isolated Nix-R project setup.</p></dd>
 
 
 <dt>message_type</dt>
 <dd><p>Character. Message type, defaults to <code>"simple"</code>, which
 gives minimal but sufficient feedback. Other values are currently
-<code>"quiet</code>, which writes <code>.Rprofile</code> without message, and
-<code>"verbose"</code>, which displays the mechanisms implemented to achieve fully
-controlled R project environments in Nix.</p></dd>
+<code>"quiet</code>, which writes <code>.Rprofile</code> without message, and <code>"verbose"</code>,
+which displays the mechanisms implemented to achieve fully controlled R project environments in Nix.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>Nothing, this function only has the side-effect of writing a file
-called ".Rprofile" to the specified path.</p>
+<p>Nothing, this function only has the side-effect of writing a file called ".Rprofile" to the specified path.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -140,13 +138,13 @@ called ".Rprofile" to the specified path.</p>
 reproducibility of Nix-R environments during runtime. Concretely, if you
 already have a system or user library of R packages (if you have R installed
 through the usual means for your operating system), using <code>rix::rix_init()</code>
-will prevent Nix-R environments to load packages from the user library
-which would cause issues.
-Notably, no restart is required as environmental variables are set in the current session, in
-addition to writing an <code>.Rprofile</code> file. This is particularly useful to make
-<code><a href="with_nix.html">with_nix()</a></code> evaluate custom R functions from any "Nix-to-Nix" or
-"System-to-Nix" R setups. It introduces two side-effects that
-take effect both in a current or later R session setup:</p><ol><li><p><strong>Adjusting <code>R_LIBS_USER</code> path:</strong>
+will prevent Nix-R environments to load packages from the user library which
+would cause issues. Notably, no restart is required as environmental
+variables are set in the current session, in addition to writing an
+<code>.Rprofile</code> file. This is particularly useful to make <code><a href="with_nix.html">with_nix()</a></code>
+evaluate custom R functions from any "Nix-to-Nix" or "System-to-Nix" R
+setups. It introduces two side-effects that take effect both in a current or
+later R session setup:</p><ol><li><p><strong>Adjusting <code>R_LIBS_USER</code> path:</strong>
 By default, the first path of <code>R_LIBS_USER</code> points to the user library
 outside the Nix store (see also <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">base::.libPaths()</a></code>). This creates
 friction and potential impurity as R packages from the system's R user
@@ -163,9 +161,9 @@ process.</p></li>
 In a host RStudio session not launched via Nix (<code>nix-shell</code>), the
 environmental variables from <code>~/.zshrc</code> or <code>~/.bashrc</code> may not be
 inherited. Consequently, Nix command line interfaces like <code>nix-shell</code>
-might not be found. The <code>.Rprofile</code> code written by <code>rix::rix_init()</code> ensures
-that Nix command line programs are accessible by adding the path of the
-"bin" directory of the default Nix profile,
+might not be found. The <code>.Rprofile</code> code written by <code>rix::rix_init()</code>
+ensures that Nix command line programs are accessible by adding the path
+of the "bin" directory of the default Nix profile,
 <code>"/nix/var/nix/profiles/default/bin"</code>, to the <code>PATH</code> variable in an
 RStudio R session.</p></li>
 </ol><p>These side effects are particularly recommended when working in flexible R
@@ -175,6 +173,11 @@ environments. This init configuration is considered pivotal to enhance the
 adoption of Nix in the R community, particularly until RStudio in Nixpkgs is
 packaged for macOS. We recommend calling <code>rix::rix_init()</code> prior to comparing R
 code ran between two software environments with <code><a href="with_nix.html">rix::with_nix()</a></code>.</p>
+<p><code>rix::rix_init()</code> is called automatically by <code><a href="rix.html">rix::rix()</a></code> when generating a
+<code>default.nix</code> file, and when called by <code><a href="rix.html">rix::rix()</a></code> will only add the <code>.Rprofile</code>
+if none exists. In case you have a custom <code>.Rprofile</code> that you wish to keep
+using, but also want to benefit from what <code>rix_init()</code> offers, manually call
+it and set the <code>rprofile_action</code> to <code>"append"</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
