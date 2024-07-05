@@ -227,10 +227,9 @@ You can also try out Nix inside Docker. To know more, read
 `vignette("z-advanced-topic-using-nix-inside-docker")`
 [link](https://github.com/b-rodrigues/rix/blob/HEAD/vignettes/z-advanced-topic-using-nix-inside-docker.Rmd).
 
-## How is Nix different from Docker+renv/(Ana/Mini)Conda/{groundhog}/{rang}/Guix? or Why Nix?
+## How is Nix different from Docker+renv/{groundhog}/{rang}/(Ana/Mini)Conda/Guix? or Why Nix?
 
-
-## Docker and renv
+### Docker and renv
 
 Let's start with arguably the most popular combo for reproducibility in the R ecosystem,
 Docker+renv.
@@ -263,6 +262,38 @@ is completely reproducible thanks to Nix.
 Exactly the same reasoning can be applied to {groundhog}, {rang} or the CRAN snapshots of Posit
 in combination to Docker.
 
+### Ana/Mini-conda and Mamba
+
+Anaconda, Miniconda, Mamba, Micromamba... (henceforth we'll refer to these as Conda)
+and Nix have much in common: they are multiplatform package managers and both can be used
+to setup reproducible development environments for many languages, such as R or Python.
+Using [conda-lock](https://github.com/conda/conda-lock) one can generate fully reproducible
+lock files that can then be used by Conda to build the environment as defined in the lock file.
+The mean difference between Conda and Nix is conceptual and might not seem that important 
+for end-users: Conda is a procedural package manager, while Nix is a functional package manager.
+In practice this means that environments managed by Conda are mutable and users are not prevented
+from changing their environment interactively, and then re-generate the lock file. This can lead to 
+issues where dependency management might get borked. In the case of Nix on the other hand, 
+environments are immutable: you cannot add software into a running Nix environment. You will
+need to stop working, re-define the environment, rebuild it and then use it. While this might
+sound more tedious (it is) it forces users to work more "cleanly" and avoids many issues from
+dynamically changing an environment. Another major difference is that Conda does not include
+the entirety of CRAN nor Bioconductor, which is the case for Nix. According to 
+[Anaconda's Documentation](https://docs.anaconda.com/working-with-conda/packages/using-r-language/)
+6000 CRAN packages are available through Conda (as of writing in July 2024, CRAN has 21'000+ packages).
+Nix also includes almost all of Bioconductor packages, and Conda includes them trough the Bioconda
+project, however, we were not able to find if Bioconda contains all of Bioconductor. According to 
+Bioconda's FAQ, 
+[Bioconductor data packages are not included.](https://bioconda.github.io/faqs.html#why-are-bioconductor-data-packages-failing-to-install)
+
+### How is Nix different from Guix?
+
+Just like Nix, Guix is a functional package manager with a focus on reproducible builds.
+We won't go into technical differences/similarities, but only to pratical ones for end-users of the R programming
+language. If you want to know about technical aspects, read this 
+[https://news.ycombinator.com/item?id=18910683](Hackernews post by one of the authors of Guix).
+The mean shortcoming of Guix for R users is that not all CRAN or Bioconductor packages are included,
+nor is Guix available on Windows or macOS.
 
 ## Contributing
 
