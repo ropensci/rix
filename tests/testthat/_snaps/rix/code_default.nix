@@ -15,7 +15,6 @@ let
       name = "housing";
       src = pkgs.fetchgit {
         url = "https://github.com/rap4all/housing/";
-        branchName = "fusen";
         rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";
         sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";
       };
@@ -38,7 +37,6 @@ let
       name = "fusen";
       src = pkgs.fetchgit {
         url = "https://github.com/ThinkR-open/fusen";
-        branchName = "main";
         rev = "d617172447d2947efb20ad6a4463742b8a5d79dc";
         sha256 = "sha256-TOHA1ymLUSgZMYIA1a2yvuv0799svaDOl3zOhNRxcmw=";
       };

@@ -1,7 +1,6 @@
 #' fetchgit Downloads and installs a package hosted of Git
-#' @param git_pkg A list of four elements: "package_name", the name of the
-#' package, "repo_url", the repository's url, "branch_name", the name of the
-#' branch containing the code to download and "commit", the commit hash of
+#' @param git_pkg A list of three elements: "package_name", the name of the
+#' package, "repo_url", the repository's url, "commit", the commit hash of
 #' interest.
 #' @return A character. The Nix definition to download and build the R package
 #' from Github.
@@ -9,10 +8,9 @@
 fetchgit <- function(git_pkg) {
   package_name <- git_pkg$package_name
   repo_url <- git_pkg$repo_url
-  branch_name <- git_pkg$branch_name
   commit <- git_pkg$commit
 
-  output <- get_sri_hash_deps(repo_url, branch_name, commit)
+  output <- get_sri_hash_deps(repo_url, commit)
   sri_hash <- output$sri_hash
   imports <- output$deps
   imports <- unlist(strsplit(imports, split = " "))
@@ -24,7 +22,6 @@ fetchgit <- function(git_pkg) {
       name = \"%s\";
       src = pkgs.fetchgit {
         url = \"%s\";
-        branchName = \"%s\";
         rev = \"%s\";
         sha256 = \"%s\";
       };
@@ -35,7 +32,6 @@ fetchgit <- function(git_pkg) {
 ',
     package_name,
     repo_url,
-    branch_name,
     commit,
     sri_hash,
     imports
@@ -61,7 +57,7 @@ fetchzip <- function(archive_pkg, sri_hash = NULL) {
   repo_url <- cran_archive_link
 
   if (is.null(sri_hash)) {
-    output <- get_sri_hash_deps(repo_url, branch_name = NULL, commit = NULL)
+    output <- get_sri_hash_deps(repo_url, commit = NULL)
     sri_hash <- output$sri_hash
     imports <- output$deps
     imports <- unlist(strsplit(imports, split = " "))
@@ -220,8 +216,7 @@ fetchlocals <- function(local_r_pkgs) {
 #' fetchgits Downloads and installs packages hosted on Git. Wraps `fetchgit()`
 #' to handle multiple packages
 #' @param git_pkgs A list of four elements: "package_name", the name of the
-#' package, "repo_url", the repository's url, "branch_name", the name of the
-#' branch containing the code to download and "commit", the commit hash of
+#' package, "repo_url", the repository's url and "commit", the commit hash of
 #' interest. This argument can also be a list of lists of these four elements.
 #' @return A character. The Nix definition to download and build the R package
 #' from Github.
@@ -232,7 +227,7 @@ fetchgits <- function(git_pkgs) {
   } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
     paste(lapply(git_pkgs, fetchgit), collapse = "\n")
   } else {
-    stop("There is something wrong with the input. Make sure it is either a list of four elements 'package_name', 'repo_url', 'branch_name' and 'commit' or a list of lists with these four elements")
+    stop("There is something wrong with the input. Make sure it is either a list of three elements 'package_name', 'repo_url' and 'commit' or a list of lists with these three elements")
   }
 }
 
@@ -258,9 +253,8 @@ fetchzips <- function(archive_pkgs) {
 
 #' fetchpkgs Downloads and installs packages hosted in the CRAN archives or
 #' Github.
-#' @param git_pkgs A list of four elements: "package_name", the name of the
-#' package, "repo_url", the repository's url, "branch_name", the name of the
-#' branch containing the code to download and "commit", the commit hash of
+#' @param git_pkgs A list of three elements: "package_name", the name of the
+#' package, "repo_url", the repository's url and "commit", the commit hash of
 #' interest. This argument can also be a list of lists of these four elements.
 #' @param archive_pkgs A character, or an atomic vector of characters.
 #' @return A character. The Nix definition to download and build the R package

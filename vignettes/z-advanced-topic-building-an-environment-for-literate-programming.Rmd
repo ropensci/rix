@@ -225,7 +225,6 @@ let
    name = "my-paper";
    src = pkgs.fetchgit {
        url = "https://github.com/b-rodrigues/my_paper/";
-       branchName = "main";
        rev = "715e9f007d104c23763cebaf03782b8e80cb5445";
        sha256 = "sha256-e8Xg7nJookKoIfiJVTGoJkvCuFNTT83YZ6SK3GT2T8g=";
      };
@@ -257,7 +256,6 @@ pkgs.stdenv.mkDerivation {
   name = "my-paper";
   src = pkgs.fetchgit {
       url = "https://github.com/b-rodrigues/my_paper/";
-      branchName = "main";
       rev = "715e9f007d104c23763cebaf03782b8e80cb5445";
       sha256 = "sha256-e8Xg7nJookKoIfiJVTGoJkvCuFNTT83YZ6SK3GT2T8g=";
     };

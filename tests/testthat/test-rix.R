@@ -16,13 +16,11 @@ testthat::test_that("rix(), ide is 'rstudio', Linux", {
         list(
           package_name = "housing",
           repo_url = "https://github.com/rap4all/housing/",
-          branch_name = "fusen",
           commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"
         ),
         list(
           package_name = "fusen",
           repo_url = "https://github.com/ThinkR-open/fusen",
-          branch_name = "main",
           commit = "d617172447d2947efb20ad6a4463742b8a5d79dc"
         )
       ),
@@ -68,13 +66,11 @@ testthat::test_that("rix(), ide is 'other' or 'code'", {
           list(
             package_name = "housing",
             repo_url = "https://github.com/rap4all/housing/",
-            branch_name = "fusen",
             commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"
           ),
           list(
             package_name = "fusen",
             repo_url = "https://github.com/ThinkR-open/fusen",
-            branch_name = "main",
             commit = "d617172447d2947efb20ad6a4463742b8a5d79dc"
           )
         ),
@@ -322,13 +318,11 @@ testthat::test_that("rix(), bleeding_edge", {
           list(
             package_name = "housing",
             repo_url = "https://github.com/rap4all/housing/",
-            branch_name = "fusen",
             commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"
           ),
           list(
             package_name = "fusen",
             repo_url = "https://github.com/ThinkR-open/fusen",
-            branch_name = "main",
             commit = "d617172447d2947efb20ad6a4463742b8a5d79dc"
           )
         ),
@@ -375,13 +369,11 @@ testthat::test_that("rix(), frozen_edge", {
           list(
             package_name = "housing",
             repo_url = "https://github.com/rap4all/housing/",
-            branch_name = "fusen",
             commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"
           ),
           list(
             package_name = "fusen",
             repo_url = "https://github.com/ThinkR-open/fusen",
-            branch_name = "main",
             commit = "d617172447d2947efb20ad6a4463742b8a5d79dc"
           )
         ),
@@ -433,7 +425,6 @@ testthat::test_that("rix(), only one Github package", {
       system_pkgs = NULL,
       git_pkgs = list(package_name = "lookup",
                       repo_url = "https://github.com/jimhester/lookup/",
-                      branch_name = "master",
                       commit = "eba63db477dd2f20153b75e2949eb333a36cccfc"),
       ide = "other",
       project_path = path_default_nix,
