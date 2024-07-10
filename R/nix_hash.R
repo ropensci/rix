@@ -94,11 +94,11 @@ nix_sri_hash <- function(path) {
   
   # not needed for Nix R sessions, workaround on Debian and Debian-based 
   # systems with nix installed
+  LD_LIBRARY_PATH_default <- Sys.getenv("LD_LIBRARY_PATH")
   needs_ld_fix <- nzchar(Sys.getenv("NIX_STORE")) &&
     nzchar(LD_LIBRARY_PATH_default)
   
   if (isTRUE(needs_ld_fix)) {
-    LD_LIBRARY_PATH_default <- Sys.getenv("LD_LIBRARY_PATH")
     # On Debian and Debian-based systems, like Ubuntu 22.04, we found that a
     # preset `LD_LIBRARY_PATH` environment variable in the system's R session
     # leads to errors like
