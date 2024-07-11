@@ -3,7 +3,7 @@
 # >rix(r_ver = "976fa3369d722e76f37c77493d99829540d43845",
 #  > git_pkgs = list(package_name = "rix",
 #  > repo_url = "https://github.com/b-rodrigues/rix/",
-#  > commit = "5c819debae98fb039f5eb498dd3455a3cef49670"),
+#  > commit = "d45b20bd41dc4acaf5dd853e030ed471d665fda0"),
 #  > ide = "other",
 #  > project_path = "inst/extdata",
 #  > overwrite = TRUE)
@@ -13,23 +13,7 @@
 let
  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/976fa3369d722e76f37c77493d99829540d43845.tar.gz") {};
   
-  git_archive_pkgs = [
-    (pkgs.rPackages.buildRPackage {
-      name = "rix";
-      src = pkgs.fetchgit {
-        url = "https://github.com/b-rodrigues/rix/";
-        rev = "5c819debae98fb039f5eb498dd3455a3cef49670";
-        sha256 = "sha256-2udtdeslHqS0ubYjLfXxcIylWAWa//TnH9VnoESYDXs=";
-      };
-      propagatedBuildInputs = builtins.attrValues {
-        inherit (pkgs.rPackages) 
-          codetools
-          curl
-          jsonlite
-          sys;
-      };
-    })
-   ];
+  git_archive_pkgs = [   ];
    
   system_packages = builtins.attrValues {
     inherit (pkgs) 
