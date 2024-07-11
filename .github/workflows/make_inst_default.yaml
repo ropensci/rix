@@ -39,7 +39,9 @@ jobs:
 
       - name: Push changes to update_default.nix branch
         run: |
-          git push origin update_default.nix --force
+          git add .
+          git commit -m "Updated inst/extdata/default.nix"
+          git push origin master:update_default.nix --force
 
       - name: Create Pull Request
         if: env.PR_NUMBER == ''
