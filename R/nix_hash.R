@@ -2,6 +2,11 @@
 #' available locally
 #' @param repo_url URL to Github repository
 #' @param commit Commit hash (SHA-1)
+#' @return list with following elements:
+#' - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
+#'      at a given deterministic git commit ID (SHA-1)
+#' - `deps`: string with R package dependencies separarated by space.
+#' @noRd
 nix_hash <- function(repo_url, commit) {
   if (grepl("github", repo_url)) {
     hash_git(repo_url = repo_url, commit)
@@ -19,6 +24,11 @@ nix_hash <- function(repo_url, commit) {
 
 #' Return the SRI hash of an URL with .tar.gz
 #' @param url String with URL ending with `.tar.gz`
+#' @return list with following elements:
+#' - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
+#'      at a given deterministic git commit ID (SHA-1)
+#' - `deps`: string with R package dependencies separarated by space.
+#' @noRd
 hash_url <- function(url) {
   path_to_folder <- paste0(
     tempdir(), "repo",
@@ -124,7 +134,7 @@ nix_sri_hash <- function(path) {
     what = cmd,
     message_type = "quiet"
   )
-  
+
   if (isTRUE(needs_ld_fix)) {
     # set old LD_LIBRARY_PATH (only if non-Nix R session, and if it wasn't
     # `""`)
@@ -138,6 +148,7 @@ nix_sri_hash <- function(path) {
 
 #' Return the SRI hash of a CRAN package source using `nix hash path --sri path`
 #' @param repo_url URL to CRAN package source
+#' @noRd
 hash_cran <- function(repo_url) {
 
   # list contains `sri_hash` and `deps` elements
@@ -158,6 +169,11 @@ hash_cran <- function(repo_url) {
 #' NAR
 #' @param repo_url URL to GitHub repository
 #' @param commit Commit hash
+#' @return list with following elements:
+#' - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
+#'      at a given deterministic git commit ID (SHA-1)
+#' - `deps`: string with R package dependencies separarated by space.
+#' @noRd
 hash_git <- function(repo_url, commit) {
 
   trailing_slash <- grepl("/$", repo_url)
@@ -227,6 +243,7 @@ nix_hash_online <- function(repo_url, commit) {
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
 #'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: string with R package dependencies separarated by space.
+#' @noRd
 get_sri_hash_deps <- function(repo_url, commit) {
   # if no `options(rix.sri_hash=)` is set, default is `"check_nix"`
   sri_hash_option <- get_sri_hash_option()
