@@ -5,12 +5,12 @@ on:
   pull_request:
     branches: [main, master]
 
-name: rhub-checks
+name: run-rhub-checks
 
 permissions: write-all
 
 jobs:
-  devtools:
+  run-rhub-checks:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
