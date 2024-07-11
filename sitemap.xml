@@ -1,111 +1,39 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/404.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/CONTRIBUTING.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/a-getting-started.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/b1-setting-up-and-using-rix-on-linux-and-windows.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/b2-setting-up-and-using-rix-on-macos.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/c-using-rix-to-build-project-specific-environments.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/d1-installing-r-packages-in-a-nix-environment.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/e-interactive-use.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/z-advanced-topic-building-an-environment-for-literate-programming.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/z-advanced-topic-handling-packages-with-remote-dependencies.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/z-advanced-topic-reproducible-analytical-pipelines-with-nix.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/z-advanced-topic-running-r-or-shell-code-in-nix-from-r.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/z-advanced-topic-using-nix-inside-docker.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/z-binary_cache.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/z-bleeding_edge.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/z-contributing_to_nixpkgs.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/articles/z-developers-vignette-generate-an-environment-with-rix-only.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/index.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/reference/available_r.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/reference/ga_cachix.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/reference/get_sri_hash_deps.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/reference/hash_cran.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/reference/hash_git.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/reference/hash_url.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/reference/nix_build.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/reference/nix_hash.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/reference/rix.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/reference/rix_init.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/reference/tar_nix_ga.html</loc>
-  </url>
-  <url>
-    <loc>https://b-rodrigues.github.io/rix/reference/with_nix.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://b-rodrigues.github.io/rix/404.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/CONTRIBUTING.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/LICENSE.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/articles/a-getting-started.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/articles/b1-setting-up-and-using-rix-on-linux-and-windows.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/articles/b2-setting-up-and-using-rix-on-macos.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/articles/c-using-rix-to-build-project-specific-environments.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/articles/d1-installing-r-packages-in-a-nix-environment.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/articles/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/articles/e-interactive-use.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/articles/index.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/articles/z-advanced-topic-building-an-environment-for-literate-programming.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/articles/z-advanced-topic-handling-packages-with-remote-dependencies.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/articles/z-advanced-topic-reproducible-analytical-pipelines-with-nix.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/articles/z-advanced-topic-running-r-or-shell-code-in-nix-from-r.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/articles/z-advanced-topic-using-nix-inside-docker.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/articles/z-binary_cache.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/articles/z-bleeding_edge.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/articles/z-contributing_to_nixpkgs.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/articles/z-developers-vignette-generate-an-environment-with-rix-only.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/authors.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/index.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/news/index.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/reference/available_r.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/reference/ga_cachix.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/reference/get_sri_hash_deps.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/reference/hash_cran.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/reference/hash_git.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/reference/hash_url.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/reference/index.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/reference/nix_build.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/reference/nix_hash.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/reference/rix.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/reference/rix_init.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/reference/tar_nix_ga.html</loc></url>
+<url><loc>https://b-rodrigues.github.io/rix/reference/with_nix.html</loc></url>
 </urlset>
+

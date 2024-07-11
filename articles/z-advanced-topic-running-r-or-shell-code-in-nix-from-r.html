@@ -5,7 +5,6 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="rix">
 <title>z - Advanced topic: Running R or Shell Code in Nix from R • rix</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
@@ -15,76 +14,60 @@
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="z - Advanced topic: Running R or Shell Code in Nix from R">
-<meta property="og:description" content="rix">
-<meta property="og:image" content="https://b-rodrigues.github.io/rix/logo.png">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="z - Advanced topic: Running R or Shell Code in Nix from R">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">rix</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/a-getting-started.html">a - Getting started</a>
-    <a class="dropdown-item" href="../articles/b1-setting-up-and-using-rix-on-linux-and-windows.html">b1 - Setting up and using rix on Linux and Windows</a>
-    <a class="dropdown-item" href="../articles/b2-setting-up-and-using-rix-on-macos.html">b2 - Setting up and using rix on macOS</a>
-    <a class="dropdown-item" href="../articles/c-using-rix-to-build-project-specific-environments.html">c - Using rix to build project specific environments</a>
-    <a class="dropdown-item" href="../articles/d1-installing-r-packages-in-a-nix-environment.html">d1 - Installing R packages in a Nix environment</a>
-    <a class="dropdown-item" href="../articles/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment.html">d2 - Installing system tools and TexLive packages in a Nix environment</a>
-    <a class="dropdown-item" href="../articles/e-interactive-use.html">e - Interactive use</a>
-    <a class="dropdown-item" href="../articles/z-advanced-topic-building-an-environment-for-literate-programming.html">z - Advanced topic: Building an environment for literate programming</a>
-    <a class="dropdown-item" href="../articles/z-advanced-topic-handling-packages-with-remote-dependencies.html">z - Advanced topic: Handling packages with remote dependencies</a>
-    <a class="dropdown-item" href="../articles/z-advanced-topic-reproducible-analytical-pipelines-with-nix.html">z - Advanced topic: Reproducible Analytical Pipelines with Nix</a>
-    <a class="dropdown-item" href="../articles/z-advanced-topic-running-r-or-shell-code-in-nix-from-r.html">z - Advanced topic: Running R or Shell Code in Nix from R</a>
-    <a class="dropdown-item" href="../articles/z-advanced-topic-using-nix-inside-docker.html">z - Advanced topic: Using Nix inside Docker</a>
-    <a class="dropdown-item" href="../articles/z-binary_cache.html">z - Advanced topic: Rolling out your own binary cache</a>
-    <a class="dropdown-item" href="../articles/z-bleeding_edge.html">z - Advanced topic: Understanding the rPackages set release cycle and using bleeding edge packages</a>
-    <a class="dropdown-item" href="../articles/z-contributing_to_nixpkgs.html">z - Advanced topic: Contributing to nixpkgs</a>
-    <a class="dropdown-item" href="../articles/z-developers-vignette-generate-an-environment-with-rix-only.html">z - Developers Vignette: Generate an environment with rix only</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/a-getting-started.html">a - Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/b1-setting-up-and-using-rix-on-linux-and-windows.html">b1 - Setting up and using rix on Linux and Windows</a></li>
+    <li><a class="dropdown-item" href="../articles/b2-setting-up-and-using-rix-on-macos.html">b2 - Setting up and using rix on macOS</a></li>
+    <li><a class="dropdown-item" href="../articles/c-using-rix-to-build-project-specific-environments.html">c - Using rix to build project specific environments</a></li>
+    <li><a class="dropdown-item" href="../articles/d1-installing-r-packages-in-a-nix-environment.html">d1 - Installing R packages in a Nix environment</a></li>
+    <li><a class="dropdown-item" href="../articles/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment.html">d2 - Installing system tools and TexLive packages in a Nix environment</a></li>
+    <li><a class="dropdown-item" href="../articles/e-interactive-use.html">e - Interactive use</a></li>
+    <li><a class="dropdown-item" href="../articles/z-advanced-topic-building-an-environment-for-literate-programming.html">z - Advanced topic: Building an environment for literate programming</a></li>
+    <li><a class="dropdown-item" href="../articles/z-advanced-topic-handling-packages-with-remote-dependencies.html">z - Advanced topic: Handling packages with remote dependencies</a></li>
+    <li><a class="dropdown-item" href="../articles/z-advanced-topic-reproducible-analytical-pipelines-with-nix.html">z - Advanced topic: Reproducible Analytical Pipelines with Nix</a></li>
+    <li><a class="dropdown-item" href="../articles/z-advanced-topic-running-r-or-shell-code-in-nix-from-r.html">z - Advanced topic: Running R or Shell Code in Nix from R</a></li>
+    <li><a class="dropdown-item" href="../articles/z-advanced-topic-using-nix-inside-docker.html">z - Advanced topic: Using Nix inside Docker</a></li>
+    <li><a class="dropdown-item" href="../articles/z-binary_cache.html">z - Advanced topic: Rolling out your own binary cache</a></li>
+    <li><a class="dropdown-item" href="../articles/z-bleeding_edge.html">z - Advanced topic: Understanding the rPackages set release cycle and using bleeding edge packages</a></li>
+    <li><a class="dropdown-item" href="../articles/z-contributing_to_nixpkgs.html">z - Advanced topic: Contributing to nixpkgs</a></li>
+    <li><a class="dropdown-item" href="../articles/z-developers-vignette-generate-an-environment-with-rix-only.html">z - Developers Vignette: Generate an environment with rix only</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/b-rodrigues/rix/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/b-rodrigues/rix/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -96,7 +79,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>z - Advanced topic: Running R or Shell Code in Nix from R</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/b-rodrigues/rix/blob/HEAD/vignettes/z-advanced-topic-running-r-or-shell-code-in-nix-from-r.Rmd" class="external-link"><code>vignettes/z-advanced-topic-running-r-or-shell-code-in-nix-from-r.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/b-rodrigues/rix/blob/master/vignettes/z-advanced-topic-running-r-or-shell-code-in-nix-from-r.Rmd" class="external-link"><code>vignettes/z-advanced-topic-running-r-or-shell-code-in-nix-from-r.Rmd</code></a></small>
       <div class="d-none name"><code>z-advanced-topic-running-r-or-shell-code-in-nix-from-r.Rmd</code></div>
     </div>
 
@@ -208,7 +191,7 @@ expressions that pin R version 4.1.3 from Nixpkgs.</p>
 <span><span class="co">#&gt; ### Successfully generated `default.nix` and `.Rprofile` ###</span></span></code></pre></div>
 <p>The following expression is written to default.nix in the subfolder
 <code>./_env_1_R-4-1-3/</code>.</p>
-<pre><code><span><span class="co">#&gt; # This file was generated by the {rix} R package v0.8.0 on 2024-07-05</span></span>
+<pre><code><span><span class="co">#&gt; # This file was generated by the {rix} R package v0.8.0 on 2024-07-11</span></span>
 <span><span class="co">#&gt; # with following call:</span></span>
 <span><span class="co">#&gt; # &gt;rix(r_ver = "6e3a86f2f73a466656a401302d3ece26fba401d9",</span></span>
 <span><span class="co">#&gt; #  &gt; project_path = path_env_1,</span></span>
@@ -392,9 +375,8 @@ environment where <code>df_as_vector()</code> will be evaluated in.</p>
 <span><span class="co">#&gt; /home/runner/work/rix/rix/vignettes/_env_1_2_R-4-2-0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; * Added the location of the Nix store to `PATH` environmental variable for new R sessions on host/docker RStudio:</span></span>
-<span><span class="co">#&gt; /nix/var/nix/profiles/default/bin</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<span><span class="co">#&gt; /nix/var/nix/profiles/default/bin</span></span>
+<span></span>
 <span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span></span>
 <span>  r_ver <span class="op">=</span> <span class="st">"4.2.0"</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -403,9 +385,8 @@ environment where <code>df_as_vector()</code> will be evaluated in.</p>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ### Successfully generated `default.nix` in /home/runner/work/rix/rix/vignettes/_env_1_2_R-4-2-0. Keeping `.Rprofile` generated by `rix::rix_init()`###</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<span><span class="co">#&gt; ### Successfully generated `default.nix` in /home/runner/work/rix/rix/vignettes/_env_1_2_R-4-2-0. Keeping `.Rprofile` generated by `rix::rix_init()`###</span></span>
+<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">path_env_1_2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "default.nix"</span></span></code></pre></div>
 <p>Now, initiate a new R session as development environment using
@@ -416,19 +397,19 @@ approach. <code>nix-shell</code> will use the expression by
 <code>default.nix</code> and prefer it over any other <code>.nix</code>
 files, except when you put a <code>shell.nix</code> file in that folder,
 which takes precedence.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="ex">nix-shell</span> <span class="at">--pure</span> ./_env_1_R-4-1-3</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="ex">nix-shell</span> <span class="at">--pure</span> ./_env_1_R-4-1-3</span></code></pre></div>
 <p>After some time downloading caches and doing builds, you will enter
 an R console session with R 4.1.3. You did not need to type in R first,
 because we set up a R shell hook via <code><a href="../reference/rix.html">rix::rix()</a></code>. Next, we
 define again the target function to test in R 4.2.0, too.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># current Nix-R session with R 4.1.3</span></span>
 <span><span class="va">df_as_vector</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, mode <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="op">(</span><span class="va">out_nix_1</span> <span class="op">&lt;-</span> <span class="fu">df_as_vector</span><span class="op">(</span>x <span class="op">=</span> <span class="va">df</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out_nix_1_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/with_nix.html">with_nix</a></span><span class="op">(</span></span>
 <span>  expr <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu">df_as_vector</span><span class="op">(</span>x <span class="op">=</span> <span class="va">df</span><span class="op">)</span>,</span>
 <span>  program <span class="op">=</span> <span class="st">"R"</span>,</span>
@@ -437,7 +418,7 @@ define again the target function to test in R 4.2.0, too.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>You can now formally compare the outputs of the computation of the
 same code in R 4.1.3 vs. R 4.2.0 environments controlled by Nix.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">out_nix_1</span>, <span class="va">out_nix_1_2</span><span class="op">)</span></span>
 <span><span class="co"># yields FALSE</span></span></code></pre></div>
 </div>
@@ -452,21 +433,21 @@ libraries from CRAN or GitHub, one thing that makes R shine is the huge
 collection of software packages available from the community.</p>
 <p>There was a change introduce in {stringr} 1.5.0; in earlier versions,
 this line of code:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_subset.html" class="external-link">str_subset</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"a"</span><span class="op">)</span>, <span class="st">""</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">stringr</span><span class="fu">::</span><span class="fu">str_subset</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"a"</span><span class="op">)</span>, <span class="st">""</span><span class="op">)</span></span></code></pre></div>
 <p>would return the character <code>"a"</code>. However, this behaviour
 is unexpected: it really should return an error. This was addressed in
 versions after 1.5.0:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out_system_stringr</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
-<span>  expr <span class="op">=</span> <span class="op">{</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_subset.html" class="external-link">str_subset</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"a"</span><span class="op">)</span>, <span class="st">""</span><span class="op">)</span><span class="op">}</span>,</span>
+<span>  expr <span class="op">=</span> <span class="op">{</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu">str_subset</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"a"</span><span class="op">)</span>, <span class="st">""</span><span class="op">)</span><span class="op">}</span>,</span>
 <span>  error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span><span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
 <p>Since the code returns an error, we wrap it inside
 <code><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch()</a></code> and return <code>NULL</code> instead of an error
 (if we wouldn’t do that, this vignette could not compile!).</p>
 <p>Let’s build a subshell with the latest version of R, but an older
 version of <a href="https://stringr.tidyverse.org" class="external-link">stringr</a>:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://b-rodrigues.github.io/rix/">"rix"</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">path_env_stringr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"."</span>, <span class="st">"_env_stringr_1.4.1"</span><span class="op">)</span></span>
@@ -494,15 +475,14 @@ version of <a href="https://stringr.tidyverse.org" class="external-link">stringr
 <span><span class="co">#&gt; ==&gt; Also adjusting `PATH` via `Sys.setenv()`, so that system commands can invoke key Nix commands like `nix-build` in this RStudio session outside Nix</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ### Successfully generated `default.nix` and `.Rprofile` ###</span></span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<span><span class="co">#&gt; ### Successfully generated `default.nix` and `.Rprofile` ###</span></span>
+<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path_env_stringr</span>, all.files <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "."           ".."          ".Rprofile"   "default.nix"</span></span></code></pre></div>
 <p>We can now run the code in the subshell</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out_nix_stringr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/with_nix.html">with_nix</a></span><span class="op">(</span></span>
-<span>  expr <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_subset.html" class="external-link">str_subset</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"a"</span><span class="op">)</span>, <span class="st">""</span><span class="op">)</span>,</span>
+<span>  expr <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu">str_subset</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"a"</span><span class="op">)</span>, <span class="st">""</span><span class="op">)</span>,</span>
 <span>  program <span class="op">=</span> <span class="st">"R"</span>,</span>
 <span>  project_path <span class="op">=</span> <span class="va">path_env_stringr</span>,</span>
 <span>  message_type <span class="op">=</span> <span class="st">"simple"</span></span>
@@ -521,7 +501,7 @@ result.</p>
 main session with the latest version of <a href="https://stringr.tidyverse.org" class="external-link">stringr</a> and the
 result of the code running in the subshell with the old version of
 <a href="https://stringr.tidyverse.org" class="external-link">stringr</a>:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">out_system_stringr</span>, <span class="va">out_nix_stringr</span><span class="op">)</span></span></code></pre></div>
 <p>As expected, the result is <code>FALSE</code>.</p>
 </div>
@@ -541,7 +521,7 @@ cases illustrates how to achieve this.</p>
 <p>Let’s start by building a subshell that is based on a distinct
 revision of <code>nixpkgs</code>, for which we know that arrow compiles
 on both linux and macOS (darwin).</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://b-rodrigues.github.io/rix/">"rix"</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">path_env_arrow</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"env_arrow"</span><span class="op">)</span></span>
@@ -556,7 +536,7 @@ on both linux and macOS (darwin).</p>
 now suppose that you already have a script with some code to load and
 transform some data using <a href="https://github.com/apache/arrow/" class="external-link">arrow</a>. It may look something
 like this:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/apache/arrow/" class="external-link">arrow</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
@@ -567,7 +547,7 @@ like this:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>To run this code in a subshell, we recommend wrapping it inside a
 function:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">arrow_script</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/apache/arrow/" class="external-link">arrow</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
@@ -579,7 +559,7 @@ function:</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>Which we can then run in the subshell:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out_nix_arrow</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/with_nix.html">with_nix</a></span><span class="op">(</span></span>
 <span>  expr <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu">arrow_script</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  program <span class="op">=</span> <span class="st">"R"</span>,</span>
@@ -590,7 +570,7 @@ function:</p>
 saved in the <code>out_nix_arrow</code> variable, for further
 manipulation in your main shell/session.</p>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
@@ -601,15 +581,15 @@ manipulation in your main shell/session.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>
