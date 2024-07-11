@@ -232,12 +232,6 @@ the target environment where `df_as_vector()` will be evaluated in.
 library("rix")
 path_env_1_2 <- file.path(".", "_env_1_2_R-4-2-0")
 
-rix_init(
-  project_path = path_env_1_2,
-  rprofile_action = "overwrite",
-  message_type = "simple"
-)
-
 rix(
   r_ver = "4.2.0",
   overwrite = TRUE,
@@ -329,7 +323,7 @@ library("rix")
 path_env_stringr <- file.path(".", "_env_stringr_1.4.1")
 
 rix(
-  r_ver = "latest",
+  r_ver = "4.3.1",
   r_pkgs = "stringr@1.4.1",
   overwrite = TRUE,
   project_path = path_env_stringr
