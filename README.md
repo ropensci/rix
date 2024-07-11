@@ -11,7 +11,8 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/b-rodrigues/rix/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/b-rodrigues/rix/actions/workflows/R-CMD-check.yaml)
+[![R-hub
+v2](https://github.com/b-rodrigues/rix/actions/workflows/rhub.yaml/badge.svg)](https://github.com/b-rodrigues/rix/actions/workflows/rhub.yaml/badge.svg)
 [![runiverse-package
 rix](https://b-rodrigues.r-universe.dev/badges/rix?scale=1&color=pink&style=round)](https://b-rodrigues.r-universe.dev/rix)
 [![Docs](https://img.shields.io/badge/docs-release-blue.svg)](https://b-rodrigues.github.io/rix)
