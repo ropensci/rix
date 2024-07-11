@@ -45,7 +45,6 @@ jobs:
         if: env.PR_NUMBER == ''
         uses: peter-evans/create-pull-request@v6
         with:
-        with:
           branch: update_default.nix
           title: 'Update default.nix'
           body: 'Automated PR to update default.nix'
