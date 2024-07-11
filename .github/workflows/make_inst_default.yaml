@@ -6,7 +6,7 @@ on:
 name: create_inst_default.nix
 
 permissions:
-  contents: read, write
+  contents: write
 
 jobs:
   devtools:
