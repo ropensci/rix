@@ -4,7 +4,7 @@
 #  > git_pkgs = list(package_name = "rix",
 #  > repo_url = "https://github.com/b-rodrigues/rix/",
 #  > branch_name = "master",
-#  > commit = "bbf80349165520906f2120800b19ed40099cea71"),
+#  > commit = "5aa17b72716350c269cc6b2e70473b631bbaa3b7"),
 #  > ide = "other",
 #  > project_path = "inst/extdata",
 #  > overwrite = TRUE)
@@ -20,8 +20,8 @@ let
       src = pkgs.fetchgit {
         url = "https://github.com/b-rodrigues/rix/";
         branchName = "master";
-        rev = "bbf80349165520906f2120800b19ed40099cea71";
-        sha256 = "sha256-l28BqtTrYPohrgZmAUzgvVy2WErIzjOBgEFLO062VoI=";
+        rev = "5aa17b72716350c269cc6b2e70473b631bbaa3b7";
+        sha256 = "sha256-yaWL71Ls0O0E9JkUEqBRecgfjD0X8MZ/fKOGXt77JOE=";
       };
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) 
