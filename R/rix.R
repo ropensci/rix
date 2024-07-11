@@ -201,25 +201,13 @@ for more details."
     project_path <- normalizePath(path = project_path)
   }
 
-  default.nix_path <- if (project_path == ".") {
-    "default.nix"
-  } else {
-    file.path(project_path, "default.nix")
-  }
-
-  .Rprofile_path <- if (project_path == ".") {
-                      ".Rprofile"
-                    } else {
-                      file.path(project_path, ".Rprofile")
-                    }
-
+  default.nix_path <- file.path(project_path, "default.nix")
+  .Rprofile_path <- file.path(project_path, ".Rprofile")
+  
   # Find url to use
   # In case of bleeding or frozen edge, the rstats-on-nix/nixpkgs
   # fork is used. Otherwise, upstream NixOS/nixpkgs
   nix_repo <- make_nixpkgs_url(r_ver)
-
-  default.nix_path <- file.path(default.nix_path)
-  .Rprofile_path <- file.path(.Rprofile_path)
 
   rix_call <- match.call()
 
@@ -293,6 +281,11 @@ for more details."
   }
 
   if (!file.exists(default.nix_path) || overwrite) {
+    
+    if (!dir.exists(project_path)) {
+      dir.create(project_path)
+    }
+    file.create(default.nix_path)
     writeLines(default.nix, default.nix_path)
     
     if (file.exists(.Rprofile_path)) {
