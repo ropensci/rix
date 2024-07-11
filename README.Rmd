@@ -312,6 +312,16 @@ authors of Guix). The main shortcoming of Guix for R users is that not all CRAN
 or Bioconductor packages are included, nor is Guix available on Windows or
 macOS.
 
+### Is {rix} all there is?
+
+No, there are other tools that you might want to check out, especially if
+you want to set up polyglot environments (even though it is possible to
+use `{rix}` to set up an environment with R and Python packages for example).
+
+Take a look at [https://devenv.sh/](https://devenv.sh/) and
+[https://prefix.dev/](https://prefix.dev/) if you want to explore other tools
+that make using Nix easier!
+
 ## Contributing
 
 Refer to `Contributing.md` to learn how to contribute to the package.
