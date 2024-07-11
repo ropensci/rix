@@ -40,30 +40,32 @@ create project-specific environments that contain a project-specific version of
 R and R packages (as well as other tools or languages, if needed). This
 project-specific environment will also include all the required system-level
 dependencies that can be difficult to install, such as `GDAL` for packages for
-geospatial analysis for example. This is how Nix installs software: it installs
-software as a complete "bundle" that include all of its dependencies, and all of
+geospatial analysis for example. Nix installs
+software as a complete "bundle" that include all of the software's dependencies, and all of
 the dependencies' dependencies and so on. Nix is an incredibly useful piece of
-software for ensuring reproducibility of projects, in research or otherwise. For
-example, it allows you run web applications like Shiny apps or `{plumber}` APIs
-in a controlled environment, or run `{targets}` pipelines with the right version
-of R and dependencies, and it is also possible to use environments managed by Nix
-to work interactively using an IDE.
+software for ensuring reproducibility of projects, in research or otherwise.
+
+Some other use cases include, for example, running web applications like Shiny apps or `{plumber}` APIs
+in a controlled environment, or executing `{targets}` pipelines with the right version
+of R and dependencies, or use environments managed by Nix to work interactively using an IDE.
 
 In essence, this means that you can use `{rix}` and Nix to replace `{renv}` and
 Docker with one single tool, but the approach is quite different: `{renv}`
 records specific versions of individual packages, while `{rix}` provides a
 complete snapshot of the R ecosystem at a specific point in time, but also
 snapshots all the required dependencies to make your project-specific R
-environment work. To ensure complete reproducibility with `{renv}`, it must be
+environment work. In contrast, to ensure complete reproducibility with `{renv}`, it must be
 combined with Docker, in order to include system-level dependencies (like `GDAL`,
 as per the example above).
 
-Nix has a fairly high entry cost though. Nix is a complex piece of software that
+Nix has a fairly steep learning curve though. Nix is a complex piece of software that
 comes with its own programming language, which is also called Nix. Its purpose
 is to solve a complex problem: defining instructions on how to build software
-packages and manage configurations in a declarative way. This makes sure that
-software gets installed in a fully reproducible manner, on any operating system
-or hardware.
+packages and manage configurations in a declarative way, using functional programming
+principles. This makes sure that software gets installed in a fully reproducible manner, 
+on any operating system or hardware, but with the caveat that users must learn the Nix 
+programming language and get into the "functional programming approach to software management"
+mindset, which is unusual.
 
 `{rix}` provides functions to help you write Nix expressions (written in the Nix
 language). These expressions will be the inputs for the Nix package manager, to
@@ -133,7 +135,11 @@ install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
 library("rix")
 ```
 
+Now try to build an expression using `rix()`:
+
 ```{r, eval=FALSE}
+library(rix)
+
 path_default_nix <- "."
 
 rix(r_ver = "4.3.3",
@@ -220,6 +226,74 @@ clear.
 You can also try out Nix inside Docker. To know more, read 
 `vignette("z-advanced-topic-using-nix-inside-docker")`
 [link](https://github.com/b-rodrigues/rix/blob/HEAD/vignettes/z-advanced-topic-using-nix-inside-docker.Rmd).
+
+## How is Nix different from Docker+renv/{groundhog}/{rang}/(Ana/Mini)Conda/Guix? or Why Nix?
+
+### Docker and renv
+
+Let's start with arguably the most popular combo for reproducibility in the R ecosystem,
+Docker+renv.
+
+{renv} snapshots the state of the library of R packages for a project, nothing more, nothing
+less. It can then be used to restore the library of packages on another machine, but it is
+the user's responsibility to ensure that the right version of R and system-level dependencies
+are available on that other machine. This is whay {renv} is often coupled with a versioned
+Docker image, such as the images from the [Rocker project](https://hub.docker.com/r/rocker/r-ver).
+Combining both provides a very robust way to serve applications such as Shiny apps, but it can
+be awkward to develop interactively with this setup, which is way most of the time, people work
+on their current setup, and *dockerize* the setup right when they're done. However, you need
+to make sure to keep updating the image, as the underlying operating system will eventually
+reach end of life. Eventually, you might even have to update the whole stack as it could become
+impossible to install the version of R and R packages you used on a recent Docker image.
+This can be a good thing actually; it could be the opportunity to update your app and make sure
+that it benefits from the latest security patches. However for reproducibility in research,
+this is not something that you should be doing because it could have an impact on historical
+results.
+
+What we suggest instead, is to keep using Docker if you are already invested in the ecosystem, 
+and continue to use it to deploy and serve applications and archive research. But instead
+of using {renv} to get the right packages, you combine Docker and Nix. This way, you have 
+a nice separation of concerns: Docker will only be used as a platter to serve code, while the
+environment will be handled by Nix. You could even use an image that gets continuously updated
+such as `ubuntu:latest` as a base: it doesn’t matter that the image is always changing, since
+the environment that will be doing the heavy lifting inside the container
+is completely reproducible thanks to Nix.
+
+Exactly the same reasoning can be applied to {groundhog}, {rang} or the CRAN snapshots of Posit
+in combination to Docker.
+
+### Ana/Mini-conda and Mamba
+
+Anaconda, Miniconda, Mamba, Micromamba... (henceforth we'll refer to these as Conda)
+and Nix have much in common: they are multiplatform package managers and both can be used
+to setup reproducible development environments for many languages, such as R or Python.
+Using [conda-lock](https://github.com/conda/conda-lock) one can generate fully reproducible
+lock files that can then be used by Conda to build the environment as defined in the lock file.
+The mean difference between Conda and Nix is conceptual and might not seem that important 
+for end-users: Conda is a procedural package manager, while Nix is a functional package manager.
+In practice this means that environments managed by Conda are mutable and users are not prevented
+from changing their environment interactively, and then re-generate the lock file. This can lead to 
+issues where dependency management might get borked. In the case of Nix on the other hand, 
+environments are immutable: you cannot add software into a running Nix environment. You will
+need to stop working, re-define the environment, rebuild it and then use it. While this might
+sound more tedious (it is) it forces users to work more "cleanly" and avoids many issues from
+dynamically changing an environment. Another major difference is that Conda does not include
+the entirety of CRAN nor Bioconductor, which is the case for Nix. According to 
+[Anaconda's Documentation](https://docs.anaconda.com/working-with-conda/packages/using-r-language/)
+6000 CRAN packages are available through Conda (as of writing in July 2024, CRAN has 21'000+ packages).
+Nix also includes almost all of Bioconductor packages, and Conda includes them trough the Bioconda
+project, however, we were not able to find if Bioconda contains all of Bioconductor. According to 
+Bioconda's FAQ, 
+[Bioconductor data packages are not included.](https://bioconda.github.io/faqs.html#why-are-bioconductor-data-packages-failing-to-install)
+
+### How is Nix different from Guix?
+
+Just like Nix, Guix is a functional package manager with a focus on reproducible builds.
+We won't go into technical differences/similarities, but only to pratical ones for end-users of the R programming
+language. If you want to know about technical aspects, read this 
+[https://news.ycombinator.com/item?id=18910683](Hackernews post by one of the authors of Guix).
+The mean shortcoming of Guix for R users is that not all CRAN or Bioconductor packages are included,
+nor is Guix available on Windows or macOS.
 
 ## Contributing
 
