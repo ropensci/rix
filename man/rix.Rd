@@ -115,8 +115,8 @@ argument to \code{"other"}. We recommend reading the
 \code{vignette("e-interactive-use")} for more details.
 
 Packages to install from Github must be provided in a list of 4 elements:
-"package_name", "repo_url", "branch_name" and "commit". This argument can
-also be a list of lists of these 4 elements. It is also possible to install
+"package_name", "repo_url" and "commit". This argument can
+also be a list of lists of these 3 elements. It is also possible to install
 old versions of packages by specifying a version. For example, to install
 the latest version of \code{{AER}} but an old version of \code{{ggplot2}}, you could
 write: \code{r_pkgs = c("AER", "ggplot2@2.2.1")}. Note however that doing this

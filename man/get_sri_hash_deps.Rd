@@ -6,14 +6,11 @@
 with local Nix, or using an online API service (equivalent
 \verb{nix hash path --sri <path>}) if Nix is not available}
 \usage{
-get_sri_hash_deps(repo_url, branch_name, commit)
+get_sri_hash_deps(repo_url, commit)
 }
 \arguments{
 \item{repo_url}{A character. The URL to the package's Github repository or to
 the \code{.tar.gz} package hosted on CRAN.}
-
-\item{branch_name}{A character. The branch of interest, NULL for archived
-CRAN packages.}
 
 \item{commit}{A character. The commit hash of interest, for reproducibility's
 sake, NULL for archived CRAN packages.}
