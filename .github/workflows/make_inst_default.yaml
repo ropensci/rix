@@ -34,7 +34,7 @@ jobs:
       - name: Check if PR exists
         id: check_pr
         run: |
-          PR=$(gh pr list --base update_default.nix --state open --json number --jq '.[0].number')
+          PR=$(gh pr list -S 'Update default.nix' --json number --jq '.[0].number')
           echo "PR_NUMBER=$PR" >> $GITHUB_ENV
 
       - name: Push changes to update_default.nix branch
