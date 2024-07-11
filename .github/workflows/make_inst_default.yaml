@@ -23,9 +23,6 @@ jobs:
       - name: Nix cache
         uses: DeterminateSystems/magic-nix-cache-action@main
 
-      - name: Install Git
-        run: sudo apt-get install git
-
       - name: Get latest commit hash
         id: get_latest_commit
         run: echo "LATEST_COMMIT_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
