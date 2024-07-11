@@ -107,7 +107,6 @@ that environment:</p>
 <span>    system_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    git_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>package_name <span class="op">=</span> <span class="st">"housing"</span>,</span>
 <span>                    repo_url <span class="op">=</span> <span class="st">"https://github.com/rap4all/housing/"</span>,</span>
-<span>                    branch_name <span class="op">=</span> <span class="st">"fusen"</span>,</span>
 <span>                    commit <span class="op">=</span> <span class="st">"1c860959310b80e67c41f7bbdc3e84cef00df18e"</span><span class="op">)</span>,</span>
 <span>    ide <span class="op">=</span> <span class="st">"other"</span>,</span>
 <span>    project_path <span class="op">=</span> <span class="va">path_default_nix</span>,</span>
@@ -123,7 +122,6 @@ that environment:</p>
 <span><span class="co">#&gt; #  &gt; system_pkgs = NULL,</span></span>
 <span><span class="co">#&gt; #  &gt; git_pkgs = list(package_name = "housing",</span></span>
 <span><span class="co">#&gt; #  &gt; repo_url = "https://github.com/rap4all/housing/",</span></span>
-<span><span class="co">#&gt; #  &gt; branch_name = "fusen",</span></span>
 <span><span class="co">#&gt; #  &gt; commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"),</span></span>
 <span><span class="co">#&gt; #  &gt; ide = "other",</span></span>
 <span><span class="co">#&gt; #  &gt; project_path = path_default_nix,</span></span>
@@ -146,7 +144,6 @@ that environment:</p>
 <span><span class="co">#&gt;       name = "housing";</span></span>
 <span><span class="co">#&gt;       src = pkgs.fetchgit {</span></span>
 <span><span class="co">#&gt;         url = "https://github.com/rap4all/housing/";</span></span>
-<span><span class="co">#&gt;         branchName = "fusen";</span></span>
 <span><span class="co">#&gt;         rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";</span></span>
 <span><span class="co">#&gt;         sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";</span></span>
 <span><span class="co">#&gt;       };</span></span>
@@ -209,7 +206,6 @@ you could add a <em>Shell-hook</em> to the generated
 <span>    system_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    git_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>package_name <span class="op">=</span> <span class="st">"housing"</span>,</span>
 <span>                    repo_url <span class="op">=</span> <span class="st">"https://github.com/rap4all/housing/"</span>,</span>
-<span>                    branch_name <span class="op">=</span> <span class="st">"fusen"</span>,</span>
 <span>                    commit <span class="op">=</span> <span class="st">"1c860959310b80e67c41f7bbdc3e84cef00df18e"</span><span class="op">)</span>,</span>
 <span>    ide <span class="op">=</span> <span class="st">"other"</span>,</span>
 <span>    shell_hook <span class="op">=</span> <span class="st">"Rscript -e 'targets::tar_make()'"</span>,</span>

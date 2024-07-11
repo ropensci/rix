@@ -118,7 +118,6 @@ you, you could use the following <code><a href="../reference/rix.html">rix::rix(
 <span>    system_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    git_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>package_name <span class="op">=</span> <span class="st">"lookup"</span>,</span>
 <span>                    repo_url <span class="op">=</span> <span class="st">"https://github.com/jimhester/lookup/"</span>,</span>
-<span>                    branch_name <span class="op">=</span> <span class="st">"master"</span>,</span>
 <span>                    commit <span class="op">=</span> <span class="st">"eba63db477dd2f20153b75e2949eb333a36cccfc"</span><span class="op">)</span>,</span>
 <span>    ide <span class="op">=</span> <span class="st">"other"</span>,</span>
 <span>    project_path <span class="op">=</span> <span class="va">path_default_nix</span>,</span>
@@ -153,7 +152,6 @@ first, create a new expression using <a href="https://b-rodrigues.github.io/rix/
 <span>    system_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    git_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>package_name <span class="op">=</span> <span class="st">"highlite"</span>,</span>
 <span>                    repo_url <span class="op">=</span> <span class="st">"https://github.com/jimhester/highlite/"</span>,</span>
-<span>                    branch_name <span class="op">=</span> <span class="st">"master"</span>,</span>
 <span>                    commit <span class="op">=</span> <span class="st">"767b122ef47a60a01e1707e4093cf3635a99c86b"</span><span class="op">)</span>,</span>
 <span>    ide <span class="op">=</span> <span class="st">"other"</span>,</span>
 <span>    project_path <span class="op">=</span> <span class="va">path_default_nix</span>,</span>
@@ -165,7 +163,6 @@ this one on screen will do). Copy the following lines:</p>
   name = "highlite";
   src = pkgs.fetchgit {
     url = "https://github.com/jimhester/highlite/";
-    branchName = "master";
     rev = "767b122ef47a60a01e1707e4093cf3635a99c86b";
     sha256 = "sha256-lkWMlAi75MYxiBUYnLwxLK9ApXkWanA4Mt7g4qtLpxM=";
   };
@@ -183,7 +180,6 @@ should look like this now:</p>
     name = "highlite";
     src = pkgs.fetchgit {
       url = "https://github.com/jimhester/highlite/";
-      branchName = "master";
       rev = "767b122ef47a60a01e1707e4093cf3635a99c86b";
       sha256 = "sha256-lkWMlAi75MYxiBUYnLwxLK9ApXkWanA4Mt7g4qtLpxM=";
     };
@@ -195,7 +191,6 @@ should look like this now:</p>
     name = "lookup";
     src = pkgs.fetchgit {
       url = "https://github.com/jimhester/lookup/";
-      branchName = "master";
       rev = "eba63db477dd2f20153b75e2949eb333a36cccfc";
       sha256 = "sha256-arl7LVxL8xGUW3LhuDCSUjcfswX0rdofL/7v8Klw8FM=";
     };
