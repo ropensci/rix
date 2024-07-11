@@ -281,7 +281,10 @@ for more details."
   }
 
   if (!file.exists(default.nix_path) || overwrite) {
-    dir.create(dirname(default.nix_path))
+    
+    if (!dir.exists(project_path)) {
+      dir.create(project_path)
+    }
     file.create(default.nix_path)
     writeLines(default.nix, default.nix_path)
     
