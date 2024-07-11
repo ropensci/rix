@@ -12,7 +12,7 @@
 <!-- badges: start -->
 
 [![R-hub
-v2](https://github.com/b-rodrigues/rix/actions/workflows/rhub.yaml/badge.svg)](https://github.com/b-rodrigues/rix/actions/workflows/rhub.yaml/badge.svg)
+v2](https://github.com/b-rodrigues/rix/actions/workflows/rhub.yaml/badge.svg)](https://github.com/b-rodrigues/rix/actions/workflows/rhub.yaml)
 [![runiverse-package
 rix](https://b-rodrigues.r-universe.dev/badges/rix?scale=1&color=pink&style=round)](https://b-rodrigues.r-universe.dev/rix)
 [![Docs](https://img.shields.io/badge/docs-release-blue.svg)](https://b-rodrigues.github.io/rix)
