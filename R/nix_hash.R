@@ -95,7 +95,7 @@ nix_sri_hash <- function(path) {
   # not needed for Nix R sessions, workaround on Debian and Debian-based 
   # systems with nix installed
   LD_LIBRARY_PATH_default <- Sys.getenv("LD_LIBRARY_PATH")
-  needs_ld_fix <- nzchar(Sys.getenv("NIX_STORE")) &&
+  needs_ld_fix <- isFALSE(nzchar(Sys.getenv("NIX_STORE"))) &&
     nzchar(LD_LIBRARY_PATH_default)
   
   if (isTRUE(needs_ld_fix)) {
