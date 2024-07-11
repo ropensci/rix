@@ -194,11 +194,9 @@ rix(r_ver = "4.2.1",
     git_pkgs = list(
                  list(package_name = "housing",
                    repo_url = "https://github.com/rap4all/housing/",
-                   branch_name = "fusen",
                    commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
                  list(package_name = "fusen",
                    repo_url = "https://github.com/ThinkR-open/fusen",
-                   branch_name = "main",
                    commit = "d617172447d2947efb20ad6a4463742b8a5d79dc")
     ),
     ide = "other",
@@ -215,11 +213,9 @@ rix(r_ver = "4.2.1",
 #> #  > "janitor"),
 #> #  > git_pkgs = list(list(package_name = "housing",
 #> #  > repo_url = "https://github.com/rap4all/housing/",
-#> #  > branch_name = "fusen",
 #> #  > commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
 #> #  > list(package_name = "fusen",
 #> #  > repo_url = "https://github.com/ThinkR-open/fusen",
-#> #  > branch_name = "main",
 #> #  > commit = "d617172447d2947efb20ad6a4463742b8a5d79dc")),
 #> #  > ide = "other",
 #> #  > project_path = path_default_nix,
@@ -241,7 +237,6 @@ rix(r_ver = "4.2.1",
 #>       name = "housing";
 #>       src = pkgs.fetchgit {
 #>         url = "https://github.com/rap4all/housing/";
-#>         branchName = "fusen";
 #>         rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";
 #>         sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";
 #>       };
@@ -264,7 +259,6 @@ rix(r_ver = "4.2.1",
 #>       name = "fusen";
 #>       src = pkgs.fetchgit {
 #>         url = "https://github.com/ThinkR-open/fusen";
-#>         branchName = "main";
 #>         rev = "d617172447d2947efb20ad6a4463742b8a5d79dc";
 #>         sha256 = "sha256-TOHA1ymLUSgZMYIA1a2yvuv0799svaDOl3zOhNRxcmw=";
 #>       };
@@ -313,9 +307,9 @@ rix(r_ver = "4.2.1",
 
 
 This will install two packages from Github: the `{housing}` package and more
-specifically the code as it is in the `fusen` branch. The commit is also
-provided, to pin the exact version of the package needed. The `{fusen}` package
-is also installed, from the main branch at commit `d617172447d`.
+specifically the code as it is in the `fusen` branch; however the branch name is
+not required, as the commit is enough to pin the exact version of the code
+needed. The `{fusen}` package is also installed, as of commit `d617172447d`.
 
 ## Installing local archives
 
@@ -348,11 +342,9 @@ rix(r_ver = "4.2.1",
     git_pkgs = list(
                  list(package_name = "housing",
                    repo_url = "https://github.com/rap4all/housing/",
-                   branch_name = "fusen",
                    commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
                  list(package_name = "fusen",
                    repo_url = "https://github.com/ThinkR-open/fusen",
-                   branch_name = "main",
                    commit = "d617172447d2947efb20ad6a4463742b8a5d79dc")
     ),
     ide = "other",
@@ -370,11 +362,9 @@ rix(r_ver = "4.2.1",
 #> #  > "AER@1.2-8"),
 #> #  > git_pkgs = list(list(package_name = "housing",
 #> #  > repo_url = "https://github.com/rap4all/housing/",
-#> #  > branch_name = "fusen",
 #> #  > commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
 #> #  > list(package_name = "fusen",
 #> #  > repo_url = "https://github.com/ThinkR-open/fusen",
-#> #  > branch_name = "main",
 #> #  > commit = "d617172447d2947efb20ad6a4463742b8a5d79dc")),
 #> #  > ide = "other",
 #> #  > project_path = path_default_nix,
@@ -396,7 +386,6 @@ rix(r_ver = "4.2.1",
 #>       name = "housing";
 #>       src = pkgs.fetchgit {
 #>         url = "https://github.com/rap4all/housing/";
-#>         branchName = "fusen";
 #>         rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";
 #>         sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";
 #>       };
@@ -419,7 +408,6 @@ rix(r_ver = "4.2.1",
 #>       name = "fusen";
 #>       src = pkgs.fetchgit {
 #>         url = "https://github.com/ThinkR-open/fusen";
-#>         branchName = "main";
 #>         rev = "d617172447d2947efb20ad6a4463742b8a5d79dc";
 #>         sha256 = "sha256-TOHA1ymLUSgZMYIA1a2yvuv0799svaDOl3zOhNRxcmw=";
 #>       };

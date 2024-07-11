@@ -52,7 +52,6 @@ rix(r_ver = "latest",
     system_pkgs = NULL,
     git_pkgs = list(package_name = "lookup",
                     repo_url = "https://github.com/jimhester/lookup/",
-                    branch_name = "master",
                     commit = "eba63db477dd2f20153b75e2949eb333a36cccfc"),
     ide = "other",
     project_path = path_default_nix,
@@ -94,7 +93,6 @@ rix(r_ver = "latest",
     system_pkgs = NULL,
     git_pkgs = list(package_name = "highlite",
                     repo_url = "https://github.com/jimhester/highlite/",
-                    branch_name = "master",
                     commit = "767b122ef47a60a01e1707e4093cf3635a99c86b"),
     ide = "other",
     project_path = path_default_nix,
@@ -110,7 +108,6 @@ git_archive_pkgs = [(pkgs.rPackages.buildRPackage {
   name = "highlite";
   src = pkgs.fetchgit {
     url = "https://github.com/jimhester/highlite/";
-    branchName = "master";
     rev = "767b122ef47a60a01e1707e4093cf3635a99c86b";
     sha256 = "sha256-lkWMlAi75MYxiBUYnLwxLK9ApXkWanA4Mt7g4qtLpxM=";
   };
@@ -131,7 +128,6 @@ let
     name = "highlite";
     src = pkgs.fetchgit {
       url = "https://github.com/jimhester/highlite/";
-      branchName = "master";
       rev = "767b122ef47a60a01e1707e4093cf3635a99c86b";
       sha256 = "sha256-lkWMlAi75MYxiBUYnLwxLK9ApXkWanA4Mt7g4qtLpxM=";
     };
@@ -143,7 +139,6 @@ let
     name = "lookup";
     src = pkgs.fetchgit {
       url = "https://github.com/jimhester/lookup/";
-      branchName = "master";
       rev = "eba63db477dd2f20153b75e2949eb333a36cccfc";
       sha256 = "sha256-arl7LVxL8xGUW3LhuDCSUjcfswX0rdofL/7v8Klw8FM=";
     };

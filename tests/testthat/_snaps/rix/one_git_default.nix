@@ -7,7 +7,6 @@ let
       name = "lookup";
       src = pkgs.fetchgit {
         url = "https://github.com/jimhester/lookup/";
-        branchName = "master";
         rev = "eba63db477dd2f20153b75e2949eb333a36cccfc";
         sha256 = "sha256-arl7LVxL8xGUW3LhuDCSUjcfswX0rdofL/7v8Klw8FM=";
       };

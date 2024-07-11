@@ -38,7 +38,7 @@ hash_url <- function(url) {
   # extra diagnostics
   extra_diagnostics <-
     c(
-      "\nIf it's a Github repo, check the url, branch name and commit.\n",
+      "\nIf it's a Github repo, check the url and commit.\n",
       "Are these correct? If it's an archived CRAN package, check the name\n",
       "of the package and the version number."
     )
@@ -179,27 +179,25 @@ hash_git <- function(repo_url, commit) {
 #' available locally
 #' @param repo_url A character. The URL to the package's Github repository or to
 #' the `.tar.gz` package hosted on CRAN.
-#' @param branch_name A character. The branch of interest, NULL for archived
-#' CRAN packages.
 #' @param commit A character. The commit hash of interest, for reproducibility's
 #' sake, NULL for archived CRAN packages.
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
 #' - `deps`: string with R package dependencies separarated by space.
 #' @noRd
-nix_hash_online <- function(repo_url, branch_name, commit) {
+nix_hash_online <- function(repo_url, commit) {
   # handle to get error for status code 404
   h <- curl::new_handle(failonerror = TRUE)
 
   url <- paste0(
     "http://git2nixsha.dev:1506/hash?repo_url=",
-    repo_url, "&branchName=", branch_name, "&commit=", commit
+    repo_url, "&commit=", commit
   )
 
   # extra diagnostics
   extra_diagnostics <-
     c(
-      "\nIf it's a Github repo, check the url, branch name and commit.\n",
+      "\nIf it's a Github repo, check the url and commit.\n",
       "Are these correct? If it's an archived CRAN package, check the name\n",
       "of the package and the version number."
     )
@@ -223,15 +221,13 @@ nix_hash_online <- function(repo_url, branch_name, commit) {
 #' `nix hash path --sri <path>`) if Nix is not available
 #' @param repo_url A character. The URL to the package's Github repository or to
 #' the `.tar.gz` package hosted on CRAN.
-#' @param branch_name A character. The branch of interest, NULL for archived
-#' CRAN packages.
 #' @param commit A character. The commit hash of interest, for reproducibility's
 #' sake, NULL for archived CRAN packages.
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
 #'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: string with R package dependencies separarated by space.
-get_sri_hash_deps <- function(repo_url, branch_name, commit) {
+get_sri_hash_deps <- function(repo_url, commit) {
   # if no `options(rix.sri_hash=)` is set, default is `"check_nix"`
   sri_hash_option <- get_sri_hash_option()
   has_nix_shell <- nix_shell_available()
@@ -239,11 +235,11 @@ get_sri_hash_deps <- function(repo_url, branch_name, commit) {
     switch(sri_hash_option,
       "check_nix" = nix_hash(repo_url, commit),
       "locally" = nix_hash(repo_url, commit),
-      "api_server" = nix_hash_online(repo_url, branch_name, commit)
+      "api_server" = nix_hash_online(repo_url, commit)
     )
   } else {
     switch(sri_hash_option,
-      "check_nix" = nix_hash_online(repo_url, branch_name, commit),
+      "check_nix" = nix_hash_online(repo_url, commit),
       "locally" = {
         if (isFALSE(has_nix_shell)) {
           stop(
@@ -256,7 +252,7 @@ get_sri_hash_deps <- function(repo_url, branch_name, commit) {
           )
         }
       },
-      "api_server" = nix_hash_online(repo_url, branch_name, commit)
+      "api_server" = nix_hash_online(repo_url, commit)
     )
   }
 }
