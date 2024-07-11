@@ -46,7 +46,7 @@ let
       testthat
       knitr
       rmarkdown
-      precommit;
+      rhub;
   };
   
   tex = (pkgs.texlive.combine {

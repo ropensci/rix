@@ -480,7 +480,7 @@ testthat::test_that("rix(), conclusion message", {
 
 testthat::test_that("rix(), warning message if rix_init() already called", {
 
-  testthat::skip_on_os
+  testthat::skip_on_os(os = c("windows", "mac"))
 
   path_default_nix <- paste0(
     tempdir(), paste0(sample(letters, 5), collapse = "")

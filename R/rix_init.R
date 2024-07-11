@@ -191,7 +191,7 @@ rix_init <- function(project_path = ".",
 
         if (message_type == "verbose") {
           cat("\n* Current lines of local `.Rprofile` are\n:")
-          cat(readLines(con = file(rprofile_file)), sep = "\n")
+          cat(readLines(con = rprofile_file), sep = "\n")
         }
         set_message_session_PATH(message_type = message_type)
       }
