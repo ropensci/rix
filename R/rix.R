@@ -209,9 +209,6 @@ for more details."
   # fork is used. Otherwise, upstream NixOS/nixpkgs
   nix_repo <- make_nixpkgs_url(r_ver)
 
-  default.nix_path <- file.path(default.nix_path)
-  .Rprofile_path <- file.path(.Rprofile_path)
-
   rix_call <- match.call()
 
   # Get the two lists. One list is current CRAN packages
