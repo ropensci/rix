@@ -57,10 +57,10 @@
 <p>To speed-up this process, we also provide a cache of this environment that also gets updated several times a day. To use this cache, you need to have <a href="https://app.cachix.org/" class="external-link">cachix</a> installed and configured. So if you wish to use this development environment and its associated cache to very quickly have the right environment to contribute to the package, run the following steps:</p>
 <ul><li>First, install cachix: <code>nix-env -iA cachix -f https://cachix.org/api/v1/install</code>
 </li>
-<li>Enable the cache: <code>cachix use b-rodrigues</code>
+<li>Enable the cache: <code>cachix use rstats-on-nix</code>
 </li>
 </ul><p>You might get an error message stating that your user cannot use caches. Simply follow the instructions in the warning to give the right permissions to your user to use caches.</p>
-<p>Then, when you run <code>nix-build</code>, binaries will be pulled from <code>b-rodrigues.cachix.org</code> and <code>cache.nixos.org</code>. Building the development environment is nothing more than waiting for packages to download.</p>
+<p>Then, when you run <code>nix-build</code>, binaries will be pulled from <code>rstats-on-nix.cachix.org</code> and <code>cache.nixos.org</code>. Building the development environment is nothing more than waiting for packages to download.</p>
 <p>There is also the possibility that you cannot successfully build the development environment: because the <code>nixpkgs</code> fork gets updated fully automatically several times a day without any checks, if building a package fails, there will be no fix released yet.</p>
 <p>If you cannot build the development environment, please open an issue, we could then propose a fix upstream.</p>
 </div>
