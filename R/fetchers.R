@@ -1,9 +1,9 @@
 #' fetchgit Downloads and installs a package hosted of Git
 #' @param git_pkg A list of three elements: "package_name", the name of the
-#' package, "repo_url", the repository's url, "commit", the commit hash of
-#' interest.
+#'   package, "repo_url", the repository's url, "commit", the commit hash of
+#'   interest.
 #' @return A character. The Nix definition to download and build the R package
-#' from Github.
+#'   from Github.
 #' @noRd
 fetchgit <- function(git_pkg) {
   package_name <- git_pkg$package_name
@@ -41,7 +41,8 @@ fetchgit <- function(git_pkg) {
 
 #' fetchzip Downloads and installs an archived CRAN package
 #' @param archive_pkg A character of the form `"dplyr@0.80"`
-#' @return A character. The Nix definition to download and build the R package from CRAN.
+#' @return A character. The Nix definition to download and build the R package
+#'   from CRAN.
 #' @noRd
 fetchzip <- function(archive_pkg, sri_hash = NULL) {
   pkgs <- unlist(strsplit(archive_pkg, split = "@"))
@@ -102,8 +103,6 @@ remove_base <- function(list_imports) {
 
   paste(na.omit(imports_nobase), collapse = " ")
 }
-
-
 
 
 #' Finds dependencies of a package from the DESCRIPTION file
