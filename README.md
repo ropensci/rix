@@ -5,6 +5,13 @@
   - [Quick start for returning users](#quick-start-for-returning-users)
   - [Getting started for new users](#getting-started-for-new-users)
     - [Docker](#docker)
+  - [How is Nix different from
+    Docker+renv/{groundhog}/{rang}/(Ana/Mini)Conda/Guix? or Why
+    Nix?](#how-is-nix-different-from-dockerrenvgroundhogranganaminicondaguix-or-why-nix)
+    - [Docker and renv](#docker-and-renv)
+    - [Ana/Miniconda and Mamba](#anamini-conda-and-mamba)
+    - [How is Nix different from Guix?](#how-is-nix-different-from-guix)
+    - [Is rix all there is?](#is-rix-all-there-is)
   - [Contributing](#contributing)
   - [Thanks](#thanks)
   - [Recommended reading](#recommended-reading)
