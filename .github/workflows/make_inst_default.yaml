@@ -5,8 +5,7 @@ on:
 
 name: create_inst_default.nix
 
-permissions:
-  contents: write
+permissions: write-all
 
 jobs:
   create-default-nix:
