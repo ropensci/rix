@@ -39,7 +39,7 @@ jobs:
 
       - name: Push changes to update_default.nix branch
         run: |
-          git push origin master:update_default.nix --force
+          git push origin update_default.nix --force
 
       - name: Create Pull Request
         if: env.PR_NUMBER == ''
