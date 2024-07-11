@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  devtools:
+  create-default-nix:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -28,7 +28,7 @@ jobs:
 
       - name: Generate .inst/extdata/default.nix
         run: |
-          nix-shell ./inst/extdata/default.nix --run "Rscript -e \"library(rix);latest_commit <- sys::as_text(sys::exec_internal('git', c('rev-parse', 'master'))$stdout);rix('4.3.1', git_pkgs = list(package_name = 'rix', repo_url = 'https://github.com/b-rodrigues/rix/', branch_name = 'master', commit = latest_commit), ide = 'other', project_path = './inst/extdata', overwrite = TRUE)\""
+          nix-shell ./inst/extdata/default.nix --run "Rscript -e \"library(rix);latest_commit <- sys::as_text(sys::exec_internal('git', c('rev-parse', 'master'))$stdout);print(latest_commit);rix('4.3.1', git_pkgs = list(package_name = 'rix', repo_url = 'https://github.com/b-rodrigues/rix/', branch_name = 'master', commit = latest_commit), ide = 'other', project_path = './inst/extdata', overwrite = TRUE)\""
 
       - name: Commit and push default.nix
         run: |
