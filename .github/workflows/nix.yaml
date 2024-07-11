@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [main, master]
 
-name: nix-builder
+name: nix-builder for inst/extdata/default.nix
 
 permissions:
   contents: read
