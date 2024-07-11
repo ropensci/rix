@@ -1,0 +1,23 @@
+# Run rhub checks
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: rhub-checks
+
+permissions:
+  contents: read
+
+jobs:
+  devtools:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run checks
+        run: nix-shell --run "Rscript -e \"rhub::rhub_check(platforms = c('linux','macos','macos-arm64','windows','ubuntu-next','ubuntu-release'))\""
