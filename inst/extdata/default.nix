@@ -3,10 +3,11 @@
 # >rix(r_ver = "976fa3369d722e76f37c77493d99829540d43845",
 #  > git_pkgs = list(package_name = "rix",
 #  > repo_url = "https://github.com/b-rodrigues/rix/",
-#  > commit = "5c819debae98fb039f5eb498dd3455a3cef49670"),
+#  > commit = "d45b20bd41dc4acaf5dd853e030ed471d665fda0"),
 #  > ide = "other",
 #  > project_path = "inst/extdata",
-#  > overwrite = TRUE)
+#  > overwrite = TRUE,
+#  > print = TRUE)
 # It uses nixpkgs' revision 976fa3369d722e76f37c77493d99829540d43845 for reproducibility purposes
 # which will install R version 4.3.1.
 # Report any issues to https://github.com/b-rodrigues/rix
@@ -18,8 +19,8 @@ let
       name = "rix";
       src = pkgs.fetchgit {
         url = "https://github.com/b-rodrigues/rix/";
-        rev = "5c819debae98fb039f5eb498dd3455a3cef49670";
-        sha256 = "sha256-2udtdeslHqS0ubYjLfXxcIylWAWa//TnH9VnoESYDXs=";
+        rev = "d45b20bd41dc4acaf5dd853e030ed471d665fda0";
+        sha256 = "sha256-g4SzWcK8nHz7dHP5LVGZeYS3pK923TkAEcKpMI8KURo=";
       };
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) 
