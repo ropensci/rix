@@ -1,0 +1,17 @@
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: ropensci-pkgcheck
+
+permissions:
+  contents: read
+
+jobs:
+  run-x86_64-linux:
+    name: Run ropensci pkgcheck
+    runs-on: ubuntu-latest
+    steps:
+    - uses: ropensci-review-tools/pkgcheck-action@main
