@@ -25,4 +25,4 @@ jobs:
         uses: DeterminateSystems/magic-nix-cache-action@main
 
       - name: Run checks
-        run: nix-shell --run "Rscript -e \"rhub::rhub_check(platforms = c('linux','macos','macos-arm64','windows','ubuntu-next','ubuntu-release', branch = 'master'))\""
+        run: nix-shell --run "Rscript -e \"rhub::rhub_check(platforms = c('linux','macos','macos-arm64','windows','ubuntu-next','ubuntu-release'), branch = 'master')\""
