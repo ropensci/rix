@@ -75,9 +75,10 @@
 #'   argument to `"other"`. We recommend reading the
 #'   `vignette("e-interactive-use")` for more details.
 #'
-#'   Packages to install from Github must be provided in a list of 4 elements:
+#'   Packages to install from Github must be provided in a list of 3 elements:
 #'   "package_name", "repo_url" and "commit". This argument can
-#'   also be a list of lists of these 3 elements. It is also possible to install
+#'   also be a list of lists of these 3 elements, one per package to install. 
+#'   It is also possible to install
 #'   old versions of packages by specifying a version. For example, to install
 #'   the latest version of `{AER}` but an old version of `{ggplot2}`, you could
 #'   write: `r_pkgs = c("AER", "ggplot2@2.2.1")`. Note however that doing this
@@ -88,7 +89,17 @@
 #'   version 2.2.1 release, then use the Nix revision closest to that date, by
 #'   setting `r_ver = "3.1.0"`, which was the version of R current at the time.
 #'   This ensures that Nix builds a completely coherent environment.
-#'
+#'   For security purposes, users that wish to install packages from Github or from the
+#'   CRAN archives must provide a security hash. {rix} computes this hash
+#'   automatically. If Nix is available, then the hash will be computed on the 
+#'   user's machine, however, if Nix is not available, then the hash gets
+#'   computed on a server that we set up for this purposes. This server then
+#'   returns the security hash as well as the dependencies of the packages.
+#'   It is possible to control this behaviour using `options(rix.sri_hash=x)`, 
+#'   where is is one of "check_nix" (the default), "locally" (use the local
+#'   Nix installation) or "api_server" (use the remote server to compute
+#'   and return the hash).
+
 #'   Note that installing packages from Git or old versions using the `"@"`
 #'   notation or local packages, does not leverage Nix's capabilities for
 #'   dependency solving. As such, you might have trouble installing these
