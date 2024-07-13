@@ -49,7 +49,7 @@ jobs:
         if: env.has_changes == 'true'
         run: |
           git add .
-          git commit -m "Updated inst/extdata/default.nix"
+          git commit -m "Styled package"
           git push origin master:style_pkg --force
 
       - name: Create Pull Request
