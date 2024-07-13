@@ -5,6 +5,5 @@
 #' @examples
 #' available_r()
 available_r <- function() {
-
   c("latest", sysdata$version)
 }

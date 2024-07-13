@@ -142,13 +142,15 @@ This should immediately start an R session inside your terminal. You can now run
 something like this:
 
 ```{r, eval = F}
-rix(r_ver = "latest",
-    r_pkgs = c("dplyr", "ggplot2"),
-    system_pkgs = NULL,
-    git_pkgs = NULL,
-    ide = "other",
-    project_path = ".",
-    overwrite = TRUE)
+rix(
+  r_ver = "latest",
+  r_pkgs = c("dplyr", "ggplot2"),
+  system_pkgs = NULL,
+  git_pkgs = NULL,
+  ide = "other",
+  project_path = ".",
+  overwrite = TRUE
+)
 ```
 
 to generate a `default.nix`, and then use that file to generate an environment
@@ -166,14 +168,18 @@ You could also include `{rix}` in your project-specific environments, by
 generating a `default.nix` like so:
 
 ```{r, eval = F}
-rix(r_ver = "latest",
-    r_pkgs = NULL,
-    git_pkgs = list(package_name = "rix",
-                   repo_url = "https://github.com/b-rodrigues/rix",
-                   commit = "76d1bdd03d78589d399b4b9d473ecde616920a82"),
-    ide = "other",
-    project_path = ".",
-    overwrite = TRUE)
+rix(
+  r_ver = "latest",
+  r_pkgs = NULL,
+  git_pkgs = list(
+    package_name = "rix",
+    repo_url = "https://github.com/b-rodrigues/rix",
+    commit = "76d1bdd03d78589d399b4b9d473ecde616920a82"
+  ),
+  ide = "other",
+  project_path = ".",
+  overwrite = TRUE
+)
 ```
 
 Change the commit to a more recent one and adapt the `project_path` argument if needed.
@@ -188,8 +194,10 @@ from its r-universe:
 
 
 ```{r parsermd-chunk-2, eval = FALSE}
-install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
-  "https://cloud.r-project.org"))
+install.packages("rix", repos = c(
+  "https://b-rodrigues.r-universe.dev",
+  "https://cloud.r-project.org"
+))
 ```
 
 You can then use the `{rix}` package to generate expressions. Consult the 

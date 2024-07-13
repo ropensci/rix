@@ -195,9 +195,11 @@ error if you try to use it.
 For example:
 
 ```{r parsermd-chunk-1, eval = FALSE}
-rix(r_ver = "latest",
-    r_pkgs = c("dplyr", "chronicler"),
-    ide = "other")
+rix(
+  r_ver = "latest",
+  r_pkgs = c("dplyr", "chronicler"),
+  ide = "other"
+)
 ```
 
 The call above writes a `default.nix` file in the current working directory.

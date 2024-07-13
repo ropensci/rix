@@ -133,8 +133,10 @@ If you have R installed, you can start straight away from your R session by
 first installing `{rix}`:
 
 ```{r, eval=FALSE}
-install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
-  "https://cloud.r-project.org"))
+install.packages("rix", repos = c(
+  "https://b-rodrigues.r-universe.dev",
+  "https://cloud.r-project.org"
+))
 
 library("rix")
 ```
@@ -146,14 +148,16 @@ library(rix)
 
 path_default_nix <- "."
 
-rix(r_ver = "4.3.3",
-    r_pkgs = c("dplyr", "ggplot2"),
-    system_pkgs = NULL,
-    git_pkgs = NULL,
-    ide = "code",
-    project_path = path_default_nix,
-    overwrite = TRUE,
-    print = TRUE)
+rix(
+  r_ver = "4.3.3",
+  r_pkgs = c("dplyr", "ggplot2"),
+  system_pkgs = NULL,
+  git_pkgs = NULL,
+  ide = "code",
+  project_path = path_default_nix,
+  overwrite = TRUE,
+  print = TRUE
+)
 ```
 
 This generates a file called `default.nix` in the path `path_default_nix` with
