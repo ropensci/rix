@@ -29,7 +29,10 @@ jobs:
           # If you chose API tokens for write access OR if you have a private cache
           authToken: '${{ secrets.CACHIX_AUTH }}'
 
-      - name: Lint
+      - name: Build dev env
+        run: nix-build
+
+      - name: Run lintr
         run: nix-shell --run "Rscript -e 'lintr::lint_package()'"
         env:
           LINTR_ERROR_ON_LINT: false
