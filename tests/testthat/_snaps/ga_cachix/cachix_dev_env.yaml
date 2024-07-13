@@ -14,24 +14,20 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Nix cache
-      uses: DeterminateSystems/magic-nix-cache-action@main
-
-    - uses: cachix/install-nix-action@v25
-      with:
-        nix_path: nixpkgs=channel:nixos-unstable
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
   
-    - uses: cachix/cachix-action@v14
-      with:
-        name: rstats-on-nix
-        # If you chose signing key for write access
-        # signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
-        # If you chose API tokens for write access OR if you have a private cache
-        authToken: '${{ secrets.CACHIX_AUTH }}'
+      - uses: cachix/cachix-action@v15
+        with:
+          name: rstats-on-nix
+          # If you chose signing key for write access
+          # signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+          # If you chose API tokens for write access OR if you have a private cache
+          authToken: '${{ secrets.CACHIX_AUTH }}'
   
-    - run: nix-build default.nix
-        
-    - run: nix-store -qR --include-outputs $(nix-instantiate default.nix) | cachix push rstats-on-nix
-    - run: nix-shell --run "echo OK"
+      - run: nix-build default.nix
+          
+      - run: nix-store -qR --include-outputs $(nix-instantiate default.nix) | cachix push rstats-on-nix
+      - run: nix-shell --run "echo OK"
