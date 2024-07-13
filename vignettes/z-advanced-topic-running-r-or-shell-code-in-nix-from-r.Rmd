@@ -115,7 +115,7 @@ higher 4.2.0 available on your system, you can check what that
 
 ```{r parsermd-chunk-5}
 df <- data.frame(a = 1:3, b = 4:6)
-as.vector(x = df, mode ="list")
+as.vector(x = df, mode = "list")
 ```
 
 This is different for R versions 4.1.3 and below, where you should get an
@@ -169,12 +169,12 @@ your Nix store automatically.
 # of exporting global objects of `df_as_vector` recursively
 out_nix_1 <- with_nix(
   expr = function() df_as_vector(x = df), # wrap to avoid evaluation
-  program = "R", 
-  project_path = path_env_1, 
+  program = "R",
+  project_path = path_env_1,
   message_type = "simple" # you can do `"verbose"`, too
 )
 
-# compare results of custom codebase with indentical 
+# compare results of custom codebase with indentical
 # inputs and different software environments
 identical(out_system_1, out_nix_1)
 
@@ -203,8 +203,8 @@ arguments.
 ```{r parsermd-chunk-9, eval = FALSE}
 out_nix_1_b <- with_nix(
   expr = df_as_vector, # provide name of function
-  program = "R", 
-  project_path = path_env_1, 
+  program = "R",
+  project_path = path_env_1,
   message_type = "simple" # you can do `"verbose"`, too
 )
 ```
@@ -272,7 +272,7 @@ df_as_vector <- function(x) {
 out_nix_1_2 <- with_nix(
   expr = function() df_as_vector(x = df),
   program = "R",
-  project_path = path_env_1_2, 
+  project_path = path_env_1_2,
   message_type = "simple" # you can do `"verbose"`, too
 )
 ```
@@ -305,8 +305,11 @@ it really should return an error. This was addressed in versions after
 
 ```{r parsermd-chunk-17, eval = FALSE}
 out_system_stringr <- tryCatch(
-  expr = {stringr::str_subset(c("", "a"), "")},
-  error = function(e)NULL)
+  expr = {
+    stringr::str_subset(c("", "a"), "")
+  },
+  error = function(e) NULL
+)
 ```
 
 Since the code returns an error, we wrap it inside `tryCatch()` and return
@@ -393,7 +396,6 @@ rix(
   overwrite = TRUE,
   project_path = path_env_arrow
 )
-
 ```
 
 This specific revision of R contains `{arrow}` 13. Let's now suppose that you
@@ -424,7 +426,6 @@ arrow_script <- function() {
     filter(speed > 10) %>%
     as.data.frame()
 }
-
 ```
 
 Which we can then run in the subshell:
@@ -436,7 +437,6 @@ out_nix_arrow <- with_nix(
   project_path = path_env_arrow,
   message_type = "simple"
 )
-
 ```
 
 This will run the function in the subshell, and its output will be saved in the

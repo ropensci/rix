@@ -81,13 +81,15 @@ archived on CRAN:
 ```{r, eval = F}
 path_default_nix <- tempdir()
 
-rix(r_ver = "4.2.1",
-    r_pkgs = c("dplyr@0.8.0", "janitor@1.0.0"),
-    system_pkgs = NULL,
-    git_pkgs = NULL,
-    ide = "other",
-    project_path = path_default_nix,
-    overwrite = TRUE)
+rix(
+  r_ver = "4.2.1",
+  r_pkgs = c("dplyr@0.8.0", "janitor@1.0.0"),
+  system_pkgs = NULL,
+  git_pkgs = NULL,
+  ide = "other",
+  project_path = path_default_nix,
+  overwrite = TRUE
+)
 ```
 
 ```
@@ -189,20 +191,25 @@ It is also possible to install packages from Github:
 ```{r, eval = F}
 path_default_nix <- tempdir()
 
-rix(r_ver = "4.2.1",
-    r_pkgs = c("dplyr", "janitor"),
-    git_pkgs = list(
-                 list(package_name = "housing",
-                   repo_url = "https://github.com/rap4all/housing/",
-                   commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
-                 list(package_name = "fusen",
-                   repo_url = "https://github.com/ThinkR-open/fusen",
-                   commit = "d617172447d2947efb20ad6a4463742b8a5d79dc")
+rix(
+  r_ver = "4.2.1",
+  r_pkgs = c("dplyr", "janitor"),
+  git_pkgs = list(
+    list(
+      package_name = "housing",
+      repo_url = "https://github.com/rap4all/housing/",
+      commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"
     ),
-    ide = "other",
-    project_path = path_default_nix,
-    overwrite = TRUE)
-
+    list(
+      package_name = "fusen",
+      repo_url = "https://github.com/ThinkR-open/fusen",
+      commit = "d617172447d2947efb20ad6a4463742b8a5d79dc"
+    )
+  ),
+  ide = "other",
+  project_path = path_default_nix,
+  overwrite = TRUE
+)
 ```
 
 ```{r parsermd-chunk-4, echo = F}
@@ -225,13 +232,13 @@ rix(r_ver = "4.2.1",
 #> # Report any issues to https://github.com/b-rodrigues/rix
 #> let
 #>  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/79b3d4bcae8c7007c9fd51c279a8a67acfa73a2a.tar.gz") {};
-#>  
+#>
 #>   rpkgs = builtins.attrValues {
-#>     inherit (pkgs.rPackages) 
+#>     inherit (pkgs.rPackages)
 #>       dplyr
 #>       janitor;
 #>   };
-#>  
+#>
 #>   git_archive_pkgs = [
 #>     (pkgs.rPackages.buildRPackage {
 #>       name = "housing";
@@ -241,7 +248,7 @@ rix(r_ver = "4.2.1",
 #>         sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";
 #>       };
 #>       propagatedBuildInputs = builtins.attrValues {
-#>         inherit (pkgs.rPackages) 
+#>         inherit (pkgs.rPackages)
 #>           dplyr
 #>           ggplot2
 #>           janitor
@@ -253,8 +260,8 @@ rix(r_ver = "4.2.1",
 #>           tidyr;
 #>       };
 #>     })
-#> 
-#> 
+#>
+#>
 #>     (pkgs.rPackages.buildRPackage {
 #>       name = "fusen";
 #>       src = pkgs.fetchgit {
@@ -263,7 +270,7 @@ rix(r_ver = "4.2.1",
 #>         sha256 = "sha256-TOHA1ymLUSgZMYIA1a2yvuv0799svaDOl3zOhNRxcmw=";
 #>       };
 #>       propagatedBuildInputs = builtins.attrValues {
-#>         inherit (pkgs.rPackages) 
+#>         inherit (pkgs.rPackages)
 #>           attachment
 #>           cli
 #>           desc
@@ -281,16 +288,16 @@ rix(r_ver = "4.2.1",
 #>       };
 #>     })
 #>    ];
-#>    
+#>
 #>   system_packages = builtins.attrValues {
-#>     inherit (pkgs) 
+#>     inherit (pkgs)
 #>       R
 #>       glibcLocales
 #>       nix;
 #>   };
-#>   
+#>
 #> in
-#> 
+#>
 #> pkgs.mkShell {
 #>   LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
 #>   LANG = "en_US.UTF-8";
@@ -299,9 +306,9 @@ rix(r_ver = "4.2.1",
 #>    LC_MONETARY = "en_US.UTF-8";
 #>    LC_PAPER = "en_US.UTF-8";
 #>    LC_MEASUREMENT = "en_US.UTF-8";
-#> 
+#>
 #>   buildInputs = [ git_archive_pkgs rpkgs  system_packages   ];
-#>   
+#>
 #> }
 ```
 
@@ -318,9 +325,11 @@ place the package in the same folder where the `default.nix` will be generated,
 and write something like this:
 
 ```{r, eval = F}
-rix(r_ver = '4.3.1',
-    local_r_pkgs = c('chronicler_0.2.1.tar.gz', 'knitr_1.43.tar.gz'), 
-    overwrite = TRUE)
+rix(
+  r_ver = "4.3.1",
+  local_r_pkgs = c("chronicler_0.2.1.tar.gz", "knitr_1.43.tar.gz"),
+  overwrite = TRUE
+)
 ```
 
 This assumes that both `chronicler_0.2.1.tar.gz` and `knitr_1.43.tar.gz` have
@@ -337,20 +346,25 @@ from GitHub:
 ```{r, eval = F}
 path_default_nix <- tempdir()
 
-rix(r_ver = "4.2.1",
-    r_pkgs = c("dplyr", "janitor", "AER@1.2-8"),
-    git_pkgs = list(
-                 list(package_name = "housing",
-                   repo_url = "https://github.com/rap4all/housing/",
-                   commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"),
-                 list(package_name = "fusen",
-                   repo_url = "https://github.com/ThinkR-open/fusen",
-                   commit = "d617172447d2947efb20ad6a4463742b8a5d79dc")
+rix(
+  r_ver = "4.2.1",
+  r_pkgs = c("dplyr", "janitor", "AER@1.2-8"),
+  git_pkgs = list(
+    list(
+      package_name = "housing",
+      repo_url = "https://github.com/rap4all/housing/",
+      commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"
     ),
-    ide = "other",
-    project_path = path_default_nix,
-    overwrite = TRUE)
-
+    list(
+      package_name = "fusen",
+      repo_url = "https://github.com/ThinkR-open/fusen",
+      commit = "d617172447d2947efb20ad6a4463742b8a5d79dc"
+    )
+  ),
+  ide = "other",
+  project_path = path_default_nix,
+  overwrite = TRUE
+)
 ```
 
 ```

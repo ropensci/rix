@@ -96,8 +96,10 @@ R session, and install `{rix}` if that's not already done. Because `{rix}` is
 not yet on CRAN, the easiest way is to install it from its r-universe:
 
 ```{r parsermd-chunk-2, eval = FALSE}
-install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
-  "https://cloud.r-project.org"))
+install.packages("rix", repos = c(
+  "https://b-rodrigues.r-universe.dev",
+  "https://cloud.r-project.org"
+))
 ```
 
 You can then use the `{rix}` package to generate expressions. Consult the

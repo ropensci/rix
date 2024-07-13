@@ -45,16 +45,17 @@ well as some LaTeX packages. For this, we use the `tex_pkgs` argument:
 path_default_nix <- tempdir()
 
 
-rix(r_ver = "4.3.1",
-    r_pkgs = c("quarto"),
-    system_pkgs = "quarto",
-    tex_pkgs = c("amsmath"),
-    ide = "other",
-    shell_hook = "",
-    project_path = path_default_nix,
-    overwrite = TRUE,
-    print = TRUE)
-
+rix(
+  r_ver = "4.3.1",
+  r_pkgs = c("quarto"),
+  system_pkgs = "quarto",
+  tex_pkgs = c("amsmath"),
+  ide = "other",
+  shell_hook = "",
+  project_path = path_default_nix,
+  overwrite = TRUE,
+  print = TRUE
+)
 ```
 
 (Save these lines into a script called `build_env.R` for instance, and run the
@@ -106,15 +107,17 @@ So there's an R chunk in `template.qmd` that uses the `{MASS}` package. Change
 the environment when built:
 
 ```{r, eval = FALSE}
-rix(r_ver = "4.3.1",
-    r_pkgs = c("quarto", "MASS"),
-    system_pkgs = "quarto",
-    tex_pkgs = c("amsmath"),
-    ide = "other",
-    shell_hook = "",
-    project_path = path_default_nix,
-    overwrite = TRUE,
-    print = TRUE)
+rix(
+  r_ver = "4.3.1",
+  r_pkgs = c("quarto", "MASS"),
+  system_pkgs = "quarto",
+  tex_pkgs = c("amsmath"),
+  ide = "other",
+  shell_hook = "",
+  project_path = path_default_nix,
+  overwrite = TRUE,
+  print = TRUE
+)
 ```
 
 Trying to compile the document results now in another error message:
@@ -142,23 +145,25 @@ This is what the final script to build the environment looks like:
 
 
 ```{r, eval = FALSE}
-rix(r_ver = "4.3.1",
-    r_pkgs = c("quarto", "MASS"),
-    system_pkgs = "quarto",
-    tex_pkgs = c(
-      "amsmath",
-      "environ",
-      "fontawesome5",
-      "orcidlink",
-      "pdfcol",
-      "tcolorbox",
-      "tikzfill"
-    ),
-    ide = "other",
-    shell_hook = "",
-    project_path = path_default_nix,
-    overwrite = TRUE,
-    print = TRUE)
+rix(
+  r_ver = "4.3.1",
+  r_pkgs = c("quarto", "MASS"),
+  system_pkgs = "quarto",
+  tex_pkgs = c(
+    "amsmath",
+    "environ",
+    "fontawesome5",
+    "orcidlink",
+    "pdfcol",
+    "tcolorbox",
+    "tikzfill"
+  ),
+  ide = "other",
+  shell_hook = "",
+  project_path = path_default_nix,
+  overwrite = TRUE,
+  print = TRUE
+)
 ```
 
 The template will now compile with this environment. To look for a LaTeX
