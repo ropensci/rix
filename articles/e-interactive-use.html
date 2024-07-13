@@ -135,14 +135,16 @@ example, here is how you could use <a href="https://b-rodrigues.github.io/rix/">
 <span></span>
 <span><span class="va">path_to_project</span> <span class="op">&lt;-</span> <span class="st">"~/Documents/kmeans"</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"latest"</span>,</span>
-<span>    r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span><span class="op">)</span>,</span>
-<span>    system_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>    git_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>    ide <span class="op">=</span> <span class="st">"rstudio"</span>,</span>
-<span>    project_path <span class="op">=</span> <span class="va">path_to_project</span>,</span>
-<span>    overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>    print <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span></span>
+<span>  r_ver <span class="op">=</span> <span class="st">"latest"</span>,</span>
+<span>  r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span><span class="op">)</span>,</span>
+<span>  system_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  git_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ide <span class="op">=</span> <span class="st">"rstudio"</span>,</span>
+<span>  project_path <span class="op">=</span> <span class="va">path_to_project</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  print <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Because you also have R installed through the usual method for your
 operating system, you also have a system or user library of packages.
 This library of packages will interfere with the library of packages of
@@ -243,13 +245,15 @@ globally defined at the level of your system. This means that to work on
 a project using VS Code, you would use a call to <code><a href="../reference/rix.html">rix()</a></code> like
 so:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"latest"</span>,</span>
-<span>    r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span><span class="op">)</span>,</span>
-<span>    system_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>    git_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>    ide <span class="op">=</span> <span class="st">"code"</span>,</span>
-<span>    project_path <span class="op">=</span> <span class="st">"."</span>,</span>
-<span>    overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span></span>
+<span>  r_ver <span class="op">=</span> <span class="st">"latest"</span>,</span>
+<span>  r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span><span class="op">)</span>,</span>
+<span>  system_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  git_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ide <span class="op">=</span> <span class="st">"code"</span>,</span>
+<span>  project_path <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Notice the <code>ide = "code"</code> argument. This will not install
 VS Code from Nix, but will install the <a href="https://github.com/REditorSupport/languageserver/" class="external-link">languageserver</a>
 package that is needed for using R with VS Code. If you want to also

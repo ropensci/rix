@@ -186,13 +186,15 @@ start generating expressions:</p>
 <p>This should immediately start an R session inside your terminal. You
 can now run something like this:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"latest"</span>,</span>
-<span>    r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span><span class="op">)</span>,</span>
-<span>    system_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>    git_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>    ide <span class="op">=</span> <span class="st">"other"</span>,</span>
-<span>    project_path <span class="op">=</span> <span class="st">"."</span>,</span>
-<span>    overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span></span>
+<span>  r_ver <span class="op">=</span> <span class="st">"latest"</span>,</span>
+<span>  r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span><span class="op">)</span>,</span>
+<span>  system_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  git_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ide <span class="op">=</span> <span class="st">"other"</span>,</span>
+<span>  project_path <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>to generate a <code>default.nix</code>, and then use that file to
 generate an environment with R, <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> and
 <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>. If you need to add packages for your project,
@@ -210,14 +212,18 @@ and
 <p>You could also include <a href="https://b-rodrigues.github.io/rix/">rix</a> in your project-specific
 environments, by generating a <code>default.nix</code> like so:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"latest"</span>,</span>
-<span>    r_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>    git_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>package_name <span class="op">=</span> <span class="st">"rix"</span>,</span>
-<span>                   repo_url <span class="op">=</span> <span class="st">"https://github.com/b-rodrigues/rix"</span>,</span>
-<span>                   commit <span class="op">=</span> <span class="st">"76d1bdd03d78589d399b4b9d473ecde616920a82"</span><span class="op">)</span>,</span>
-<span>    ide <span class="op">=</span> <span class="st">"other"</span>,</span>
-<span>    project_path <span class="op">=</span> <span class="st">"."</span>,</span>
-<span>    overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span></span>
+<span>  r_ver <span class="op">=</span> <span class="st">"latest"</span>,</span>
+<span>  r_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  git_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    package_name <span class="op">=</span> <span class="st">"rix"</span>,</span>
+<span>    repo_url <span class="op">=</span> <span class="st">"https://github.com/b-rodrigues/rix"</span>,</span>
+<span>    commit <span class="op">=</span> <span class="st">"76d1bdd03d78589d399b4b9d473ecde616920a82"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  ide <span class="op">=</span> <span class="st">"other"</span>,</span>
+<span>  project_path <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Change the commit to a more recent one and adapt the
 <code>project_path</code> argument if needed.</p>
 </div>
@@ -230,8 +236,10 @@ installation (so not Nix, as decribed before), you can install the
 is not yet on CRAN, the easiest way is to install it from its
 r-universe:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"rix"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://b-rodrigues.r-universe.dev"</span>,</span>
-<span>  <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"rix"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"https://b-rodrigues.r-universe.dev"</span>,</span>
+<span>  <span class="st">"https://cloud.r-project.org"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>You can then use the <a href="https://b-rodrigues.github.io/rix/">rix</a> package to generate
 expressions. Consult the next vignette
 <code><a href="../articles/c-using-rix-to-build-project-specific-environments.html">vignette("c-using-rix-to-build-project-specific-environments")</a></code>

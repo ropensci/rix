@@ -237,7 +237,7 @@ version higher 4.2.0 available on your system, you can check what that
 <code><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector.data.frame()</a></code> S3 method returns a list.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, b <span class="op">=</span> <span class="fl">4</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">df</span>, mode <span class="op">=</span><span class="st">"list"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">df</span>, mode <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $a</span></span>
 <span><span class="co">#&gt; [1] 1 2 3</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -300,12 +300,12 @@ and copied into your Nix store automatically.</p>
 <span><span class="co"># of exporting global objects of `df_as_vector` recursively</span></span>
 <span><span class="va">out_nix_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/with_nix.html">with_nix</a></span><span class="op">(</span></span>
 <span>  expr <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu">df_as_vector</span><span class="op">(</span>x <span class="op">=</span> <span class="va">df</span><span class="op">)</span>, <span class="co"># wrap to avoid evaluation</span></span>
-<span>  program <span class="op">=</span> <span class="st">"R"</span>, </span>
-<span>  project_path <span class="op">=</span> <span class="va">path_env_1</span>, </span>
+<span>  program <span class="op">=</span> <span class="st">"R"</span>,</span>
+<span>  project_path <span class="op">=</span> <span class="va">path_env_1</span>,</span>
 <span>  message_type <span class="op">=</span> <span class="st">"simple"</span> <span class="co"># you can do `"verbose"`, too</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># compare results of custom codebase with indentical </span></span>
+<span><span class="co"># compare results of custom codebase with indentical</span></span>
 <span><span class="co"># inputs and different software environments</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">out_system_1</span>, <span class="va">out_nix_1</span><span class="op">)</span></span>
 <span></span>
@@ -331,8 +331,8 @@ default arguments.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out_nix_1_b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/with_nix.html">with_nix</a></span><span class="op">(</span></span>
 <span>  expr <span class="op">=</span> <span class="va">df_as_vector</span>, <span class="co"># provide name of function</span></span>
-<span>  program <span class="op">=</span> <span class="st">"R"</span>, </span>
-<span>  project_path <span class="op">=</span> <span class="va">path_env_1</span>, </span>
+<span>  program <span class="op">=</span> <span class="st">"R"</span>,</span>
+<span>  project_path <span class="op">=</span> <span class="va">path_env_1</span>,</span>
 <span>  message_type <span class="op">=</span> <span class="st">"simple"</span> <span class="co"># you can do `"verbose"`, too</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>It yields the same results.</p>
@@ -408,7 +408,7 @@ define again the target function to test in R 4.2.0, too.</p>
 <code class="sourceCode R"><span><span class="va">out_nix_1_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/with_nix.html">with_nix</a></span><span class="op">(</span></span>
 <span>  expr <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu">df_as_vector</span><span class="op">(</span>x <span class="op">=</span> <span class="va">df</span><span class="op">)</span>,</span>
 <span>  program <span class="op">=</span> <span class="st">"R"</span>,</span>
-<span>  project_path <span class="op">=</span> <span class="va">path_env_1_2</span>, </span>
+<span>  project_path <span class="op">=</span> <span class="va">path_env_1_2</span>,</span>
 <span>  message_type <span class="op">=</span> <span class="st">"simple"</span> <span class="co"># you can do `"verbose"`, too</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>You can now formally compare the outputs of the computation of the
@@ -435,8 +435,11 @@ is unexpected: it really should return an error. This was addressed in
 versions after 1.5.0:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out_system_stringr</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
-<span>  expr <span class="op">=</span> <span class="op">{</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu">str_subset</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"a"</span><span class="op">)</span>, <span class="st">""</span><span class="op">)</span><span class="op">}</span>,</span>
-<span>  error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span><span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span>  expr <span class="op">=</span> <span class="op">{</span></span>
+<span>    <span class="fu">stringr</span><span class="fu">::</span><span class="fu">str_subset</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"a"</span><span class="op">)</span>, <span class="st">""</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span>  error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Since the code returns an error, we wrap it inside
 <code><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch()</a></code> and return <code>NULL</code> instead of an error
 (if we wouldn’t do that, this vignette could not compile!).</p>

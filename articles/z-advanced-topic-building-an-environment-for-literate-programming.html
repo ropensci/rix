@@ -115,15 +115,17 @@ this, we use the <code>tex_pkgs</code> argument:</p>
 <code class="sourceCode R"><span><span class="va">path_default_nix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"4.3.1"</span>,</span>
-<span>    r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quarto"</span><span class="op">)</span>,</span>
-<span>    system_pkgs <span class="op">=</span> <span class="st">"quarto"</span>,</span>
-<span>    tex_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"amsmath"</span><span class="op">)</span>,</span>
-<span>    ide <span class="op">=</span> <span class="st">"other"</span>,</span>
-<span>    shell_hook <span class="op">=</span> <span class="st">""</span>,</span>
-<span>    project_path <span class="op">=</span> <span class="va">path_default_nix</span>,</span>
-<span>    overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>    print <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span></span>
+<span>  r_ver <span class="op">=</span> <span class="st">"4.3.1"</span>,</span>
+<span>  r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quarto"</span><span class="op">)</span>,</span>
+<span>  system_pkgs <span class="op">=</span> <span class="st">"quarto"</span>,</span>
+<span>  tex_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"amsmath"</span><span class="op">)</span>,</span>
+<span>  ide <span class="op">=</span> <span class="st">"other"</span>,</span>
+<span>  shell_hook <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  project_path <span class="op">=</span> <span class="va">path_default_nix</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  print <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>(Save these lines into a script called <code>build_env.R</code> for
 instance, and run the script into a new folder made for this
 project.)</p>
@@ -162,15 +164,17 @@ Execution halted
 a new <code>default.nix</code> file that will now add
 <a href="http://www.stats.ox.ac.uk/pub/MASS4/" class="external-link">MASS</a> to the environment when built:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"4.3.1"</span>,</span>
-<span>    r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quarto"</span>, <span class="st">"MASS"</span><span class="op">)</span>,</span>
-<span>    system_pkgs <span class="op">=</span> <span class="st">"quarto"</span>,</span>
-<span>    tex_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"amsmath"</span><span class="op">)</span>,</span>
-<span>    ide <span class="op">=</span> <span class="st">"other"</span>,</span>
-<span>    shell_hook <span class="op">=</span> <span class="st">""</span>,</span>
-<span>    project_path <span class="op">=</span> <span class="va">path_default_nix</span>,</span>
-<span>    overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>    print <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span></span>
+<span>  r_ver <span class="op">=</span> <span class="st">"4.3.1"</span>,</span>
+<span>  r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quarto"</span>, <span class="st">"MASS"</span><span class="op">)</span>,</span>
+<span>  system_pkgs <span class="op">=</span> <span class="st">"quarto"</span>,</span>
+<span>  tex_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"amsmath"</span><span class="op">)</span>,</span>
+<span>  ide <span class="op">=</span> <span class="st">"other"</span>,</span>
+<span>  shell_hook <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  project_path <span class="op">=</span> <span class="va">path_default_nix</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  print <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Trying to compile the document results now in another error
 message:</p>
 <pre><code>compilation failed- no matching packages
@@ -188,23 +192,25 @@ dependencies and requirements of a LaTeX document.</p>
 <p>This is what the final script to build the environment looks
 like:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"4.3.1"</span>,</span>
-<span>    r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quarto"</span>, <span class="st">"MASS"</span><span class="op">)</span>,</span>
-<span>    system_pkgs <span class="op">=</span> <span class="st">"quarto"</span>,</span>
-<span>    tex_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>      <span class="st">"amsmath"</span>,</span>
-<span>      <span class="st">"environ"</span>,</span>
-<span>      <span class="st">"fontawesome5"</span>,</span>
-<span>      <span class="st">"orcidlink"</span>,</span>
-<span>      <span class="st">"pdfcol"</span>,</span>
-<span>      <span class="st">"tcolorbox"</span>,</span>
-<span>      <span class="st">"tikzfill"</span></span>
-<span>    <span class="op">)</span>,</span>
-<span>    ide <span class="op">=</span> <span class="st">"other"</span>,</span>
-<span>    shell_hook <span class="op">=</span> <span class="st">""</span>,</span>
-<span>    project_path <span class="op">=</span> <span class="va">path_default_nix</span>,</span>
-<span>    overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>    print <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span></span>
+<span>  r_ver <span class="op">=</span> <span class="st">"4.3.1"</span>,</span>
+<span>  r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quarto"</span>, <span class="st">"MASS"</span><span class="op">)</span>,</span>
+<span>  system_pkgs <span class="op">=</span> <span class="st">"quarto"</span>,</span>
+<span>  tex_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"amsmath"</span>,</span>
+<span>    <span class="st">"environ"</span>,</span>
+<span>    <span class="st">"fontawesome5"</span>,</span>
+<span>    <span class="st">"orcidlink"</span>,</span>
+<span>    <span class="st">"pdfcol"</span>,</span>
+<span>    <span class="st">"tcolorbox"</span>,</span>
+<span>    <span class="st">"tikzfill"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  ide <span class="op">=</span> <span class="st">"other"</span>,</span>
+<span>  shell_hook <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  project_path <span class="op">=</span> <span class="va">path_default_nix</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  print <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>The template will now compile with this environment. To look for a
 LaTeX package, you can use the <a href="https://ctan.org/pkg/orcidlink?lang=en" class="external-link">search engine on
 CTAN</a>.</p>
