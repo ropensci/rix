@@ -56,7 +56,7 @@ jobs:
         if: env.PR_NUMBER == ''
         uses: peter-evans/create-pull-request@v6
         with:
-          branch: update_default.nix
+          branch: style_pkg
           title: 'Style package'
           body: 'Automated PR to style package using `styler:style_pkg()`'
           base: master
