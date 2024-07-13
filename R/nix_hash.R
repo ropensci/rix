@@ -89,7 +89,7 @@ hash_url <- function(url) {
 }
 
 #' Obtain Nix SHA-256 hash of a directory in SRI format (base64)
-#' 
+#'
 #' @param path Path to directory to hash
 #' @return string with SRI hash specification
 #' @noRd
@@ -101,13 +101,13 @@ nix_sri_hash <- function(path) {
   if (isFALSE(has_nix_shell)) {
     stop_no_nix_shell()
   }
-  
-  # not needed for Nix R sessions, workaround on Debian and Debian-based 
+
+  # not needed for Nix R sessions, workaround on Debian and Debian-based
   # systems with nix installed
   LD_LIBRARY_PATH_default <- Sys.getenv("LD_LIBRARY_PATH")
   needs_ld_fix <- isFALSE(nzchar(Sys.getenv("NIX_STORE"))) &&
     nzchar(LD_LIBRARY_PATH_default)
-  
+
   if (isTRUE(needs_ld_fix)) {
     # On Debian and Debian-based systems, like Ubuntu 22.04, we found that a
     # preset `LD_LIBRARY_PATH` environment variable in the system's R session
@@ -150,7 +150,6 @@ nix_sri_hash <- function(path) {
 #' @param repo_url URL to CRAN package source
 #' @noRd
 hash_cran <- function(repo_url) {
-
   # list contains `sri_hash` and `deps` elements
   list_sri_hash_deps <- hash_url(url = repo_url)
 
@@ -158,14 +157,14 @@ hash_cran <- function(repo_url) {
 }
 
 #' Return the SRI hash of a GitHub repository at a given unique commmit ID
-#' 
+#'
 #' @details `hash_git` will retrieve an archive of the repository URL
-#' <https://github.com/<user>/<repo> at a given commit ID. It will fetch 
+#' <https://github.com/<user>/<repo> at a given commit ID. It will fetch
 #' a .tar.gz file from
 #' <https://github.com/<user>/<repo>/archive/<commit-id>.tar.gz. Then, it will
 #' ungzip and unarchive the downloaded `tar.gz` file. Then, on the extracted
 #' directory, it will run `nix-hash`
-#' (NAR) hash 
+#' (NAR) hash
 #' NAR
 #' @param repo_url URL to GitHub repository
 #' @param commit Commit hash
@@ -175,7 +174,6 @@ hash_cran <- function(repo_url) {
 #' - `deps`: string with R package dependencies separarated by space.
 #' @noRd
 hash_git <- function(repo_url, commit) {
-
   trailing_slash <- grepl("/$", repo_url)
   if (isTRUE(trailing_slash)) {
     slash <- ""
@@ -232,7 +230,7 @@ nix_hash_online <- function(repo_url, commit) {
   return(sri_hash_deps_list)
 }
 
-#' Return the sri hash of a path using `nix-hash --type sha256 --sri <path>` 
+#' Return the sri hash of a path using `nix-hash --type sha256 --sri <path>`
 #' with local Nix, or using an online API service (equivalent
 #' `nix hash path --sri <path>`) if Nix is not available
 #' @param repo_url A character. The URL to the package's Github repository or to
@@ -275,7 +273,7 @@ get_sri_hash_deps <- function(repo_url, commit) {
 }
 
 #' Retrieve validated value for options(rix.sri_hash=)
-#' @return validated `rix.sri_hash` option. Currently, either `"check_nix"` 
+#' @return validated `rix.sri_hash` option. Currently, either `"check_nix"`
 #' if option is not set, `"locally"` or `"api_server"` if the option is set.
 #' @noRd
 get_sri_hash_option <- function() {

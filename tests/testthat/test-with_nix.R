@@ -1,5 +1,4 @@
 testthat::test_that("Testing `with_nix()` if Nix is installed", {
-
   skip_on_covr()
 
   if (isFALSE(is_nix_r_session())) {
@@ -26,7 +25,7 @@ testthat::test_that("Testing `with_nix()` if Nix is installed", {
   )
 
   out_subshell <- with_nix(
-    expr = function(){
+    expr = function() {
       set.seed(1234)
       a <- sample(seq(1, 10), 5)
       set.seed(NULL)
@@ -50,14 +49,13 @@ testthat::test_that("Testing `with_nix()` if Nix is installed", {
 })
 
 testthat::test_that("Test `with_nix()` if Nix is installed on R 4.2.0", {
-
   skip_on_covr()
 
   if (isFALSE(is_nix_r_session())) {
     # needed for the GitHub test runners with system's R
     set_nix_path()
   }
-  
+
   skip_if_not(nix_shell_available())
 
   path_subshell <- tempdir()
@@ -79,21 +77,19 @@ testthat::test_that("Test `with_nix()` if Nix is installed on R 4.2.0", {
     project_path = path_subshell,
     message_type = "verbose"
   )
-  
+
   testthat::expect_false(
-              inherits(out_subshell, "data.frame")
-            )
+    inherits(out_subshell, "data.frame")
+  )
 
 
   on.exit({
     unlink(path_subshell, recursive = TRUE, force = TRUE)
   })
-
 })
 
 
 testthat::test_that("Test `with_nix()` correct .libPaths()", {
-
   skip_on_covr()
 
   if (isFALSE(is_nix_r_session())) {
@@ -129,4 +125,3 @@ testthat::test_that("Test `with_nix()` correct .libPaths()", {
     unlink(path_subshell, recursive = TRUE, force = TRUE)
   })
 })
-

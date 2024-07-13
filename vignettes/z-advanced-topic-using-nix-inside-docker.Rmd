@@ -75,12 +75,14 @@ Here is an example of the `generate_env.R` file:
 ```{r, eval = FALSE}
 library(rix)
 
-rix(r_ver = "4.3.1",
-    r_pkgs = c("dplyr", "ggplot2"),
-    ide = "other",
-    project_path = ".",
-  	shell_hook = "R",
-    overwrite = TRUE)
+rix(
+  r_ver = "4.3.1",
+  r_pkgs = c("dplyr", "ggplot2"),
+  ide = "other",
+  project_path = ".",
+  shell_hook = "R",
+  overwrite = TRUE
+)
 ```
 
 Using Nix to handle the setup of the environment, even inside Docker, creates a
@@ -135,12 +137,13 @@ adapt the `generate_env.R` script:
 ```{r, eval = FALSE}
 library(rix)
 
-rix(r_ver = "4.2.2",
-    r_pkgs = "shiny",
-    ide = "other",
-    project_path = ".",
-    overwrite = TRUE
-    )
+rix(
+  r_ver = "4.2.2",
+  r_pkgs = "shiny",
+  ide = "other",
+  project_path = ".",
+  overwrite = TRUE
+)
 ```
 
 Here is the code of a simple Shiny app (it's the K-means app from the Shiny
@@ -155,14 +158,14 @@ examples gallery):
 vars <- setdiff(names(iris), "Species")
 
 pageWithSidebar(
-  headerPanel('Iris k-means clustering'),
+  headerPanel("Iris k-means clustering"),
   sidebarPanel(
-    selectInput('xcol', 'X Variable', vars),
-    selectInput('ycol', 'Y Variable', vars, selected = vars[[2]]),
-    numericInput('clusters', 'Cluster count', 3, min = 1, max = 9)
+    selectInput("xcol", "X Variable", vars),
+    selectInput("ycol", "Y Variable", vars, selected = vars[[2]]),
+    numericInput("clusters", "Cluster count", 3, min = 1, max = 9)
   ),
   mainPanel(
-    plotOutput('plot1')
+    plotOutput("plot1")
   )
 )
 ```
@@ -171,7 +174,6 @@ pageWithSidebar(
 
 ```{r, eval = FALSE}
 function(input, output, session) {
-
   # Combine the selected variables into a new data frame
   selectedData <- reactive({
     iris[, c(input$xcol, input$ycol)]
@@ -182,16 +184,18 @@ function(input, output, session) {
   })
 
   output$plot1 <- renderPlot({
-    palette(c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3",
-      "#FF7F00", "#FFFF33", "#A65628", "#F781BF", "#999999"))
+    palette(c(
+      "#E41A1C", "#377EB8", "#4DAF4A", "#984EA3",
+      "#FF7F00", "#FFFF33", "#A65628", "#F781BF", "#999999"
+    ))
 
     par(mar = c(5.1, 4.1, 0, 1))
     plot(selectedData(),
-         col = clusters()$cluster,
-         pch = 20, cex = 3)
+      col = clusters()$cluster,
+      pch = 20, cex = 3
+    )
     points(clusters()$centers, pch = 4, cex = 4, lwd = 4)
   })
-
 }
 ```
 

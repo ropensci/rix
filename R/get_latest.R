@@ -37,7 +37,6 @@ get_right_commit <- function(r_version) {
   } else if (r_version %in% Filter(function(x) `!=`(x, "latest"), available_r())) { # all but latest
 
     return(sysdata$revision[sysdata$version == r_version])
-
   } else {
     api_url <- "https://api.github.com/repos/NixOS/nixpkgs/commits?sha=nixpkgs-unstable"
   }
@@ -57,7 +56,7 @@ get_right_commit <- function(r_version) {
 
 
 #' Fetch contents from an URL into memory
-#' 
+#'
 #' Fetch if available and stop with propagating the curl error. Also show URL
 #' for context
 #' @noRd

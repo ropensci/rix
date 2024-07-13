@@ -115,7 +115,7 @@ get_imports <- function(path) {
 
   # Some packages have a Description file in the testthat folder
   # (see jimhester/lookup) so we need to get rid of that
-  path <- Filter(function(x)!grepl("testthat", x), path)
+  path <- Filter(function(x) !grepl("testthat", x), path)
 
   # Is the path pointing to a tar.gz archive
   # or directly to a DESCRIPTION file?
@@ -244,9 +244,11 @@ fetchzips <- function(archive_pkgs) {
   } else if (length(archive_pkgs) > 1) {
     paste(lapply(archive_pkgs, fetchzip), collapse = "\n")
   } else {
-    stop("There is something wrong with the input. Make sure it is either",
+    stop(
+      "There is something wrong with the input. Make sure it is either",
       "a single package name, or an atomic vector of package names, for",
-      "example, `c('dplyr@0.8.0', 'tidyr@1.0.0')`.")
+      "example, `c('dplyr@0.8.0', 'tidyr@1.0.0')`."
+    )
   }
 }
 

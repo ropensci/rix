@@ -61,8 +61,10 @@ ga_cachix <- function(cache_name, path_default) {
   )
 
   system(
-    paste0("sed -i ", darwin_specific_quotes, "'s/PATH_TO_DEFAULT_NIX/",
-    path_default, "/g' ", file.path(path, "cachix_dev_env.yaml"))
+    paste0(
+      "sed -i ", darwin_specific_quotes, "'s/PATH_TO_DEFAULT_NIX/",
+      path_default, "/g' ", file.path(path, "cachix_dev_env.yaml")
+    )
   )
 
   if (identical(Sys.getenv("TESTTHAT"), "true")) {
