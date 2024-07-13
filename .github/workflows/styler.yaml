@@ -39,10 +39,15 @@ jobs:
           PR=$(gh pr list -S 'Style package' --json number --jq '.[0].number')
           echo "PR_NUMBER=$PR" >> $GITHUB_ENV
 
-      - name: Push changes to style_pkg branch
+      - name: Configure user and check for changes
         run: |
           git config --global user.email "ga-ci@no-reply.com"
           git config --global user.name "CI Robot"
+          git diff-index --quiet HEAD || echo "has_changes=true" >> $GITHUB_ENV
+
+      - name: Commit and push changes
+        if: env.has_changes == 'true'
+        run: |
           git add .
           git commit -m "Updated inst/extdata/default.nix"
           git push origin master:style_pkg --force
