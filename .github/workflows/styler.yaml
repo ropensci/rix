@@ -11,7 +11,7 @@ name: styler
 permissions: write-all
 
 jobs:
-  lint:
+  style_pkg:
     runs-on: ubuntu-latest
     env:
      GH_TOKEN: ${{ github.token }}
@@ -30,7 +30,7 @@ jobs:
       - name: Build dev env
         run: nix-build
 
-      - name: Run lintr
+      - name: Run styler::style_pkg
         run: nix-shell --run "Rscript -e 'styler::style_pkg()'"
 
       - name: Check if PR exists
