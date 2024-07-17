@@ -4,7 +4,7 @@
 #'   contains a Nix expression to build a reproducible environment using the Nix
 #'   package manager, and `.Rprofile` ensures that a running R session from a
 #'   Nix environment cannot access local libraries, nor install packages using
-#'   `install.packages()`.
+#'   `install.packages()` (nor remove nor update them).
 #' @param r_ver Character, defaults to "latest". The required R version, for
 #'   example "4.0.0". You can check which R versions are available using
 #'   `available_r()`. For reproducibility purposes, you can also provide a
@@ -76,8 +76,8 @@
 #'   `vignette("e-interactive-use")` for more details.
 #'
 #'   Packages to install from Github must be provided in a list of 3 elements:
-#'   "package_name", "repo_url" and "commit". This argument can
-#'   also be a list of lists of these 3 elements, one per package to install. 
+#'   "package_name", "repo_url" and "commit". To install several packages, provide
+#'   a list of lists of these 3 elements, one per package to install. 
 #'   It is also possible to install
 #'   old versions of packages by specifying a version. For example, to install
 #'   the latest version of `{AER}` but an old version of `{ggplot2}`, you could
@@ -96,10 +96,10 @@
 #'   computed on a server that we set up for this purposes. This server then
 #'   returns the security hash as well as the dependencies of the packages.
 #'   It is possible to control this behaviour using `options(rix.sri_hash=x)`, 
-#'   where is is one of "check_nix" (the default), "locally" (use the local
+#'   where `x` is one of "check_nix" (the default), "locally" (use the local
 #'   Nix installation) or "api_server" (use the remote server to compute
 #'   and return the hash).
-
+#'
 #'   Note that installing packages from Git or old versions using the `"@"`
 #'   notation or local packages, does not leverage Nix's capabilities for
 #'   dependency solving. As such, you might have trouble installing these
