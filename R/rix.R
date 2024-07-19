@@ -77,7 +77,7 @@
 #'
 #'   Packages to install from Github must be provided in a list of 3 elements:
 #'   "package_name", "repo_url" and "commit". To install several packages, provide
-#'   a list of lists of these 3 elements, one per package to install. 
+#'   a list of lists of these 3 elements, one per package to install.
 #'   It is also possible to install
 #'   old versions of packages by specifying a version. For example, to install
 #'   the latest version of `{AER}` but an old version of `{ggplot2}`, you could
@@ -92,13 +92,13 @@
 #'   For security purposes, users that wish to install packages from Github or from the
 #'   CRAN archives must provide a security hash for each package. {rix} automatically precomputes this
 #'   hash for the source directory of R packages from GitHub or from the CRAN archives,
-#'   to make sure the expected trusted sources that match the precomputed hashes in 
-#'   the `default.nix` are downloaded. 
-#'   If Nix is available, then the hash will be computed on the 
+#'   to make sure the expected trusted sources that match the precomputed hashes in
+#'   the `default.nix` are downloaded.
+#'   If Nix is available, then the hash will be computed on the
 #'   user's machine, however, if Nix is not available, then the hash gets
 #'   computed on a server that we set up for this purposes. This server then
 #'   returns the security hash as well as the dependencies of the packages.
-#'   It is possible to control this behaviour using `options(rix.sri_hash=x)`, 
+#'   It is possible to control this behaviour using `options(rix.sri_hash=x)`,
 #'   where `x` is one of "check_nix" (the default), "locally" (use the local
 #'   Nix installation) or "api_server" (use the remote server to compute
 #'   and return the hash).
