@@ -166,7 +166,7 @@ testthat::test_that("If on darwin and ide = rstudio, raise warning", {
     rix(
       r_ver = "4.3.1",
       ide = "rstudio",
-      r_pkgs = NULL,
+      r_pkgs = "dplyr",
       project_path = path_default_nix,
       overwrite = TRUE,
       shell_hook = NULL
