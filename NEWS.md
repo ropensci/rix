@@ -1,5 +1,29 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.9.0 (2024-07-22)
+
+## User-facing changes
+
+- `rix::rix()`: It is not necessary anymore to provide the `branch_name` list
+  element for R packages from GitHub in `git_pkgs`.
+
+## Bug fixes
+
+- `rix::rix()`:
+  - error when `ide = "rstudio"` and no additional R packages are
+  chosen. In the situation, the `rStudioWrapper` approach does not work and the
+  resulting Nix expression would not build. The returned error states to either
+  add `rstudio` to `system_pkgs`, or add R packages in `r_pkgs` or `git_pkgs`.
+
+## Chores
+
+- Github Actions: we now use rhub2 for checking the package
+- `rix::rix()` docs: explain `options(rix.sri_hash)`.
+- Source code now follows tidyverse style guide thanks to `{styler}`
+- Readme: added section explain comparing {rix} and Nix to other package
+  managers
+
+
 # rix 0.8.0 (2024-07-02)
 
 ## New features

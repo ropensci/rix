@@ -1,6 +1,6 @@
 Package: rix
 Title: Rix: Reproducible Environments with Nix
-Version: 0.8.0
+Version: 0.9.0
 Authors@R: c(
     person("Bruno", "Rodrigues", , "bruno@brodrigues.co", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3211-3689")),
