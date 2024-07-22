@@ -175,19 +175,37 @@ before continuing."
     )
   }
 
-  if (message_type != "quiet" && r_ver %in% available_r() && r_ver != "latest" && r_ver <= "4.1.1") {
+  if (message_type != "quiet" && r_ver %in% available_r() &&
+    r_ver != "latest" && r_ver <= "4.1.1") {
     warning(
-      "You are generating an expression for an older version of R.\n To use this environment, you should directly use `nix-shell` and not try to build it first using `nix-build`."
+      "You are generating an expression for an older version of R.\n",
+      "To use this environment, you should directly use `nix-shell` and not ",
+      "try to build it first using `nix-build`."
     )
   }
 
   if (message_type != "quiet" && r_ver == "4.4.0") {
     warning(
-      "You chose '4.4.0' as the R version, however this version is not available in nixpkgs. The generated expression will thus install R version 4.4.1."
+      paste0(
+        "You chose '4.4.0' as the R version, however this version is not ",
+        "available in nixpkgs. The generated expression will thus install ",
+        "R version 4.4.1."
+      )
     )
   }
 
   ide <- match.arg(ide, c("other", "code", "radian", "rstudio", "rserver"))
+
+  if (identical(ide, "rstudio") && is.null(r_pkgs) && is.null(git_pkgs) &&
+    is.null(local_r_pkgs)) {
+    stop(
+      paste0(
+        "You chose 'rstudio' as the IDE, but didn't add any R packages",
+        " to the environment.\nThis expression will not build successfully. ",
+        "Consider adding R packages, or add 'rstudio' to `system_pkgs`."
+      )
+    )
+  }
 
   # Wrapper attributes to be used later
   attrib <- c(
@@ -345,6 +363,11 @@ for more details."
     } else {
       project_path
     }
-    stop(paste0("`default.nix` exists in ", project_path, ". Set `overwrite == TRUE` to overwrite."))
+    stop(
+      paste0(
+        "`default.nix` exists in ", project_path,
+        ". Set `overwrite == TRUE` to overwrite."
+      )
+    )
   }
 }

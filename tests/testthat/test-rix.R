@@ -157,42 +157,6 @@ testthat::test_that("Quarto gets added to sys packages", {
   })
 })
 
-
-testthat::test_that("r_pkgs = NULL and ide = 'rstudio' work together", {
-  skip_if(Sys.info()["sysname"] == "Darwin")
-
-  path_default_nix <- tempdir()
-
-  save_default_nix_test <- function(pkgs, interface, path_default_nix) {
-    rix(
-      r_ver = "4.3.1",
-      r_pkgs = pkgs,
-      ide = interface,
-      project_path = path_default_nix,
-      overwrite = TRUE,
-      shell_hook = NULL
-    )
-
-    file.path(path_default_nix, "default.nix")
-  }
-
-  testthat::announce_snapshot_file("rix/null_pkgs_rstudio.nix")
-
-  testthat::expect_snapshot_file(
-    path = save_default_nix_test(
-      pkgs = NULL,
-      interface = "rstudio",
-      path_default_nix
-    ),
-    name = "null_pkgs_rstudio.nix"
-  )
-
-  on.exit({
-    unlink(path_default_nix, recursive = TRUE, force = TRUE)
-  })
-})
-
-
 testthat::test_that("If on darwin and ide = rstudio, raise warning", {
   skip_if(Sys.info()["sysname"] != "Darwin")
 
@@ -272,6 +236,28 @@ testthat::test_that("If R version is <= 4.1.1, raise warning", {
   on.exit({
     unlink(path_default_nix, recursive = TRUE, force = TRUE)
   })
+})
+
+testthat::test_that("If on ide = rstudio, but no R packages, raise error", {
+  path_default_nix <- tempdir()
+
+  save_default_nix_test <- function(path_default_nix) {
+    rix(
+      r_ver = "4.3.1",
+      ide = "rstudio",
+      r_pkgs = NULL,
+      project_path = path_default_nix,
+      overwrite = TRUE,
+      shell_hook = NULL
+    )
+
+    paste0(path_default_nix, "/default.nix")
+  }
+
+  testthat::expect_error(
+    save_default_nix_test(path_default_nix),
+    regexp = "didn't add any R packages"
+  )
 })
 
 testthat::test_that("If R version is == 3.5.3, raise warning", {
