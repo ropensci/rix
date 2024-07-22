@@ -91,7 +91,7 @@ versions of R and R packages that you need. Suppose that you start working on a
 new project. As you start the project, with Nix, you would install a
 project-specific version of R and R packages that you would only use for that
 particular project. If you switch projects, you'd switch versions of R and R
-packages. 
+packages.
 
 If you are familiar with `{renv}`, you should see that this is exactly
 the same thing: the difference is that not only will you have a project-specific
@@ -121,7 +121,6 @@ will get exactly, byte by byte, the same environment as you when you initially
 started the project. And this also regardless of the operating system that is
 used.
 
-
 ## The Nix package manager
 
 Nix is a package manager that can be installed on your computer (regardless of
@@ -131,26 +130,27 @@ you're familiar with the Ubuntu Linux distribution, you likely have used
 similar purposes. Nix functions in a similar way, but has many advantages over
 classic package managers. The main advantage of Nix, at least for our purposes,
 is that its repository of software is huge. As of writing, it contains more than
-80.000 packages, and the entirety of CRAN and Bioconductor is available through
-Nix's repositories. 
+100.000 packages, and the entirety of CRAN and Bioconductor is available through
+Nix's repositories.
 
-This means that using Nix, it is possible to install not
-only R, but also all the packages required for your project. The obvious
-question is why use Nix instead of simply installing R and R packages as usual.
-The answer is that Nix makes sure to install every dependency of any package, up
-to required system libraries. For example, the `{xlsx}` package requires the
-Java programming language to be installed on your computer to successfully
-install. This can be difficult to achieve, and `{xlsx}` bullied many R
-developers throughout the years (especially those using a Linux distribution,
-`sudo R CMD javareconf` still plagues my nightmares). 
+This means that using Nix, it is possible to install not only R, but also all
+the packages required for your project. The obvious question is why use Nix
+instead of simply installing R and R packages as usual. The answer is that Nix
+makes sure to install every dependency of any package, up to required system
+libraries. For example, the `{xlsx}` package requires the Java programming
+language to be installed on your computer to successfully install. This can be
+difficult to achieve, and `{xlsx}` bullied many R developers throughout the
+years (especially those using a Linux distribution, `sudo R CMD javareconf`
+still plagues my nightmares).
 
-But with Nix, it suffices to declare that we want the `{xlsx}` package for our project, and Nix figures
-out automatically that Java is required and installs and configures it. It all
-just happens without any required intervention from the user. The second
-advantage of Nix is that it is possible to *pin* a certain *revision* of the Nix
-packages' repository (called `nixpkgs`) for our project. Pinning a revision
-ensures that every package that Nix installs will always be at exactly the same
-versions, regardless of when in the future the packages get installed.
+But with Nix, it suffices to declare that we want the `{xlsx}` package for our
+project, and Nix figures out automatically that Java is required and installs
+and configures it. It all just happens without any required intervention from
+the user. The second advantage of Nix is that it is possible to *pin* a certain
+*revision* of the Nix packages' repository (called `nixpkgs`) for our project.
+Pinning a revision ensures that every package that Nix installs will always be
+at exactly the same versions, regardless of when in the future the packages get
+installed.
 
 ## rix workflow
 
@@ -165,18 +165,21 @@ not get re-installed to save space. Environments are isolated for each other,
 but can still interact with your system's files, unlike with Docker where a
 volume must be mounted. Environments can also interact with the software
 installed on your computer through the usual means, which can sometimes lead to
-issues. For example, if you already have R installed, and a user library
-of R packages, more caution is required to properly use environments managed
-by Nix. 
+issues. For example, if you already have R installed, and a user library of R
+packages, more caution is required to properly use environments managed by Nix.
 
 It is important at this stage to understand that you should not call
-`install.packages()` from a running Nix environment. If you want to add
-packages to a Nix environment while analyzing data, you need to add it the `default.nix` 
-expression and rebuild the environment. This is explained in greater detail
-in `vignette("d1-installing-r-packages-in-a-nix-environment")`.
+`install.packages()` from a running Nix environment. If you want to add packages
+to a Nix environment while analyzing data, you need to add it the `default.nix`
+expression and rebuild the environment. This is explained in greater detail in
+`vignette("d1-installing-r-packages-in-a-nix-environment")`.
 
-To avoid interference between your main R library of packages and your
-Nix environments, we recommend you read the documentation of `rix_init()`.
+To avoid interference between your main R library of packages and your Nix
+environments, calling `rix()` will also run `rix_init()`, which will create a
+custom `.Rprofile` in the project's directory. This `.Rprofile` will ensure that
+if you have a user library of packages, these won't get loaded by an R version
+running in a Nix shell. It will also redefine `install.packages()` to throw an
+error if you try to use it.
 
 `rix()` has several arguments:
 
@@ -192,9 +195,11 @@ Nix environments, we recommend you read the documentation of `rix_init()`.
 For example:
 
 ```{r parsermd-chunk-1, eval = FALSE}
-rix(r_ver = "latest",
-    r_pkgs = c("dplyr", "chronicler"),
-    ide = "other")
+rix(
+  r_ver = "latest",
+  r_pkgs = c("dplyr", "chronicler"),
+  ide = "other"
+)
 ```
 
 The call above writes a `default.nix` file in the current working directory.
@@ -223,6 +228,9 @@ function in a terminal:
 nix-build
 ```
 
+Nix install packages in a dedicated folder on your computer, called the *Nix
+store*.
+
 Once Nix is done building the environment, you can start working on it
 interactively by using the following command in a terminal emulator (not the R
 console):
@@ -231,11 +239,23 @@ console):
 nix-shell
 ```
 
-You will *drop* into a Nix shell which provides the installed software.
+You will *drop* into a Nix shell which provides the installed software. It is not
+mandatory to call `nix-build` first: you can immediately call `nix-shell`. The
+advantage of using `nix-build` first is that it create a file called `result`
+which will prevent the environment to get garbage collected if you clean
+the Nix store.
 
-If you want to completely isolate your Nix environment from the rest of 
-the system, we recommend using `nix-shell --pure` to drop into the environment,
-as described in the documentation of `rix_init()`.
+If you want to build an environment for an older version of R, you might get a
+warning telling you that you cannot build the expression, but that you can
+directly drop into it.
+
+If you want to completely isolate your Nix environment from the rest of the
+system, we recommend using `nix-shell --pure` to drop into the environment, as
+described in the documentation of `rix_init()`.
+
+Finally, if you want to delete an environment, delete the `result` file first
+(if you used `nix-build`) and then call `nix-store --gc`, which will delete all
+the orphaned packages.
 
 Now that you know more about Nix and `{rix}`, it is time to get these tools
 installed on your system.

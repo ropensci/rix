@@ -1,5 +1,7 @@
-#' detect_versions Detects if CRAN packages need to be downloaded from the archive.
-#' @param r_pkgs A list of packages, to get from CRAN (either current packages or archived packages).
+#' detect_versions Detects if CRAN packages need to be downloaded from the
+#' archive.
+#' @param r_pkgs A list of packages, to get from CRAN (either current packages
+#'   or archived packages).
 #' @return A list of two elements, "cran_packages" and "archive_packages"
 #' @noRd
 detect_versions <- function(r_pkgs) {

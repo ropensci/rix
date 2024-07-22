@@ -31,7 +31,6 @@ running Linux thanks to WSL2. In practice this means that Linux distributions
 and Windows can be considered one system, and macOS another, separate, system,
 with its own idiosyncrasies. This vignette details these.
 
-
 ## Installing Nix
 
 You can use `{rix}` to generate Nix expressions even if you don't have Nix
@@ -97,8 +96,10 @@ R session, and install `{rix}` if that's not already done. Because `{rix}` is
 not yet on CRAN, the easiest way is to install it from its r-universe:
 
 ```{r parsermd-chunk-2, eval = FALSE}
-install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
-  "https://cloud.r-project.org"))
+install.packages("rix", repos = c(
+  "https://b-rodrigues.r-universe.dev",
+  "https://cloud.r-project.org"
+))
 ```
 
 You can then use the `{rix}` package to generate expressions. Consult the
@@ -117,35 +118,21 @@ backwards-compatibility.
 
 ### Shared libraries issue
 
-When using environments built with Nix on macOS, you might get crashes 
+When using environments built with Nix on macOS, you might get crashes
 (segmentation faults) refering to "shared libraries". These indicate that your
 user library of R packages is interfering with the project-specific Nix
-environment. The system's user library that Nix packaged R by default includes 
+environment. The system's user library that Nix packaged R by default includes
 appears in the search paths (check `libPaths()`). For macOS, the user library is
 at
 `/Library/Frameworks/R.framework/Versions/<major>.<minor>-<arch>/Resources/library`;
 we have observed crashes with R packages that depend on system libraries, such
 as {data.table} or {dplyr}, and their (reverse) dependencies. Because user
-libraries from the system would also appear on the search path in R from 
-`nixpkgs` for Linux, we think its a good idea to force isolation of R packages
-by making them behave in a runtime-pure manner. To make this happen, we
-recommend that you set up a project-specific `.Rprofile` using 
-`rix::rix_init()`. This way, only packages declaratively defined in your
-`default.nix` and built to be part of the Nix store (one R package is one
-separate derivation listed in a unique Nix path) appear on the R library path.
-
-As an example, call `rix::rix()` like this.
-
-``` r
-
-# see ?rix_init for more details
-
-rix_init(
-  project_path = "./rix_darwin",
-  rprofile_action = "create_missing"
-)
-```
-
+libraries from the system would also appear on the search path in R from
+`nixpkgs` for Linux, running `rix()` also runs `rix_init()` which creates a
+custom `.Rprofile` in your project's path. This custom `.Rprofile` ensure that
+only packages declaratively defined in your `default.nix` and built to be part
+of the Nix store (one R package is one separate derivation listed in a unique
+Nix path) appear on the R library path.
 
 ### RStudio and other development interfaces on macOS
 
@@ -201,4 +188,3 @@ Nix store to the `PATH` variable in an active session automatically (via
 `Sys.setenv()`, when you use RStudio on macOS. You don't have to do anything. We
 have you covered, and you get a friendly message that informs you. special side
 effect.
-

@@ -40,13 +40,10 @@ jobs:
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
-        with:
-          logger: pretty
-          log-directives: nix_installer=trace
-          backtrace: full
 
-      - name: Nix cache
-        uses: DeterminateSystems/magic-nix-cache-action@main
+      - uses: cachix/cachix-action@v15
+        with:
+          name: rstats-on-nix
 
       - name: Build development environment
         run: |

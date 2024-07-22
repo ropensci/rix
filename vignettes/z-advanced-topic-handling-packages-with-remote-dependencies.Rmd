@@ -44,22 +44,23 @@ Fortran. To create a reproducible development environment that makes
 [{lookup}](https://github.com/jimhester/lookup) available to you, you could use
 the following `rix::rix()` call:
 
-
-```{r parsermd-chunk-1}
+```{r, eval = F}
 path_default_nix <- tempdir()
 
-rix(r_ver = "latest",
-    r_pkgs = NULL,
-    system_pkgs = NULL,
-    git_pkgs = list(package_name = "lookup",
-                    repo_url = "https://github.com/jimhester/lookup/",
-                    branch_name = "master",
-                    commit = "eba63db477dd2f20153b75e2949eb333a36cccfc"),
-    ide = "other",
-    project_path = path_default_nix,
-    overwrite = TRUE,
-    print = TRUE)
-
+rix(
+  r_ver = "latest",
+  r_pkgs = NULL,
+  system_pkgs = NULL,
+  git_pkgs = list(
+    package_name = "lookup",
+    repo_url = "https://github.com/jimhester/lookup/",
+    commit = "eba63db477dd2f20153b75e2949eb333a36cccfc"
+  ),
+  ide = "other",
+  project_path = path_default_nix,
+  overwrite = TRUE,
+  print = TRUE
+)
 ```
 
 Trying to build this environment will fail with following error message:
@@ -67,7 +68,6 @@ Trying to build this environment will fail with following error message:
 ```
 error: attribute 'highlite' missing
 ```
-
 
 ## Building remote dependencies
 
@@ -88,18 +88,23 @@ they are also available through `nixpkgs`. We have to deal with `{highlite}`
 however, because it never got released on CRAN. Doing so is fairly easy: first,
 create a new expression using `{rix}` to install `{highlite}`:
 
-```
-rix(r_ver = "latest",
-    r_pkgs = NULL,
-    system_pkgs = NULL,
-    git_pkgs = list(package_name = "highlite",
-                    repo_url = "https://github.com/jimhester/highlite/",
-                    branch_name = "master",
-                    commit = "767b122ef47a60a01e1707e4093cf3635a99c86b"),
-    ide = "other",
-    project_path = path_default_nix,
-    overwrite = FALSE,
-    print = TRUE)
+```{r, eval = F}
+path_default_nix <- tempdir()
+
+rix(
+  r_ver = "latest",
+  r_pkgs = NULL,
+  system_pkgs = NULL,
+  git_pkgs = list(
+    package_name = "highlite",
+    repo_url = "https://github.com/jimhester/highlite/",
+    commit = "767b122ef47a60a01e1707e4093cf3635a99c86b"
+  ),
+  ide = "other",
+  project_path = path_default_nix,
+  overwrite = FALSE,
+  print = TRUE
+)
 ```
 
 (you don't need to overwrite the previous expression, simply printing this
@@ -110,7 +115,6 @@ git_archive_pkgs = [(pkgs.rPackages.buildRPackage {
   name = "highlite";
   src = pkgs.fetchgit {
     url = "https://github.com/jimhester/highlite/";
-    branchName = "master";
     rev = "767b122ef47a60a01e1707e4093cf3635a99c86b";
     sha256 = "sha256-lkWMlAi75MYxiBUYnLwxLK9ApXkWanA4Mt7g4qtLpxM=";
   };
@@ -131,7 +135,6 @@ let
     name = "highlite";
     src = pkgs.fetchgit {
       url = "https://github.com/jimhester/highlite/";
-      branchName = "master";
       rev = "767b122ef47a60a01e1707e4093cf3635a99c86b";
       sha256 = "sha256-lkWMlAi75MYxiBUYnLwxLK9ApXkWanA4Mt7g4qtLpxM=";
     };
@@ -143,7 +146,6 @@ let
     name = "lookup";
     src = pkgs.fetchgit {
       url = "https://github.com/jimhester/lookup/";
-      branchName = "master";
       rev = "eba63db477dd2f20153b75e2949eb333a36cccfc";
       sha256 = "sha256-arl7LVxL8xGUW3LhuDCSUjcfswX0rdofL/7v8Klw8FM=";
     };

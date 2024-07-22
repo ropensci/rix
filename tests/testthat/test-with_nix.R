@@ -1,5 +1,4 @@
 testthat::test_that("Testing `with_nix()` if Nix is installed", {
-
   skip_on_covr()
 
   if (isFALSE(is_nix_r_session())) {
@@ -14,21 +13,19 @@ testthat::test_that("Testing `with_nix()` if Nix is installed", {
 
   path_subshell <- tempdir()
 
-  rix_init(
-    project_path = path_subshell,
-    rprofile_action = "overwrite",
-    message_type = "simple"
-  )
-
-  rix(
-    r_ver = "3.5.3",
-    overwrite = TRUE,
-    project_path = path_subshell,
-    shell_hook = NULL
+  # Suppress the warning related to generating an expression
+  # for an old version of R
+  suppressWarnings(
+    rix(
+      r_ver = "3.5.3",
+      overwrite = TRUE,
+      project_path = path_subshell,
+      shell_hook = NULL
+    )
   )
 
   out_subshell <- with_nix(
-    expr = function(){
+    expr = function() {
       set.seed(1234)
       a <- sample(seq(1, 10), 5)
       set.seed(NULL)
@@ -45,26 +42,23 @@ testthat::test_that("Testing `with_nix()` if Nix is installed", {
   testthat::expect_true(
     all(c(2, 6, 5, 8, 9) == out_subshell)
   )
+
+  on.exit({
+    unlink(path_subshell, recursive = TRUE, force = TRUE)
+  })
 })
 
 testthat::test_that("Test `with_nix()` if Nix is installed on R 4.2.0", {
-
   skip_on_covr()
 
   if (isFALSE(is_nix_r_session())) {
     # needed for the GitHub test runners with system's R
     set_nix_path()
   }
-  
+
   skip_if_not(nix_shell_available())
 
   path_subshell <- tempdir()
-
-  rix_init(
-    project_path = path_subshell,
-    rprofile_action = "overwrite",
-    message_type = "simple"
-  )
 
   rix(
     r_ver = "4.2.0",
@@ -83,31 +77,29 @@ testthat::test_that("Test `with_nix()` if Nix is installed on R 4.2.0", {
     project_path = path_subshell,
     message_type = "verbose"
   )
-  
+
   testthat::expect_false(
-              inherits(out_subshell, "data.frame")
-            )
+    inherits(out_subshell, "data.frame")
+  )
+
+
+  on.exit({
+    unlink(path_subshell, recursive = TRUE, force = TRUE)
+  })
 })
 
 
 testthat::test_that("Test `with_nix()` correct .libPaths()", {
-
   skip_on_covr()
-  
+
   if (isFALSE(is_nix_r_session())) {
     # needed for the GitHub test runners with system's R
     set_nix_path()
   }
-  
+
   skip_if_not(nix_shell_available())
 
   path_subshell <- tempdir()
-
-  rix_init(
-    project_path = path_subshell,
-    rprofile_action = "overwrite",
-    message_type = "simple"
-  )
 
   rix(
     r_ver = "4.3.1",
@@ -128,5 +120,8 @@ testthat::test_that("Test `with_nix()` correct .libPaths()", {
   testthat::expect_true(
     is.character(out_subshell)
   )
-})
 
+  on.exit({
+    unlink(path_subshell, recursive = TRUE, force = TRUE)
+  })
+})

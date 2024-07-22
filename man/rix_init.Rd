@@ -12,30 +12,28 @@ rix_init(
 )
 }
 \arguments{
-\item{project_path}{Character with the folder path to the isolated nix-R project.
-Defaults to \code{"."}, which is the current working directory path. If the folder
-does not exist yet, it will be created.}
+\item{project_path}{Character with the folder path to the isolated nix-R
+project. Defaults to \code{"."}, which is the current working directory path. If
+the folder does not exist yet, it will be created.}
 
 \item{rprofile_action}{Character. Action to take with \code{.Rprofile} file
 destined for \code{project_path} folder. Possible values include
-\code{"create_missing"}, which only writes \code{.Rprofile} if it
-does not yet exist (otherwise does nothing); \code{"create_backup"}, which copies
-the existing \code{.Rprofile} to a new backup file, generating names with
-POSIXct-derived strings that include the time zone information. A new
-\code{.Rprofile} file will be written with default code from \code{rix::rix_init()};
-\code{"overwrite"} overwrites the \code{.Rprofile} file if it does exist; \code{"append"}
-appends the existing file with code that is tailored to an isolated Nix-R
-project setup.}
+\code{"create_missing"}, which only writes \code{.Rprofile} if it does not yet exist
+(otherwise does nothing) - this is the action set when using \code{rix()} - ;
+\code{"create_backup"}, which copies the existing \code{.Rprofile} to a new backup
+file, generating names with POSIXct-derived strings that include the time
+zone information. A new \code{.Rprofile} file will be written with default code
+from \code{rix::rix_init()}; \code{"overwrite"} overwrites the \code{.Rprofile} file if it
+does exist; \code{"append"} appends the existing file with code that is tailored
+to an isolated Nix-R project setup.}
 
 \item{message_type}{Character. Message type, defaults to \code{"simple"}, which
 gives minimal but sufficient feedback. Other values are currently
-\verb{"quiet}, which writes \code{.Rprofile} without message, and
-\code{"verbose"}, which displays the mechanisms implemented to achieve fully
-controlled R project environments in Nix.}
+\verb{"quiet}, which writes \code{.Rprofile} without message, and \code{"verbose"},
+which displays the mechanisms implemented to achieve fully controlled R project environments in Nix.}
 }
 \value{
-Nothing, this function only has the side-effect of writing a file
-called ".Rprofile" to the specified path.
+Nothing, this function only has the side-effect of writing a file called ".Rprofile" to the specified path.
 }
 \description{
 Creates an isolated project folder for a Nix-R configuration. \code{rix::rix_init()}
@@ -53,13 +51,13 @@ The primary goal of \code{rix::rix_init()} is to enhance the computational
 reproducibility of Nix-R environments during runtime. Concretely, if you
 already have a system or user library of R packages (if you have R installed
 through the usual means for your operating system), using \code{rix::rix_init()}
-will prevent Nix-R environments to load packages from the user library
-which would cause issues.
-Notably, no restart is required as environmental variables are set in the current session, in
-addition to writing an \code{.Rprofile} file. This is particularly useful to make
-\code{\link[=with_nix]{with_nix()}} evaluate custom R functions from any "Nix-to-Nix" or
-"System-to-Nix" R setups. It introduces two side-effects that
-take effect both in a current or later R session setup:
+will prevent Nix-R environments to load packages from the user library which
+would cause issues. Notably, no restart is required as environmental
+variables are set in the current session, in addition to writing an
+\code{.Rprofile} file. This is particularly useful to make \code{\link[=with_nix]{with_nix()}}
+evaluate custom R functions from any "Nix-to-Nix" or "System-to-Nix" R
+setups. It introduces two side-effects that take effect both in a current or
+later R session setup:
 \enumerate{
 \item \strong{Adjusting \code{R_LIBS_USER} path:}
 By default, the first path of \code{R_LIBS_USER} points to the user library
@@ -78,9 +76,9 @@ process.
 In a host RStudio session not launched via Nix (\code{nix-shell}), the
 environmental variables from \verb{~/.zshrc} or \verb{~/.bashrc} may not be
 inherited. Consequently, Nix command line interfaces like \code{nix-shell}
-might not be found. The \code{.Rprofile} code written by \code{rix::rix_init()} ensures
-that Nix command line programs are accessible by adding the path of the
-"bin" directory of the default Nix profile,
+might not be found. The \code{.Rprofile} code written by \code{rix::rix_init()}
+ensures that Nix command line programs are accessible by adding the path
+of the "bin" directory of the default Nix profile,
 \code{"/nix/var/nix/profiles/default/bin"}, to the \code{PATH} variable in an
 RStudio R session.
 }
@@ -92,6 +90,12 @@ environments. This init configuration is considered pivotal to enhance the
 adoption of Nix in the R community, particularly until RStudio in Nixpkgs is
 packaged for macOS. We recommend calling \code{rix::rix_init()} prior to comparing R
 code ran between two software environments with \code{rix::with_nix()}.
+
+\code{rix::rix_init()} is called automatically by \code{rix::rix()} when generating a
+\code{default.nix} file, and when called by \code{rix::rix()} will only add the \code{.Rprofile}
+if none exists. In case you have a custom \code{.Rprofile} that you wish to keep
+using, but also want to benefit from what \code{rix_init()} offers, manually call
+it and set the \code{rprofile_action} to \code{"append"}.
 }
 \examples{
 \dontrun{

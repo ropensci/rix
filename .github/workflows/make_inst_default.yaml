@@ -1,0 +1,57 @@
+# Create inst/default.nix
+on:
+  push:
+    branches: [main, master]
+
+name: create_inst_default.nix
+
+permissions: write-all
+
+jobs:
+  create-default-nix:
+    runs-on: ubuntu-latest
+    env:
+     GH_TOKEN: ${{ github.token }}
+     GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - uses: cachix/cachix-action@v15
+        with:
+          name: rstats-on-nix
+
+      - name: Get latest commit hash
+        id: get_latest_commit
+        run: echo "LATEST_COMMIT_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
+
+      - name: Generate .inst/extdata/default.nix
+        run: |
+          nix-shell ./inst/extdata/default.nix --run "Rscript -e \"library(rix);rix('4.3.1', git_pkgs = list(package_name = 'rix', repo_url = 'https://github.com/b-rodrigues/rix/', commit = '${{ env.LATEST_COMMIT_HASH }}'), ide = 'other', project_path = 'inst/extdata', overwrite = TRUE)\""
+
+      - name: Check if PR exists
+        id: check_pr
+        run: |
+          PR=$(gh pr list -S 'Update default.nix' --json number --jq '.[0].number')
+          echo "PR_NUMBER=$PR" >> $GITHUB_ENV
+
+      - name: Push changes to update_default.nix branch
+        run: |
+          git config --global user.email "ga-ci@no-reply.com"
+          git config --global user.name "CI Robot"
+          git add .
+          git commit -m "Updated inst/extdata/default.nix"
+          git push origin master:update_default.nix --force
+
+      - name: Create Pull Request
+        if: env.PR_NUMBER == ''
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: update_default.nix
+          title: 'Update default.nix'
+          body: 'Automated PR to update default.nix'
+          base: master
+          branch-suffix: ''

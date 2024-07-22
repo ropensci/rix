@@ -1,24 +1,26 @@
-name: "Update cachix cache for development environment"
-
+# Run rhub checks
 on:
   push:
-    branches: [ master, main ]
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
 
-permissions:
-  contents: read
+name: run-rhub-checks
+
+permissions: write-all
 
 jobs:
-  r-update-cachix:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
+  run-rhub-checks:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
       - uses: actions/checkout@v4
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
-  
+
       - uses: cachix/cachix-action@v15
         with:
           name: rstats-on-nix
@@ -26,8 +28,6 @@ jobs:
           # signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
           # If you chose API tokens for write access OR if you have a private cache
           authToken: '${{ secrets.CACHIX_AUTH }}'
-  
-      - run: nix-build default.nix
-          
-      - run: nix-store -qR --include-outputs $(nix-instantiate default.nix) | cachix push rstats-on-nix
-      - run: nix-shell --run "echo OK"
+
+      - name: Run checks
+        run: nix-shell --run "Rscript -e \"rhub::rhub_check(platforms = c('linux','macos','macos-arm64','windows','ubuntu-next','ubuntu-release'), branch = 'master')\""

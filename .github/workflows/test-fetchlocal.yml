@@ -30,19 +30,24 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
 
-      - name: Nix cache
-        uses: DeterminateSystems/magic-nix-cache-action@main
+      - uses: cachix/cachix-action@v15
+        with:
+          name: rstats-on-nix
+          # If you chose signing key for write access
+          # signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+          # If you chose API tokens for write access OR if you have a private cache
+          authToken: '${{ secrets.CACHIX_AUTH }}'
 
       - name: Build default.nix with 2 local packages
         run: |
-          nix-shell ./inst/extdata/default.nix --run "Rscript -e \"library(rix);rix('4.3.1', local_pkgs = c('chronicler_0.2.1.tar.gz', 'knitr_1.43.tar.gz'), overwrite = TRUE)\""
+          nix-shell ./inst/extdata/default.nix --run "Rscript -e \"library(rix);rix('4.3.1', local_r_pkgs = c('chronicler_0.2.1.tar.gz', 'knitr_1.43.tar.gz'), overwrite = TRUE)\""
 
       - name: Build default.nix
         run: nix-build
 
       - name: Build default.nix with 1 local package
         run: |
-          nix-shell ./inst/extdata/default.nix --run "Rscript -e \"library(rix);rix('4.3.1', local_pkgs = 'chronicler_0.2.1.tar.gz', overwrite = TRUE)\""
+          nix-shell ./inst/extdata/default.nix --run "Rscript -e \"library(rix);rix('4.3.1', local_r_pkgs = 'chronicler_0.2.1.tar.gz', overwrite = TRUE)\""
 
       - name: Build default.nix
         run: nix-build
