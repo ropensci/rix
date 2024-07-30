@@ -1,4 +1,6 @@
 
+# rix: Reproducible Environments with Nix <a href="https://https://b-rodrigues.github.io/rix/"><img src="man/figures/logo.png" align="right" height="138" /></a>
+
 - [Reproducible Environments with
   Nix](#reproducible-environments-with-nix)
   - [Introduction](#introduction)
@@ -28,8 +30,6 @@ Review](https://badges.ropensci.org/625_status.svg)](https://github.com/ropensci
 <!-- badges: end -->
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
-# rix: Reproducible Environments with Nix <a href="https://https://b-rodrigues.github.io/rix/"><img src="man/figures/logo.png" align="right" height="138" /></a>
 
 ## Introduction
 
@@ -139,8 +139,10 @@ If you have R installed, you can start straight away from your R session
 by first installing `{rix}`:
 
 ``` r
-install.packages("rix", repos = c("https://b-rodrigues.r-universe.dev",
-  "https://cloud.r-project.org"))
+install.packages("rix", repos = c(
+  "https://b-rodrigues.r-universe.dev",
+  "https://cloud.r-project.org"
+))
 
 library("rix")
 ```
@@ -152,14 +154,16 @@ library(rix)
 
 path_default_nix <- "."
 
-rix(r_ver = "4.3.3",
-    r_pkgs = c("dplyr", "ggplot2"),
-    system_pkgs = NULL,
-    git_pkgs = NULL,
-    ide = "code",
-    project_path = path_default_nix,
-    overwrite = TRUE,
-    print = TRUE)
+rix(
+  r_ver = "4.3.3",
+  r_pkgs = c("dplyr", "ggplot2"),
+  system_pkgs = NULL,
+  git_pkgs = NULL,
+  ide = "code",
+  project_path = path_default_nix,
+  overwrite = TRUE,
+  print = TRUE
+)
 ```
 
 This generates a file called `default.nix` in the path

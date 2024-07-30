@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.9.1 (2024-07-30)
+
+- Fix directory creation in `with_nix()`, using `recursive = TRUE` in
+  `dir.create()`
+
 # rix 0.9.0 (2024-07-22)
 
 ## User-facing changes
