@@ -230,7 +230,7 @@ with_nix <- function(expr,
     # `<tag.Rds>` and `value` as serialized objects from RAM -------------------
     temp_dir <- file.path(tempdir(), "with_nix")
     if (!dir.exists(temp_dir)) {
-      dir.create(temp_dir)
+      dir.create(temp_dir, recursive = TRUE)
     }
     serialize_args(args, temp_dir)
 
