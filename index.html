@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="index.html">rix</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +73,13 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9"><ul>
+  <main id="main" class="col-md-9"><div class="section level1">
+<div class="page-header">
+<img src="logo.png" class="logo" alt=""><h1 id="rix-reproducible-environments-with-nix-">rix: Reproducible Environments with Nix 
+<a class="anchor" aria-label="anchor" href="#rix-reproducible-environments-with-nix-"></a>
+</h1>
+</div>
+<ul>
 <li>
 <a href="#reproducible-environments-with-nix">Reproducible Environments with Nix</a>
 <ul>
@@ -102,12 +108,6 @@
 </ul>
 <!-- badges: start -->
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-<div class="section level1">
-<div class="page-header">
-<img src="logo.png" class="logo" alt=""><h1 id="rix-reproducible-environments-with-nix-">rix: Reproducible Environments with Nix 
-<a class="anchor" aria-label="anchor" href="#rix-reproducible-environments-with-nix-"></a>
-</h1>
-</div>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -128,8 +128,10 @@
 <p><a href="https://b-rodrigues.github.io/rix/">rix</a> does not require Nix to be installed on your system to generate expressions. This means that you can generate expressions on a system on which you cannot easily install software, and then use these expressions on the cloud or on a CI/CD environment to build the project there.</p>
 <p>If you have R installed, you can start straight away from your R session by first installing <a href="https://b-rodrigues.github.io/rix/">rix</a>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"rix"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://b-rodrigues.r-universe.dev"</span>,</span>
-<span>  <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"rix"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"https://b-rodrigues.r-universe.dev"</span>,</span>
+<span>  <span class="st">"https://cloud.r-project.org"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://b-rodrigues.github.io/rix/">"rix"</a></span><span class="op">)</span></span></code></pre></div>
 <p>Now try to build an expression using <code><a href="reference/rix.html">rix()</a></code>:</p>
@@ -138,14 +140,16 @@
 <span></span>
 <span><span class="va">path_default_nix</span> <span class="op">&lt;-</span> <span class="st">"."</span></span>
 <span></span>
-<span><span class="fu"><a href="reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"4.3.3"</span>,</span>
-<span>    r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span><span class="op">)</span>,</span>
-<span>    system_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>    git_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>    ide <span class="op">=</span> <span class="st">"code"</span>,</span>
-<span>    project_path <span class="op">=</span> <span class="va">path_default_nix</span>,</span>
-<span>    overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>    print <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/rix.html">rix</a></span><span class="op">(</span></span>
+<span>  r_ver <span class="op">=</span> <span class="st">"4.3.3"</span>,</span>
+<span>  r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span><span class="op">)</span>,</span>
+<span>  system_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  git_pkgs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ide <span class="op">=</span> <span class="st">"code"</span>,</span>
+<span>  project_path <span class="op">=</span> <span class="va">path_default_nix</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  print <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>This generates a file called <code>default.nix</code> in the path <code>path_default_nix</code> with the correct expression to build this environment. To build the environment, the Nix package manager must be installed. If you have Nix installed, you can build the expression above using the <code>nix-build</code> terminal command and then enter the environment using <code>nix-shell</code>. The vignettes included in the package walk you through the whole workflow.</p>
 </div>
 <div class="section level2">
@@ -246,7 +250,6 @@ You can then create new development environment definitions, build them, and sta
 </ul>
 </div>
 </div>
-
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
