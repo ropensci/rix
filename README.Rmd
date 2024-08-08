@@ -240,15 +240,15 @@ You can also try out Nix inside Docker. To know more, read
 ### Docker and renv
 
 Let's start with arguably the most popular combo for reproducibility in the R
-ecosystem, Docker+`{renv}` (it is also possible to add `{rspm}` or `{bspm}` in
-combination to `{renv}` which will install the required system-level
-dependencies automatically).
+ecosystem, Docker+`{renv}`.
 
 {renv} snapshots the state of the library of R packages for a project, nothing
-more, nothing less. It can then be used to restore the library of packages on
+more, nothing less, unless you also use `{rspm}` or `{bspm}` in
+combination to `{renv}`: this will install the required system-level
+dependencies automatically. `{renv}` can then be used to restore the library of packages on
 another machine, but it is the user's responsibility to ensure that the right
 version of R and system-level dependencies are available on that other machine.
-This is whay `{renv}` is often coupled with a versioned Docker image, such as the
+This is why `{renv}` is often coupled with a versioned Docker image, such as the
 images from the [Rocker project](https://hub.docker.com/r/rocker/r-ver).
 Combining both provides a very robust way to serve applications such as Shiny
 apps, but it can be awkward to develop interactively with this setup, which is
