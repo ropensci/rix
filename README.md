@@ -247,27 +247,27 @@ You can also try out Nix inside Docker. To know more, read
 ### Docker and renv
 
 Let’s start with arguably the most popular combo for reproducibility in
-the R ecosystem, Docker+`{renv}` (it is also possible to add `{rspm}` or
-`{bspm}` in combination to `{renv}` which will install the required
-system-level dependencies automatically).
+the R ecosystem, Docker+`{renv}`.
 
 {renv} snapshots the state of the library of R packages for a project,
-nothing more, nothing less. It can then be used to restore the library
-of packages on another machine, but it is the user’s responsibility to
-ensure that the right version of R and system-level dependencies are
-available on that other machine. This is whay `{renv}` is often coupled
-with a versioned Docker image, such as the images from the [Rocker
-project](https://hub.docker.com/r/rocker/r-ver). Combining both provides
-a very robust way to serve applications such as Shiny apps, but it can
-be awkward to develop interactively with this setup, which is why most
-of the time, people work on their current setup, and *dockerize* the
-setup once when they’re done. However, you need to make sure to keep
-updating the image, as the underlying operating system will eventually
-reach end of life. Eventually, you might even have to update the whole
-stack as it could become impossible to install the version of R and R
-packages you used on a recent Docker image. This can be a good thing
-actually; it could be the opportunity to update your app and make sure
-that it benefits from the latest security patches. However for
+nothing more, nothing less, unless you also use `{rspm}` or `{bspm}` in
+combination to `{renv}`: this will install the required system-level
+dependencies automatically. `{renv}` can then be used to restore the
+library of packages on another machine, but it is the user’s
+responsibility to ensure that the right version of R and system-level
+dependencies are available on that other machine. This is why `{renv}`
+is often coupled with a versioned Docker image, such as the images from
+the [Rocker project](https://hub.docker.com/r/rocker/r-ver). Combining
+both provides a very robust way to serve applications such as Shiny
+apps, but it can be awkward to develop interactively with this setup,
+which is why most of the time, people work on their current setup, and
+*dockerize* the setup once when they’re done. However, you need to make
+sure to keep updating the image, as the underlying operating system will
+eventually reach end of life. Eventually, you might even have to update
+the whole stack as it could become impossible to install the version of
+R and R packages you used on a recent Docker image. This can be a good
+thing actually; it could be the opportunity to update your app and make
+sure that it benefits from the latest security patches. However for
 reproducibility in research, this is not something that you should be
 doing because it could have an impact on historical results.
 
