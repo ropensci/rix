@@ -86,14 +86,18 @@ and then relaunch WSL (Ubuntu) from the start menu.
 Afterwards, you can install Nix like business as usual. You can proceed with the
 Determinate Systems installer.
 
-### The Determinate Systems installer
+### Use the Determinate Systems installeron Linux and Windows
 
 You can use `{rix}` to generate Nix expressions even if you don't have Nix
 installed on your system, but obviously, you need to install Nix if you actually
-want to build the defined development environment and use them. Installing (and
+want to build the defined development environment and use them. 
+
+Installing (and
 uninstalling) Nix is quite simple, thanks to the installer from [Determinate
 Systems](https://determinate.systems/posts/determinate-nix-installer), a company
-that provides services and tools built on Nix. Simply open a terminal and run
+that provides services and tools built on Nix.
+
+Instead of using any system package manager, simply open a terminal and run
 the following line (on Windows, if you cannot or have decided not to activate
 systemd, then you have to append `--init none` to the command. You can find more
 details about this on [The Determinate Nix
