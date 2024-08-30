@@ -138,18 +138,21 @@ the following line in powershell:</p>
 proceed with the Determinate Systems installer.</p>
 </div>
 <div class="section level3">
-<h3 id="the-determinate-systems-installer">The Determinate Systems installer<a class="anchor" aria-label="anchor" href="#the-determinate-systems-installer"></a>
+<h3 id="using-the-determinate-systems-installer">Using the Determinate Systems installer<a class="anchor" aria-label="anchor" href="#using-the-determinate-systems-installer"></a>
 </h3>
 <p>You can use <a href="https://b-rodrigues.github.io/rix/">rix</a> to generate Nix expressions even if
 you don’t have Nix installed on your system, but obviously, you need to
 install Nix if you actually want to build the defined development
-environment and use them. Installing (and uninstalling) Nix is quite
-simple, thanks to the installer from <a href="https://determinate.systems/posts/determinate-nix-installer" class="external-link">Determinate
-Systems</a>, a company that provides services and tools built on Nix.
-Simply open a terminal and run the following line (on Windows, if you
-cannot or have decided not to activate systemd, then you have to append
-<code>--init none</code> to the command. You can find more details about
-this on <a href="https://github.com/DeterminateSystems/nix-installer" class="external-link">The
+environment and use them.</p>
+<p>Installing (and uninstalling) Nix is quite simple, thanks to the
+installer from <a href="https://determinate.systems/posts/determinate-nix-installer" class="external-link">Determinate
+Systems</a>, a company that provides services and tools built on
+Nix.</p>
+<p>Do not use your operating system’s package manager to install Nix.
+Instead, simply open a terminal and run the following line (on Windows,
+if you cannot or have decided not to activate systemd, then you have to
+append <code>--init none</code> to the command. You can find more
+details about this on <a href="https://github.com/DeterminateSystems/nix-installer" class="external-link">The
 Determinate Nix Installer page</a>):</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="ex">curl</span> <span class="at">--proto</span> <span class="st">'=https'</span> <span class="at">--tlsv1.2</span> <span class="at">-sSf</span> <span class="dt">\</span></span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>    <span class="at">-L</span> https://install.determinate.systems/nix <span class="kw">|</span> <span class="dt">\</span></span>
