@@ -88,7 +88,7 @@
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>This vignette describes interactive use of environments built with
-<a href="https://b-rodrigues.github.io/rix/">rix</a> using a GUI editor like RStudio. We will discuss
+<a href="https://ropensci.github.io/rix/" class="external-link">rix</a> using a GUI editor like RStudio. We will discuss
 three scenarios: one in which you already have R and RStudio installed
 on your operating system using the usual installation method for your
 operating system, another in which you used Nix to install R and
@@ -104,7 +104,7 @@ more details regarding this, refer to the vignette
 installers<a class="anchor" aria-label="anchor" href="#scenario-1-you-installed-r-and-rstudio-using-the-usual-installers"></a>
 </h2>
 <p>Let’s suppose that you are already running R and RStudio and that you
-wish to start using <a href="https://b-rodrigues.github.io/rix/">rix</a> to define reproducible
+wish to start using <a href="https://ropensci.github.io/rix/" class="external-link">rix</a> to define reproducible
 environments for your new projects starting today. These environments
 will get built using the Nix package manager and will not only include
 the required R packages for your project but also a specific version of
@@ -128,10 +128,10 @@ Suppose for example that you generated a <code>default.nix</code> file
 for a project called “kmeans”, and suppose that this project is in the
 following path: <code>~/Documents/kmeans</code> (on Windows it would be
 something like <code>C:\Users\Billy\Documents\kmeans</code>). For
-example, here is how you could use <a href="https://b-rodrigues.github.io/rix/">rix</a> to generate the
+example, here is how you could use <a href="https://ropensci.github.io/rix/" class="external-link">rix</a> to generate the
 <code>default.nix</code> for this environment:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://b-rodrigues.github.io/rix/">rix</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ropensci.github.io/rix/" class="external-link">rix</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">path_to_project</span> <span class="op">&lt;-</span> <span class="st">"~/Documents/kmeans"</span></span>
 <span></span>
@@ -204,13 +204,13 @@ within this environment from anywhere.</p>
 <h2 id="scenario-2-you-dont-have-any-regular-r-and-rstudio-installation-yet">Scenario 2: you don’t have any regular R and RStudio installation
 yet<a class="anchor" aria-label="anchor" href="#scenario-2-you-dont-have-any-regular-r-and-rstudio-installation-yet"></a>
 </h2>
-<p>If you don’t have R installed you cannot use the <a href="https://b-rodrigues.github.io/rix/">rix</a>
+<p>If you don’t have R installed you cannot use the <a href="https://ropensci.github.io/rix/" class="external-link">rix</a>
 package to generate new expressions. In this case you might consider
 installing Nix first, and then run the following command inside your
 terminal to get dropped into a temporary Nix shell, which you can then
 use to generate new <code>default.nix</code> files:</p>
 <pre><code>nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/ropensci/rix/master/inst/extdata/default.nix)"</code></pre>
-<p>Running the command above will download R and <a href="https://b-rodrigues.github.io/rix/">rix</a> and
+<p>Running the command above will download R and <a href="https://ropensci.github.io/rix/" class="external-link">rix</a> and
 then start an R session inside your terminal. You can now run something
 like this:</p>
 <pre><code><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"latest"</span>,</span>
@@ -226,7 +226,7 @@ generate an environment with R, Rstudio, <a href="https://dplyr.tidyverse.org" c
 <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>. If you need to add packages for your project,
 rerun the command above, but add the needed packages to
 <code>r_pkgs</code>. If you need to create a new environment, you could
-rerun the command above, or you could install <a href="https://b-rodrigues.github.io/rix/">rix</a> in that
+rerun the command above, or you could install <a href="https://ropensci.github.io/rix/" class="external-link">rix</a> in that
 environment to generate new <code>default.nix</code> files. Here, there
 is no need to use <code><a href="../reference/rix_init.html">rix_init()</a></code> as there won’t be any clash
 between your user library of R packages (since you don’t have any), and
@@ -268,7 +268,7 @@ service.</p>
 <div class="section level2">
 <h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
 </h2>
-<p>You now know the basics of Nix and <a href="https://b-rodrigues.github.io/rix/">rix</a> and can start
+<p>You now know the basics of Nix and <a href="https://ropensci.github.io/rix/" class="external-link">rix</a> and can start
 using it for your projects! There are still some more vignettes that we
 recommend you read which cover advanced topics.</p>
 </div>

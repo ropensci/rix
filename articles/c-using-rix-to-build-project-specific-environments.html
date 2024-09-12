@@ -90,7 +90,7 @@
 </h2>
 <p>Now that you have the required software installed, it’s to time learn
 more about declaring and using reproducible inveronments.</p>
-<p>The ideal workflow when using <a href="https://b-rodrigues.github.io/rix/">rix</a> is to create a new,
+<p>The ideal workflow when using <a href="https://ropensci.github.io/rix/" class="external-link">rix</a> is to create a new,
 separate environment at the start of a project. Let’s say that you wish
 to analyse some data set, and need <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> and
 <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>. Let’s also suppose that you use VS Code as your
@@ -198,7 +198,7 @@ according to the specifications found in a <code>default.nix</code>
 file. Once the environment is done building, you should find a new file
 called <code>result</code> next to the <code>default.nix</code> file.
 This file is a symlink to the software installed by Nix.
-<a href="https://b-rodrigues.github.io/rix/">rix</a> also provides a <code><a href="../reference/nix_build.html">nix_build()</a></code> function to
+<a href="https://ropensci.github.io/rix/" class="external-link">rix</a> also provides a <code><a href="../reference/nix_build.html">nix_build()</a></code> function to
 build Nix environments from within an interactive R session, but it is
 not always guaranteed to succeed, due to differences in platforms. This
 is explained in more detail in the following vignette
@@ -235,12 +235,12 @@ IDE:</p>
 <span><span class="co">#&gt; ### Bootstrapping isolated, project-specific, and runtime-pure R setup via Nix ###</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ==&gt; Existing isolated nix-R project folder:</span></span>
-<span><span class="co">#&gt;  /tmp/RtmpXFcshM </span></span>
+<span><span class="co">#&gt;  /tmp/RtmpXJhYHD </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; * current R session running outside Nix environment and not from RStudio</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ==&gt; Added `.Rprofile` file and code lines for new R sessions launched from:</span></span>
-<span><span class="co">#&gt; /tmp/RtmpXFcshM</span></span>
+<span><span class="co">#&gt; /tmp/RtmpXJhYHD</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; * Added the location of the Nix store to `PATH` environmental variable for new R sessions on host/docker RStudio:</span></span>
 <span><span class="co">#&gt; /nix/var/nix/profiles/default/bin</span></span>
