@@ -350,6 +350,10 @@ want to explore other tools that make using Nix easier!
 
 Refer to `Contributing.md` to learn how to contribute to the package.
 
+Please note that this package is released with a [Contributor Code of
+Conduct](https://ropensci.org/code-of-conduct/). By contributing to this
+project, you agree to abide by its terms.
+
 ## Thanks
 
 Thanks to the [Nix community](https://nixos.org/community/) for making
