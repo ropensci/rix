@@ -1,5 +1,15 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.10.0 (2024-09-12)
+
+`{rix}` is now an rOpenSci package!
+
+- Transfer to rOpenSci: updated more links
+- Transfer to rOpenSci: added reviewers to DESCRIPTION
+- Transfer to rOpenSci: update link in DESCRIPTION
+- Transfer to rOpenSci: added link to CoC
+- Transfer to rOpenSci: fixed links
+
 # rix 0.9.1 (2024-07-30)
 
 - Fix directory creation in `with_nix()`, using `recursive = TRUE` in
