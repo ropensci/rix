@@ -28,7 +28,7 @@
 # edge packages and R.
 # Only use bleeding edge packages if absolutely needed!
 # Read more on https://b-rodrigues.github.io/rix/articles/z-bleeding_edge.html
-# Report any issues to https://github.com/b-rodrigues/rix
+# Report any issues to https://github.com/ropensci/rix
 let
  pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/refs/heads/r-daily.tar.gz") {};
  

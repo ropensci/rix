@@ -76,7 +76,7 @@ rix(
 #> #  > print = TRUE)
 #> # It uses nixpkgs' revision 12a9c0004bc987afb1ff511ebb97b67497a68e22 for reproducibility purposes
 #> # which will install R version latest.
-#> # Report any issues to https://github.com/b-rodrigues/rix
+#> # Report any issues to https://github.com/ropensci/rix
 #> let
 #>  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/12a9c0004bc987afb1ff511ebb97b67497a68e22.tar.gz") {};
 #>
@@ -175,7 +175,7 @@ The file looks like this:
 #> #  > overwrite = TRUE)
 #> # It uses nixpkgs' revision 79b3d4bcae8c7007c9fd51c279a8a67acfa73a2a for reproducibility purposes
 #> # which will install R version 4.2.1.
-#> # Report any issues to https://github.com/b-rodrigues/rix
+#> # Report any issues to https://github.com/ropensci/rix
 #> let
 #>  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/79b3d4bcae8c7007c9fd51c279a8a67acfa73a2a.tar.gz") {};
 #>  

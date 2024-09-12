@@ -21,7 +21,7 @@
 <!-- badges: start -->
 
 [![R-hub
-v2](https://github.com/b-rodrigues/rix/actions/workflows/rhub.yaml/badge.svg)](https://github.com/b-rodrigues/rix/actions/workflows/rhub.yaml/badge.svg)
+v2](https://github.com/ropensci/rix/actions/workflows/rhub.yaml/badge.svg)](https://github.com/ropensci/rix/actions/workflows/rhub.yaml/badge.svg)
 [![runiverse-package
 rix](https://b-rodrigues.r-universe.dev/badges/rix?scale=1&color=pink&style=round)](https://b-rodrigues.r-universe.dev/rix)
 [![Docs](https://img.shields.io/badge/docs-release-blue.svg)](https://b-rodrigues.github.io/rix)
@@ -221,7 +221,7 @@ If you don’t have R installed, but have the Nix package manager
 installed, you can run a temporary R session with R using this command
 (it will build the same environment as the one above):
 
-    nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix)"
+    nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/ropensci/rix/master/inst/extdata/default.nix)"
 
 You can then create new development environment definitions, build them,
 and start using them.
@@ -240,7 +240,7 @@ vignettes. Don’t hesitate to open an issue if something is not clear.
 
 You can also try out Nix inside Docker. To know more, read
 `vignette("z-advanced-topic-using-nix-inside-docker")`
-[link](https://github.com/b-rodrigues/rix/blob/HEAD/vignettes/z-advanced-topic-using-nix-inside-docker.Rmd).
+[link](https://github.com/ropensci/rix/blob/HEAD/vignettes/z-advanced-topic-using-nix-inside-docker.Rmd).
 
 ## How is Nix different from Docker+renv/{groundhog}/{rang}/(Ana/Mini)Conda/Guix? or Why Nix?
 

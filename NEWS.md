@@ -68,7 +68,7 @@
 # rix 0.7.0 (2024-05-21)
 
 - Added the possibility to create "bleeding_edge" and "frozen_edge" environments
-- Added the possibility to use *radian* as the environment's console (courtesy of [kupac](https://github.com/b-rodrigues/rix/pull/161)) and *RStudio server*
+- Added the possibility to use *radian* as the environment's console (courtesy of [kupac](https://github.com/ropensci/rix/pull/161)) and *RStudio server*
 - Added `ga_cachix()`, a function to create a GA workflow file that builds and pushes an environment to a Cachix cache
 
 
@@ -228,7 +228,7 @@
 ## Bug fixes
 
 - fix locale warnings when starting R in linux, which uses glibc (closes 
-  [#50](https://github.com/b-rodrigues/rix/issues/50)). Now, we use
+  [#50](https://github.com/ropensci/rix/issues/50)). Now, we use
   `glibcLocalesUtf8` from Nix for "x86_64-linux".
 
 
@@ -298,7 +298,7 @@
 
 - Patch `inst/exdata/default.nix` so that `LOCALE_ARCHIVE` shellHook that was set to 
   glibc locale does not fail on MacOS anymore 
-  ([#40](https://github.com/b-rodrigues/rix/issues/48); fixed with [37f7ab8](https://github.com/b-rodrigues/rix/commit/37f7ab84e5423721bdf05e41816dbc99353481e7)).
+  ([#40](https://github.com/ropensci/rix/issues/48); fixed with [37f7ab8](https://github.com/ropensci/rix/commit/37f7ab84e5423721bdf05e41816dbc99353481e7)).
 - `nix_build()`: fix defensive check so the error message is referring to `project_path`
   instead of `nix_file`. The patch does not change correct behavior of `nix_build()`, 
   hence it is only of cosmetic nature.
@@ -308,7 +308,7 @@
 
 ## Bug fixes
 
-- `nix_build()` now correctly checks presence of `nix-build`. ([4be69b2](https://github.com/b-rodrigues/rix/commit/4be69b2c438276a1f636f3b407a124555bb12c9b))
+- `nix_build()` now correctly checks presence of `nix-build`. ([4be69b2](https://github.com/ropensci/rix/commit/4be69b2c438276a1f636f3b407a124555bb12c9b))
 
 
 # rix 0.1.0 (2023-08-11)
@@ -316,7 +316,7 @@
 ## New features
 
 - Added `nix_build()` helper that runs `nix-build` interactively from R. 
-  ([#22](https://github.com/b-rodrigues/rix/pull/22))
+  ([#22](https://github.com/ropensci/rix/pull/22))
 - `rix()` now supports installing packages from GitHub and the CRAN archives.
 - `rix()` now supports using a `nixpkgs` revision instead of an R version 
   for reproducibility

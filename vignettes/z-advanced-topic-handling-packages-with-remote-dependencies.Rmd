@@ -195,6 +195,6 @@ reasons:
 
 Because of these reasons, we believe that it is safer for users that really need
 to use such packages to manually edit their Nix expressions. Don't hesitate to
-[open an issue](https://github.com/b-rodrigues/rix/issues) if you require
+[open an issue](https://github.com/ropensci/rix/issues) if you require
 assistance.
 
