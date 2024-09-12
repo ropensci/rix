@@ -145,7 +145,7 @@ expressions. In this case you might consider installing Nix first, and then run
 the following command inside your terminal to get dropped into a temporary Nix
 shell, which you can then use to generate new `default.nix` files:
 
-    nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/ropensci/rix/master/inst/extdata/default.nix)"
+    nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/ropensci/rix/main/inst/extdata/default.nix)"
 
 Running the command above will download R and `{rix}` and then start an R
 session inside your terminal. You can now run something like this:

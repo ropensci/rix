@@ -40,7 +40,7 @@ RUN apt install curl -y
 # We don't have R nor {rix} in this image, so we can bootstrap it by downloading
 # the default.nix file that comes with {rix}. You can also download it beforehand
 # and then copy it to the Docker image
-RUN curl -O https://raw.githubusercontent.com/ropensci/rix/master/inst/extdata/default.nix
+RUN curl -O https://raw.githubusercontent.com/ropensci/rix/main/inst/extdata/default.nix
 
 # Copy a script to generate the environment of interest using {rix}
 COPY generate_env.R .
@@ -106,7 +106,7 @@ RUN apt update -y
 RUN apt install curl -y
 
 # Get a default.nix with R and rix
-RUN curl -O https://raw.githubusercontent.com/ropensci/rix/master/inst/extdata/default.nix
+RUN curl -O https://raw.githubusercontent.com/ropensci/rix/main/inst/extdata/default.nix
 
 # Copy a script to generate the environment of interest using rix
 COPY generate_env.R .

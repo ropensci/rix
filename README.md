@@ -221,7 +221,7 @@ If you don’t have R installed, but have the Nix package manager
 installed, you can run a temporary R session with R using this command
 (it will build the same environment as the one above):
 
-    nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/ropensci/rix/master/inst/extdata/default.nix)"
+    nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/ropensci/rix/main/inst/extdata/default.nix)"
 
 You can then create new development environment definitions, build them,
 and start using them.

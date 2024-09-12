@@ -44,7 +44,7 @@ jobs:
           git config --global user.name "CI Robot"
           git add .
           git commit -m "Updated inst/extdata/default.nix"
-          git push origin master:update_default.nix --force
+          git push origin main:update_default.nix --force
 
       - name: Create Pull Request
         if: env.PR_NUMBER == ''
@@ -53,5 +53,5 @@ jobs:
           branch: update_default.nix
           title: 'Update default.nix'
           body: 'Automated PR to update default.nix'
-          base: master
+          base: main
           branch-suffix: ''
