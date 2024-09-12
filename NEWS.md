@@ -1,5 +1,9 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.11.0 (2024-09-12)
+
+- Gitlab packages can now be installed as well
+
 # rix 0.10.0 (2024-09-12)
 
 `{rix}` is now an rOpenSci package!
