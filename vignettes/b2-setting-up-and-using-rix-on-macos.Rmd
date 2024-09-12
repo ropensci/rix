@@ -62,7 +62,7 @@ following line in a terminal will drop you in an interactive R session that you
 can use to start generating expressions:
 
 ```
-nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix)"
+nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/ropensci/rix/main/inst/extdata/default.nix)"
 ```
 
 This should immediately start an R session inside your terminal. You can now run
@@ -97,7 +97,7 @@ not yet on CRAN, the easiest way is to install it from its r-universe:
 
 ```{r parsermd-chunk-2, eval = FALSE}
 install.packages("rix", repos = c(
-  "https://b-rodrigues.r-universe.dev",
+  "https://ropensci.r-universe.dev",
   "https://cloud.r-project.org"
 ))
 ```

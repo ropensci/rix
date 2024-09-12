@@ -85,7 +85,7 @@ Nothing, this function only has the side-effect of writing two files:
 contains a Nix expression to build a reproducible environment using the Nix
 package manager, and \code{.Rprofile} ensures that a running R session from a
 Nix environment cannot access local libraries, nor install packages using
-\code{install.packages()}.
+\code{install.packages()} (nor remove nor update them).
 }
 \description{
 Generate a Nix expression that builds a reproducible development environment
@@ -114,19 +114,31 @@ command line, or from another editor (such as Emacs or Vim), set the \code{ide}
 argument to \code{"other"}. We recommend reading the
 \code{vignette("e-interactive-use")} for more details.
 
-Packages to install from Github must be provided in a list of 4 elements:
-"package_name", "repo_url" and "commit". This argument can
-also be a list of lists of these 3 elements. It is also possible to install
-old versions of packages by specifying a version. For example, to install
-the latest version of \code{{AER}} but an old version of \code{{ggplot2}}, you could
-write: \code{r_pkgs = c("AER", "ggplot2@2.2.1")}. Note however that doing this
-could result in dependency hell, because an older version of a package
-might need older versions of its dependencies, but other packages might
-need more recent versions of the same dependencies. If instead you want to
-use an environment as it would have looked at the time of \code{{ggplot2}}'s
-version 2.2.1 release, then use the Nix revision closest to that date, by
-setting \code{r_ver = "3.1.0"}, which was the version of R current at the time.
-This ensures that Nix builds a completely coherent environment.
+Packages to install from Github must be provided in a list of 3 elements:
+"package_name", "repo_url" and "commit". To install several packages,
+provide a list of lists of these 3 elements, one per package to install. It
+is also possible to install old versions of packages by specifying a
+version. For example, to install the latest version of \code{{AER}} but an old
+version of \code{{ggplot2}}, you could write: \code{r_pkgs = c("AER", "ggplot2@2.2.1")}. Note however that doing this could result in dependency
+hell, because an older version of a package might need older versions of
+its dependencies, but other packages might need more recent versions of the
+same dependencies. If instead you want to use an environment as it would
+have looked at the time of \code{{ggplot2}}'s version 2.2.1 release, then use
+the Nix revision closest to that date, by setting \code{r_ver = "3.1.0"}, which
+was the version of R current at the time. This ensures that Nix builds a
+completely coherent environment. For security purposes, users that wish to
+install packages from Github or from the CRAN archives must provide a
+security hash for each package. \code{{rix}} automatically precomputes this hash
+for the source directory of R packages from GitHub or from the CRAN
+archives, to make sure the expected trusted sources that match the
+precomputed hashes in the \code{default.nix} are downloaded. If Nix is
+available, then the hash will be computed on the user's machine, however,
+if Nix is not available, then the hash gets computed on a server that we
+set up for this purposes. This server then returns the security hash as
+well as the dependencies of the packages. It is possible to control this
+behaviour using \code{options(rix.sri_hash=x)}, where \code{x} is one of "check_nix"
+(the default), "locally" (use the local Nix installation) or "api_server"
+(use the remote server to compute and return the hash).
 
 Note that installing packages from Git or old versions using the \code{"@"}
 notation or local packages, does not leverage Nix's capabilities for
@@ -170,7 +182,7 @@ rix(
   project_path = path_default_nix,
   overwrite = TRUE,
   print = TRUE,
-  message_type = "simple"
+  message_type = "simple",
   shell_hook = NULL
 )
 }

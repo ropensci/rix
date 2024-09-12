@@ -229,7 +229,7 @@ let
  pkgs.stdenv.mkDerivation {
    name = "my-paper";
    src = pkgs.fetchgit {
-       url = "https://github.com/b-rodrigues/my_paper/";
+       url = "https://github.com/ropensci/my_paper/";
        rev = "715e9f007d104c23763cebaf03782b8e80cb5445";
        sha256 = "sha256-e8Xg7nJookKoIfiJVTGoJkvCuFNTT83YZ6SK3GT2T8g=";
      };
@@ -260,7 +260,7 @@ before (I forked the repository and called it `my_paper`):
 pkgs.stdenv.mkDerivation {
   name = "my-paper";
   src = pkgs.fetchgit {
-      url = "https://github.com/b-rodrigues/my_paper/";
+      url = "https://github.com/ropensci/my_paper/";
       rev = "715e9f007d104c23763cebaf03782b8e80cb5445";
       sha256 = "sha256-e8Xg7nJookKoIfiJVTGoJkvCuFNTT83YZ6SK3GT2T8g=";
     };

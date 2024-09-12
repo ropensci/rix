@@ -37,7 +37,7 @@ let
 %s
 # It uses nixpkgs\' revision %s for reproducibility purposes
 # which will install R %s.
-# Report any issues to https://github.com/b-rodrigues/rix
+# Report any issues to https://github.com/ropensci/rix
 let
  pkgs = import (fetchTarball "%s") {};
 ',
@@ -56,8 +56,8 @@ let
 # It uses the `rstats-on-nix` fork of `nixpkgs` which provides bleeding
 # edge packages and R.
 # Only use bleeding edge packages if absolutely needed!
-# Read more on https://b-rodrigues.github.io/rix/articles/z-bleeding_edge.html
-# Report any issues to https://github.com/b-rodrigues/rix
+# Read more on https://ropensci.github.io/rix/articles/z-bleeding_edge.html
+# Report any issues to https://github.com/ropensci/rix
 let
  pkgs = import (fetchTarball "%s") {};
 ',

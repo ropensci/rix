@@ -76,7 +76,7 @@ rix(
 #> #  > overwrite = TRUE)
 #> # It uses nixpkgs' revision 12a9c0004bc987afb1ff511ebb97b67497a68e22 for reproducibility purposes
 #> # which will install R version latest.
-#> # Report any issues to https://github.com/b-rodrigues/rix
+#> # Report any issues to https://github.com/ropensci/rix
 #> let
 #>  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/12a9c0004bc987afb1ff511ebb97b67497a68e22.tar.gz") {};
 #>
@@ -114,7 +114,7 @@ You can look for all the available software
 [here](https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=).
 Simply look for the right package name, and add it to the `system_pkgs` argument
 of `rix()`. If you have trouble finding something, don’t hesitate to 
-[open an issue ](https://github.com/b-rodrigues/rix/issues) and ask for support!
+[open an issue ](https://github.com/ropensci/rix/issues) and ask for support!
 
 ## Installing TexLive packages
 
@@ -149,7 +149,7 @@ rix(
 #> #  > print = TRUE)
 #> # It uses nixpkgs' revision 12a9c0004bc987afb1ff511ebb97b67497a68e22 for reproducibility purposes
 #> # which will install R version latest.
-#> # Report any issues to https://github.com/b-rodrigues/rix
+#> # Report any issues to https://github.com/ropensci/rix
 #> let
 #>  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/12a9c0004bc987afb1ff511ebb97b67497a68e22.tar.gz") {};
 #>

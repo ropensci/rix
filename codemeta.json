@@ -4,8 +4,8 @@
   "identifier": "rix",
   "description": "Provides helper functions to create reproducible development environments using the Nix package manager.",
   "name": "rix: Rix: Reproducible Environments with Nix",
-  "codeRepository": "https://github.com/b-rodrigues/rix",
-  "issueTracker": "https://github.com/b-rodrigues/rix",
+  "codeRepository": "https://github.com/ropensci/rix",
+  "issueTracker": "https://github.com/ropensci/rix",
   "license": "https://spdx.org/licenses/GPL-3.0",
   "version": "0.5.1.9000",
   "programmingLanguage": {
@@ -140,8 +140,8 @@
     "SystemRequirements": null
   },
   "fileSize": "1016.338KB",
-  "relatedLink": "https://b-rodrigues.github.io/rix/",
-  "releaseNotes": "https://github.com/b-rodrigues/rix/blob/master/NEWS.md",
-  "readme": "https://github.com/b-rodrigues/rix/blob/master/README.md",
-  "contIntegration": ["https://github.com/b-rodrigues/rix/actions/workflows/R-CMD-check.yaml", "https://github.com/b-rodrigues/rix/actions?query=workflow%3Apkgcheck"]
+  "relatedLink": "https://ropensci.github.io/rix/",
+  "releaseNotes": "https://github.com/ropensci/rix/blob/main/NEWS.md",
+  "readme": "https://github.com/ropensci/rix/blob/main/README.md",
+  "contIntegration": ["https://github.com/ropensci/rix/actions/workflows/R-CMD-check.yaml", "https://github.com/ropensci/rix/actions?query=workflow%3Apkgcheck"]
 }

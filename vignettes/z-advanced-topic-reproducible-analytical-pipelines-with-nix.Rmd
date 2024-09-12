@@ -87,7 +87,7 @@ packages, which is a package that is hosted on GitHub only with some data and
 useful functions for the project. Because it is on Github, it gets installed
 using the `buildRPackage` function from Nix. You can use this environment to
 work on you project, or to launch a `{targets}` pipeline. [This Github
-repository](https://github.com/b-rodrigues/nix_targets_pipeline/tree/master)
+repository](https://github.com/ropensci/nix_targets_pipeline/tree/master)
 contains the finalized project.
 
 On your local machine, you could execute the pipeline in the environment by
@@ -126,7 +126,7 @@ pipeline run automatically on GitHub Actions. The GitHub repository linked above
 has such a file, so each time changes get pushed, the pipeline runs on Github
 Actions and the results are automatically pushed to a branch called
 `targets-runs`. See the workflow file
-[here](https://github.com/b-rodrigues/nix_targets_pipeline/blob/master/.github/workflows/run-pipeline.yaml).
+[here](https://github.com/ropensci/nix_targets_pipeline/blob/master/.github/workflows/run-pipeline.yaml).
 This feature is very heavily inspired and adapted from the
 `targets::github_actions()` function.
 

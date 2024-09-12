@@ -1,5 +1,5 @@
 
-# rix: Reproducible Environments with Nix <a href="https://https://b-rodrigues.github.io/rix/"><img src="man/figures/logo.png" align="right" height="138" /></a>
+# rix: Reproducible Environments with Nix <a href="https://https://ropensci.github.io/rix/"><img src="man/figures/logo.png" align="right" height="138" /></a>
 
 - [Reproducible Environments with
   Nix](#reproducible-environments-with-nix)
@@ -21,10 +21,10 @@
 <!-- badges: start -->
 
 [![R-hub
-v2](https://github.com/b-rodrigues/rix/actions/workflows/rhub.yaml/badge.svg)](https://github.com/b-rodrigues/rix/actions/workflows/rhub.yaml/badge.svg)
+v2](https://github.com/ropensci/rix/actions/workflows/rhub.yaml/badge.svg)](https://github.com/ropensci/rix/actions/workflows/rhub.yaml/badge.svg)
 [![runiverse-package
-rix](https://b-rodrigues.r-universe.dev/badges/rix?scale=1&color=pink&style=round)](https://b-rodrigues.r-universe.dev/rix)
-[![Docs](https://img.shields.io/badge/docs-release-blue.svg)](https://b-rodrigues.github.io/rix)
+rix](https://ropensci.r-universe.dev/badges/rix?scale=1&color=pink&style=round)](https://ropensci.r-universe.dev/rix)
+[![Docs](https://img.shields.io/badge/docs-release-blue.svg)](https://ropensci.github.io/rix)
 [![Status at rOpenSci Software Peer
 Review](https://badges.ropensci.org/625_status.svg)](https://github.com/ropensci/software-review/issues/625)
 <!-- badges: end -->
@@ -128,7 +128,7 @@ and `{rix}` comes with the following features:
   environment (potentially with a different R version and R packages)
   for an interactive R session, and get back the output of that function
   using
-  [`with_nix()`](https://b-rodrigues.github.io/rix/reference/with_nix.html);
+  [`with_nix()`](https://ropensci.github.io/rix/reference/with_nix.html);
 
 `{rix}` does not require Nix to be installed on your system to generate
 expressions. This means that you can generate expressions on a system on
@@ -140,7 +140,7 @@ by first installing `{rix}`:
 
 ``` r
 install.packages("rix", repos = c(
-  "https://b-rodrigues.r-universe.dev",
+  "https://ropensci.r-universe.dev",
   "https://cloud.r-project.org"
 ))
 
@@ -221,7 +221,7 @@ If you don’t have R installed, but have the Nix package manager
 installed, you can run a temporary R session with R using this command
 (it will build the same environment as the one above):
 
-    nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix)"
+    nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/ropensci/rix/main/inst/extdata/default.nix)"
 
 You can then create new development environment definitions, build them,
 and start using them.
@@ -231,7 +231,7 @@ and start using them.
 
 To get started with `{rix}` and Nix, you should read the following
 vignette `vignette("a-getting-started")` ([online
-documentation](https://b-rodrigues.github.io/rix/articles/a-getting-started.html)).
+documentation](https://ropensci.github.io/rix/articles/a-getting-started.html)).
 The vignettes are numbered to get you to learn how to use `{rix}` and
 Nix smoothly. There’s a lot of info, so take your time reading the
 vignettes. Don’t hesitate to open an issue if something is not clear.
@@ -240,34 +240,34 @@ vignettes. Don’t hesitate to open an issue if something is not clear.
 
 You can also try out Nix inside Docker. To know more, read
 `vignette("z-advanced-topic-using-nix-inside-docker")`
-[link](https://github.com/b-rodrigues/rix/blob/HEAD/vignettes/z-advanced-topic-using-nix-inside-docker.Rmd).
+[link](https://github.com/ropensci/rix/blob/HEAD/vignettes/z-advanced-topic-using-nix-inside-docker.Rmd).
 
 ## How is Nix different from Docker+renv/{groundhog}/{rang}/(Ana/Mini)Conda/Guix? or Why Nix?
 
 ### Docker and renv
 
 Let’s start with arguably the most popular combo for reproducibility in
-the R ecosystem, Docker+`{renv}` (it is also possible to add `{rspm}` or
-`{bspm}` in combination to `{renv}` which will install the required
-system-level dependencies automatically).
+the R ecosystem, Docker+`{renv}`.
 
 {renv} snapshots the state of the library of R packages for a project,
-nothing more, nothing less. It can then be used to restore the library
-of packages on another machine, but it is the user’s responsibility to
-ensure that the right version of R and system-level dependencies are
-available on that other machine. This is whay `{renv}` is often coupled
-with a versioned Docker image, such as the images from the [Rocker
-project](https://hub.docker.com/r/rocker/r-ver). Combining both provides
-a very robust way to serve applications such as Shiny apps, but it can
-be awkward to develop interactively with this setup, which is why most
-of the time, people work on their current setup, and *dockerize* the
-setup once when they’re done. However, you need to make sure to keep
-updating the image, as the underlying operating system will eventually
-reach end of life. Eventually, you might even have to update the whole
-stack as it could become impossible to install the version of R and R
-packages you used on a recent Docker image. This can be a good thing
-actually; it could be the opportunity to update your app and make sure
-that it benefits from the latest security patches. However for
+nothing more, nothing less, unless you also use `{rspm}` or `{bspm}` in
+combination to `{renv}`: this will install the required system-level
+dependencies automatically. `{renv}` can then be used to restore the
+library of packages on another machine, but it is the user’s
+responsibility to ensure that the right version of R and system-level
+dependencies are available on that other machine. This is why `{renv}`
+is often coupled with a versioned Docker image, such as the images from
+the [Rocker project](https://hub.docker.com/r/rocker/r-ver). Combining
+both provides a very robust way to serve applications such as Shiny
+apps, but it can be awkward to develop interactively with this setup,
+which is why most of the time, people work on their current setup, and
+*dockerize* the setup once when they’re done. However, you need to make
+sure to keep updating the image, as the underlying operating system will
+eventually reach end of life. Eventually, you might even have to update
+the whole stack as it could become impossible to install the version of
+R and R packages you used on a recent Docker image. This can be a good
+thing actually; it could be the opportunity to update your app and make
+sure that it benefits from the latest security patches. However for
 reproducibility in research, this is not something that you should be
 doing because it could have an impact on historical results.
 
@@ -349,6 +349,10 @@ want to explore other tools that make using Nix easier!
 ## Contributing
 
 Refer to `Contributing.md` to learn how to contribute to the package.
+
+Please note that this package is released with a [Contributor Code of
+Conduct](https://ropensci.org/code-of-conduct/). By contributing to this
+project, you agree to abide by its terms.
 
 ## Thanks
 

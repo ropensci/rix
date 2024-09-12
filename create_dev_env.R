@@ -1,8 +1,5 @@
 library(rix)
 
-latest_commit <- sys::as_text(sys::exec_internal("git", c("rev-parse", "master"))$stdout)
-
-
 rix(r_ver = "bleeding_edge",
     r_pkgs = c("devtools", "diffviewer", "fledge", "lintr", "styler",
                "codetools", "jsonlite",  "httr", "sys", "testthat", "knitr",
