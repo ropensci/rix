@@ -181,9 +181,9 @@ hash_git <- function(repo_url, commit) {
     slash <- "/"
   }
 
-  if(grepl("github", repo_url)){
+  if (grepl("github", repo_url)) {
     url <- paste0(repo_url, slash, "archive/", commit, ".tar.gz")
-  } else if(grepl("gitlab", repo_url)){
+  } else if (grepl("gitlab", repo_url)) {
     url <- paste0(repo_url, slash, "-/archive/", commit, ".tar.gz")
   }
 
