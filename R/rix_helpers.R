@@ -56,7 +56,7 @@ let
 # It uses the `rstats-on-nix` fork of `nixpkgs` which provides bleeding
 # edge packages and R.
 # Only use bleeding edge packages if absolutely needed!
-# Read more on https://b-rodrigues.github.io/rix/articles/z-bleeding_edge.html
+# Read more on https://ropensci.github.io/rix/articles/z-bleeding_edge.html
 # Report any issues to https://github.com/ropensci/rix
 let
  pkgs = import (fetchTarball "%s") {};

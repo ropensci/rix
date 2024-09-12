@@ -1,5 +1,5 @@
 
-# rix: Reproducible Environments with Nix <a href="https://https://b-rodrigues.github.io/rix/"><img src="man/figures/logo.png" align="right" height="138" /></a>
+# rix: Reproducible Environments with Nix <a href="https://https://ropensci.github.io/rix/"><img src="man/figures/logo.png" align="right" height="138" /></a>
 
 - [Reproducible Environments with
   Nix](#reproducible-environments-with-nix)
@@ -23,8 +23,8 @@
 [![R-hub
 v2](https://github.com/ropensci/rix/actions/workflows/rhub.yaml/badge.svg)](https://github.com/ropensci/rix/actions/workflows/rhub.yaml/badge.svg)
 [![runiverse-package
-rix](https://b-rodrigues.r-universe.dev/badges/rix?scale=1&color=pink&style=round)](https://b-rodrigues.r-universe.dev/rix)
-[![Docs](https://img.shields.io/badge/docs-release-blue.svg)](https://b-rodrigues.github.io/rix)
+rix](https://ropensci.r-universe.dev/badges/rix?scale=1&color=pink&style=round)](https://ropensci.r-universe.dev/rix)
+[![Docs](https://img.shields.io/badge/docs-release-blue.svg)](https://ropensci.github.io/rix)
 [![Status at rOpenSci Software Peer
 Review](https://badges.ropensci.org/625_status.svg)](https://github.com/ropensci/software-review/issues/625)
 <!-- badges: end -->
@@ -128,7 +128,7 @@ and `{rix}` comes with the following features:
   environment (potentially with a different R version and R packages)
   for an interactive R session, and get back the output of that function
   using
-  [`with_nix()`](https://b-rodrigues.github.io/rix/reference/with_nix.html);
+  [`with_nix()`](https://ropensci.github.io/rix/reference/with_nix.html);
 
 `{rix}` does not require Nix to be installed on your system to generate
 expressions. This means that you can generate expressions on a system on
@@ -140,7 +140,7 @@ by first installing `{rix}`:
 
 ``` r
 install.packages("rix", repos = c(
-  "https://b-rodrigues.r-universe.dev",
+  "https://ropensci.r-universe.dev",
   "https://cloud.r-project.org"
 ))
 
@@ -231,7 +231,7 @@ and start using them.
 
 To get started with `{rix}` and Nix, you should read the following
 vignette `vignette("a-getting-started")` ([online
-documentation](https://b-rodrigues.github.io/rix/articles/a-getting-started.html)).
+documentation](https://ropensci.github.io/rix/articles/a-getting-started.html)).
 The vignettes are numbered to get you to learn how to use `{rix}` and
 Nix smoothly. There’s a lot of info, so take your time reading the
 vignettes. Don’t hesitate to open an issue if something is not clear.

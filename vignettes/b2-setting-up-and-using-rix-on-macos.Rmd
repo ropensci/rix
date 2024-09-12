@@ -97,7 +97,7 @@ not yet on CRAN, the easiest way is to install it from its r-universe:
 
 ```{r parsermd-chunk-2, eval = FALSE}
 install.packages("rix", repos = c(
-  "https://b-rodrigues.r-universe.dev",
+  "https://ropensci.r-universe.dev",
   "https://cloud.r-project.org"
 ))
 ```
