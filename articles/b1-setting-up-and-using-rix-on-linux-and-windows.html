@@ -99,11 +99,11 @@ Linux distributions and Windows can be considered one system, and macOS
 another, separate, system. Because Windows is really running Linux under
 the hood thanks to WSL2, this means that WSL2 needs to be running on
 your Windows system before you attempt to install Nix. But it is
-important to know that you can run <a href="https://ropensci.github.io/rix/" class="external-link">rix</a> even if you don’t
+important to know that you can run <a href="https://ropensci.github.io/rix/">rix</a> even if you don’t
 have Nix installed, which means you can generate Nix expressions, you
 just can’t build them. So if you can’t install Nix on your system, but
 have R already installed, you can skip to the last section of this
-vignette to simply install the <a href="https://ropensci.github.io/rix/" class="external-link">rix</a> package.</p>
+vignette to simply install the <a href="https://ropensci.github.io/rix/">rix</a> package.</p>
 </div>
 <div class="section level2">
 <h2 id="installing-nix">Installing Nix<a class="anchor" aria-label="anchor" href="#installing-nix"></a>
@@ -140,7 +140,7 @@ proceed with the Determinate Systems installer.</p>
 <div class="section level3">
 <h3 id="using-the-determinate-systems-installer">Using the Determinate Systems installer<a class="anchor" aria-label="anchor" href="#using-the-determinate-systems-installer"></a>
 </h3>
-<p>You can use <a href="https://ropensci.github.io/rix/" class="external-link">rix</a> to generate Nix expressions even if
+<p>You can use <a href="https://ropensci.github.io/rix/">rix</a> to generate Nix expressions even if
 you don’t have Nix installed on your system, but obviously, you need to
 install Nix if you actually want to build the defined development
 environment and use them.</p>
@@ -158,7 +158,7 @@ Determinate Nix Installer page</a>):</p>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>    <span class="at">-L</span> https://install.determinate.systems/nix <span class="kw">|</span> <span class="dt">\</span></span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>     <span class="fu">sh</span> <span class="at">-s</span> <span class="at">--</span> install</span></code></pre></div>
 <p>Once you have Nix installed, you can build the expressions you
-generate with <a href="https://ropensci.github.io/rix/" class="external-link">rix</a>!</p>
+generate with <a href="https://ropensci.github.io/rix/">rix</a>!</p>
 <p>On Linux, once Nix is installed, all the software that will be
 installed through Nix will be saved to the <code>/nix</code> directory
 on the root partition. It is common for Linux users to have a separate
@@ -180,7 +180,7 @@ as well<a class="anchor" aria-label="anchor" href="#case-1-you-dont-have-r-insta
 </h2>
 <p>If you have successfully installed Nix, but don’t have yet R
 installed on your system, you could install R as you would usually do on
-your operating system, and then install the <a href="https://ropensci.github.io/rix/" class="external-link">rix</a> package,
+your operating system, and then install the <a href="https://ropensci.github.io/rix/">rix</a> package,
 and from there, generated project-specific expressions and build them.
 But you could also install R using Nix. Running the following line in a
 terminal will drop you in an interactive R session that you can use to
@@ -212,7 +212,7 @@ are detailled in the vignette
 <code><a href="../articles/d1-installing-r-packages-in-a-nix-environment.html">vignette("d1-installing-r-packages-in-a-nix-environment")</a></code>
 and
 <code><a href="../articles/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment.html">vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")</a></code>.</p>
-<p>You could also include <a href="https://ropensci.github.io/rix/" class="external-link">rix</a> in your project-specific
+<p>You could also include <a href="https://ropensci.github.io/rix/">rix</a> in your project-specific
 environments, by generating a <code>default.nix</code> like so:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span></span>
@@ -235,15 +235,15 @@ environments, by generating a <code>default.nix</code> like so:</p>
 </h2>
 <p>If you have installed R on your system through the usual means of
 installation (so not Nix, as decribed before), you can install the
-<a href="https://ropensci.github.io/rix/" class="external-link">rix</a> package as usual as well. Because <a href="https://ropensci.github.io/rix/" class="external-link">rix</a>
+<a href="https://ropensci.github.io/rix/">rix</a> package as usual as well. Because <a href="https://ropensci.github.io/rix/">rix</a>
 is not yet on CRAN, the easiest way is to install it from its
 r-universe:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"rix"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"https://b-rodrigues.r-universe.dev"</span>,</span>
+<span>  <span class="st">"https://ropensci.r-universe.dev"</span>,</span>
 <span>  <span class="st">"https://cloud.r-project.org"</span></span>
 <span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>You can then use the <a href="https://ropensci.github.io/rix/" class="external-link">rix</a> package to generate
+<p>You can then use the <a href="https://ropensci.github.io/rix/">rix</a> package to generate
 expressions. Consult the next vignette
 <code><a href="../articles/c-using-rix-to-build-project-specific-environments.html">vignette("c-using-rix-to-build-project-specific-environments")</a></code>
 to learn more.</p>

@@ -88,7 +88,7 @@
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>This vignette will walk you through setting up a development
-environment with <a href="https://ropensci.github.io/rix/" class="external-link">rix</a> that can be used to compile Quarto
+environment with <a href="https://ropensci.github.io/rix/">rix</a> that can be used to compile Quarto
 documents into PDFs. We are going to use the <a href="https://github.com/quarto-journals/jss" class="external-link">Quarto template for the
 JSS</a> to illustrate the process. The first section will show a simple
 way of achieving this, which will also be ideal for interactive
@@ -108,7 +108,7 @@ reproducible document in a single command.</p>
 <p>Since we need both the <a href="https://github.com/quarto-dev/quarto-r" class="external-link">quarto</a> R package as well as the
 <code>quarto</code> engine, we add both of them to the
 <code>r_pkgs</code> and <code>system_pkgs</code> of arguments of
-<a href="https://ropensci.github.io/rix/" class="external-link">rix</a>. Because we want to compile a PDF, we also need to
+<a href="https://ropensci.github.io/rix/">rix</a>. Because we want to compile a PDF, we also need to
 have <code>texlive</code> installed, as well as some LaTeX packages. For
 this, we use the <code>tex_pkgs</code> argument:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -129,7 +129,7 @@ this, we use the <code>tex_pkgs</code> argument:</p>
 <p>(Save these lines into a script called <code>build_env.R</code> for
 instance, and run the script into a new folder made for this
 project.)</p>
-<p>By default, <a href="https://ropensci.github.io/rix/" class="external-link">rix</a> will install the “small” version of
+<p>By default, <a href="https://ropensci.github.io/rix/">rix</a> will install the “small” version of
 the <code>texlive</code> distribution available on Nix. To see which
 <code>texlive</code> packages get installed with this small version, you
 can click <a href="https://search.nixos.org/packages?channel=unstable&amp;show=texlive.combined.scheme-small&amp;from=0&amp;size=50&amp;sort=relevance&amp;type=packages&amp;query=scheme-small" class="external-link">here</a>.
@@ -226,7 +226,7 @@ document.</p>
 </h2>
 <p>Let’s not forget that Nix is not just a package manager, but also a
 programming language. The <code>default.nix</code> files that
-<a href="https://ropensci.github.io/rix/" class="external-link">rix</a> generates are written in this language, which was
+<a href="https://ropensci.github.io/rix/">rix</a> generates are written in this language, which was
 made entirely for the purpose of building software. If you are not a
 developer, you may not realise it but the process of compiling a Quarto
 or LaTeX document is very similar to the process of building any piece
@@ -269,7 +269,7 @@ file). Now we need to change our <code>default.nix</code>:</p>
  pkgs.stdenv.mkDerivation {
    name = "my-paper";
    src = pkgs.fetchgit {
-       url = "https://github.com/b-rodrigues/my_paper/";
+       url = "https://github.com/ropensci/my_paper/";
        rev = "715e9f007d104c23763cebaf03782b8e80cb5445";
        sha256 = "sha256-e8Xg7nJookKoIfiJVTGoJkvCuFNTT83YZ6SK3GT2T8g=";
      };
@@ -297,7 +297,7 @@ the repository and called it <code>my_paper</code>):</p>
 <pre><code>pkgs.stdenv.mkDerivation {
   name = "my-paper";
   src = pkgs.fetchgit {
-      url = "https://github.com/b-rodrigues/my_paper/";
+      url = "https://github.com/ropensci/my_paper/";
       rev = "715e9f007d104c23763cebaf03782b8e80cb5445";
       sha256 = "sha256-e8Xg7nJookKoIfiJVTGoJkvCuFNTT83YZ6SK3GT2T8g=";
     };</code></pre>

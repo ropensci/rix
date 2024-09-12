@@ -194,7 +194,7 @@ file contains R version 4.2.2, the <a href="https://docs.ropensci.org/targets/" 
 GitHub only with some data and useful functions for the project. Because
 it is on Github, it gets installed using the <code>buildRPackage</code>
 function from Nix. You can use this environment to work on you project,
-or to launch a <a href="https://docs.ropensci.org/targets/" class="external-link">targets</a> pipeline. <a href="https://github.com/b-rodrigues/nix_targets_pipeline/tree/master" class="external-link">This
+or to launch a <a href="https://docs.ropensci.org/targets/" class="external-link">targets</a> pipeline. <a href="https://github.com/ropensci/nix_targets_pipeline/tree/master" class="external-link">This
 Github repository</a> contains the finalized project.</p>
 <p>On your local machine, you could execute the pipeline in the
 environment by running this in a terminal:</p>
@@ -221,13 +221,13 @@ you could add a <em>Shell-hook</em> to the generated
 <span><span class="op">)</span></span></code></pre></div>
 <p>Now, each time you drop into the Nix shell for that project using
 <code>nix-shell</code>, the pipeline gets automatically executed.
-<a href="https://ropensci.github.io/rix/" class="external-link">rix</a> also features a function called
+<a href="https://ropensci.github.io/rix/">rix</a> also features a function called
 <code><a href="../reference/tar_nix_ga.html">tar_nix_ga()</a></code> that adds a GitHub Actions workflow file to
 make the pipeline run automatically on GitHub Actions. The GitHub
 repository linked above has such a file, so each time changes get
 pushed, the pipeline runs on Github Actions and the results are
 automatically pushed to a branch called <code>targets-runs</code>. See
-the workflow file <a href="https://github.com/b-rodrigues/nix_targets_pipeline/blob/master/.github/workflows/run-pipeline.yaml" class="external-link">here</a>.
+the workflow file <a href="https://github.com/ropensci/nix_targets_pipeline/blob/master/.github/workflows/run-pipeline.yaml" class="external-link">here</a>.
 This feature is very heavily inspired and adapted from the
 <code>targets::github_actions()</code> function.</p>
 </div>
