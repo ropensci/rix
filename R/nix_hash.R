@@ -1,6 +1,6 @@
 #' Return the sri hash of a path using `nix hash path --sri path` if Nix is
 #' available locally
-#' @param repo_url URL to Github repository
+#' @param repo_url URL to Git repository
 #' @param commit Commit hash (SHA-1)
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
@@ -8,7 +8,7 @@
 #' - `deps`: string with R package dependencies separarated by space.
 #' @noRd
 nix_hash <- function(repo_url, commit) {
-  if (grepl("github", repo_url)) {
+  if (grepl("(github)|(gitlab)", repo_url)) {
     hash_git(repo_url = repo_url, commit)
   } else if (grepl("cran.*Archive.*", repo_url)) {
     hash_cran(repo_url = repo_url)
@@ -180,7 +180,12 @@ hash_git <- function(repo_url, commit) {
   } else {
     slash <- "/"
   }
-  url <- paste0(repo_url, slash, "archive/", commit, ".tar.gz")
+
+  if(grepl("github", repo_url)){
+    url <- paste0(repo_url, slash, "archive/", commit, ".tar.gz")
+  } else if(grepl("gitlab", repo_url)){
+    url <- paste0(repo_url, slash, "-/archive/", commit, ".tar.gz")
+  }
 
   # list contains `sri_hash` and `deps` elements
   list_sri_hash_deps <- hash_url(url)
