@@ -23,6 +23,19 @@ testthat::test_that("Test fetchgit fails gracefully", {
   )
 })
 
+testthat::test_that("Test fetchgit works with gitlab packages", {
+  testthat::expect_equal(
+    fetchgit(
+      list(
+        package_name = "housing",
+        repo_url = "https://gitlab.com/b-rodrigues/housing/",
+        commit = "9442aa63d352d3c900f1c6f5a06f7930cdf702c4"
+      )
+    ),
+    "\n    (pkgs.rPackages.buildRPackage {\n      name = \"housing\";\n      src = pkgs.fetchgit {\n        url = \"https://gitlab.com/b-rodrigues/housing/\";\n        rev = \"9442aa63d352d3c900f1c6f5a06f7930cdf702c4\";\n        sha256 = \"sha256-3V9XbNbq/YpbgnzkEu3XH7QKSDY8yNNd1vpOeR9ER0w=\";\n      };\n      propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.rPackages) \n          dplyr\n          ggplot2\n          janitor\n          purrr\n          readxl\n          rlang\n          rvest\n          stringr\n          tidyr;\n      };\n    })\n"
+  )
+})
+
 
 
 testthat::test_that("Test fetchzip works", {
