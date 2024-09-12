@@ -62,7 +62,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/b-rodrigues/rix/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/ropensci/rix/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -78,7 +78,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>e - Interactive use</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/b-rodrigues/rix/blob/master/vignettes/e-interactive-use.Rmd" class="external-link"><code>vignettes/e-interactive-use.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ropensci/rix/blob/main/vignettes/e-interactive-use.Rmd" class="external-link"><code>vignettes/e-interactive-use.Rmd</code></a></small>
       <div class="d-none name"><code>e-interactive-use.Rmd</code></div>
     </div>
 
@@ -209,7 +209,7 @@ package to generate new expressions. In this case you might consider
 installing Nix first, and then run the following command inside your
 terminal to get dropped into a temporary Nix shell, which you can then
 use to generate new <code>default.nix</code> files:</p>
-<pre><code>nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/b-rodrigues/rix/master/inst/extdata/default.nix)"</code></pre>
+<pre><code>nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/ropensci/rix/master/inst/extdata/default.nix)"</code></pre>
 <p>Running the command above will download R and <a href="https://b-rodrigues.github.io/rix/">rix</a> and
 then start an R session inside your terminal. You can now run something
 like this:</p>
