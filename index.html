@@ -174,7 +174,7 @@ Click to expand
 <span><span class="fu"><a href="reference/nix_build.html">nix_build</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="st">"."</span><span class="op">)</span></span></code></pre></div>
 <p>If everything worked well, you should see a file called <code>result</code> next to <code>default.nix</code>. You can now enter this newly built development environment by opening a terminal in that folder and typing <code>nix-shell</code>. You should be immediately dropped into an interactive R session.</p>
 <p>If you don’t have R installed, but have the Nix package manager installed, you can run a temporary R session with R using this command (it will build the same environment as the one above):</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>nix<span class="sc">-</span>shell <span class="sc">--</span>expr <span class="st">"$(curl -sl https://raw.githubusercontent.com/ropensci/rix/master/inst/extdata/default.nix)"</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>nix<span class="sc">-</span>shell <span class="sc">--</span>expr <span class="st">"$(curl -sl https://raw.githubusercontent.com/ropensci/rix/main/inst/extdata/default.nix)"</span></span></code></pre></div>
 You can then create new development environment definitions, build them, and start using them.
 </details>
 </div>
