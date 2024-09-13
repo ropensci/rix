@@ -162,7 +162,7 @@ rix <- function(r_ver = "latest",
                 message_type = "simple",
                 shell_hook = NULL) {
   message_type <- match.arg(message_type,
-    choices = c("quiet", "simple", "verbose")
+     choices = c("quiet", "simple", "verbose")
   )
 
   if (!(message_type %in% c("simple", "quiet")) && r_ver %in% c("bleeding_edge", "frozen_edge")) {
