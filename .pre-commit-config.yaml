@@ -9,22 +9,7 @@ repos:
         exclude: > 
           (?x)^(
           tests/testthat/in/.*|
-          renv/.*
           )$
-    -   id: roxygenize
-        additional_dependencies:
-        -    cli
-        -    fs
-        -    here
-        -    magrittr
-        -    purrr
-        -    R.cache
-        -    rlang
-        -    rprojroot
-        -    rstudioapi
-        -    withr
-        -    yaml
-        -    r-lib/pkgapi
 
 default_stages: ["commit"]
 
