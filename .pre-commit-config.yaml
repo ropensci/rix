@@ -7,21 +7,17 @@ repos:
     -   id: style-files
         args: [--style_pkg=styler, --style_fun=tidyverse_style, --cache-root=styler-perm]
         require_serial: true
-        exclude: > 
-          (?x)^(
-          tests/testthat/in/.*|
-          )$
     -   id: lintr
+        exclude: >
+          (?x)^(
+          tests/testthat/test-fetchers.R
+          )$
     -   id: parsable-R
         exclude: > 
           (?x)^(
           tests/testthat/in/.*|
           )$
     -   id: no-browser-statement
-        exclude: > 
-          (?x)^(
-          tests/testthat/in/.*|
-          )$
 
 default_stages: ["commit"]
 
