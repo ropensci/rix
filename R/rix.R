@@ -175,7 +175,7 @@ before continuing."
   }
 
   if (message_type != "quiet" && r_ver %in% available_r() &&
-    r_ver != "latest" && r_ver <= "4.1.1") {
+     r_ver != "latest" && r_ver <= "4.1.1") {
     warning(
       "You are generating an expression for an older version of R.\n",
       "To use this environment, you should directly use `nix-shell` and not ",
