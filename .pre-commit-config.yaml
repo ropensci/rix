@@ -11,6 +11,7 @@ repos:
           (?x)^(
           tests/testthat/in/.*|
           )$
+    -   id: lintr
     -   id: parsable-R
         exclude: > 
           (?x)^(
