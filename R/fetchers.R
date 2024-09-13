@@ -96,7 +96,11 @@ fetchzip <- function(archive_pkg, sri_hash = NULL) {
 #' @noRd
 remove_base <- function(list_imports) {
   imports_nobase <- gsub(
-    "(^base$)|(^compiler$)|(^datasets$)|(^grDevices$)|(^graphics$)|(^grid$)|(^methods$)|(^parallel$)|(^profile$)|(^splines$)|(^stats$)|(^stats4$)|(^tcltk$)|(^tools$)|(^translations$)|(^utils$)",
+    paste0(
+      "(^base$)|(^compiler$)|(^datasets$)|(^grDevices$)|(^graphics$)|(^grid$)|",
+      "(^methods$)|(^parallel$)|(^profile$)|(^splines$)|(^stats$)|",
+      "(^stats4$)|(^tcltk$)|(^tools$)|(^translations$)|(^utils$)"
+    ),
     NA_character_,
     list_imports
   )
@@ -226,7 +230,14 @@ fetchgits <- function(git_pkgs) {
   } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
     paste(lapply(git_pkgs, fetchgit), collapse = "\n")
   } else {
-    stop("There is something wrong with the input. Make sure it is either a list of three elements 'package_name', 'repo_url' and 'commit' or a list of lists with these three elements")
+    stop(
+      paste0(
+        "There is something wrong with the input. ",
+        "Make sure it is either a list of three elements ",
+        "'package_name', 'repo_url' and 'commit', or ",
+        "a list of lists with these three elements"
+      )
+    )
   }
 }
 
