@@ -10,6 +10,16 @@ repos:
           (?x)^(
           tests/testthat/in/.*|
           )$
+    -   id: parsable-R
+        exclude: > 
+          (?x)^(
+          tests/testthat/in/.*|
+          )$
+    -   id: no-browser-statement
+        exclude: > 
+          (?x)^(
+          tests/testthat/in/.*|
+          )$
 
 default_stages: ["commit"]
 
