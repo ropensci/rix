@@ -129,7 +129,7 @@
 #'   environment will be up-to-date on the date that the `default.nix` will be
 #'   generated, and then each subsequent call to `nix-build` will result in the
 #'   same environment. We highly recommend you read the vignette titled
-#'   "z - Advanced topic: Understanding the rPackages set release cycle and 
+#'   "z - Advanced topic: Understanding the rPackages set release cycle and
 #'   using bleeding edge packages".
 #' @export
 #' @examples
@@ -168,7 +168,7 @@ rix <- function(r_ver = "latest",
 
   if (
     !(message_type %in% c("simple", "quiet")) &&
-     r_ver %in% c("bleeding_edge", "frozen_edge")
+      r_ver %in% c("bleeding_edge", "frozen_edge")
   ) {
     warning(
       "You chose 'bleeding_edge' or 'frozen_edge' as the value for
