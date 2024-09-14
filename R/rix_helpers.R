@@ -283,7 +283,8 @@ generate_locale_variables <- function() {
 }
 
 
-#' generate_wrapped_pkgs Internal function that generates the string containing the correct Nix expression to get wrapped packages.
+#' generate_wrapped_pkgs Internal function that generates the string containing
+#' the correct Nix expression to get wrapped packages.
 #' @param ide Character, defaults to "other". If you wish to use RStudio to work
 #'   interactively use "rstudio" or "rserver" for the server version. Use "code"
 #'   for Visual Studio Code. You can also use "radian", an interactive REPL. For
@@ -319,7 +320,8 @@ generate_wrapped_pkgs <- function(ide,
 }
 
 
-#' generate_wrapped_pkgs Internal function that generates the string containing the correct Nix expression to get wrapped packages.
+#' generate_wrapped_pkgs Internal function that generates the string containing
+#' the correct Nix expression to get wrapped packages.
 #' @param flag_git_archive Character, are there R packages from Github at all?
 #' @param flag_rpkgs Character, are there any R packages at all?
 #' @param flag_tex_pkgs Character, are there any LaTex packages at all?
