@@ -1,6 +1,5 @@
 ## code to prepare `DATASET` dataset goes here
 
-
 library(rix)
 
 # This script is only needed for the developers of `{rix}`.
@@ -16,8 +15,11 @@ library(rix)
 # library(rvest)
 # library(dplyr)
 # library(janitor)
-#
-# r_nix_revs <- read_html("https://lazamar.co.uk/nix-versions/?channel=nixpkgs-unstable&package=r") |>
+
+# r_nix_revs <-
+#  read_html(
+#    "https://lazamar.co.uk/nix-versions/?channel=nixpkgs-unstable&package=r"
+#  ) |>
 #  html_element("table") |>
 #  html_table() |>
 #  clean_names() |>
