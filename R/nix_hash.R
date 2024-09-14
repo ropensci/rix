@@ -104,16 +104,21 @@ nix_sri_hash <- function(path) {
 
   # not needed for Nix R sessions, workaround on Debian and Debian-based
   # systems with nix installed
+  # nolint start: object_name_linter
   LD_LIBRARY_PATH_default <- Sys.getenv("LD_LIBRARY_PATH")
   needs_ld_fix <- isFALSE(nzchar(Sys.getenv("NIX_STORE"))) &&
     nzchar(LD_LIBRARY_PATH_default)
+  # nolint end
 
   if (isTRUE(needs_ld_fix)) {
     # On Debian and Debian-based systems, like Ubuntu 22.04, we found that a
     # preset `LD_LIBRARY_PATH` environment variable in the system's R session
     # leads to errors like
-    # nix-hash: /usr/lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.38' not found (required by nix-hash)
-    # nix-hash: /usr/lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.38' not found (required by /nix/store/4z754a0vzl98asv0pa95i5d9szw5jqbs-lowdown-1.0.2-lib/lib/liblowdown.so.3)
+    # nix-hash: /usr/lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.38'
+    # not found (required by nix-hash)
+    # nix-hash: /usr/lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.38'
+    # not found (required by # nolint next: line_length_linter
+    # /nix/store/4z754a0vzl98asv0pa95i5d9szw5jqbs-lowdown-1.0.2-lib/lib/liblowdown.so.3)
     # etc...
     # for both `nix-hash`; it occurs via
     # `sys::exec_internal`, `base::system()` or `base::system2()` from R.

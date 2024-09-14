@@ -15,7 +15,9 @@ make_nixpkgs_url <- function(r_ver) {
   latest_commit <- get_latest(r_ver)
 
   list(
-    "url" = paste0("https://github.com/", github_repo, "archive/", latest_commit, ".tar.gz"),
+    "url" = paste0(
+      "https://github.com/", github_repo, "archive/", latest_commit, ".tar.gz"
+    ),
     "latest_commit" = latest_commit,
     "r_ver" = r_ver
   )
