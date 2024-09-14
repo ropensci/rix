@@ -177,7 +177,7 @@ with_nix <- function(expr,
       remove_r_libs_user()
     }
   } else {
-    # lolint start: object_name_linter
+    # nolint start: object_name_linter
     LD_LIBRARY_PATH_default <- Sys.getenv("LD_LIBRARY_PATH")
     if (nzchar(LD_LIBRARY_PATH_default)) {
       # On some systems, like Ubuntu 22.04, we found that a preset
