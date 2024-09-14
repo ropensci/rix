@@ -73,6 +73,7 @@ serialize_args <- function(args, temp_dir) {
         # for unnamed arguments like `expr = function(x) print(x)`
         # x would be an empty symbol, see also ; i.e. arguments without
         # default expressions; i.e., tagged arguments with no value
+        # nolint next: line_length_linter
         # https://stackoverflow.com/questions/3892580/create-missing-objects-aka-empty-symbols-empty-objects-needed-for-f
         args[[i]] <- as.symbol(names(args)[i])
       }

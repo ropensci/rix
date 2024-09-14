@@ -20,6 +20,6 @@ jobs:
         name: pre-commit-ci-lite
         if: always()
         with:
-          msg: apply code formatting
+          msg: check lints and apply code formatting
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}

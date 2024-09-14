@@ -28,18 +28,19 @@ nix_build <- function(project_path = ".",
     choices = c("simple", "quiet", "verbose")
   )
   # if nix store is not PATH variable; e.g. on macOS (system's) RStudio
-  PATH <- set_nix_path()
+  PATH <- set_nix_path() # nolint: object_name_linter
   if (isTRUE(nzchar(Sys.getenv("NIX_STORE")))) {
     # for Nix R sessions, guarantee that the system's user library
     # (R_LIBS_USER) is not in the search path for packages => run-time purity
     current_libpaths <- .libPaths()
     # don't do this in covr test environment, because this sets R_LIBS_USER
     # to multiple paths
-    R_LIBS_USER <- Sys.getenv("R_LIBS_USER")
+    R_LIBS_USER <- Sys.getenv("R_LIBS_USER") # nolint: object_name_linter
     if (isFALSE(nzchar(Sys.getenv("R_COVR")))) {
       remove_r_libs_user()
     }
   } else {
+    # nolint next: object_name_linter
     LD_LIBRARY_PATH_default <- Sys.getenv("LD_LIBRARY_PATH")
     if (nzchar(LD_LIBRARY_PATH_default)) {
       # On some systems, like Ubuntu 22.04, we found that a preset
@@ -56,7 +57,7 @@ nix_build <- function(project_path = ".",
       fix_ld_library_path()
       cat(
         "* Current LD_LIBRARY_PATH in system R session is:",
-        LD_LIBRARY_PATH_default
+        LD_LIBRARY_PATH_default # nolint: object_name_linter
       )
       cat("\n", "Setting `LD_LIBRARY_PATH` to `''` during `nix_build()`")
     }
@@ -65,6 +66,7 @@ nix_build <- function(project_path = ".",
   nix_dir <- normalizePath(project_path)
   nix_file <- file.path(nix_dir, "default.nix")
 
+  # nolint start: line_length_linter
   stopifnot(
     "`project_path` must be character of length 1." =
       is.character(project_path) && length(project_path) == 1L,
@@ -73,6 +75,7 @@ nix_build <- function(project_path = ".",
     "`nix-build` not available. To install, we suggest you follow https://zero-to-nix.com/start/install ." =
       isTRUE(has_nix_build)
   )
+  # nolint end
 
   max_jobs <- getOption("rix.nix_build_max_jobs", default = 1L)
   stopifnot(

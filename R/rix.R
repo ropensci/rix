@@ -321,6 +321,7 @@ for more details."
     collapse = "\n"
   )
 
+  # nolint next: object_name_linter
   default.nix <- readLines(textConnection(default.nix))
 
   if (print) {
