@@ -1,5 +1,6 @@
 #' make_nixpkgs_url Find the right Nix revision
-#' @param r_version Character. R version to look for, for example, "4.2.0". If a nixpkgs revision is provided instead, this gets returned.
+#' @param r_version Character. R version to look for, for example, "4.2.0". If a
+#' nixpkgs revision is provided instead, this gets returned.
 #' @return A character. The url to use
 #'
 #' @examples
