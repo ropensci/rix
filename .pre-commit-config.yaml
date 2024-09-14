@@ -11,6 +11,7 @@ repos:
         exclude: >
           (?x)^(
           tests/testthat/test-fetchers.R
+          vignettes/c-using-rix-to-build-project-specific-environments.Rmd
           )$
     -   id: parsable-R
         exclude: > 
