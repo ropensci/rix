@@ -434,7 +434,7 @@ nix_rprofile <- function() {
           "You are currently in an R session running from Nix.\n",
           "Don't update packages using update.packages(),\n",
           "generate a new default.nix with a more recent version of R. ",
-          "If you need bleeding edge packages, read the", 
+          "If you need bleeding edge packages, read the",
           "'Understanding the rPackages set release cycle and using ",
           "bleeding edge packages' vignette."
         )
@@ -444,7 +444,8 @@ nix_rprofile <- function() {
         stop(
           "You are currently in an R session running from Nix.\n",
           "Don't remove packages using `remove.packages()``,\ndelete them ",
-          "from the default.nix file instead.")
+          "from the default.nix file instead."
+        )
       }
       current_paths <- .libPaths()
       userlib_paths <- Sys.getenv("R_LIBS_USER")
