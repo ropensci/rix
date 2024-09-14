@@ -10,8 +10,8 @@ repos:
     -   id: lintr
         exclude: >
           (?x)^(
-          tests/testthat/test-fetchers.R
-          vignettes/c-using-rix-to-build-project-specific-environments.Rmd
+          tests/testthat/test-fetchers.\.R|
+          vignettes/.*
           )$
     -   id: parsable-R
         exclude: > 
