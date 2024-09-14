@@ -10,7 +10,7 @@ repos:
     -   id: lintr
         exclude: >
           (?x)^(
-          tests/testthat/test-fetchers.\.R|
+          tests/testthat/test-fetchers\.R|
           vignettes/.*
           )$
     -   id: parsable-R
