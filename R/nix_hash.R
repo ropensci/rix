@@ -209,7 +209,7 @@ nix_hash_online <- function(repo_url, commit) {
   h <- curl::new_handle(failonerror = TRUE)
 
   url <- paste0(
-    "http://git2nixsha.dev/hash?repo_url=",
+    "https://git2nixsha.dev/hash?repo_url=",
     repo_url, "&commit=", commit
   )
 
