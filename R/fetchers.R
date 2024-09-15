@@ -218,9 +218,9 @@ fetchlocals <- function(local_r_pkgs) {
 
 #' fetchgits Downloads and installs packages hosted on Git. Wraps `fetchgit()`
 #' to handle multiple packages
-#' @param git_pkgs A list of four elements: "package_name", the name of the
+#' @param git_pkgs A list of three elements: "package_name", the name of the
 #' package, "repo_url", the repository's url and "commit", the commit hash of
-#' interest. This argument can also be a list of lists of these four elements.
+#' interest. This argument can also be a list of lists of these three elements.
 #' @return A character. The Nix definition to download and build the R package
 #' from Github.
 #' @noRd
@@ -228,6 +228,10 @@ fetchgits <- function(git_pkgs) {
   if (!all(vapply(git_pkgs, is.list, logical(1)))) {
     fetchgit(git_pkgs)
   } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
+
+    # Re-order list of git packages by "package name"
+    git_pkgs <- git_pkgs[order(sapply(git_pkgs,'[[',"package_name"))]
+
     paste(lapply(git_pkgs, fetchgit), collapse = "\n")
   } else {
     stop("There is something wrong with the input. Make sure it is either a list of three elements 'package_name', 'repo_url' and 'commit' or a list of lists with these three elements")
