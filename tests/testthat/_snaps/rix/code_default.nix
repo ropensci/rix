@@ -6,8 +6,8 @@ let
     inherit (pkgs.rPackages) 
       data_table
       janitor
-      quarto
-      languageserver;
+      languageserver
+      quarto;
   };
  
   git_archive_pkgs = [

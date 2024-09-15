@@ -79,7 +79,8 @@ let
   tex = (pkgs.texlive.combine {
     inherit (pkgs.texlive) 
       scheme-small
-      amsmath;
+      amsmath
+      zmsmath;
   });
   
   system_packages = builtins.attrValues {
