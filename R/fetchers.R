@@ -250,7 +250,7 @@ fetchzips <- function(archive_pkgs) {
   } else if (length(archive_pkgs) == 1) {
     fetchzip(archive_pkgs)
   } else if (length(archive_pkgs) > 1) {
-    paste(lapply(archive_pkgs, fetchzip), collapse = "\n")
+    paste(lapply(sort(archive_pkgs), fetchzip), collapse = "\n")
   } else {
     stop(
       "There is something wrong with the input. Make sure it is either",
