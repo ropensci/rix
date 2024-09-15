@@ -228,9 +228,8 @@ fetchgits <- function(git_pkgs) {
   if (!all(vapply(git_pkgs, is.list, logical(1)))) {
     fetchgit(git_pkgs)
   } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
-
     # Re-order list of git packages by "package name"
-    git_pkgs <- git_pkgs[order(sapply(git_pkgs,'[[',"package_name"))]
+    git_pkgs <- git_pkgs[order(sapply(git_pkgs, "[[", "package_name"))]
 
     paste(lapply(git_pkgs, fetchgit), collapse = "\n")
   } else {
