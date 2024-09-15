@@ -161,7 +161,11 @@ get_imports <- function(path) {
 #' @return A character. The Nix definition to build the R package from local sources.
 #' @noRd
 fetchlocal <- function(local_pkg) {
-  its_imports <- get_imports(local_pkg)
+  its_imports <- get_imports(local_pkg) |>
+    strsplit(split = " ") |>
+    unlist()
+
+  its_imports <- paste(c("", its_imports), collapse = "\n          ")
 
   # Remove package version from name
   package_name <- unlist(strsplit(local_pkg, split = "_"))
