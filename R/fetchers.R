@@ -206,7 +206,7 @@ fetchlocals <- function(local_r_pkgs) {
   } else if (length(local_r_pkgs) == 1) {
     fetchlocal(local_r_pkgs)
   } else {
-    paste(lapply(local_r_pkgs, fetchlocal), collapse = "\n")
+    paste(lapply(sort(local_r_pkgs), fetchlocal), collapse = "\n")
   }
 }
 
