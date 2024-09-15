@@ -161,7 +161,11 @@ get_imports <- function(path) {
 #' @return A character. The Nix definition to build the R package from local sources.
 #' @noRd
 fetchlocal <- function(local_pkg) {
-  its_imports <- get_imports(local_pkg)
+  its_imports <- get_imports(local_pkg) |>
+    strsplit(split = " ") |>
+    unlist()
+
+  its_imports <- paste(c("", its_imports), collapse = "\n          ")
 
   # Remove package version from name
   package_name <- unlist(strsplit(local_pkg, split = "_"))
@@ -206,7 +210,7 @@ fetchlocals <- function(local_r_pkgs) {
   } else if (length(local_r_pkgs) == 1) {
     fetchlocal(local_r_pkgs)
   } else {
-    paste(lapply(local_r_pkgs, fetchlocal), collapse = "\n")
+    paste(lapply(sort(local_r_pkgs), fetchlocal), collapse = "\n")
   }
 }
 
@@ -214,9 +218,9 @@ fetchlocals <- function(local_r_pkgs) {
 
 #' fetchgits Downloads and installs packages hosted on Git. Wraps `fetchgit()`
 #' to handle multiple packages
-#' @param git_pkgs A list of four elements: "package_name", the name of the
+#' @param git_pkgs A list of three elements: "package_name", the name of the
 #' package, "repo_url", the repository's url and "commit", the commit hash of
-#' interest. This argument can also be a list of lists of these four elements.
+#' interest. This argument can also be a list of lists of these three elements.
 #' @return A character. The Nix definition to download and build the R package
 #' from Github.
 #' @noRd
@@ -224,6 +228,10 @@ fetchgits <- function(git_pkgs) {
   if (!all(vapply(git_pkgs, is.list, logical(1)))) {
     fetchgit(git_pkgs)
   } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
+
+    # Re-order list of git packages by "package name"
+    git_pkgs <- git_pkgs[order(sapply(git_pkgs,'[[',"package_name"))]
+
     paste(lapply(git_pkgs, fetchgit), collapse = "\n")
   } else {
     stop("There is something wrong with the input. Make sure it is either a list of three elements 'package_name', 'repo_url' and 'commit' or a list of lists with these three elements")
@@ -242,7 +250,7 @@ fetchzips <- function(archive_pkgs) {
   } else if (length(archive_pkgs) == 1) {
     fetchzip(archive_pkgs)
   } else if (length(archive_pkgs) > 1) {
-    paste(lapply(archive_pkgs, fetchzip), collapse = "\n")
+    paste(lapply(sort(archive_pkgs), fetchzip), collapse = "\n")
   } else {
     stop(
       "There is something wrong with the input. Make sure it is either",

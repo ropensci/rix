@@ -6,33 +6,11 @@ let
     inherit (pkgs.rPackages) 
       data_table
       janitor
-      quarto
-      languageserver;
+      languageserver
+      quarto;
   };
  
   git_archive_pkgs = [
-    (pkgs.rPackages.buildRPackage {
-      name = "housing";
-      src = pkgs.fetchgit {
-        url = "https://github.com/rap4all/housing/";
-        rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";
-        sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";
-      };
-      propagatedBuildInputs = builtins.attrValues {
-        inherit (pkgs.rPackages) 
-          dplyr
-          ggplot2
-          janitor
-          purrr
-          readxl
-          rlang
-          rvest
-          stringr
-          tidyr;
-      };
-    })
-
-
     (pkgs.rPackages.buildRPackage {
       name = "fusen";
       src = pkgs.fetchgit {
@@ -56,6 +34,28 @@ let
           tidyr
           usethis
           yaml;
+      };
+    })
+
+
+    (pkgs.rPackages.buildRPackage {
+      name = "housing";
+      src = pkgs.fetchgit {
+        url = "https://github.com/rap4all/housing/";
+        rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";
+        sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages) 
+          dplyr
+          ggplot2
+          janitor
+          purrr
+          readxl
+          rlang
+          rvest
+          stringr
+          tidyr;
       };
     })
  
