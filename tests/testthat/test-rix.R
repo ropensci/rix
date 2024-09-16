@@ -299,7 +299,7 @@ testthat::test_that("rix(), bleeding_edge", {
       rix(
         r_ver = "bleeding_edge",
         r_pkgs = c("dplyr", "janitor", "AER@1.2-8", "quarto"),
-        tex_pkgs = c("amsmath"),
+        tex_pkgs = c("zmsmath", "amsmath"),
         git_pkgs = list(
           list(
             package_name = "housing",

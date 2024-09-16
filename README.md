@@ -310,7 +310,7 @@ sound more tedious (it is) it forces users to work more “cleanly” and
 avoids many issues from dynamically changing an environment. If it is
 not possible to build that environment, it fails as early as possible
 and forces you to deal with the issue. A mutating environment could lead
-you into a false sense of safeness.
+you into a false sense of security.
 
 Another major difference is that Conda does not include the entirety of
 CRAN nor Bioconductor, which is the case for Nix. According to

@@ -4,9 +4,9 @@ let
  
   rpkgs = builtins.attrValues {
     inherit (pkgs.rPackages) 
+      data_table
       dplyr
-      quarto
-      data_table;
+      quarto;
   };
     
   system_packages = builtins.attrValues {

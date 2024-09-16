@@ -113,6 +113,8 @@ get_rpkgs <- function(r_pkgs, ide) {
     r_pkgs
   }
 
+  r_pkgs <- sort(r_pkgs)
+  
   # nolint start: object_name_linter
   rPackages <- paste(c("", r_pkgs), collapse = "\n      ")
 
@@ -173,7 +175,7 @@ generate_local_r_pkgs <- function(local_r_pkgs, flag_local_r_pkgs) {
 #' @noRd
 generate_tex_pkgs <- function(tex_pkgs) {
   if (!is.null(tex_pkgs)) {
-    tex_pkgs <- unique(c("scheme-small", tex_pkgs))
+    tex_pkgs <- unique(c("scheme-small", sort(tex_pkgs)))
 
     tex_pkgs <- paste(c("", tex_pkgs), collapse = "\n      ")
 
@@ -195,7 +197,8 @@ generate_tex_pkgs <- function(tex_pkgs) {
 #' @noRd
 get_system_pkgs <- function(system_pkgs, r_pkgs) {
   # We always need these packages
-  system_pkgs <- c(system_pkgs, "R", "glibcLocales", "nix")
+  system_pkgs <- c(system_pkgs, "R", "glibcLocales", "nix") |>
+    sort()
 
   # If the user wants the R {quarto} package, then the quarto software needs to
   # be installed
