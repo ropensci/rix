@@ -17,10 +17,10 @@ testthat::test_that("rix(), ide is 'rstudio', Linux", {
           package_name = "housing",
           repo_url = "https://github.com/rap4all/housing/",
           commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"
-        ),
-        list(
-          package_name = "fusen",
-          repo_url = "https://github.com/ThinkR-open/fusen",
+      ),
+      list(
+        package_name = "fusen",
+        repo_url = "https://github.com/ThinkR-open/fusen",
           commit = "d617172447d2947efb20ad6a4463742b8a5d79dc"
         )
       ),
@@ -258,6 +258,10 @@ testthat::test_that("If on ide = rstudio, but no R packages, raise error", {
     save_default_nix_test(path_default_nix),
     regexp = "didn't add any R packages"
   )
+
+  on.exit({
+    unlink(path_default_nix, recursive = TRUE, force = TRUE)
+  })
 })
 
 testthat::test_that("If R version is == 3.5.3, raise warning", {
@@ -277,9 +281,9 @@ testthat::test_that("If R version is == 3.5.3, raise warning", {
   }
 
   testthat::expect_warning(
-    save_default_nix_test(path_default_nix),
-    regexp = "older version of R"
-  )
+              save_default_nix_test(path_default_nix),
+              regexp = "older version of R"
+            )
 
   on.exit({
     unlink(path_default_nix, recursive = TRUE, force = TRUE)
@@ -487,7 +491,6 @@ testthat::test_that("rix(), warning message if rix_init() already called", {
       file.path(path_default_nix, ".Rprofile")
     )
   )
-
 
   save_default_nix_test <- function(path_default_nix) {
     rix(

@@ -341,7 +341,6 @@
 
 - The `path` argument of `rix()` changed to `project_path`.
 
-
-# rix (development version)
+# rix 0.0.9999
 
 - Basic functionality added.

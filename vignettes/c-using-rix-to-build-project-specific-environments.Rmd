@@ -146,7 +146,7 @@ an environment with R version 4.2.1, the `{dplyr}` and `{janitor}` packages and
 no specific IDE:
 
 
-```{r parsermd-chunk-2}
+```{r parsermd-chunk-2, eval = F}
 path_default_nix <- tempdir()
 
 rix(

@@ -91,6 +91,9 @@
 #'   rprofile_action = "create_missing",
 #'   message_type = c("simple")
 #' )
+#' on.exit{
+#'   unlink(project_path, recursive = TRUE, force = TRUE)
+#' }
 #' }
 rix_init <- function(project_path = ".",
                      rprofile_action = c(

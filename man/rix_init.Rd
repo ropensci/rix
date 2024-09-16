@@ -107,6 +107,9 @@ rix_init(
   rprofile_action = "create_missing",
   message_type = c("simple")
 )
+on.exit{
+  unlink(project_path, recursive = TRUE, force = TRUE)
+}
 }
 }
 \seealso{
