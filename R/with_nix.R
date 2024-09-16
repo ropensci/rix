@@ -326,11 +326,9 @@ with_nix <- function(expr,
     if (nzchar(LD_LIBRARY_PATH_default)) {
       # set old LD_LIBRARY_PATH (only if system's R session and if it wasn't
       # `""`)
-      on.exit(
-        {
-          Sys.setenv(LD_LIBRARY_PATH = LD_LIBRARY_PATH_default)
-        }
-      )
+      on.exit({
+        Sys.setenv(LD_LIBRARY_PATH = LD_LIBRARY_PATH_default)
+      })
     }
   }
 
