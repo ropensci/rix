@@ -27,7 +27,7 @@ testthat::test_that("Testing `with_nix()` if Nix is installed", {
   out_subshell <- with_nix(
     expr = function() {
       set.seed(1234)
-      a <- sample(seq(1, 10), 5)
+      a <- sample(seq_len(10), 5)
       set.seed(NULL)
       return(a)
     },

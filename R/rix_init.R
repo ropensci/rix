@@ -1,13 +1,13 @@
 #' Initiate and maintain an isolated, project-specific, and runtime-pure R
 #' setup via Nix.
 #'
-#' Creates an isolated project folder for a Nix-R configuration. `rix::rix_init()`
-#' also adds, appends, or updates with or without backup a custom `.Rprofile`
-#' file with code that initializes a startup R environment without system's user
-#' libraries within a Nix software environment. Instead, it restricts search
-#' paths to load R packages exclusively from the Nix store. Additionally, it
-#' makes Nix utilities like `nix-shell` available to run system commands from
-#' the system's RStudio R session, for both Linux and macOS.
+#' Creates an isolated project folder for a Nix-R configuration.
+#' `rix::rix_init()` also adds, appends, or updates with or without backup a
+#' custom `.Rprofile` file with code that initializes a startup R environment
+#' without system's user libraries within a Nix software environment. Instead,
+#' it restricts search paths to load R packages exclusively from the Nix store.
+#' Additionally, it makes Nix utilities like `nix-shell` available to run system
+#' commands from the system's RStudio R session, for both Linux and macOS.
 #'
 #' **Enhancement of computational reproducibility for Nix-R environments:**
 #'
@@ -75,12 +75,14 @@
 #'   does exist; `"append"` appends the existing file with code that is tailored
 #'   to an isolated Nix-R project setup.
 #' @param message_type Character. Message type, defaults to `"simple"`, which
-#'   gives minimal but sufficient feedback. Other values are currently
-#'   `"quiet`, which writes `.Rprofile` without message, and `"verbose"`,
-#'   which displays the mechanisms implemented to achieve fully controlled R project environments in Nix.
+#'   gives minimal but sufficient feedback. Other values are currently `"quiet`,
+#'   which writes `.Rprofile` without message, and `"verbose"`, which displays
+#'   the mechanisms implemented to achieve fully controlled R project
+#'   environments in Nix.
 #' @export
 #' @seealso [with_nix()]
-#' @return Nothing, this function only has the side-effect of writing a file called ".Rprofile" to the specified path.
+#' @return Nothing, this function only has the side-effect of writing a file
+#' called ".Rprofile" to the specified path.
 #' @examples
 #' \dontrun{
 #' # create an isolated, runtime-pure R setup via Nix
@@ -224,7 +226,9 @@ rix_init <- function(project_path = ".",
     cat(readLines(con = file(rprofile_file)), sep = "\n")
   }
 
-  on.exit(close(file(rprofile_file)))
+  on.exit({
+    close(file(rprofile_file))
+  })
 }
 
 #' Get character vector of length two with comment and code write `.Rprofile`
@@ -275,6 +279,7 @@ message_rprofile <- function(action_string = "Added",
 #' @return Character vector that lists `PATH` entries after modification, which
 #' are separated by `":"`.
 #' @noRd
+# nolint start: object_name_linter
 set_message_session_PATH <- function(message_type =
                                        c("simple", "quiet", "verbose")) {
   message_type <- match.arg(message_type,
@@ -296,6 +301,7 @@ set_message_session_PATH <- function(message_type =
     cat("\n\n* Updated `PATH` variable is:\n\n", PATH)
   }
 }
+# nolint end: object_name_linter
 
 
 #' Report whether the current R session is running in Nix and RStudio, or not.
@@ -395,6 +401,7 @@ set_nix_path <- function() {
 #' @return language object with parsed expression
 #' @noRd
 nix_rprofile <- function() {
+  # nolint start: object_name_linter
   quote({
     is_rstudio <- Sys.getenv("RSTUDIO") == "1"
     is_nix_r <- nzchar(Sys.getenv("NIX_STORE"))
@@ -420,19 +427,38 @@ nix_rprofile <- function() {
 
     if (isTRUE(is_nix_r)) {
       install.packages <- function(...) {
-        stop("You are currently in an R session running from Nix.\nDon't install packages using install.packages(),\nadd them to the default.nix file instead.")
+        stop(
+          "You are currently in an R session running from Nix.\n",
+          "Don't install packages using install.packages(),\nadd them to ",
+          "the default.nix file instead."
+        )
       }
 
       update.packages <- function(...) {
-        stop("You are currently in an R session running from Nix.\nDon't update packages using update.packages(),\ngenerate a new default.nix with a more recent version of R. If you need bleeding edge packages, read the 'Understanding the rPackages set release cycle and using bleeding edge packages' vignette.")
+        stop(
+          "You are currently in an R session running from Nix.\n",
+          "Don't update packages using update.packages(),\n",
+          "generate a new default.nix with a more recent version of R. ",
+          "If you need bleeding edge packages, read the",
+          "'Understanding the rPackages set release cycle and using ",
+          "bleeding edge packages' vignette."
+        )
       }
 
       remove.packages <- function(...) {
-        stop("You are currently in an R session running from Nix.\nDon't remove packages using remove.packages(),\ndelete them from the default.nix file instead.")
+        stop(
+          "You are currently in an R session running from Nix.\n",
+          "Don't remove packages using `remove.packages()``,\ndelete them ",
+          "from the default.nix file instead."
+        )
       }
       current_paths <- .libPaths()
       userlib_paths <- Sys.getenv("R_LIBS_USER")
-      user_dir <- grep(paste(userlib_paths, collapse = "|"), current_paths, fixed = TRUE)
+      user_dir <- grep(
+        paste(userlib_paths, collapse = "|"),
+        current_paths,
+        fixed = TRUE
+      )
       new_paths <- current_paths[-user_dir]
       # sets new library path without user library, making nix-R pure at
       # run-time
@@ -442,4 +468,5 @@ nix_rprofile <- function() {
 
     rm(is_rstudio, is_nix_r)
   })
+  # nolint end: object_name
 }

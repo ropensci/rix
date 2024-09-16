@@ -1,6 +1,9 @@
-#' generate_header Internal function used to generate the header of the `default.nix` file.
-#' @param nix_repo Character. nixpkgs reop to use (upstream or rstats-on-nix fork) with latest commit hash.
-#' @param r_version Character. R version to look for, for example, "4.2.0". If a nixpkgs revision is provided instead, this gets returned.
+#' generate_header Internal function used to generate the header of the
+#' `default.nix` file.
+#' @param nix_repo Character. nixpkgs reop to use (upstream or rstats-on-nix
+#' fork) with latest commit hash.
+#' @param r_version Character. R version to look for, for example, "4.2.0". If a
+#' nixpkgs revision is provided instead, this gets returned.
 #' @param rix_call Character, call to rix().
 #' @noRd
 generate_header <- function(nix_repo,
@@ -70,9 +73,11 @@ let
   }
 }
 
-#' generate_rix_call Internal function used to generate the call to `rix()` as shown in `default.nix`
+#' generate_rix_call Internal function used to generate the call to `rix()` as
+#' shown in `default.nix`
 #' @param rix_call Character, call to rix().
-#' @param nix_repo Character. nixpkgs reop to use (upstream or rstats-on-nix fork) with latest commit hash.
+#' @param nix_repo Character. nixpkgs reop to use (upstream or rstats-on-nix
+#' fork) with latest commit hash.
 #' @noRd
 generate_rix_call <- function(rix_call, nix_repo) {
   if (grepl("NixOS", nix_repo$url)) {
@@ -110,9 +115,11 @@ get_rpkgs <- function(r_pkgs, ide) {
 
   r_pkgs <- sort(r_pkgs)
 
+  # nolint start: object_name_linter
   rPackages <- paste(c("", r_pkgs), collapse = "\n      ")
 
   rPackages <- gsub("\\.", "_", rPackages)
+  # nolint end
 
   list(
     "rPackages" = rPackages,
@@ -120,10 +127,12 @@ get_rpkgs <- function(r_pkgs, ide) {
   )
 }
 
-#' generate_rpkgs Internal function that generates the string containing the correct Nix expression to get R packages.
+#' generate_rpkgs Internal function that generates the string containing the
+#' correct Nix expression to get R packages.
 #' @param rPackages Character, list of R packages to install.
 #' @param flag_rpkgs Character, are there any R packages at all?
 #' @noRd
+#' # nolint start: object_name_linter
 generate_rpkgs <- function(rPackages, flag_rpkgs) {
   if (flag_rpkgs == "") {
     NULL
@@ -138,8 +147,10 @@ generate_rpkgs <- function(rPackages, flag_rpkgs) {
     )
   }
 }
+# nolint end: object_name_linter
 
-#' generate_local_r_pkgs Internal function that generates the string containing the correct Nix expression for installing local packages
+#' generate_local_r_pkgs Internal function that generates the string containing
+#' the correct Nix expression for installing local packages
 #' @param local_r_pkgs Character, list of local R packages to install.
 #' @param flag_local_r_pkgs Character, are there any local R packages at all?
 #' @noRd
@@ -158,7 +169,8 @@ generate_local_r_pkgs <- function(local_r_pkgs, flag_local_r_pkgs) {
   }
 }
 
-#' generate_tex_pkgs Internal function that generates the string containing the correct Nix expression to get LaTeX packages.
+#' generate_tex_pkgs Internal function that generates the string containing the
+#' correct Nix expression to get LaTeX packages.
 #' @param tex_pkgs Character, list of LaTeX packages to install.
 #' @noRd
 generate_tex_pkgs <- function(tex_pkgs) {
@@ -178,7 +190,8 @@ generate_tex_pkgs <- function(tex_pkgs) {
   }
 }
 
-#' generate_system_pkgs Internal function that formats the system package names correctly for Nix.
+#' generate_system_pkgs Internal function that formats the system package names
+#' correctly for Nix.
 #' @param system_pkgs Character, list of LaTeX packages to install.
 #' @param r_pkgs Character, list of LaTeX packages to install.
 #' @noRd
@@ -187,7 +200,8 @@ get_system_pkgs <- function(system_pkgs, r_pkgs) {
   system_pkgs <- c(system_pkgs, "R", "glibcLocales", "nix") |>
     sort()
 
-  # If the user wants the R {quarto} package, then the quarto software needs to be installed
+  # If the user wants the R {quarto} package, then the quarto software needs to
+  # be installed
   system_pkgs <- if (any(grepl("quarto", r_pkgs))) {
     unique(c(system_pkgs, "quarto"))
   } else {
@@ -197,7 +211,8 @@ get_system_pkgs <- function(system_pkgs, r_pkgs) {
 }
 
 
-#' generate_system_pkgs Internal function that generates the string containing the correct Nix expression to get system packages.
+#' generate_system_pkgs Internal function that generates the string containing
+#' the correct Nix expression to get system packages.
 #' @param system_pkgs Character, list of LaTeX packages to install.
 #' @param r_pkgs Character, list of LaTeX packages to install.
 #' @noRd
@@ -213,12 +228,16 @@ generate_system_pkgs <- function(system_pkgs, r_pkgs) {
 }
 
 
-#' generate_git_archived_pkgs Internal function that generates the string containing the correct Nix expression to get system packages.
+#' generate_git_archived_pkgs Internal function that generates the string
+#' containing the correct Nix expression to get system packages.
 #' @param git_pkgs Character, list of R packages to install from Github.
-#' @param archive_pkgs Character, list of R packages to install from the CRAN archives.
+#' @param archive_pkgs Character, list of R packages to install from the CRAN
+#' archives.
 #' @param flag_git_archive Character, are there R packages from Github at all?
 #' @noRd
-generate_git_archived_pkgs <- function(git_pkgs, archive_pkgs, flag_git_archive) {
+generate_git_archived_pkgs <- function(git_pkgs,
+                                       archive_pkgs,
+                                       flag_git_archive) {
   if (flag_git_archive == "") {
     NULL
   } else {
@@ -228,7 +247,8 @@ generate_git_archived_pkgs <- function(git_pkgs, archive_pkgs, flag_git_archive)
 }
 
 
-#' generate_locale_variables Internal function that generates the string containing the correct Nix expression to set locales.
+#' generate_locale_variables Internal function that generates the string
+#' containing the correct Nix expression to set locales.
 #' @noRd
 generate_locale_variables <- function() {
   locale_defaults <- list(
@@ -266,7 +286,8 @@ generate_locale_variables <- function() {
 }
 
 
-#' generate_wrapped_pkgs Internal function that generates the string containing the correct Nix expression to get wrapped packages.
+#' generate_wrapped_pkgs Internal function that generates the string containing
+#' the correct Nix expression to get wrapped packages.
 #' @param ide Character, defaults to "other". If you wish to use RStudio to work
 #'   interactively use "rstudio" or "rserver" for the server version. Use "code"
 #'   for Visual Studio Code. You can also use "radian", an interactive REPL. For
@@ -302,7 +323,8 @@ generate_wrapped_pkgs <- function(ide,
 }
 
 
-#' generate_wrapped_pkgs Internal function that generates the string containing the correct Nix expression to get wrapped packages.
+#' generate_wrapped_pkgs Internal function that generates the string containing
+#' the correct Nix expression to get wrapped packages.
 #' @param flag_git_archive Character, are there R packages from Github at all?
 #' @param flag_rpkgs Character, are there any R packages at all?
 #' @param flag_tex_pkgs Character, are there any LaTex packages at all?

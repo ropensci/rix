@@ -47,7 +47,7 @@ serialize_lobjs <- function(lobjs, temp_dir) {
         # for unnamed arguments like `expr = function(x) print(x)`
         # x would be an empty symbol, see also ; i.e. arguments without
         # default expressions; i.e. tagged arguments with no value
-        # https://stackoverflow.com/questions/3892580/create-missing-objects-aka-empty-symbols-empty-objects-needed-for-f
+        # https://stackoverflow.com/questions/3892580/create-missing-objects-aka-empty-symbols-empty-objects-needed-for-f # nolint
         lobjs[[i]] <- as.symbol(names(lobjs)[i])
       }
       saveRDS(
@@ -73,6 +73,7 @@ serialize_args <- function(args, temp_dir) {
         # for unnamed arguments like `expr = function(x) print(x)`
         # x would be an empty symbol, see also ; i.e. arguments without
         # default expressions; i.e., tagged arguments with no value
+        # nolint next: line_length_linter
         # https://stackoverflow.com/questions/3892580/create-missing-objects-aka-empty-symbols-empty-objects-needed-for-f
         args[[i]] <- as.symbol(names(args)[i])
       }
@@ -280,8 +281,11 @@ classify_globals <- function(globals_expr, args_vec) {
     if (length(globs_empty) == 0L) {
       globs_empty <- NULL
     }
-    globs_other <- vec_envs_check[!names(vec_envs_check) %in%
-      names(c(globs_pkg, globs_globalenv, globs_empty, globs_base))]
+    globs_other <- vec_envs_check[
+      !names(vec_envs_check) %in% names(
+        c(globs_pkg, globs_globalenv, globs_empty, globs_base)
+      )
+    ]
     if (length(globs_other) == 0L) {
       globs_other <- NULL
     }
@@ -612,8 +616,8 @@ with_assign_vec_call <- function(vec) {
 #' @return representation of `expr` as character vector of length 1
 #' @author R Core Team
 #' @noRd
-deparse_chr1 <- function(expr, width.cutoff = 500L, collapse = " ", ...) {
-  paste(deparse(expr, width.cutoff, ...), collapse = collapse)
+deparse_chr1 <- function(expr, width_cutoff = 500L, collapse = " ", ...) {
+  paste(deparse(expr, width_cutoff, ...), collapse = collapse)
 }
 
 

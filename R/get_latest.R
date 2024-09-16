@@ -1,5 +1,6 @@
 #' Get the latest R version and packages
-#' @param r_version Character. R version to look for, for example, "4.2.0". If a nixpkgs revision is provided instead, this gets returned.
+#' @param r_version Character. R version to look for, for example, "4.2.0". If a
+#' nixpkgs revision is provided instead, this gets returned.
 #' @return A character. The commit hash of the latest nixpkgs-unstable revision
 #' @importFrom curl new_handle curl_fetch_memory handle_reset
 #' @importFrom jsonlite fromJSON
@@ -18,7 +19,13 @@ get_latest <- function(r_version) {
   } else if (
     !(r_version %in% c("bleeding_edge", "frozen_edge", available_r()))
   ) {
-    stop("The provided R version is likely wrong.\nPlease check that you provided a correct R version.\nYou can list available versions using `available_r()`.\nYou can also directly provide a commit, but you need to make sure it points to the right repo used by `rix()`.\nYou can also use 'bleeding_edge' and 'frozen_edge'.")
+    stop(
+      "The provided R version is likely wrong.\nPlease check that you ",
+      "provided a correct R version.\nYou can list available versions using ",
+      "`available_r()`.\nYou can also directly provide a commit, but you need ",
+      "to make sure it points to the right repo used by `rix()`.\nYou can ",
+      "also use 'bleeding_edge' and 'frozen_edge'."
+    )
   } else if (!is_online) {
     stop("ERROR! You don't seem to be connected to the internet.")
   } else if (r_version == "bleeding_edge") {
@@ -33,11 +40,14 @@ get_latest <- function(r_version) {
 #' @noRd
 get_right_commit <- function(r_version) {
   if (r_version == "frozen_edge") {
+    # nolint next: line_length_linter
     api_url <- "https://api.github.com/repos/rstats-on-nix/nixpkgs/commits?sha=r-daily"
-  } else if (r_version %in% Filter(function(x) `!=`(x, "latest"), available_r())) { # all but latest
-
+  } else if (
+    r_version %in% Filter(function(x) `!=`(x, "latest"), available_r())
+  ) { # all but latest
     return(sysdata$revision[sysdata$version == r_version])
   } else {
+    # nolint next: line_length_linter
     api_url <- "https://api.github.com/repos/NixOS/nixpkgs/commits?sha=nixpkgs-unstable"
   }
 

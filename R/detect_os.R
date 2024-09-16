@@ -21,7 +21,10 @@ detect_os <- function() {
 #' @noRd
 generate_locale_archive <- function(os) {
   if (os == "Linux" || os == "Darwin") {
-    'LOCALE_ARCHIVE = if pkgs.system == \"x86_64-linux\" then  \"${pkgs.glibcLocales}/lib/locale/locale-archive\" else \"\";'
+    paste0(
+      'LOCALE_ARCHIVE = if pkgs.system == \"x86_64-linux\" then ',
+      '\"${pkgs.glibcLocales}/lib/locale/locale-archive\" else \"\";'
+    )
   } else {
     stop("Operating System unsupported")
   }

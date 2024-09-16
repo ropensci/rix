@@ -134,6 +134,7 @@ with_nix <- function(expr,
                      project_path = ".",
                      message_type = c("simple", "quiet", "verbose")) {
   nix_file <- file.path(project_path, "default.nix")
+  # nolint start: line_length_linter
   stopifnot(
     "`project_path` must be character of length 1." =
       is.character(project_path) && length(project_path) == 1L,
@@ -143,6 +144,7 @@ with_nix <- function(expr,
     "`expr` needs to be a call or function for `program = R`, and character of length 1 for `program = shell`" =
       is.function(expr) || is.call(expr) || (is.character(expr) && length(expr) == 1L)
   )
+  # nolint end
 
   program <- match.arg(program, choices = c("R", "shell"))
   message_type <- match.arg(message_type,
@@ -170,11 +172,12 @@ with_nix <- function(expr,
     current_libpaths <- .libPaths()
     # don't do this in covr test environment, because this sets R_LIBS_USER
     # to multiple paths
-    R_LIBS_USER <- Sys.getenv("R_LIBS_USER")
+    R_LIBS_USER <- Sys.getenv("R_LIBS_USER") # nolint: object_name_linter
     if (isFALSE(nzchar(Sys.getenv("R_COVR")))) {
       remove_r_libs_user()
     }
   } else {
+    # nolint start: object_name_linter
     LD_LIBRARY_PATH_default <- Sys.getenv("LD_LIBRARY_PATH")
     if (nzchar(LD_LIBRARY_PATH_default)) {
       # On some systems, like Ubuntu 22.04, we found that a preset
@@ -195,6 +198,7 @@ with_nix <- function(expr,
       )
       cat("\n", "Setting `LD_LIBRARY_PATH` to `''` during `nix_build()`")
     }
+    # nolint end
   }
 
   has_nix_shell <- nix_shell_available() # TRUE if yes, FALSE if no
@@ -322,7 +326,9 @@ with_nix <- function(expr,
     if (nzchar(LD_LIBRARY_PATH_default)) {
       # set old LD_LIBRARY_PATH (only if system's R session and if it wasn't
       # `""`)
-      on.exit(Sys.setenv(LD_LIBRARY_PATH = LD_LIBRARY_PATH_default))
+      on.exit({
+        Sys.setenv(LD_LIBRARY_PATH = LD_LIBRARY_PATH_default)
+      })
     }
   }
 
