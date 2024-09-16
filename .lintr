@@ -1,11 +1,11 @@
 linters: linters_with_defaults(
-  line_length_linter(100),
-  commented_code_linter = NULL,
-  object_usage_linter = NULL,
-  cyclocomp_linter = NULL
-)
+    line_length_linter = line_length_linter(100),
+    commented_code_linter = NULL,
+    object_usage_linter = NULL,
+    cyclocomp_linter = NULL
+  )
 exclusions: list(
-  "tests/testthat/test-fetchers.R",
-  "vignettes/"
-)
+    "tests/testthat/test-fetchers.R",
+    "vignettes/"
+  )
 encoding: "UTF-8"
