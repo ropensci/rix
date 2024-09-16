@@ -24,3 +24,6 @@ create_dev_env.R
 ^data-raw$
 .envrc
 .direnv
+
+# flint files
+^flint$
