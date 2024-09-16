@@ -24,7 +24,7 @@
 #' }
 nix_build <- function(project_path = ".",
                       message_type = c("simple", "quiet", "verbose")) {
-  message_type <- match.arg(message_type,
+  message_type <-  match.arg(message_type,
     choices = c("simple", "quiet", "verbose")
   )
   # if nix store is not PATH variable; e.g. on macOS (system's) RStudio
