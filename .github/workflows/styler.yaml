@@ -33,31 +33,13 @@ jobs:
       - name: Run styler::style_pkg
         run: nix-shell --run "Rscript -e 'styler::style_pkg()'"
 
-      - name: Check if PR exists
-        id: check_pr
+      - name: commit
         run: |
-          PR=$(gh pr list -S 'Style package' --json number --jq '.[0].number')
-          echo "PR_NUMBER=$PR" >> $GITHUB_ENV
+          git config --local user.name "$GITHUB_ACTOR"
+          git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git add \*.R
+          git commit -m 'Style'
 
-      - name: Configure user and check for changes
-        run: |
-          git config --global user.email "ga-ci@no-reply.com"
-          git config --global user.name "CI Robot"
-          git diff-index --quiet HEAD || echo "has_changes=true" >> $GITHUB_ENV
-
-      - name: Commit and push changes
-        if: env.has_changes == 'true'
-        run: |
-          git add .
-          git commit -m "Styled package"
-          git push origin main:style_pkg --force
-
-      - name: Create Pull Request
-        if: env.PR_NUMBER == ''
-        uses: peter-evans/create-pull-request@v6
+      - uses: r-lib/actions/pr-push@v2
         with:
-          branch: style_pkg
-          title: 'Style package'
-          body: 'Automated PR to style package using `styler:style_pkg()`'
-          base: main
-          branch-suffix: ''
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
