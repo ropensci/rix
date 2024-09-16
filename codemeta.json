@@ -140,7 +140,7 @@
     "SystemRequirements": null
   },
   "fileSize": "1016.338KB",
-  "relatedLink": "https://ropensci.github.io/rix/",
+  "relatedLink": "https://docs.ropensci.org/rix/",
   "releaseNotes": "https://github.com/ropensci/rix/blob/main/NEWS.md",
   "readme": "https://github.com/ropensci/rix/blob/main/README.md",
   "contIntegration": ["https://github.com/ropensci/rix/actions/workflows/R-CMD-check.yaml", "https://github.com/ropensci/rix/actions?query=workflow%3Apkgcheck"]
