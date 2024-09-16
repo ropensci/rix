@@ -114,7 +114,7 @@ get_rpkgs <- function(r_pkgs, ide) {
   }
 
   r_pkgs <- sort(r_pkgs)
-  
+
   # nolint start: object_name_linter
   rPackages <- paste(c("", r_pkgs), collapse = "\n      ")
 
