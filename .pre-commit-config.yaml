@@ -1,7 +1,7 @@
 # All available hooks: https://pre-commit.com/hooks.html
 # R specific hooks: https://github.com/lorenzwalthert/precommit
 repos:
--   repo: https://github.com/lorenzwalthert/precommit
+-   repo: https://github.com/philipp-baumann/precommit-r-nix
     rev: v0.4.3
     hooks: 
     -   id: style-files
