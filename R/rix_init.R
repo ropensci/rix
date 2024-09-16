@@ -223,7 +223,9 @@ rix_init <- function(project_path = ".",
     cat(readLines(con = file(rprofile_file)), sep = "\n")
   }
 
-  on.exit(close(file(rprofile_file)))
+  on.exit({
+    close(file(rprofile_file))
+  })
 }
 
 #' Get character vector of length two with comment and code write `.Rprofile`
