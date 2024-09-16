@@ -37,12 +37,17 @@ jobs:
       - name: Run styler::style_pkg
         run: nix-shell --run "Rscript -e 'styler::style_pkg()'"
 
-      - name: commit
+      - name: config bot user and check for changes
         run: |
           git config --local user.name "$GITHUB_ACTOR"
           git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git diff-index --quiet HEAD || echo "has_changes=true" >> $GITHUB_ENV
+          
+      - name: commit if changes
+        if: env.has_changes == 'true'
+        run: |
           git add \*.R
-          git commit -m 'Style'
+          git commit -m 'Style via {styler}'
 
       - uses: r-lib/actions/pr-push@v2
         with:
