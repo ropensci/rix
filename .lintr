@@ -4,4 +4,8 @@ linters: linters_with_defaults(
     object_usage_linter = NULL,
     cyclocomp_linter = NULL
   )
+exclusions: list(
+  "tests/testthat/test-fetchers.R",
+  "vignettes/"
+)
 encoding: "UTF-8"
