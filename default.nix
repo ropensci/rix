@@ -14,7 +14,8 @@
 #  > "knitr",
 #  > "rmarkdown",
 #  > "rhub",
-#  > "docopt"),
+#  > "docopt",
+#  > "precommit"),
 #  > system_pkgs = c("R",
 #  > "glibcLocalesUtf8",
 #  > "pandoc",
@@ -44,6 +45,7 @@ let
       jsonlite
       knitr
       lintr
+      precommit
       rhub
       rmarkdown
       styler
