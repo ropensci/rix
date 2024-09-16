@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [main, master]
 
-name: styler
+name: style-and-lint
 
 permissions: write-all
 
