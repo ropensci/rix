@@ -1,0 +1,59 @@
+# Strangely, having something like pattern: length($VAR $OP $VAR2) doesn't work
+
+id: length_test_1
+language: r
+severity: warning
+rule:
+  pattern: length($VAR == $VAR2)
+fix: length(~~VAR~~) == ~~VAR2~~
+message: Checking the length of a logical vector is likely a mistake.
+
+---
+
+id: length_test_2
+language: r
+severity: warning
+rule:
+  pattern: length($VAR != $VAR2)
+fix: length(~~VAR~~) != ~~VAR2~~
+message: Checking the length of a logical vector is likely a mistake.
+
+---
+
+id: length_test_3
+language: r
+severity: warning
+rule:
+  pattern: length($VAR > $VAR2)
+fix: length(~~VAR~~) > ~~VAR2~~
+message: Checking the length of a logical vector is likely a mistake.
+
+---
+
+id: length_test_4
+language: r
+severity: warning
+rule:
+  pattern: length($VAR >= $VAR2)
+fix: length(~~VAR~~) >= ~~VAR2~~
+message: Checking the length of a logical vector is likely a mistake.
+
+---
+
+id: length_test_5
+language: r
+severity: warning
+rule:
+  pattern: length($VAR < $VAR2)
+fix: length(~~VAR~~) < ~~VAR2~~
+message: Checking the length of a logical vector is likely a mistake.
+
+---
+
+id: length_test_6
+language: r
+severity: warning
+rule:
+  pattern: length($VAR <= $VAR2)
+fix: length(~~VAR~~) <= ~~VAR2~~
+message: Checking the length of a logical vector is likely a mistake.
