@@ -169,7 +169,7 @@ rix <- function(r_ver = "latest",
     warning(
       "You chose 'bleeding_edge' or 'frozen_edge' as the value for
 `r_ver`. Please read the vignette
-https://ropensci.github.io/rix/articles/z-bleeding_edge.html
+https://docs.ropensci.org/rix/articles/z-bleeding_edge.html
 before continuing."
     )
   }
@@ -221,7 +221,7 @@ available through 'nixpkgs' for macOS, so the expression you
 generated will not build on macOS. If you wish to build this
 expression on macOS, change the 'ide =' argument to either
 'code' or 'other'. Please refer to the macOS-specific vignette
-https://ropensci.github.io/rix/articles/b2-setting-up-and-using-rix-on-macos.html
+https://docs.ropensci.org/rix/articles/b2-setting-up-and-using-rix-on-macos.html
 for more details."
     )
   }
