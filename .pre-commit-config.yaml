@@ -2,7 +2,7 @@
 # R specific hooks: https://github.com/lorenzwalthert/precommit
 repos:
 -   repo: https://github.com/philipp-baumann/precommit-r-nix
-    rev: 71f194a0aef52d395f200023741c932d5ea4bf45
+    rev: 1f1f92bd00e4fcdcba3d4311d2e1c0810500302d
     hooks: 
     -   id: style-files
         args: [--style_pkg=styler, --style_fun=tidyverse_style, --cache-root=styler-perm]
