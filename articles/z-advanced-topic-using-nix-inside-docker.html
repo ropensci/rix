@@ -138,7 +138,7 @@ purposes, since it is Nix that takes care of ensuring that our
 environment is reproducible.</p>
 <p>Here is an example of the <code>generate_env.R</code> file:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ropensci.github.io/rix/">rix</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/rix/">rix</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span></span>
 <span>  r_ver <span class="op">=</span> <span class="st">"4.3.1"</span>,</span>
@@ -195,7 +195,7 @@ RUN nix-build
 CMD nix-shell --run 'Rscript -e "shiny::runApp(port = 3838, host = \"0.0.0.0\")"'</code></pre>
 <p>adapt the <code>generate_env.R</code> script:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ropensci.github.io/rix/">rix</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/rix/">rix</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span></span>
 <span>  r_ver <span class="op">=</span> <span class="st">"4.2.2"</span>,</span>

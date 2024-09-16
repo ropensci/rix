@@ -88,7 +88,7 @@
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>You now know how to declare and build reproducible development
-environments using <a href="https://ropensci.github.io/rix/">rix</a> and Nix. This vignette will
+environments using <a href="https://docs.ropensci.org/rix/">rix</a> and Nix. This vignette will
 explain how to install specific versions of CRAN packages and how to
 install packages from GitHub.</p>
 </div>
@@ -104,7 +104,7 @@ in this vignette instead of using something like
 <code>remotes::install_github()</code>.</p>
 <p>We recommend you create a script called <code>create_env.R</code> or
 similar, and add the call to <code><a href="../reference/rix.html">rix()</a></code> there:</p>
-<pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ropensci.github.io/rix/">rix</a></span><span class="op">)</span></span>
+<pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/rix/">rix</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/rix.html">rix</a></span><span class="op">(</span>r_ver <span class="op">=</span> <span class="st">"4.4.0"</span>,</span>
 <span>    r_pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span><span class="op">)</span>,</span>

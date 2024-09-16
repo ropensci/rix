@@ -91,7 +91,7 @@
 CRAN or Bioconductor, but not on GitHub. However, there are many
 packages available on GitHub that never get published on CRAN, and some
 of these packages may even depend on other packages that are also only
-available on GitHub. <a href="https://ropensci.github.io/rix/">rix</a> makes it possible to install
+available on GitHub. <a href="https://docs.ropensci.org/rix/">rix</a> makes it possible to install
 packages from GitHub, but in case one of the package’s dependencies has
 also only been released on GitHub, building the Nix environment will
 fail. This is because Nix will be looking for these packages on
@@ -146,7 +146,7 @@ but <a href="https://gh.r-lib.org/" class="external-link">gh</a> and <a href="ht
 been released on CRAN, which means that they are also available through
 <code>nixpkgs</code>. We have to deal with <code>{highlite}</code>
 however, because it never got released on CRAN. Doing so is fairly easy:
-first, create a new expression using <a href="https://ropensci.github.io/rix/">rix</a> to install
+first, create a new expression using <a href="https://docs.ropensci.org/rix/">rix</a> to install
 <code>{highlite}</code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">path_default_nix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -228,7 +228,7 @@ R --vanilla
 </code></pre>
 <p>Building the expression now succeeds.</p>
 <p>We know that this is quite tedious, but at the moment there are no
-plans to make <a href="https://ropensci.github.io/rix/">rix</a> handle remote dependencies
+plans to make <a href="https://docs.ropensci.org/rix/">rix</a> handle remote dependencies
 automatically. This is for mainly three reasons:</p>
 <ul>
 <li>packages with remote dependencies are rare, and never on CRAN on
@@ -237,7 +237,7 @@ Bioconductor;</li>
 later be available on CRAN (such as with <a href="https://memoise.r-lib.org" class="external-link">memoise</a> and
 <a href="https://gh.r-lib.org/" class="external-link">gh</a> for <a href="https://github.com/jimhester/lookup" class="external-link">{lookup}</a>);</li>
 <li>
-<a href="https://ropensci.github.io/rix/">rix</a> cannot decide for the user which commit to use
+<a href="https://docs.ropensci.org/rix/">rix</a> cannot decide for the user which commit to use
 for a remote dependency (or whether to use the released version of that
 dependency from CRAN).</li>
 </ul>

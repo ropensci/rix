@@ -221,7 +221,7 @@ installed.</p>
 <div class="section level2">
 <h2 id="rix-workflow">rix workflow<a class="anchor" aria-label="anchor" href="#rix-workflow"></a>
 </h2>
-<p>The idea of <a href="https://ropensci.github.io/rix/">rix</a> is for you to declare the environment
+<p>The idea of <a href="https://docs.ropensci.org/rix/">rix</a> is for you to declare the environment
 you need using the provided <code><a href="../reference/rix.html">rix()</a></code> function.
 <code><a href="../reference/rix.html">rix()</a></code> is the package’s main function and generates a file
 called <code>default.nix</code> which is then used by the Nix package
@@ -289,7 +289,7 @@ environments according to the specifications found in the generated
 <code>default.nix</code> files, which contain a Nix <em>expression</em>.
 An <em>expression</em> is Nix jargon for a function with multiple inputs
 and one output, this output being our development environment.
-<a href="https://ropensci.github.io/rix/">rix</a> does not require Nix to be installed to generate
+<a href="https://docs.ropensci.org/rix/">rix</a> does not require Nix to be installed to generate
 valid expressions (but does require an internet connection), so you
 could generate expressions and use them on other machines. To actually
 build an environment using a <code>default.nix</code> file, go to where
@@ -320,7 +320,7 @@ into the environment, as described in the documentation of
 <code>result</code> file first (if you used <code>nix-build</code>) and
 then call <code>nix-store --gc</code>, which will delete all the
 orphaned packages.</p>
-<p>Now that you know more about Nix and <a href="https://ropensci.github.io/rix/">rix</a>, it is time
+<p>Now that you know more about Nix and <a href="https://docs.ropensci.org/rix/">rix</a>, it is time
 to get these tools installed on your system.</p>
 <ul>
 <li>If you’re running either Linux or Windows, read the Linux or Windows
