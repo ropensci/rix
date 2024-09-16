@@ -37,7 +37,7 @@ jobs:
       - name: Run styler::style_pkg
         run: nix-shell --run "Rscript -e 'styler::style_pkg()'"
 
-       name: Run lintr
+      - name: Run lintr
         run: nix-shell --run "Rscript -e 'lintr::lint_package()'"
         env:
           LINTR_ERROR_ON_LINT: true
