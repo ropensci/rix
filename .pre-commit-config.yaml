@@ -1,8 +1,8 @@
 # All available hooks: https://pre-commit.com/hooks.html
 # R specific hooks: https://github.com/lorenzwalthert/precommit
 repos:
--   repo: https://github.com/philipp-baumann/precommit-r-nix
-    rev: 1f1f92bd00e4fcdcba3d4311d2e1c0810500302d
+-   repo: https://github.com/lorenzwalthert/precommit
+    rev: v0.4.3.9001
     hooks: 
     -   id: style-files
         args: [--style_pkg=styler, --style_fun=tidyverse_style, --cache-root=styler-perm]
