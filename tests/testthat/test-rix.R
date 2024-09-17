@@ -40,9 +40,10 @@ testthat::test_that("rix(), ide is 'rstudio', Linux", {
     name = "rstudio_default.nix",
   )
 
-  on.exit({
-    unlink(path_default_nix, recursive = TRUE, force = TRUE)
-  })
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 })
 
 
@@ -105,9 +106,10 @@ testthat::test_that("rix(), ide is 'other' or 'code'", {
     name = "code_default.nix"
   )
 
-  on.exit({
-    unlink(path_default_nix, recursive = TRUE, force = TRUE)
-  })
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 })
 
 
@@ -152,9 +154,10 @@ testthat::test_that("Quarto gets added to sys packages", {
     name = "yes_quarto_default.nix"
   )
 
-  on.exit({
-    unlink(path_default_nix, recursive = TRUE, force = TRUE)
-  })
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 })
 
 testthat::test_that("If on darwin and ide = rstudio, raise warning", {
@@ -180,9 +183,10 @@ testthat::test_that("If on darwin and ide = rstudio, raise warning", {
     regexp = "refer to the macOS"
   )
 
-  on.exit({
-    unlink(path_default_nix, recursive = TRUE, force = TRUE)
-  })
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 })
 
 testthat::test_that("If R version is 4.4.0, raise warning", {
@@ -206,9 +210,10 @@ testthat::test_that("If R version is 4.4.0, raise warning", {
     regexp = "version is not available"
   )
 
-  on.exit({
-    unlink(path_default_nix, recursive = TRUE, force = TRUE)
-  })
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 })
 
 testthat::test_that("If R version is <= 4.1.1, raise warning", {
@@ -233,9 +238,10 @@ testthat::test_that("If R version is <= 4.1.1, raise warning", {
   )
 
 
-  on.exit({
-    unlink(path_default_nix, recursive = TRUE, force = TRUE)
-  })
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 })
 
 testthat::test_that("If on ide = rstudio, but no R packages, raise error", {
@@ -259,9 +265,10 @@ testthat::test_that("If on ide = rstudio, but no R packages, raise error", {
     regexp = "didn't add any R packages"
   )
 
-  on.exit({
-    unlink(path_default_nix, recursive = TRUE, force = TRUE)
-  })
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 })
 
 testthat::test_that("If R version is == 3.5.3, raise warning", {
@@ -285,9 +292,10 @@ testthat::test_that("If R version is == 3.5.3, raise warning", {
     regexp = "older version of R"
   )
 
-  on.exit({
-    unlink(path_default_nix, recursive = TRUE, force = TRUE)
-  })
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 })
 
 testthat::test_that("rix(), bleeding_edge", {
@@ -333,9 +341,10 @@ testthat::test_that("rix(), bleeding_edge", {
     name = "bleeding_edge_default.nix",
   )
 
-  on.exit({
-    unlink(path_default_nix, recursive = TRUE, force = TRUE)
-  })
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 })
 
 testthat::test_that("rix(), frozen_edge", {
@@ -396,7 +405,9 @@ testthat::test_that("rix(), frozen_edge", {
       paste0("sed -i 's/", frozen_edge_commit, "/REVISION/' _snaps/rix/frozen_edge_default.nix")
     )
     unlink(path_default_nix, recursive = TRUE, force = FALSE)
-  })
+  },
+  add = TRUE
+  )
 })
 
 
@@ -432,9 +443,10 @@ testthat::test_that("rix(), only one Github package", {
     name = "one_git_default.nix",
   )
 
-  on.exit({
-    unlink(path_default_nix, recursive = TRUE, force = TRUE)
-  })
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 })
 
 
@@ -462,9 +474,10 @@ testthat::test_that("rix(), conclusion message", {
     regexp = "Successfully"
   )
 
-  on.exit({
-    unlink(path_default_nix, recursive = TRUE, force = TRUE)
-  })
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 })
 
 
@@ -509,7 +522,8 @@ testthat::test_that("rix(), warning message if rix_init() already called", {
     regexp = "You may"
   )
 
-  on.exit({
-    unlink(path_default_nix, recursive = TRUE, force = TRUE)
-  })
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 })

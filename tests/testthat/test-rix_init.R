@@ -18,7 +18,8 @@ testthat::test_that("Snapshot test of rix_init()", {
     name = "golden_Rprofile.txt",
   )
 
-  on.exit({
-    unlink(path_env_nix, recursive = TRUE, force = TRUE)
-  })
+  on.exit(
+    unlink(path_env_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 })

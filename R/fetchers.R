@@ -139,7 +139,10 @@ get_imports <- function(path) {
 
   existing_columns <- intersect(columns_of_interest, colnames(imports))
 
-  on.exit(unlink(tmp_dir, recursive = TRUE))
+  on.exit(
+    unlink(tmp_dir, recursive = TRUE),
+    add = TRUE
+  )
 
   imports <- imports[, existing_columns, drop = FALSE]
 

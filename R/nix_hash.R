@@ -31,9 +31,11 @@ nix_hash <- function(repo_url, commit) {
 #' @noRd
 hash_url <- function(url) {
   path_to_folder <- paste0(
-    tempdir(), "repo",
+    tempdir(), "repo_hash_url_",
     paste0(sample(letters, 5), collapse = "")
   )
+
+  dir.create(path_to_folder)
 
   path_to_tarfile <- paste0(path_to_folder, "/package_tar_gz")
   path_to_src <- paste0(path_to_folder, "/package_src")
@@ -146,7 +148,10 @@ nix_sri_hash <- function(path) {
   if (isTRUE(needs_ld_fix)) {
     # set old LD_LIBRARY_PATH (only if non-Nix R session, and if it wasn't
     # `""`)
-    on.exit(Sys.setenv(LD_LIBRARY_PATH = LD_LIBRARY_PATH_default))
+    on.exit(
+      Sys.setenv(LD_LIBRARY_PATH = LD_LIBRARY_PATH_default),
+      add = TRUE
+    )
   }
 
   sri_hash <- sys::as_text(proc$stdout)

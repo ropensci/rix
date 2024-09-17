@@ -23,7 +23,8 @@ testthat::test_that("Testing that `nix_build()` builds derivation", {
     )
   )
 
-  on.exit({
-    unlink(path_subshell, recursive = TRUE, force = TRUE)
-  })
+  on.exit(
+    unlink(path_subshell, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 })

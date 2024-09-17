@@ -328,7 +328,8 @@ with_nix <- function(expr,
       # `""`)
       on.exit({
         Sys.setenv(LD_LIBRARY_PATH = LD_LIBRARY_PATH_default)
-      })
+      },
+      add = TRUE)
     }
   }
 
@@ -356,7 +357,8 @@ with_nix <- function(expr,
         tools::pskill(pid = proc)
       }
     },
-    after = FALSE
+    after = FALSE,
+    add = TRUE
   )
 
   return(out)
