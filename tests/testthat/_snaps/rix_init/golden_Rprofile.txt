@@ -22,13 +22,13 @@
     }
     if (isTRUE(is_nix_r)) {
         install.packages <- function(...) {
-            stop("You are currently in an R session running from Nix.\nDon't install packages using install.packages(),\nadd them to the default.nix file instead.")
+            stop("You are currently in an R session running from Nix.\n", "Don't install packages using install.packages(),\nadd them to ", "the default.nix file instead.")
         }
         update.packages <- function(...) {
-            stop("You are currently in an R session running from Nix.\nDon't update packages using update.packages(),\ngenerate a new default.nix with a more recent version of R. If you need bleeding edge packages, read the 'Understanding the rPackages set release cycle and using bleeding edge packages' vignette.")
+            stop("You are currently in an R session running from Nix.\n", "Don't update packages using update.packages(),\n", "generate a new default.nix with a more recent version of R. ", "If you need bleeding edge packages, read the", "'Understanding the rPackages set release cycle and using ", "bleeding edge packages' vignette.")
         }
         remove.packages <- function(...) {
-            stop("You are currently in an R session running from Nix.\nDon't remove packages using remove.packages(),\ndelete them from the default.nix file instead.")
+            stop("You are currently in an R session running from Nix.\n", "Don't remove packages using `remove.packages()``,\ndelete them ", "from the default.nix file instead.")
         }
         current_paths <- .libPaths()
         userlib_paths <- Sys.getenv("R_LIBS_USER")

@@ -28,21 +28,23 @@ does exist; \code{"append"} appends the existing file with code that is tailored
 to an isolated Nix-R project setup.}
 
 \item{message_type}{Character. Message type, defaults to \code{"simple"}, which
-gives minimal but sufficient feedback. Other values are currently
-\verb{"quiet}, which writes \code{.Rprofile} without message, and \code{"verbose"},
-which displays the mechanisms implemented to achieve fully controlled R project environments in Nix.}
+gives minimal but sufficient feedback. Other values are currently \verb{"quiet},
+which writes \code{.Rprofile} without message, and \code{"verbose"}, which displays
+the mechanisms implemented to achieve fully controlled R project
+environments in Nix.}
 }
 \value{
-Nothing, this function only has the side-effect of writing a file called ".Rprofile" to the specified path.
+Nothing, this function only has the side-effect of writing a file
+called ".Rprofile" to the specified path.
 }
 \description{
-Creates an isolated project folder for a Nix-R configuration. \code{rix::rix_init()}
-also adds, appends, or updates with or without backup a custom \code{.Rprofile}
-file with code that initializes a startup R environment without system's user
-libraries within a Nix software environment. Instead, it restricts search
-paths to load R packages exclusively from the Nix store. Additionally, it
-makes Nix utilities like \code{nix-shell} available to run system commands from
-the system's RStudio R session, for both Linux and macOS.
+Creates an isolated project folder for a Nix-R configuration.
+\code{rix::rix_init()} also adds, appends, or updates with or without backup a
+custom \code{.Rprofile} file with code that initializes a startup R environment
+without system's user libraries within a Nix software environment. Instead,
+it restricts search paths to load R packages exclusively from the Nix store.
+Additionally, it makes Nix utilities like \code{nix-shell} available to run system
+commands from the system's RStudio R session, for both Linux and macOS.
 }
 \details{
 \strong{Enhancement of computational reproducibility for Nix-R environments:}
@@ -107,9 +109,6 @@ rix_init(
   rprofile_action = "create_missing",
   message_type = c("simple")
 )
-on.exit{
-  unlink(project_path, recursive = TRUE, force = TRUE)
-}
 }
 }
 \seealso{

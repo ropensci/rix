@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>b2 - Setting up and using rix on macOS</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">b2 - Setting up and using rix on macOS</h1>
+
+
+
+<p><em>This vignette will discuss macOS-specific topics. If you’re not
+using macOS, you can ignore this vignette, and read the
+<code>vignette(&quot;b1-setting-up-and-using-rix-on-linux-and-windows&quot;)</code>
+vignette instead.</em></p>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>When it comes to Nix, there are really only two supported operating
+systems: macOS and Linux distributions. Windows is “supported” because
+it is actually running Linux thanks to WSL2. In practice this means that
+Linux distributions and Windows can be considered one system, and macOS
+another, separate, system, with its own idiosyncrasies. This vignette
+details these.</p>
+</div>
+<div id="installing-nix" class="section level2">
+<h2>Installing Nix</h2>
+<p>You can use <code>{rix}</code> to generate Nix expressions even if
+you don’t have Nix installed on your system, but obviously, you need to
+install Nix if you actually want to build the defined development
+environment and use them. Installing (and uninstalling) Nix is quite
+simple, thanks to the installer from <a href="https://determinate.systems/posts/determinate-nix-installer">Determinate
+Systems</a>, a company that provides services and tools built on Nix.
+Simply open a terminal and run the following line:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="ex">curl</span> <span class="at">--proto</span> <span class="st">&#39;=https&#39;</span> <span class="at">--tlsv1.2</span> <span class="at">-sSf</span> <span class="dt">\</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>    <span class="at">-L</span> https://install.determinate.systems/nix <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>     <span class="fu">sh</span> <span class="at">-s</span> <span class="at">--</span> install</span></code></pre></div>
+<p>Once you have Nix installed, you can build the expressions you
+generate with <code>{rix}</code>!</p>
+</div>
+<div id="what-if-you-dont-have-r-already-installed" class="section level2">
+<h2>What if you don’t have R already installed?</h2>
+<p>If you have successfully installed Nix, but don’t have yet R
+installed on your system, you could install R as you would usually do on
+your operating system, and then install the <code>{rix}</code> package,
+and from there, generated project-specific expressions and build them.
+But you could also install R using Nix. Running the following line in a
+terminal will drop you in an interactive R session that you can use to
+start generating expressions:</p>
+<pre><code>nix-shell --expr &quot;$(curl -sl https://raw.githubusercontent.com/ropensci/rix/main/inst/extdata/default.nix)&quot;</code></pre>
+<p>This should immediately start an R session inside your terminal. You
+can now run something like this:</p>
+<pre><code>rix(r_ver = &quot;latest&quot;,
+    r_pkgs = c(&quot;dplyr&quot;, &quot;ggplot2&quot;),
+    system_pkgs = NULL,
+    git_pkgs = NULL,
+    ide = &quot;other&quot;,
+    project_path = &quot;.&quot;,
+    overwrite = TRUE)</code></pre>
+<p>to generate a <code>default.nix</code>, and then use that file to
+generate an environment with R, <code>{dplyr}</code> and
+<code>{ggplot2}</code>. If you need to add packages for your project,
+rerun the command above, but add the needed packages to
+<code>r_pkgs</code>. This is detailed in the vignettes
+<code>vignette(&quot;d1-installing-r-packages-in-a-nix-environment&quot;)</code>
+and
+<code>vignette(&quot;d2-installing-system-tools-and-texlive-packages-in-a-nix-environment&quot;)</code>.</p>
+</div>
+<div id="generating-expressions" class="section level2">
+<h2>Generating expressions</h2>
+<p>Once you have R installed, either through the usual installer for
+your operating system, or through Nix as explained previously, you can
+now start building project-specific development environments.</p>
+<p>On macOS, generating expressions works just like on Linux and
+Windows. Start an R session, and install <code>{rix}</code> if that’s
+not already done. Because <code>{rix}</code> is not yet on CRAN, the
+easiest way is to install it from its r-universe:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;rix&quot;</span>, <span class="at">repos =</span> <span class="fu">c</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="st">&quot;https://ropensci.r-universe.dev&quot;</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="st">&quot;https://cloud.r-project.org&quot;</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>))</span></code></pre></div>
+<p>You can then use the <code>{rix}</code> package to generate
+expressions. Consult the next vignette
+<code>vignette(&quot;c-using-rix-to-build-project-specific-environments&quot;)</code>
+to learn more.</p>
+</div>
+<div id="more-macos-specificities" class="section level2">
+<h2>More macOS specificities</h2>
+<div id="r-support-for-apple-silicon-in-nixpkgs" class="section level3">
+<h3>R Support for Apple Silicon in Nixpkgs</h3>
+<p>In Nixpkgs, the M series processors of the ARM64 family, also known
+under AArch64, supports R since R version 3.5.3. Earlier versions of R
+will not compile on modern Apple processor architectures for the
+corresponding Nixpkgs revisions at that time. Hence, the
+<code>darwin-aarch64</code> platform has constrained
+backwards-compatibility.</p>
+</div>
+<div id="shared-libraries-issue" class="section level3">
+<h3>Shared libraries issue</h3>
+<p>When using environments built with Nix on macOS, you might get
+crashes (segmentation faults) refering to “shared libraries”. These
+indicate that your user library of R packages is interfering with the
+project-specific Nix environment. The system’s user library that Nix
+packaged R by default includes appears in the search paths (check
+<code>libPaths()</code>). For macOS, the user library is at
+<code>/Library/Frameworks/R.framework/Versions/&lt;major&gt;.&lt;minor&gt;-&lt;arch&gt;/Resources/library</code>;
+we have observed crashes with R packages that depend on system
+libraries, such as {data.table} or {dplyr}, and their (reverse)
+dependencies. Because user libraries from the system would also appear
+on the search path in R from <code>nixpkgs</code> for Linux, running
+<code>rix()</code> also runs <code>rix_init()</code> which creates a
+custom <code>.Rprofile</code> in your project’s path. This custom
+<code>.Rprofile</code> ensure that only packages declaratively defined
+in your <code>default.nix</code> and built to be part of the Nix store
+(one R package is one separate derivation listed in a unique Nix path)
+appear on the R library path.</p>
+</div>
+<div id="rstudio-and-other-development-interfaces-on-macos" class="section level3">
+<h3>RStudio and other development interfaces on macOS</h3>
+<p>As of writing, RStudio cannot be installed through
+<code>nixpkgs</code> for macOS, and if you wish to use RStudio with a
+Nix environment, you have to install it through <code>nixpkgs</code>.
+This means that it is impossible to use RStudio and a Nix environment on
+macOS. When you try to generate an expression with
+<code>ide = &quot;rstudio&quot;</code> on macOS, this will raise a warning. Here
+are the options you have:</p>
+<ul>
+<li>ignore the warning, because the environment will be built on a Linux
+distribution (even though you generated the expression on macOS) and
+used on a Linux distribution;</li>
+<li>change the <code>ide =</code> argument to either
+<code>&quot;other&quot;</code> or <code>&quot;code&quot;</code>. Use <code>&quot;code&quot;</code> if
+you want to use VS Code and <code>&quot;other&quot;</code> for any other editor,
+like Vim or Emacs. These other editors don’t need to be installed
+through <code>nixpkgs</code> to use Nix environments, unlike
+RStudio;</li>
+<li>if you’re working on a pipeline with the <code>{targets}</code>
+package, you could run it on Github Actions. This means you could work
+on the code on RStudio outside of the Nix environment, as the code will
+only be executed on Github Actions runners. See this vignette
+<code>vignette(&quot;z-advanced-topic-reproducible-analytical-pipelines-with-nix&quot;)</code>
+for further details;</li>
+<li>work on your project as usual, using your usual installation of R
+and RStudio, but generate a <code>default.nix</code> at the end with
+<code>ide = &quot;other&quot;</code> with the right version of R for
+reproducibility purposes;</li>
+<li>use <em>subshells</em> to execute only the code you need to run in a
+specific environment. See this vignette
+<code>vignette(&quot;z-advanced-topic-running-r-or-shell-code-in-nix-from-r&quot;)</code>;</li>
+<li>help us package RStudio for macOS on <code>nixpgs</code>. See <a href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/rstudio/default.nix">here</a>,
+the Nix expression for RStudio.</li>
+</ul>
+<p>We recommend you continue with the next vignette before tackling the
+more advanced topics listed above:
+<code>vignette(&quot;c-using-rix-to-build-project-specific-environments&quot;)</code>.</p>
+</div>
+</div>
+<div id="why-do-we-need-all-these-special-tweaks" class="section level2">
+<h2>Why do we need all these special tweaks?</h2>
+<div id="path-of-nix-installation-not-in-path" class="section level3">
+<h3>Path of Nix installation not in <code>PATH</code></h3>
+<p>When using RStudio Desktop on macOS, you typically launch it from the
+Applications folder. However, RStudio currently lacks an option to start
+an integrated R session via a shell startup on macOS (see this <a href="https://github.com/rstudio/rstudio/issues/13341">issue</a>. On
+RStudio for Linux flavors, <code>PATH</code> is properly inherited in R
+sessions. As a result, key environmental variables for UNIX systems,
+like PATH, are not be properly loaded from your default shell (e.g.,
+<code>zsh</code>, via <code>~/.zshrc</code>). Also, RStudio overwrites a
+<code>PATH</code> variable set via <code>.Rprofile</code> or
+<code>.Renviron</code> with its own defaults, which makes it impossible
+to find Nix and standard Nix tools like <code>nix-build</code>. It’s
+worth noting that this doesn’t impact <code>rix::rix()</code>, which
+generates Nix expressions and doesn’t require a Nix installation. As a
+workaround, we have added mechanisms in <code>nix_build()</code> and
+<code>with_nix()</code> that append the path of the Nix store to the
+<code>PATH</code> variable in an active session automatically (via
+<code>Sys.setenv()</code>, when you use RStudio on macOS. You don’t have
+to do anything. We have you covered, and you get a friendly message that
+informs you. special side effect.</p>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

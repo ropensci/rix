@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>z - Advanced topic: Building an environment for literate programming</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">z - Advanced topic: Building an environment
+for literate programming</h1>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This vignette will walk you through setting up a development
+environment with <code>{rix}</code> that can be used to compile Quarto
+documents into PDFs. We are going to use the <a href="https://github.com/quarto-journals/jss">Quarto template for the
+JSS</a> to illustrate the process. The first section will show a simple
+way of achieving this, which will also be ideal for interactive
+development (writing the doc). The second section will discuss a way to
+build the document in a completely reproducible manner once it’s
+done.</p>
+</div>
+<div id="starting-with-the-basics-simple-but-not-entirely-reproducible" class="section level2">
+<h2>Starting with the basics (simple but not entirely reproducible)</h2>
+<p>This approach will not be the most optimal, but it will be the
+simplest. We will start by building a development environment with all
+our dependencies, and we can then use it to compile our document
+interactively. But this approach is not quite reproducible and requires
+manual actions. In the next section we will show you to build a 100%
+reproducible document in a single command.</p>
+<p>Since we need both the <code>{quarto}</code> R package as well as the
+<code>quarto</code> engine, we add both of them to the
+<code>r_pkgs</code> and <code>system_pkgs</code> of arguments of
+<code>{rix}</code>. Because we want to compile a PDF, we also need to
+have <code>texlive</code> installed, as well as some LaTeX packages. For
+this, we use the <code>tex_pkgs</code> argument:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>path_default_nix <span class="ot">&lt;-</span> <span class="fu">tempdir</span>()</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">rix</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  <span class="at">r_ver =</span> <span class="st">&quot;4.3.1&quot;</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  <span class="at">r_pkgs =</span> <span class="fu">c</span>(<span class="st">&quot;quarto&quot;</span>),</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="at">system_pkgs =</span> <span class="st">&quot;quarto&quot;</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  <span class="at">tex_pkgs =</span> <span class="fu">c</span>(<span class="st">&quot;amsmath&quot;</span>),</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>  <span class="at">ide =</span> <span class="st">&quot;other&quot;</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>  <span class="at">shell_hook =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>  <span class="at">project_path =</span> path_default_nix,</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>  <span class="at">overwrite =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>  <span class="at">print =</span> <span class="cn">TRUE</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>)</span></code></pre></div>
+<p>(Save these lines into a script called <code>build_env.R</code> for
+instance, and run the script into a new folder made for this
+project.)</p>
+<p>By default, <code>{rix}</code> will install the “small” version of
+the <code>texlive</code> distribution available on Nix. To see which
+<code>texlive</code> packages get installed with this small version, you
+can click <a href="https://search.nixos.org/packages?channel=unstable&amp;show=texlive.combined.scheme-small&amp;from=0&amp;size=50&amp;sort=relevance&amp;type=packages&amp;query=scheme-small">here</a>.
+We start by adding the <code>amsmath</code> package then build the
+environment using:</p>
+<pre><code>nix-build</code></pre>
+<p>from a terminal, or <code>nix_build()</code> from an interactive R
+session.</p>
+<p>Then, drop into the Nix shell with <code>nix-shell</code>, and run
+<code>quarto add quarto-journals/jss</code>. This will install the
+template linked above. Then, in the folder that contains
+<code>build_env.R</code>, the generated <code>default.nix</code> and
+<code>result</code> download the following files from <a href="https://github.com/quarto-journals/jss/">here</a>:</p>
+<ul>
+<li>article-visualization.pdf</li>
+<li>bibliography.bib</li>
+<li>template.qmd</li>
+</ul>
+<p>and try to compile <code>template.qmd</code> by running:</p>
+<pre><code>quarto render template.qmd --to jss-pdf</code></pre>
+<p>You should get the following error message:</p>
+<pre><code>Quitting from lines 99-101 [unnamed-chunk-1] (template.qmd)
+Error in `find.package()`:
+! there is no package called &#39;MASS&#39;
+Backtrace:
+ 1. utils::data(&quot;quine&quot;, package = &quot;MASS&quot;)
+ 2. base::find.package(package, lib.loc, verbose = verbose)
+Execution halted
+</code></pre>
+<p>So there’s an R chunk in <code>template.qmd</code> that uses the
+<code>{MASS}</code> package. Change <code>build_env.R</code> to generate
+a new <code>default.nix</code> file that will now add
+<code>{MASS}</code> to the environment when built:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">rix</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="at">r_ver =</span> <span class="st">&quot;4.3.1&quot;</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">r_pkgs =</span> <span class="fu">c</span>(<span class="st">&quot;quarto&quot;</span>, <span class="st">&quot;MASS&quot;</span>),</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">system_pkgs =</span> <span class="st">&quot;quarto&quot;</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">tex_pkgs =</span> <span class="fu">c</span>(<span class="st">&quot;amsmath&quot;</span>),</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">ide =</span> <span class="st">&quot;other&quot;</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="at">shell_hook =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="at">project_path =</span> path_default_nix,</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="at">overwrite =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  <span class="at">print =</span> <span class="cn">TRUE</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>)</span></code></pre></div>
+<p>Trying to compile the document results now in another error
+message:</p>
+<pre><code>compilation failed- no matching packages
+LaTeX Error: File `orcidlink.sty&#39; not found</code></pre>
+<p>This means that the LaTeX <code>orcidlink</code> package is missing,
+and we can solve the problem by adding <code>&quot;orcidlink&quot;</code> to the
+list of <code>tex_pkgs</code>. Rebuild the environment and try again to
+compile the template. Trying again yields a new error:</p>
+<pre><code>compilation failed- no matching packages
+LaTeX Error: File `tcolorbox.sty&#39; not found.</code></pre>
+<p>Just as before, add the <code>tcolorbox</code> package to the list of
+<code>tex_pkgs</code>. You will need to do this several times for some
+other packages. There is unfortunately no easier way to list the
+dependencies and requirements of a LaTeX document.</p>
+<p>This is what the final script to build the environment looks
+like:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">rix</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="at">r_ver =</span> <span class="st">&quot;4.3.1&quot;</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">r_pkgs =</span> <span class="fu">c</span>(<span class="st">&quot;quarto&quot;</span>, <span class="st">&quot;MASS&quot;</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">system_pkgs =</span> <span class="st">&quot;quarto&quot;</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="at">tex_pkgs =</span> <span class="fu">c</span>(</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>    <span class="st">&quot;amsmath&quot;</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>    <span class="st">&quot;environ&quot;</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>    <span class="st">&quot;fontawesome5&quot;</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>    <span class="st">&quot;orcidlink&quot;</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>    <span class="st">&quot;pdfcol&quot;</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>    <span class="st">&quot;tcolorbox&quot;</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>    <span class="st">&quot;tikzfill&quot;</span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>  ),</span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>  <span class="at">ide =</span> <span class="st">&quot;other&quot;</span>,</span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a>  <span class="at">shell_hook =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a>  <span class="at">project_path =</span> path_default_nix,</span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>  <span class="at">overwrite =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>  <span class="at">print =</span> <span class="cn">TRUE</span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>)</span></code></pre></div>
+<p>The template will now compile with this environment. To look for a
+LaTeX package, you can use the <a href="https://ctan.org/pkg/orcidlink?lang=en">search engine on
+CTAN</a>.</p>
+<p>As stated in the beginning of this section, this approach is not the
+most optimal, but it has its merits, especially if you’re still working
+on the document. Once the environment is set up, you can simply work on
+the doc and compile it as needed using <code>quarto render</code>. In
+the next section, we will explain how to build a 100% reproducible
+document.</p>
+</div>
+<div id="reproducible-literate-programming" class="section level2">
+<h2>100% reproducible literate programming</h2>
+<p>Let’s not forget that Nix is not just a package manager, but also a
+programming language. The <code>default.nix</code> files that
+<code>{rix}</code> generates are written in this language, which was
+made entirely for the purpose of building software. If you are not a
+developer, you may not realise it but the process of compiling a Quarto
+or LaTeX document is very similar to the process of building any piece
+of software. So we can use Nix to compile a document in a completely
+reproducible environment.</p>
+<p>First, let’s fork the repo that contains the Quarto template we need.
+We will fork <a href="https://github.com/quarto-journals/jss">this
+repo</a>. This repo contains the <code>template.qmd</code> file that we
+can change (which is why we fork it, in practice we would replace this
+<code>template.qmd</code> by our own, finished, source <code>.qmd</code>
+file). Now we need to change our <code>default.nix</code>:</p>
+<pre><code>let
+ pkgs = import (fetchTarball &quot;https://github.com/NixOS/nixpkgs/archive/976fa3369d722e76f37c77493d99829540d43845.tar.gz&quot;) {};
+ rpkgs = builtins.attrValues {
+   inherit (pkgs.rPackages) quarto MASS;
+ };
+ tex = (pkgs.texlive.combine {
+   inherit (pkgs.texlive) scheme-small amsmath environ fontawesome5 orcidlink pdfcol tcolorbox tikzfill;
+ });
+ system_packages = builtins.attrValues {
+   inherit (pkgs) R quarto;
+ };
+ in
+ pkgs.mkShell {
+   buildInputs = [  rpkgs tex system_packages  ];
+ }</code></pre>
+<p>to the following:</p>
+<pre><code>let
+ pkgs = import (fetchTarball &quot;https://github.com/NixOS/nixpkgs/archive/976fa3369d722e76f37c77493d99829540d43845.tar.gz&quot;) {};
+ rpkgs = builtins.attrValues {
+  inherit (pkgs.rPackages) quarto MASS;
+ };
+ tex = (pkgs.texlive.combine {
+  inherit (pkgs.texlive) scheme-small amsmath environ fontawesome5 orcidlink pdfcol tcolorbox tikzfill;
+ });
+ system_packages = builtins.attrValues {
+  inherit (pkgs) R quarto;
+ };
+ in
+ pkgs.stdenv.mkDerivation {
+   name = &quot;my-paper&quot;;
+   src = pkgs.fetchgit {
+       url = &quot;https://github.com/ropensci/my_paper/&quot;;
+       rev = &quot;715e9f007d104c23763cebaf03782b8e80cb5445&quot;;
+       sha256 = &quot;sha256-e8Xg7nJookKoIfiJVTGoJkvCuFNTT83YZ6SK3GT2T8g=&quot;;
+     };
+   buildInputs = [  rpkgs tex system_packages  ];
+   buildPhase =
+     &#39;&#39;
+     # Deno needs to add stuff to $HOME/.cache
+     # so we give it a home to do this
+     mkdir home
+     export HOME=$PWD/home
+     quarto add --no-prompt $src
+     quarto render $PWD/template.qmd --to jss-pdf
+     &#39;&#39;;
+   installPhase =
+     &#39;&#39;
+     mkdir -p $out
+     cp template.pdf $out/
+     &#39;&#39;;
+ }</code></pre>
+<p>So we changed the second part of the file, we’re not building a shell
+anymore using <code>mkShell</code>, but a <em>derivation</em>.
+<em>Derivation</em> is Nix jargon for package, or software. So what is
+our derivation? First, we clone the repo we forked just before (I forked
+the repository and called it <code>my_paper</code>):</p>
+<pre><code>pkgs.stdenv.mkDerivation {
+  name = &quot;my-paper&quot;;
+  src = pkgs.fetchgit {
+      url = &quot;https://github.com/ropensci/my_paper/&quot;;
+      rev = &quot;715e9f007d104c23763cebaf03782b8e80cb5445&quot;;
+      sha256 = &quot;sha256-e8Xg7nJookKoIfiJVTGoJkvCuFNTT83YZ6SK3GT2T8g=&quot;;
+    };</code></pre>
+<p>This repo contains our quarto template, and because we’re using a
+specific commit, we will always use exactly this release of the template
+for our document. This is in contrast to before where we used
+<code>quarto add quarto-journals/jss</code> to install the template.
+Doing this interactively makes our project not reproducible because if
+we compile our Quarto doc today, we would be using the template as it is
+today, but if we compile the document in 6 months, then we would be
+using the template as it would be in 6 months (we should say that it is
+possible to install specific releases of Quarto templates using
+following notation: <code>quarto add quarto-journals/jss@v0.9.2</code>
+so this problem can be mitigated).</p>
+<p>The next part of the file contains following lines:</p>
+<pre><code>buildInputs = [  rpkgs tex system_packages  ];
+buildPhase =
+  &#39;&#39;
+  # Deno needs to add stuff to $HOME/.cache
+  # so we give it a home to do this
+  mkdir home
+  export HOME=$PWD/home
+  quarto add --no-prompt $src
+  quarto render $PWD/template.qmd --to jss-pdf
+  &#39;&#39;;</code></pre>
+<p>The <code>buildInputs</code> are the same as before. What’s new is
+the <code>buildPhase</code>. This is actually the part in which the
+document gets compiled. The first step is to create a <code>home</code>
+directory. This is because Quarto needs to save the template we want to
+use in <code>/home/.cache/deno</code>. If you’re using
+<code>quarto</code> interactively, that’s not an issue, since your home
+directory will be used. But with Nix, things are different, so we need
+to create an empty directory and specify this as the home. This is what
+these two lines do:</p>
+<pre><code>mkdir home
+export HOME=$PWD/home</code></pre>
+<p>(<code>$PWD</code> —Print Working Directory— is a shell variable
+referring to the current working directory.)</p>
+<p>Now, we need to install the template that we cloned from Github. For
+this we can use <code>quarto add</code> just as before, but instead of
+installing it directly from Github, we install it from the repository
+that we cloned. We also add the <code>--no-prompt</code> flag so that
+the template gets installed without asking us for confirmation. This is
+similar to how when building a Docker image, we don’t want any
+interactive prompt to show up, or else the process will get stuck.
+<code>$src</code> refers to the path of our downloaded Github
+repository. Finally we can compile the document:</p>
+<pre><code>quarto render $PWD/template.qmd --to jss-pdf</code></pre>
+<p>This will compile the <code>template.qmd</code> (our finished paper).
+Finally, there’s the <code>installPhase</code>:</p>
+<pre><code>installPhase =
+  &#39;&#39;
+  mkdir -p $out
+  cp template.pdf $out/
+  &#39;&#39;;</code></pre>
+<p><code>$out</code> is a shell variable defined inside the build
+environment and refers to the path, so we can use it to create a
+directory that will contain our output (the compiled PDF file). So we
+use <code>mkdir -p</code> to recursively create all the directory
+structure, and then copy the compiled document to <code>$out/</code>. We
+can now build our document by running <code>nix_build()</code>. Now, you
+may be confused by the fact that you won’t see the PDF in your working
+directory. But remember that software built by Nix will always be stored
+in the Nix store, so our PDF is also in the store, since this is what we
+built. To find it, run:</p>
+<pre><code>readlink result</code></pre>
+<p>which will show the path to the PDF. You could use this to open the
+PDF in your PDF viewer application (on Linux at least):</p>
+<pre><code>xdg-open $(readlink result)/template.pdf</code></pre>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>This vignette showed two approaches, both have their merits: the
+first approach that is more interactive is useful while writing the
+document. You get access to a shell and can work on the document and
+compile it quickly. The second approach is more useful once the document
+is ready and you want to have a way of quickly rebuilding it for
+reproducibility purposes.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

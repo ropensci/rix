@@ -36,7 +36,7 @@ analysis here.}
 \item{system_pkgs}{Vector of characters. List further software you wish to
 install that are not R packages such as command line applications for
 example. You can look for available software on the NixOS website
-\url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=}}
+\url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=} # nolint}
 
 \item{git_pkgs}{List. A list of packages to install from Git. See details for
 more information.}
@@ -166,7 +166,8 @@ environment that will remain stable at build time. So if you create a
 environment will be up-to-date on the date that the \code{default.nix} will be
 generated, and then each subsequent call to \code{nix-build} will result in the
 same environment. We highly recommend you read the vignette titled
-"z - Advanced topic: Understanding the rPackages set release cycle and using bleeding edge packages".
+"z - Advanced topic: Understanding the rPackages set release cycle and
+using bleeding edge packages".
 }
 \examples{
 \dontrun{
@@ -185,8 +186,5 @@ rix(
   message_type = "simple",
   shell_hook = NULL
 )
-on.exit{
-  unlink(path_default_nix, recursive = TRUE, force = TRUE)
-}
 }
 }

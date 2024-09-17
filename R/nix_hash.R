@@ -78,7 +78,10 @@ hash_url <- function(url) {
 
   deps <- get_imports(desc_path)
 
-  unlink(path_to_folder, recursive = TRUE, force = TRUE)
+  on.exit(
+    unlink(path_to_folder, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 
   return(
     list(
