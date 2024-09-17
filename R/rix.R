@@ -149,9 +149,6 @@
 #'   message_type = "simple",
 #'   shell_hook = NULL
 #' )
-#' on.exit{
-#'   unlink(path_default_nix, recursive = TRUE, force = TRUE)
-#' }
 #' }
 rix <- function(r_ver = "latest",
                 r_pkgs = NULL,
