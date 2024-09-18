@@ -50,6 +50,7 @@ let
       rmarkdown
       styler
       sys
+      withr
       testthat;
   };
   

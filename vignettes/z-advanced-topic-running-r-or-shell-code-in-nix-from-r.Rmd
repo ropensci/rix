@@ -83,7 +83,7 @@ before to R versions 4.2.0 and later.
 First, we write a `default.nix` file containing Nix expressions that pin R
 version 4.1.3 from Nixpkgs.
 
-```{r parsermd-chunk-3}
+```{r parsermd-chunk-3-0, eval = F}
 library("rix")
 
 path_env_1 <- file.path(".", "_env_1_R-4-1-3")
@@ -96,14 +96,20 @@ rix(
 ```
 
 The following expression is written to default.nix in the subfolder
-`./_env_1_R-4-1-3/`.
+`./_env_1_R-4-1-3/`:
 
-```{r parsermd-chunk-4, echo = FALSE}
-cat(readLines(file.path(path_env_1, "default.nix")), sep = "\n")
-```
+```{r parsermd-chunk-3, echo = F}
+local({
 
-```{r, include = FALSE}
-unlink(path_env_1, recursive = TRUE, force = TRUE)
+  path <- withr::local_tempdir()
+
+  rix(
+    r_ver = "4.1.3",
+    overwrite = FALSE,
+    project_path = path,
+    print = TRUE, message_type = "quiet"
+  )
+})
 ```
 
 This also includes a custom `.Rprofile` file that ensure that this subshell
@@ -215,7 +221,6 @@ out_nix_1_b <- with_nix(
 
 It yields the same results.
 
-
 ```{r parsermd-chunk-10, eval = FALSE}
 Reduce(f = identical, list(out_nix_1, out_nix_1_b))
 ```
@@ -232,7 +237,7 @@ from. Accordingly, we define the R 4.2.0 environment in a
 the target environment where `df_as_vector()` will be evaluated in.
 
 
-```{r parsermd-chunk-11}
+```{r parsermd-chunk-11, eval = F}
 library("rix")
 path_env_1_2 <- file.path(".", "_env_1_2_R-4-2-0")
 
@@ -244,6 +249,24 @@ rix(
 )
 
 list.files(path_env_1_2)
+```
+
+```{r parsermd-chunk-11-0, echo = F}
+local({
+
+  path <- withr::local_tempdir()
+
+  rix(
+    r_ver = "4.2.0",
+    overwrite = TRUE,
+    project_path = path,
+    shell_hook = "R"
+  )
+
+  list.files(path)
+
+})
+
 ```
 
 Now, initiate a new R session as development environment using `nix-shell`. Open
@@ -289,10 +312,6 @@ identical(out_nix_1, out_nix_1_2)
 # yields FALSE
 ```
 
-```{r, include = FALSE}
-unlink(path_env_1_2, recursive = TRUE, force = TRUE)
-```
-
 ## **Case study 2: Breaking changes in {stringr} 1.5.0**
 
 We add one more layer to the reproducibility of the R ecosystem. User libraries
@@ -328,7 +347,7 @@ Let's build a subshell with the latest version of R, but an older version
 of `{stringr}`:
 
 
-```{r parsermd-chunk-18}
+```{r parsermd-chunk-18, eval = F}
 library("rix")
 
 path_env_stringr <- file.path(".", "_env_stringr_1.4.1")
@@ -343,9 +362,25 @@ rix(
 list.files(path = path_env_stringr, all.files = TRUE)
 ```
 
-```{r, include = FALSE}
-unlink(path_env_stringr, recursive = TRUE, force = TRUE)
+```{r parsermd-chunk-18-0, echo = F}
+
+withr::with_tempdir({ 
+  suppressMessages(
+    invisible(
+      capture.output(
+        rix(
+          r_ver = "4.3.1",
+          r_pkgs = "dplyr",
+          overwrite = FALSE,
+          project_path = ".", print = F
+        )
+      )))
+  list.files(path = ".", all.files = TRUE)
+})
+
+
 ```
+
 
 We can now run the code in the subshell
 
