@@ -97,25 +97,9 @@ nix_build <- function(project_path = ".",
     " ...\n"
   ))
 
-  Sys.setenv(LD_LIBRARY_PATH = LD_LIBRARY_PATH_default)
+  proc <- sys::exec_background(cmd = cmd, args = args)
 
-  tryCatch({
-    proc <- sys::exec_background(cmd = cmd, args = args)
-    return(invisible(proc))
-  },
-  error = function(e) {
-    cat("Error in `nix_build()`:", conditionMessage(e), "\n")
-    if (exists("proc")) tools::pskill(pid = proc)
-    NULL
-  },
-  interrupt = function(i) {
-    cat("\n`nix_build()` interrupted by user (SIGINT)\n")
-    if (exists("proc")) tools::pskill(pid = proc)
-    NULL
-  },
-  finally = {
-    poll_sys_proc_nonblocking(cmd, proc, what = "nix-build", message_type)
-  })
+  poll_sys_proc_nonblocking(cmd, proc, what = "nix-build", message_type)
 
   if (isTRUE(nzchar(Sys.getenv("NIX_STORE")))) {
     # set back library paths to state before calling `with_nix()`
@@ -134,8 +118,9 @@ nix_build <- function(project_path = ".",
   on.exit(
     {
       tools::pskill(pid = proc)
-      rm(proc)
     },
     add = TRUE
   )
+
+  return(invisible(proc))
 }
