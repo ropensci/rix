@@ -59,7 +59,7 @@ nix_build <- function(project_path = ".",
         "* Current LD_LIBRARY_PATH in system R session is:",
         LD_LIBRARY_PATH_default # nolint: object_name_linter
       )
-      cat("\n", "Setting `LD_LIBRARY_PATH` to `''` during `nix_build()`\n")
+      cat("\n", "Setting `LD_LIBRARY_PATH` to `''` during `nix_build()`")
     }
   }
   has_nix_build <- nix_build_installed() # TRUE if yes, FALSE if no
@@ -97,16 +97,9 @@ nix_build <- function(project_path = ".",
     " ...\n"
   ))
 
-  withCallingHandlers({
-    proc <- sys::exec_background(cmd = cmd, args = args)
-    poll_sys_proc_nonblocking(cmd, proc, what = "nix-build", message_type)
-  },
-  interrupt = function(i) {
-    cat("\n`nix_build()` interrupted by user (SIGINT)\n")
-    if (exists("proc")) tools::pskill(pid = proc)
-    invokeRestart("abort")
-    stop()
-  })
+  proc <- sys::exec_background(cmd = cmd, args = args)
+
+  poll_sys_proc_nonblocking(cmd, proc, what = "nix-build", message_type)
 
   if (isTRUE(nzchar(Sys.getenv("NIX_STORE")))) {
     # set back library paths to state before calling `with_nix()`
@@ -125,8 +118,9 @@ nix_build <- function(project_path = ".",
   on.exit(
     {
       tools::pskill(pid = proc)
-      rm(proc)
     },
     add = TRUE
   )
+
+  return(invisible(proc))
 }
