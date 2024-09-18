@@ -43,7 +43,6 @@ testthat::test_that("rix(), ide is 'rstudio', Linux", {
     path = save_default_nix_test(ide = "rstudio", path_default_nix),
     name = "rstudio_default.nix",
   )
-
 })
 
 
@@ -109,7 +108,6 @@ testthat::test_that("rix(), ide is 'other' or 'code'", {
     ),
     name = "code_default.nix"
   )
-
 })
 
 
@@ -157,7 +155,6 @@ testthat::test_that("Quarto gets added to sys packages", {
     ),
     name = "yes_quarto_default.nix"
   )
-
 })
 
 testthat::test_that("If on darwin and ide = rstudio, raise warning", {
@@ -186,7 +183,6 @@ testthat::test_that("If on darwin and ide = rstudio, raise warning", {
     save_default_nix_test(path_default_nix),
     regexp = "refer to the macOS"
   )
-
 })
 
 testthat::test_that("If R version is 4.4.0, raise warning", {
@@ -213,7 +209,6 @@ testthat::test_that("If R version is 4.4.0, raise warning", {
     save_default_nix_test(path_default_nix),
     regexp = "version is not available"
   )
-
 })
 
 testthat::test_that("If R version is <= 4.1.1, raise warning", {
@@ -240,8 +235,6 @@ testthat::test_that("If R version is <= 4.1.1, raise warning", {
     save_default_nix_test(path_default_nix),
     regexp = "older version of R"
   )
-
-
 })
 
 testthat::test_that("If on ide = rstudio, but no R packages, raise error", {
@@ -268,7 +261,6 @@ testthat::test_that("If on ide = rstudio, but no R packages, raise error", {
     save_default_nix_test(path_default_nix),
     regexp = "didn't add any R packages"
   )
-
 })
 
 testthat::test_that("If R version is == 3.5.3, raise warning", {
@@ -295,7 +287,6 @@ testthat::test_that("If R version is == 3.5.3, raise warning", {
     save_default_nix_test(path_default_nix),
     regexp = "older version of R"
   )
-
 })
 
 testthat::test_that("rix(), bleeding_edge", {
@@ -344,7 +335,6 @@ testthat::test_that("rix(), bleeding_edge", {
     path = save_default_nix_test(ide = "other", path_default_nix),
     name = "bleeding_edge_default.nix",
   )
-
 })
 
 testthat::test_that("rix(), frozen_edge", {
@@ -356,13 +346,14 @@ testthat::test_that("rix(), frozen_edge", {
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
-  on.exit({
-    system(
-      paste0("sed -i 's/", frozen_edge_commit, "/REVISION/' _snaps/rix/frozen_edge_default.nix")
-    )
-    unlink(path_default_nix, recursive = TRUE, force = FALSE)
-  },
-  add = TRUE
+  on.exit(
+    {
+      system(
+        paste0("sed -i 's/", frozen_edge_commit, "/REVISION/' _snaps/rix/frozen_edge_default.nix")
+      )
+      unlink(path_default_nix, recursive = TRUE, force = FALSE)
+    },
+    add = TRUE
   )
 
   save_default_nix_test <- function(ide, path_default_nix) {
@@ -406,8 +397,6 @@ testthat::test_that("rix(), frozen_edge", {
     path = save_default_nix_test(ide = "other", path_default_nix),
     name = "frozen_edge_default.nix",
   )
-
-
 })
 
 
@@ -446,7 +435,6 @@ testthat::test_that("rix(), only one Github package", {
     path = save_default_nix_test(path_default_nix),
     name = "one_git_default.nix",
   )
-
 })
 
 
@@ -477,7 +465,6 @@ testthat::test_that("rix(), conclusion message", {
     save_default_nix_test(path_default_nix),
     regexp = "Successfully"
   )
-
 })
 
 
@@ -525,5 +512,4 @@ testthat::test_that("rix(), warning message if rix_init() already called", {
     save_default_nix_test(path_default_nix),
     regexp = "You may"
   )
-
 })
