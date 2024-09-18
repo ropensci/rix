@@ -1,3 +1,6 @@
+if (FALSE) skip("Some Important Requirement is not available")
+
+
 testthat::test_that("Test fetchgit works", {
   testthat::expect_equal(
     fetchgit(
