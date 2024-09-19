@@ -116,6 +116,7 @@ remove_base <- function(list_imports) {
 #' @noRd
 get_imports <- function(path) {
   tmpdir <- tempdir()
+  on.exit(unlink(tmpdir, recursive = TRUE, force = TRUE), add = TRUE)
 
   tmp_dir <- tempfile(pattern = "file", tmpdir = tmpdir, fileext = "")
   if (!dir.exists(tmp_dir)) {

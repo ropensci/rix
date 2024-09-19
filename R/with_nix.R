@@ -232,10 +232,13 @@ with_nix <- function(expr,
 
     # 1) save all function args onto a temporary folder each with
     # `<tag.Rds>` and `value` as serialized objects from RAM -------------------
-    temp_dir <- file.path(tempdir(), "with_nix")
+    tmpdir <- tempdir()
+    on.exit(unlink(tmpdir, recursive = TRUE, force = TRUE), add = TRUE)
+    temp_dir <- file.path(tmpdir, "with_nix")
     if (!dir.exists(temp_dir)) {
       dir.create(temp_dir, recursive = TRUE)
     }
+    on.exit(unlink(temp_dir, recursive = TRUE, force = TRUE), add = TRUE)
     serialize_args(args, temp_dir)
 
     # cast list of symbols/names and calls to list of strings; this is to prepare
