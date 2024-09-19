@@ -2,11 +2,21 @@ testthat::test_that("rix(), ide is 'rstudio', Linux", {
   os_type <- Sys.info()["sysname"]
   skip_if(os_type == "Darwin" || os_type == "Windows")
 
+  tmpdir <- tempdir()
+
   path_default_nix <- paste0(
-    tempdir(), paste0(sample(letters, 5), collapse = "")
+    tmpdir, paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 
   save_default_nix_test <- function(ide, path_default_nix) {
     rix(
@@ -40,11 +50,6 @@ testthat::test_that("rix(), ide is 'rstudio', Linux", {
     path = save_default_nix_test(ide = "rstudio", path_default_nix),
     name = "rstudio_default.nix",
   )
-
-  on.exit(
-    unlink(path_default_nix, recursive = TRUE, force = TRUE),
-    add = TRUE
-  )
 })
 
 
@@ -52,11 +57,21 @@ testthat::test_that("rix(), ide is 'other' or 'code'", {
   os_type <- Sys.info()["sysname"]
   skip_if(os_type == "Windows")
 
+  tmpdir <- tempdir()
+
   path_default_nix <- paste0(
-    tempdir(), paste0(sample(letters, 5), collapse = "")
+    tmpdir, paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 
   save_default_nix_test <- function(ide, path_default_nix) {
     # We need to add this because this function gets called
@@ -122,6 +137,10 @@ testthat::test_that("Quarto gets added to sys packages", {
   skip_if(os_type == "Windows")
 
   path_default_nix <- normalizePath(tempdir())
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 
   save_default_nix_test <- function(pkgs, interface, path_default_nix) {
     # Because of rix_init, see above
@@ -172,6 +191,10 @@ testthat::test_that("If on darwin and ide = rstudio, raise warning", {
   skip_if(os_type != "Darwin" || os_type == "Windows")
 
   path_default_nix <- normalizePath(tempdir())
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 
   save_default_nix_test <- function(path_default_nix) {
     rix(
@@ -190,15 +213,14 @@ testthat::test_that("If on darwin and ide = rstudio, raise warning", {
     save_default_nix_test(path_default_nix),
     regexp = "refer to the macOS"
   )
-
-  on.exit(
-    unlink(path_default_nix, recursive = TRUE, force = TRUE),
-    add = TRUE
-  )
 })
 
 testthat::test_that("If R version is 4.4.0, raise warning", {
   path_default_nix <- tempdir()
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 
   save_default_nix_test <- function(path_default_nix) {
     rix(
@@ -217,15 +239,14 @@ testthat::test_that("If R version is 4.4.0, raise warning", {
     save_default_nix_test(path_default_nix),
     regexp = "version is not available"
   )
-
-  on.exit(
-    unlink(path_default_nix, recursive = TRUE, force = TRUE),
-    add = TRUE
-  )
 })
 
 testthat::test_that("If R version is <= 4.1.1, raise warning", {
   path_default_nix <- tempdir()
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 
   save_default_nix_test <- function(path_default_nix) {
     rix(
@@ -244,16 +265,14 @@ testthat::test_that("If R version is <= 4.1.1, raise warning", {
     save_default_nix_test(path_default_nix),
     regexp = "older version of R"
   )
-
-
-  on.exit(
-    unlink(path_default_nix, recursive = TRUE, force = TRUE),
-    add = TRUE
-  )
 })
 
 testthat::test_that("If on ide = rstudio, but no R packages, raise error", {
   path_default_nix <- tempdir()
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 
   save_default_nix_test <- function(path_default_nix) {
     rix(
@@ -272,15 +291,14 @@ testthat::test_that("If on ide = rstudio, but no R packages, raise error", {
     save_default_nix_test(path_default_nix),
     regexp = "didn't add any R packages"
   )
-
-  on.exit(
-    unlink(path_default_nix, recursive = TRUE, force = TRUE),
-    add = TRUE
-  )
 })
 
 testthat::test_that("If R version is == 3.5.3, raise warning", {
   path_default_nix <- tempdir()
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 
   save_default_nix_test <- function(path_default_nix) {
     rix(
@@ -299,22 +317,27 @@ testthat::test_that("If R version is == 3.5.3, raise warning", {
     save_default_nix_test(path_default_nix),
     regexp = "older version of R"
   )
-
-  on.exit(
-    unlink(path_default_nix, recursive = TRUE, force = TRUE),
-    add = TRUE
-  )
 })
 
 testthat::test_that("rix(), bleeding_edge", {
   os_type <- Sys.info()["sysname"]
   skip_if(os_type == "Windows")
 
+  tmpdir <- tempdir()
+
   path_default_nix <- paste0(
-    tempdir(), paste0(sample(letters, 5), collapse = "")
+    tmpdir, paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 
   save_default_nix_test <- function(ide, path_default_nix) {
     # This will generate the warning to read the vignette for bleeding_edge
@@ -351,22 +374,29 @@ testthat::test_that("rix(), bleeding_edge", {
     path = save_default_nix_test(ide = "other", path_default_nix),
     name = "bleeding_edge_default.nix",
   )
-
-  on.exit(
-    unlink(path_default_nix, recursive = TRUE, force = TRUE),
-    add = TRUE
-  )
 })
 
 testthat::test_that("rix(), frozen_edge", {
   # because of the sed command, this will only work on Linux
   skip_if(Sys.info()["sysname"] != "Linux")
 
+  tmpdir <- tempdir()
+
   path_default_nix <- paste0(
-    tempdir(), paste0(sample(letters, 5), collapse = "")
+    tmpdir, paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
+  on.exit(
+    {
+      system(
+        paste0("sed -i 's/", frozen_edge_commit, "/REVISION/' _snaps/rix/frozen_edge_default.nix")
+      )
+      unlink(path_default_nix, recursive = TRUE, force = FALSE)
+      unlink(tmpdir, recursive = TRUE, force = FALSE)
+    },
+    add = TRUE
+  )
 
   save_default_nix_test <- function(ide, path_default_nix) {
     # This will generate the warning to read the vignette for bleeding_edge
@@ -427,11 +457,21 @@ testthat::test_that("rix(), only one Github package", {
   os_type <- Sys.info()["sysname"]
   skip_if(os_type == "Windows")
 
+  tmpdir <- tempdir()
+
   path_default_nix <- paste0(
-    tempdir(), paste0(sample(letters, 5), collapse = "")
+    tmpdir, paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 
   save_default_nix_test <- function(path_default_nix) {
     rix(
@@ -457,20 +497,24 @@ testthat::test_that("rix(), only one Github package", {
     path = save_default_nix_test(path_default_nix),
     name = "one_git_default.nix",
   )
-
-  on.exit(
-    unlink(path_default_nix, recursive = TRUE, force = TRUE),
-    add = TRUE
-  )
 })
 
 
 testthat::test_that("rix(), conclusion message", {
+  tmpdir <- tempdir()
   path_default_nix <- paste0(
-    tempdir(), paste0(sample(letters, 5), collapse = "")
+    tmpdir, paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 
   save_default_nix_test <- function(path_default_nix) {
     rix(
@@ -488,22 +532,27 @@ testthat::test_that("rix(), conclusion message", {
     save_default_nix_test(path_default_nix),
     regexp = "Successfully"
   )
-
-  on.exit(
-    unlink(path_default_nix, recursive = TRUE, force = TRUE),
-    add = TRUE
-  )
 })
 
 
 testthat::test_that("rix(), warning message if rix_init() already called", {
   testthat::skip_on_os(os = c("windows", "mac"))
 
+  tmpdir <- tempdir()
+
   path_default_nix <- paste0(
-    tempdir(), paste0(sample(letters, 5), collapse = "")
+    tmpdir, paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 
   rix_init(
     project_path = path_default_nix,
@@ -535,10 +584,5 @@ testthat::test_that("rix(), warning message if rix_init() already called", {
   testthat::expect_warning(
     save_default_nix_test(path_default_nix),
     regexp = "You may"
-  )
-
-  on.exit(
-    unlink(path_default_nix, recursive = TRUE, force = TRUE),
-    add = TRUE
   )
 })
