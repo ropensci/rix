@@ -223,7 +223,7 @@ rix_init <- function(project_path = ".",
   }
 
   on.exit(
-    close(file(rprofile_con)),
+    close(rprofile_con),
     add = TRUE
   )
 }
