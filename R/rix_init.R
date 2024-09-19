@@ -145,7 +145,7 @@ rix_init <- function(project_path = ".",
   rprofile_text <- get_rprofile_text(rprofile_deparsed)
   on.exit(rprofile_con)
   write_rprofile <- function(rprofile_text, rprofile_file) {
-    writeLines(enc2utf(rprofile_text), rprofile_con, useBytes = TRUE)
+    writeLines(enc2utf8(rprofile_text), rprofile_con, useBytes = TRUE)
   }
 
   is_nix_r <- is_nix_r_session()
