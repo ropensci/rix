@@ -2,8 +2,10 @@ testthat::test_that("rix(), ide is 'rstudio', Linux", {
   os_type <- Sys.info()["sysname"]
   skip_if(os_type == "Darwin" || os_type == "Windows")
 
+  tmpdir <- tempdir()
+
   path_default_nix <- paste0(
-    tempdir(), paste0(sample(letters, 5), collapse = "")
+    tmpdir, paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
@@ -45,6 +47,10 @@ testthat::test_that("rix(), ide is 'rstudio', Linux", {
     unlink(path_default_nix, recursive = TRUE, force = TRUE),
     add = TRUE
   )
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 })
 
 
@@ -52,8 +58,10 @@ testthat::test_that("rix(), ide is 'other' or 'code'", {
   os_type <- Sys.info()["sysname"]
   skip_if(os_type == "Windows")
 
+  tmpdir <- tempdir()
+
   path_default_nix <- paste0(
-    tempdir(), paste0(sample(letters, 5), collapse = "")
+    tmpdir, paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
@@ -112,6 +120,10 @@ testthat::test_that("rix(), ide is 'other' or 'code'", {
 
   on.exit(
     unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
     add = TRUE
   )
 })
@@ -310,8 +322,10 @@ testthat::test_that("rix(), bleeding_edge", {
   os_type <- Sys.info()["sysname"]
   skip_if(os_type == "Windows")
 
+  tmpdir <- tempdir
+
   path_default_nix <- paste0(
-    tempdir(), paste0(sample(letters, 5), collapse = "")
+    tmpdir, paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
@@ -356,14 +370,20 @@ testthat::test_that("rix(), bleeding_edge", {
     unlink(path_default_nix, recursive = TRUE, force = TRUE),
     add = TRUE
   )
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 })
 
 testthat::test_that("rix(), frozen_edge", {
   # because of the sed command, this will only work on Linux
   skip_if(Sys.info()["sysname"] != "Linux")
 
+  tmpdir <- tempdir()
+
   path_default_nix <- paste0(
-    tempdir(), paste0(sample(letters, 5), collapse = "")
+    tmpdir, paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
@@ -418,6 +438,10 @@ testthat::test_that("rix(), frozen_edge", {
       )
       unlink(path_default_nix, recursive = TRUE, force = FALSE)
     },
+    add = TRUE
+  )
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
     add = TRUE
   )
 })
