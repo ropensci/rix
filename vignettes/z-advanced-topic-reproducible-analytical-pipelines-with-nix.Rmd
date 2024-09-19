@@ -33,8 +33,9 @@ you did so using a tailor-made Nix environment. Here is the call to `rix()` that
 you could have used to build that environment:
 
 ```{r, include = F}
+tmpdir <- tempdir()
 path_default_nix <- paste0(
-  tempdir(), "repo",
+  tmpdir, "repo",
   paste0(sample(letters, 5), collapse = "")
 )
 
@@ -51,6 +52,9 @@ rix(
   project_path = path_default_nix,
   overwrite = TRUE
 )
+
+unlink(tmpdir, recursive = TRUE)
+unlink(path_default_nix, recursive = TRUE)
 ```
 
 ```{r, eval = F}
@@ -117,6 +121,8 @@ rix(
   project_path = path_default_nix,
   overwrite = TRUE
 )
+
+unlink(path_default_nix, recursive = TRUE)
 ```
 
 Now, each time you drop into the Nix shell for that project using `nix-shell`,
