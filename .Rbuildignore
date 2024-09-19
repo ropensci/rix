@@ -27,3 +27,19 @@ create_dev_env.R
 
 # flint files
 ^flint$
+
+^vignettes/b1-setting-up-and-using-rix-on-linux-and-windows\.Rmd$
+^vignettes/b2-setting-up-and-using-rix-on-macos\.Rmd$
+^vignettes/c-using-rix-to-build-project-specific-environments\.Rmd$
+^vignettes/c-using-rix-to-build-project-specific-environments.\.Rmd$
+^vignettes/d1-installing-r-packages-in-a-nix-environment\.Rmd$
+^vignettes/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment\.Rmd$
+^vignettes/e-interactive-use\.Rmd$
+^vignettes/z-advanced-topic-building-an-environment-for-literate-programming\.Rmd$
+^vignettes/z-advanced-topic-handling-packages-with-remote-dependencies\.Rmd$
+^vignettes/z-advanced-topic-reproducible-analytical-pipelines-with-nix\.Rmd$
+^vignettes/z-advanced-topic-running-r-or-shell-code-in-nix-from-r\.Rmd$
+^vignettes/z-advanced-topic-using-nix-inside-docker\.Rmd$
+^vignettes/z-binary_cache\.Rmd$
+^vignettes/z-bleeding_edge\.Rmd$
+^vignettes/z-contributing_to_nixpkgs\.Rmd$
