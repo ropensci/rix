@@ -30,8 +30,8 @@ create_dev_env.R
 
 # ^tests/testthat/test-available_r\.R$
 # ^tests/testthat/test-detect_os\.R$
-^tests/testthat/test-detect_versions\.R$
-^tests/testthat/test-fetchers\.R$
+# ^tests/testthat/test-detect_versions\.R$
+# ^tests/testthat/test-fetchers\.R$
 ^tests/testthat/test-ga_cachix\.R$
 ^tests/testthat/test-get_latest\.R$
 ^tests/testthat/test-get_sri_hash_deps\.R$
