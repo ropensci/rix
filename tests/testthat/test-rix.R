@@ -400,13 +400,14 @@ testthat::test_that("rix(), frozen_edge", {
   )
 
 
-  on.exit({
-    system(
-      paste0("sed -i 's/", frozen_edge_commit, "/REVISION/' _snaps/rix/frozen_edge_default.nix")
-    )
-    unlink(path_default_nix, recursive = TRUE, force = FALSE)
-  },
-  add = TRUE
+  on.exit(
+    {
+      system(
+        paste0("sed -i 's/", frozen_edge_commit, "/REVISION/' _snaps/rix/frozen_edge_default.nix")
+      )
+      unlink(path_default_nix, recursive = TRUE, force = FALSE)
+    },
+    add = TRUE
   )
 })
 
