@@ -53,8 +53,8 @@ rix(
   overwrite = TRUE
 )
 
-unlink(tmpdir, recursive = TRUE)
 unlink(path_default_nix, recursive = TRUE)
+unlink(tmpdir, recursive = TRUE)
 ```
 
 ```{r, eval = F}

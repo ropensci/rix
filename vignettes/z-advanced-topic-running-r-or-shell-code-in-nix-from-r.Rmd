@@ -102,10 +102,6 @@ The following expression is written to default.nix in the subfolder
 cat(readLines(file.path(path_env_1, "default.nix")), sep = "\n")
 ```
 
-```{r, include = FALSE}
-unlink(path_env_1, recursive = TRUE, force = TRUE)
-```
-
 This also includes a custom `.Rprofile` file that ensure that this subshell
 will not load any packages installed to the user's library of packages.
 
@@ -289,10 +285,6 @@ identical(out_nix_1, out_nix_1_2)
 # yields FALSE
 ```
 
-```{r, include = FALSE}
-unlink(path_env_1_2, recursive = TRUE, force = TRUE)
-```
-
 ## **Case study 2: Breaking changes in {stringr} 1.5.0**
 
 We add one more layer to the reproducibility of the R ecosystem. User libraries
@@ -341,10 +333,6 @@ rix(
 )
 
 list.files(path = path_env_stringr, all.files = TRUE)
-```
-
-```{r, include = FALSE}
-unlink(path_env_stringr, recursive = TRUE, force = TRUE)
 ```
 
 We can now run the code in the subshell
