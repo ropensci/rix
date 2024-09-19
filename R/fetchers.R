@@ -121,6 +121,10 @@ get_imports <- function(path) {
   if (!dir.exists(tmp_dir)) {
     dir.create(tmp_dir, recursive = TRUE)
   }
+  on.exit(
+    unlink(tmp_dir, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 
   # Some packages have a Description file in the testthat folder
   # (see jimhester/lookup) so we need to get rid of that
@@ -143,11 +147,6 @@ get_imports <- function(path) {
   imports <- as.data.frame(read.dcf(desc_path))
 
   existing_columns <- intersect(columns_of_interest, colnames(imports))
-
-  on.exit(
-    unlink(tmp_dir, recursive = TRUE, force = TRUE),
-    add = TRUE
-  )
 
   imports <- imports[, existing_columns, drop = FALSE]
 

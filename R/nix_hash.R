@@ -30,19 +30,32 @@ nix_hash <- function(repo_url, commit) {
 #' - `deps`: string with R package dependencies separarated by space.
 #' @noRd
 hash_url <- function(url) {
-  path_to_folder <- paste0(
-    tempdir(), "repo_hash_url_",
+  tmpdir <- paste0(
+    tempdir(), "_repo_hash_url_",
     paste0(sample(letters, 5), collapse = "")
   )
 
+  path_to_folder <- tempfile(pattern = "file", tmpdir = tmpdir, fileext = "")
   dir.create(path_to_folder)
+  on.exit(
+    unlink(path_to_folder, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
 
   path_to_tarfile <- paste0(path_to_folder, "/package_tar_gz")
   path_to_src <- paste0(path_to_folder, "/package_src")
 
   dir.create(path_to_src, recursive = TRUE)
   path_to_src <- normalizePath(path_to_src)
+  on.exit(
+    unlink(path_to_src, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
   dir.create(path_to_tarfile, recursive = TRUE)
+  on.exit(
+    unlink(path_to_tarfile, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
   path_to_tarfile <- normalizePath(path_to_tarfile)
 
   h <- curl::new_handle(failonerror = TRUE, followlocation = TRUE)
@@ -79,11 +92,6 @@ hash_url <- function(url) {
   desc_path <- grep("DESCRIPTION", paths, value = TRUE)
 
   deps <- get_imports(desc_path)
-
-  on.exit(
-    unlink(path_to_folder, recursive = TRUE, force = TRUE),
-    add = TRUE
-  )
 
   return(
     list(
