@@ -3,7 +3,7 @@
 # >rix(r_ver = "976fa3369d722e76f37c77493d99829540d43845",
 #  > git_pkgs = list(package_name = "rix",
 #  > repo_url = "https://github.com/ropensci/rix/",
-#  > commit = "c424cf7d8a627fa7693fbfefbe9ce2e24a012207"),
+#  > commit = "993e3f7fc37a3dc92e4467656c1c3a5df088815f"),
 #  > ide = "other",
 #  > project_path = "inst/extdata",
 #  > overwrite = TRUE)
@@ -18,8 +18,8 @@ let
       name = "rix";
       src = pkgs.fetchgit {
         url = "https://github.com/ropensci/rix/";
-        rev = "c424cf7d8a627fa7693fbfefbe9ce2e24a012207";
-        sha256 = "sha256-Gece1u521NYvVJXl5t0S4+KI9Mhl0XZ24n8P64ASR4s=";
+        rev = "993e3f7fc37a3dc92e4467656c1c3a5df088815f";
+        sha256 = "sha256-u7AqVCohkGOwqNoqIdDqz2OJPeL10x0NElE1oJeP38E=";
       };
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) 
@@ -41,7 +41,7 @@ let
 in
 
 pkgs.mkShell {
-  LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then  "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
+  LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
   LANG = "en_US.UTF-8";
    LC_ALL = "en_US.UTF-8";
    LC_TIME = "en_US.UTF-8";
