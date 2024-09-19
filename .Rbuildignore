@@ -41,7 +41,7 @@ create_dev_env.R
 ^tests/testthat/test-tar_nix_ga\.R$
 ^tests/testthat/test-with_nix\.R$
 
-^vignettes/a-getting-started\.Rmd$
+# ^vignettes/a-getting-started\.Rmd$
 ^vignettes/b1-setting-up-and-using-rix-on-linux-and-windows\.Rmd$
 ^vignettes/b2-setting-up-and-using-rix-on-macos\.Rmd$
 ^vignettes/c-using-rix-to-build-project-specific-environments\.Rmd$
