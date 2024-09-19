@@ -186,6 +186,8 @@ rix(
 #>   buildInputs = [  rpkgs tex system_packages   ];
 #>
 #> }
+
+unlink(path_default_nix, recursive = TRUE)
 ```
 
 This will automically add the *small* TexLive distribution available through

@@ -210,6 +210,8 @@ rix(
   project_path = path_default_nix,
   overwrite = TRUE
 )
+
+unlink(path_default_nix, recursive = TRUE)
 ```
 
 ```{r parsermd-chunk-4, echo = F}
@@ -365,6 +367,8 @@ rix(
   project_path = path_default_nix,
   overwrite = TRUE
 )
+
+unlink(path_default_nix, recursive = TRUE)
 ```
 
 ```
