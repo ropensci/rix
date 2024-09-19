@@ -34,6 +34,7 @@ hash_url <- function(url) {
     tempdir(), "_repo_hash_url_",
     paste0(sample(letters, 5), collapse = "")
   )
+  on.exit(unlink(tmpdir, recursive = TRUE, force = TRUE), add = TRUE)
 
   path_to_folder <- tempfile(pattern = "file", tmpdir = tmpdir, fileext = "")
   dir.create(path_to_folder)
