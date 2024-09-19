@@ -28,6 +28,7 @@ tar_nix_ga <- function() {
   } else {
     path <- tempdir()
   }
+  on.exit(unlink(path, recursive = TRUE, force = TRUE), add = TRUE)
 
   source <- system.file(
     file.path("extdata", "run-pipeline.yaml"),
