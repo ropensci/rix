@@ -34,7 +34,6 @@ ga_cachix <- function(cache_name, path_default) {
     }
   } else {
     path <- tempdir()
-    on.exit(unlink(path, recursive = TRUE, force = TRUE), add = TRUE)
   }
 
   source <- system.file(
