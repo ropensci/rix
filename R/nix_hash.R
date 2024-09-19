@@ -30,8 +30,10 @@ nix_hash <- function(repo_url, commit) {
 #' - `deps`: string with R package dependencies separarated by space.
 #' @noRd
 hash_url <- function(url) {
+  tdir <- tempdir()
+  on.exit(unlink(tdir, recursive = TRUE, force = TRUE), add = TRUE)
   tmpdir <- paste0(
-    tempdir(), "_repo_hash_url_",
+    tdir, "_repo_hash_url_",
     paste0(sample(letters, 5), collapse = "")
   )
   on.exit(unlink(tmpdir, recursive = TRUE, force = TRUE), add = TRUE)
