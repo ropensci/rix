@@ -1,6 +1,6 @@
 testthat::test_that("rix(), ide is 'rstudio', Linux", {
   os_type <- Sys.info()["sysname"]
-  skip_if(os_type == "Darwin" && os_type == "Windows")
+  skip_if(os_type == "Darwin" || os_type == "Windows")
 
   path_default_nix <- paste0(
     tempdir(), paste0(sample(letters, 5), collapse = "")
