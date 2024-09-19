@@ -39,7 +39,7 @@ hash_url <- function(url) {
   on.exit(unlink(tmpdir, recursive = TRUE, force = TRUE), add = TRUE)
 
   path_to_folder <- tempfile(pattern = "file", tmpdir = tmpdir, fileext = "")
-  dir.create(path_to_folder)
+  dir.create(path_to_folder, recursive = TRUE)
   on.exit(
     unlink(path_to_folder, recursive = TRUE, force = TRUE),
     add = TRUE
