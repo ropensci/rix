@@ -36,8 +36,8 @@ create_dev_env.R
 # ^tests/testthat/test-get_latest\.R$
 # ^tests/testthat/test-get_sri_hash_deps\.R$
 # ^tests/testthat/test-nix_build\.R$
-^tests/testthat/test-rix_init\.R$
-^tests/testthat/test-rix\.R$
+# ^tests/testthat/test-rix_init\.R$
+# ^tests/testthat/test-rix\.R$
 ^tests/testthat/test-tar_nix_ga\.R$
 ^tests/testthat/test-with_nix\.R$
 
