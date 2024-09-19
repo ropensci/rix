@@ -1,5 +1,6 @@
 testthat::test_that("rix(), ide is 'rstudio', Linux", {
-  skip_if(Sys.info()["sysname"] == "Darwin")
+  os_type <- Sys.info()["sysname"]
+  skip_if(os_type == "Darwin" && os_type == "Windows")
 
   path_default_nix <- paste0(
     tempdir(), paste0(sample(letters, 5), collapse = "")
@@ -48,6 +49,9 @@ testthat::test_that("rix(), ide is 'rstudio', Linux", {
 
 
 testthat::test_that("rix(), ide is 'other' or 'code'", {
+  os_type <- Sys.info()["sysname"]
+  skip_if(os_type == "Windows")
+
   path_default_nix <- paste0(
     tempdir(), paste0(sample(letters, 5), collapse = "")
   )
@@ -114,6 +118,9 @@ testthat::test_that("rix(), ide is 'other' or 'code'", {
 
 
 testthat::test_that("Quarto gets added to sys packages", {
+  os_type <- Sys.info()["sysname"]
+  skip_if(os_type == "Windows")
+
   path_default_nix <- normalizePath(tempdir())
 
   save_default_nix_test <- function(pkgs, interface, path_default_nix) {
@@ -161,7 +168,8 @@ testthat::test_that("Quarto gets added to sys packages", {
 })
 
 testthat::test_that("If on darwin and ide = rstudio, raise warning", {
-  skip_if(Sys.info()["sysname"] != "Darwin")
+  os_type <- Sys.info()["sysname"]
+  skip_if(os_type != "Darwin" || os_type == "Windows")
 
   path_default_nix <- normalizePath(tempdir())
 
@@ -299,6 +307,9 @@ testthat::test_that("If R version is == 3.5.3, raise warning", {
 })
 
 testthat::test_that("rix(), bleeding_edge", {
+  os_type <- Sys.info()["sysname"]
+  skip_if(os_type == "Windows")
+
   path_default_nix <- paste0(
     tempdir(), paste0(sample(letters, 5), collapse = "")
   )
@@ -413,6 +424,9 @@ testthat::test_that("rix(), frozen_edge", {
 
 
 testthat::test_that("rix(), only one Github package", {
+  os_type <- Sys.info()["sysname"]
+  skip_if(os_type == "Windows")
+
   path_default_nix <- paste0(
     tempdir(), paste0(sample(letters, 5), collapse = "")
   )
