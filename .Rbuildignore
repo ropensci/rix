@@ -27,33 +27,3 @@ create_dev_env.R
 
 # flint files
 ^flint$
-
-# ^tests/testthat/test-available_r\.R$
-# ^tests/testthat/test-detect_os\.R$
-# ^tests/testthat/test-detect_versions\.R$
-# ^tests/testthat/test-fetchers\.R$
-# ^tests/testthat/test-ga_cachix\.R$
-# ^tests/testthat/test-get_latest\.R$
-# ^tests/testthat/test-get_sri_hash_deps\.R$
-# ^tests/testthat/test-nix_build\.R$
-# ^tests/testthat/test-rix_init\.R$
-# ^tests/testthat/test-rix\.R$
-# ^tests/testthat/test-tar_nix_ga\.R$
-# ^tests/testthat/test-with_nix\.R$
-
-# ^vignettes/a-getting-started\.Rmd$
-# ^vignettes/b1-setting-up-and-using-rix-on-linux-and-windows\.Rmd$
-# ^vignettes/b2-setting-up-and-using-rix-on-macos\.Rmd$
-# ^vignettes/c-using-rix-to-build-project-specific-environments\.Rmd$
-# ^vignettes/c-using-rix-to-build-project-specific-environments.\.Rmd$
-# ^vignettes/d1-installing-r-packages-in-a-nix-environment\.Rmd$
-# ^vignettes/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment\.Rmd$
-# ^vignettes/e-interactive-use\.Rmd$
-# ^vignettes/z-advanced-topic-building-an-environment-for-literate-programming\.Rmd$
-# ^vignettes/z-advanced-topic-handling-packages-with-remote-dependencies\.Rmd$
-# ^vignettes/z-advanced-topic-reproducible-analytical-pipelines-with-nix\.Rmd$
-# ^vignettes/z-advanced-topic-running-r-or-shell-code-in-nix-from-r\.Rmd$
-# ^vignettes/z-advanced-topic-using-nix-inside-docker\.Rmd$
-# ^vignettes/z-binary_cache\.Rmd$
-# ^vignettes/z-bleeding_edge\.Rmd$
-# ^vignettes/z-contributing_to_nixpkgs\.Rmd$
