@@ -106,6 +106,8 @@ rix(
 #>   buildInputs = [  rpkgs  system_packages   ];
 #>
 #> }
+
+unlink(path_default_nix, recursive = TRUE, force = TRUE)
 ```
 
 To start using this environment, open a terminal in the folder containing
@@ -156,6 +158,8 @@ rix(
   project_path = path_default_nix,
   overwrite = TRUE
 )
+
+unlink(path_default_nix, recursive = TRUE, force = TRUE)
 ```
 
 The file looks like this:
