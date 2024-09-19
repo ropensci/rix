@@ -321,19 +321,18 @@ for more details."
     collapse = "\n"
   )
 
-  # nolint next: object_name_linter
-  default.nix <- readLines(textConnection(default.nix))
-
   if (print) {
     cat(default.nix, sep = "\n")
   }
 
   if (!file.exists(default.nix_path) || overwrite) {
     if (!dir.exists(project_path)) {
-      dir.create(project_path)
+      dir.create(project_path, recursive = TRUE)
     }
-    file.create(default.nix_path)
-    writeLines(default.nix, default.nix_path)
+    con <- file(default.nix_path, open = "wb", encoding = "native.enc")
+    on.exit(close(con))
+
+    writeLines(enc2utf8(default.nix), con = con, useBytes = TRUE)
 
     if (file.exists(.Rprofile_path)) {
       if (!any(grepl(
@@ -387,4 +386,6 @@ for more details."
       )
     )
   }
+
+  on.exit(close(con))
 }
