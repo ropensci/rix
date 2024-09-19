@@ -99,17 +99,16 @@ The following expression is written to default.nix in the subfolder
 `./_env_1_R-4-1-3/`:
 
 ```{r parsermd-chunk-3, echo = F}
-local({
+path <- tempdir()
 
-  path <- withr::local_tempdir()
+rix(
+  r_ver = "4.1.3",
+  overwrite = FALSE,
+  project_path = path,
+  print = TRUE, message_type = "quiet"
+)
 
-  rix(
-    r_ver = "4.1.3",
-    overwrite = FALSE,
-    project_path = path,
-    print = TRUE, message_type = "quiet"
-  )
-})
+unlink(path, recursive = TRUE)
 ```
 
 This also includes a custom `.Rprofile` file that ensure that this subshell
@@ -252,21 +251,18 @@ list.files(path_env_1_2)
 ```
 
 ```{r parsermd-chunk-11-0, echo = F}
-local({
+path <- tempdir()
 
-  path <- withr::local_tempdir()
+rix(
+  r_ver = "4.2.0",
+  overwrite = TRUE,
+  project_path = path,
+  shell_hook = "R"
+)
 
-  rix(
-    r_ver = "4.2.0",
-    overwrite = TRUE,
-    project_path = path,
-    shell_hook = "R"
-  )
+list.files(path)
 
-  list.files(path)
-
-})
-
+unlink(path, recursive = TRUE)
 ```
 
 Now, initiate a new R session as development environment using `nix-shell`. Open
@@ -363,22 +359,20 @@ list.files(path = path_env_stringr, all.files = TRUE)
 ```
 
 ```{r parsermd-chunk-18-0, echo = F}
-
-withr::with_tempdir({ 
-  suppressMessages(
-    invisible(
-      capture.output(
-        rix(
+suppressMessages(
+  invisible(
+    capture.output(
+      rix(
           r_ver = "4.3.1",
           r_pkgs = "dplyr",
           overwrite = FALSE,
           project_path = ".", print = F
         )
-      )))
+      )
+    )
+  )
   list.files(path = ".", all.files = TRUE)
 })
-
-
 ```
 
 
