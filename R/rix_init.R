@@ -143,7 +143,7 @@ rix_init <- function(project_path = ".",
   rprofile_con <- file(rprofile_file, open = "wb", encoding = "native.enc")
 
   rprofile_text <- get_rprofile_text(rprofile_deparsed)
-  on.exit(rprofile_con)
+  on.exit(close(rprofile_con))
   write_rprofile <- function(rprofile_text, rprofile_file) {
     writeLines(enc2utf8(rprofile_text), rprofile_con, useBytes = TRUE)
   }
