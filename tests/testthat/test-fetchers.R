@@ -1,4 +1,5 @@
 testthat::test_that("Test fetchgit works", {
+  testthat::skip_on_cran()
   testthat::expect_equal(
     fetchgit(
       list(
@@ -12,6 +13,7 @@ testthat::test_that("Test fetchgit works", {
 })
 
 testthat::test_that("Test fetchgit fails gracefully", {
+  testthat::skip_on_cran()
   testthat::expect_error(
     fetchgit(
       list(
@@ -24,6 +26,7 @@ testthat::test_that("Test fetchgit fails gracefully", {
 })
 
 testthat::test_that("Test fetchgit works with gitlab packages", {
+  testthat::skip_on_cran()
   testthat::expect_equal(
     fetchgit(
       list(
@@ -39,6 +42,7 @@ testthat::test_that("Test fetchgit works with gitlab packages", {
 
 
 testthat::test_that("Test fetchzip works", {
+  testthat::skip_on_cran()
   testthat::expect_equal(
     fetchzip("AER@1.2-8"),
     "\n    (pkgs.rPackages.buildRPackage {\n      name = \"AER\";\n      src = pkgs.fetchzip {\n       url = \"https://cran.r-project.org/src/contrib/Archive/AER/AER_1.2-8.tar.gz\";\n       sha256 = \"sha256-OqxXcnUX/2C6wfD5fuNayc8OU+mstI3tt4eBVGQZ2S0=\";\n      };\n      propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.rPackages) \n          car\n          lmtest\n          sandwich\n          survival\n          zoo\n          Formula;\n      };\n    })\n"
@@ -46,6 +50,7 @@ testthat::test_that("Test fetchzip works", {
 })
 
 testthat::test_that("Test fetchzip fails gracefully", {
+  testthat::skip_on_cran()
   testthat::expect_error(
     fetchzip("AER@999999"),
     "Are these correct?"
@@ -53,6 +58,7 @@ testthat::test_that("Test fetchzip fails gracefully", {
 })
 
 testthat::test_that("Test fetchgits", {
+  testthat::skip_on_cran()
   testthat::expect_equal(
     fetchgits(
       list(
@@ -73,6 +79,7 @@ testthat::test_that("Test fetchgits", {
 })
 
 testthat::test_that("Test fetchzips works", {
+  testthat::skip_on_cran()
   testthat::expect_equal(
     fetchzips(
       c("dplyr@0.8.0", "AER@1.2-8")
@@ -83,6 +90,7 @@ testthat::test_that("Test fetchzips works", {
 
 
 testthat::test_that("Test fetchpkgs works", {
+  testthat::skip_on_cran()
   testthat::expect_equal(
     fetchpkgs(
       git_pkgs = list(

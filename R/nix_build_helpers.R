@@ -115,6 +115,14 @@ poll_sys_proc_nonblocking <- function(cmd,
 
   status <- sys::exec_status(proc, wait = TRUE)
 
+  if (is.na(status)) {
+    tools::pskill(pid = proc)
+    stop(
+      "`nix_build()` likely interrupted by SIGINT (ctrl+c)\n",
+      "Stop process with PID ", proc
+    )
+  }
+
   if (isFALSE(is_quiet)) {
     if (status == 0L) {
       cat(paste0("\n==> `", what, "` succeeded!"))

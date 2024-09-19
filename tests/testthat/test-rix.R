@@ -1,5 +1,6 @@
 testthat::test_that("rix(), ide is 'rstudio', Linux", {
-  skip_if(Sys.info()["sysname"] == "Darwin")
+  os_type <- Sys.info()["sysname"]
+  skip_if(os_type == "Darwin" || os_type == "Windows")
 
   path_default_nix <- paste0(
     tempdir(), paste0(sample(letters, 5), collapse = "")
@@ -47,6 +48,9 @@ testthat::test_that("rix(), ide is 'rstudio', Linux", {
 
 
 testthat::test_that("rix(), ide is 'other' or 'code'", {
+  os_type <- Sys.info()["sysname"]
+  skip_if(os_type == "Windows")
+
   path_default_nix <- paste0(
     tempdir(), paste0(sample(letters, 5), collapse = "")
   )
@@ -112,6 +116,9 @@ testthat::test_that("rix(), ide is 'other' or 'code'", {
 
 
 testthat::test_that("Quarto gets added to sys packages", {
+  os_type <- Sys.info()["sysname"]
+  skip_if(os_type == "Windows")
+
   path_default_nix <- normalizePath(tempdir())
   on.exit(
     unlink(path_default_nix, recursive = TRUE, force = TRUE),
@@ -158,7 +165,8 @@ testthat::test_that("Quarto gets added to sys packages", {
 })
 
 testthat::test_that("If on darwin and ide = rstudio, raise warning", {
-  skip_if(Sys.info()["sysname"] != "Darwin")
+  os_type <- Sys.info()["sysname"]
+  skip_if(os_type != "Darwin" || os_type == "Windows")
 
   path_default_nix <- normalizePath(tempdir())
   on.exit(
@@ -290,6 +298,9 @@ testthat::test_that("If R version is == 3.5.3, raise warning", {
 })
 
 testthat::test_that("rix(), bleeding_edge", {
+  os_type <- Sys.info()["sysname"]
+  skip_if(os_type == "Windows")
+
   path_default_nix <- paste0(
     tempdir(), paste0(sample(letters, 5), collapse = "")
   )
@@ -397,10 +408,27 @@ testthat::test_that("rix(), frozen_edge", {
     path = save_default_nix_test(ide = "other", path_default_nix),
     name = "frozen_edge_default.nix",
   )
+<<<<<<< HEAD
+=======
+
+
+  on.exit(
+    {
+      system(
+        paste0("sed -i 's/", frozen_edge_commit, "/REVISION/' _snaps/rix/frozen_edge_default.nix")
+      )
+      unlink(path_default_nix, recursive = TRUE, force = FALSE)
+    },
+    add = TRUE
+  )
+>>>>>>> main
 })
 
 
 testthat::test_that("rix(), only one Github package", {
+  os_type <- Sys.info()["sysname"]
+  skip_if(os_type == "Windows")
+
   path_default_nix <- paste0(
     tempdir(), paste0(sample(letters, 5), collapse = "")
   )
