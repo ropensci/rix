@@ -322,7 +322,7 @@ testthat::test_that("rix(), bleeding_edge", {
   os_type <- Sys.info()["sysname"]
   skip_if(os_type == "Windows")
 
-  tmpdir <- tempdir
+  tmpdir <- tempdir()
 
   path_default_nix <- paste0(
     tmpdir, paste0(sample(letters, 5), collapse = "")
