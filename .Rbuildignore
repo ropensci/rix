@@ -38,16 +38,16 @@ create_dev_env.R
 # ^tests/testthat/test-nix_build\.R$
 # ^tests/testthat/test-rix_init\.R$
 # ^tests/testthat/test-rix\.R$
-^tests/testthat/test-tar_nix_ga\.R$
-^tests/testthat/test-with_nix\.R$
+# ^tests/testthat/test-tar_nix_ga\.R$
+# ^tests/testthat/test-with_nix\.R$
 
 # ^vignettes/a-getting-started\.Rmd$
-^vignettes/b1-setting-up-and-using-rix-on-linux-and-windows\.Rmd$
-^vignettes/b2-setting-up-and-using-rix-on-macos\.Rmd$
-^vignettes/c-using-rix-to-build-project-specific-environments\.Rmd$
-^vignettes/c-using-rix-to-build-project-specific-environments.\.Rmd$
-^vignettes/d1-installing-r-packages-in-a-nix-environment\.Rmd$
-^vignettes/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment\.Rmd$
+# ^vignettes/b1-setting-up-and-using-rix-on-linux-and-windows\.Rmd$
+# ^vignettes/b2-setting-up-and-using-rix-on-macos\.Rmd$
+# ^vignettes/c-using-rix-to-build-project-specific-environments\.Rmd$
+# ^vignettes/c-using-rix-to-build-project-specific-environments.\.Rmd$
+# ^vignettes/d1-installing-r-packages-in-a-nix-environment\.Rmd$
+# ^vignettes/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment\.Rmd$
 ^vignettes/e-interactive-use\.Rmd$
 ^vignettes/z-advanced-topic-building-an-environment-for-literate-programming\.Rmd$
 ^vignettes/z-advanced-topic-handling-packages-with-remote-dependencies\.Rmd$
