@@ -43,12 +43,6 @@ Nix also includes Python, Julia (and many of their respective packages)
 as well as many, many other tools (up to 100’000 pieces of software as
 of writing).
 
-For isolation, `{rix}` includes a `rix_init()` function that creates a
-custom .Rprofile. It prevents conflicts with library paths from
-system-installed R versions, offering better control over your
-environment. `rix_init()` is called automatically by the main function,
-`rix()`.
-
 If you have R installed, you can start straight away from your R session
 by first installing `{rix}`:
 
@@ -60,7 +54,7 @@ install.packages("rix", repos = c(
 library("rix")
 ```
 
-Now try to build an expression using `rix()`:
+Now try to generate an expression using `rix()`:
 
 ``` r
 
@@ -79,6 +73,14 @@ rix(
   print = TRUE
 )
 ```
+
+This will generate two files, `default.nix` and `.Rprofile` in
+`project_default_nix`. `default.nix` is the environment definition
+written in the Nix programming language, and `.Rprofile` prevents
+conflicts with library paths from system-installed R versions, offering
+better control over your environment and improving isolation of Nix
+environments. `.Rprofile` is created by `rix_init()` which is called
+automatically by the main function, `rix()`.
 
 ## Quick Start for Returning Users
 
