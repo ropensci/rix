@@ -45,9 +45,9 @@ explains how.
 ## Adding tools to an environment
 
 The call below generates a `default.nix` that defines an environment with the
-latest version of R. The R `{quarto}` package is also installed, as well as the
-`quarto` command line tool (required to edit Quarto documents from R using the
-`{quarto}` package) and git:
+latest version of R available in `nixpkgs`. The R `{quarto}` package is also
+installed, as well as the `quarto` command line tool (required to edit Quarto
+documents from R using the `{quarto}` package) and git:
 
 ```{r, eval = F}
 path_default_nix <- tempdir()

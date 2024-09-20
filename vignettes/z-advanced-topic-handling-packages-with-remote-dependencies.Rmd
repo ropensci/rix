@@ -21,7 +21,7 @@ library(rix)
 ## Introduction
 
 Packages published on CRAN must have their dependencies on either CRAN or
-Bioconductor, but not on GitHub. However, there are many packages available on
+BioConductor, but not on GitHub. However, there are many packages available on
 GitHub that never get published on CRAN, and some of these packages may even
 depend on other packages that are also only available on GitHub. `{rix}` makes
 it possible to install packages from GitHub, but in case one of the package's
@@ -30,7 +30,6 @@ will fail. This is because Nix will be looking for these packages on `nixpkgs`,
 but only packages released on CRAN and Bioconductor are available through
 `nixpkgs`. This vignette explains how to install such a packages that have
 dependencies only available on GitHub.
-
 
 ## The {lookup} package
 
@@ -181,6 +180,18 @@ propagatedBuildInputs = builtins.attrValues {
       inherit (pkgs.rPackages) gh memoise Rcpp codetools crayon rex jsonlite rstudioapi withr httr;
     } ++ [highlite];
 
+```
+
+and this line:
+
+```
+buildInputs = [ git_archive_pkgs  system_packages  ];
+```
+
+into:
+
+```
+buildInputs = [ git_archive_pkgs  system_packages highlite ];
 ```
 
 Building the expression now succeeds.

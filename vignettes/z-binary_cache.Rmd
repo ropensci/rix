@@ -24,26 +24,26 @@ library(rix)
 
 At its core, the Nix package manager installs software from source, which can
 take a very long time. For example, installing R or RStudio from source could
-take up several hours, depending on your hardware. Some R packages also must be
+take quite some time, depending on your hardware. Some R packages also must be
 compiled, so depending on the environment you need, this could take several
-hours to build. In practice however, this is rarely the case as most, if not
-all packages get pre-built and made available through NixOS's [public
+hours to build. In practice however, this is rarely the case as most, if not all
+packages get pre-built and made available through NixOS's [public
 cache](https://cache.nixos.org/). The Nix package manager first checks if what
 you need is in the public cache, and if yes, it downloads a binary from there
 instead of building it on your computer. This means that building an environment
 is just a matter of waiting for packages to download.
 
-However, in some cases, you might need to use packages that have not been pre-built and
-cached yet, for example if you use `rix(r_ver = "bleeding_edge")` or rix(r_ver =
-"frozen_edge")` to generate environments with bleeding edge packages. Building
-these environments could potentially take quite long, because these packages
-need to be built from source on your computer.
+However, in some cases, you might need to use packages that have not been
+pre-built and cached yet, for example if you use `rix(r_ver = "bleeding_edge")`
+or rix(r_ver = "frozen_edge")` to generate environments with bleeding edge
+packages. Building these environments could potentially take quite long, because
+these packages need to be built from source on your computer.
 
 This vignette will explain how you can cut down on building times by building
-the environment once, and then cache it, so you don’t need to rebuild it on
-new machines. But before rolling out your own cache, try using ours as explained
-in `vignette("z-bleeding_edge")`, and if our cache didn’t cover your needs, set
-up your own. This vignette explains how.
+the environment once, and then cache it, so you don’t need to rebuild it on new
+machines. But before rolling out your own cache, try using ours as explained in
+`vignette("z-bleeding_edge")`, and if our cache didn’t cover your needs, set up
+your own. This vignette explains how.
 
 ## Using Github Actions to build the environment
 
@@ -68,7 +68,7 @@ rix(r_ver = "bleeding_edge",
     project_path = ".")
 ```
 
-if you add a packages to it, or re-run it, you’ll end up with a new
+if you add packages to it, or re-run it, you’ll end up with a new
 `default.nix` file, and so you will need to rebuild the environment. Again,
 depending on the packages you include, this could take quite some time to build.
 To generate a Github Actions workflow file that will build the environment on

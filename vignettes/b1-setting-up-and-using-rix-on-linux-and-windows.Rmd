@@ -191,11 +191,15 @@ Change the commit to a more recent one and adapt the `project_path` argument if 
 
 ## Case 2: you have R installed through your OS’s package manager
 
-If you have installed R on your system through the usual means of installation
-(so not Nix, as decribed before), you can install the `{rix}` package as usual
-as well. Because `{rix}` is not yet on CRAN, the easiest way is to install it
-from its r-universe:
+If you have installed R on your system through the usual means of installation
+(so not Nix, as described before), you can install the `{rix}` package as usual
+as well. To install `{rix}`, run:
 
+```{r parsermd-chunk-2, eval = FALSE}
+install.packages("rix")
+```
+
+or use r-universe:
 
 ```{r parsermd-chunk-2, eval = FALSE}
 install.packages("rix", repos = c(

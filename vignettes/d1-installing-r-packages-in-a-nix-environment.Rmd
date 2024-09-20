@@ -68,10 +68,10 @@ Calling `install.packages()` is a bad idea for several reasons:
   the latest version.
 
 Ideally, you should only manage R versions and R packages using Nix, and
-uninstall any system-managed version of R and R packages. If you do wish to keep
-a system-managed version of R and R packages, we highly recommend that you call
-`rix_init()` from all the Nix shells. This should ensure that your Nix projects
-and your system library of packages don't interfere with each other.
+uninstall any system-managed version of R and R packages. But if you do wish to keep
+a system-managed version of R and R packages, `rix::rix()` also runs `rix::rix_init()`
+automatically which generates an `.Rprofile` file that avoids any clashes between
+your global user library and Nix-managed libraries of R packages.
 
 ## Installing old packages archived on CRAN
 

@@ -170,14 +170,14 @@ environments managed by Nix.
 
 ## Scenario 3: you use some IDE other than RStudio
 
-VS Code and Emacs have been tested and unlike RStudio, you can use a version of
-VS Code or Emacs installed through the usual means on your system with
-development environments built with Nix. But there's nothing stopping you from
-installing a project-specific version of VS Code or Emacs as well if you wish.
-Configuration and settings should be accessible across every version from every
-environment, since these are globally defined at the level of your system.
-This means that to work on a project using VS Code, you would use a call to
-`rix()` like so:
+VS Code, Positron and Emacs have been tested and unlike RStudio, you can use a
+version of VS Code, Positron or Emacs installed through the usual means on your
+system with development environments built with Nix. But there's nothing
+stopping you from installing a project-specific version of VS Code or Emacs as
+well if you wish. Configuration and settings should be accessible across every
+version from every environment, since these are globally defined at the level of
+your system. This means that to work on a project using VS Code, you would use a
+call to `rix()` like so:
 
 ```{r, eval = FALSE}
 rix(
