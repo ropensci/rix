@@ -45,7 +45,7 @@ connection is.
 As explained in the introduction, the *rPackages* set on `nixpkgs` gets updated
 shortly after a new release of R. The process involves first updating the
 package definitions found
-[here](https://github.com/NixOS/nixpkgs/blob/nixos-unstable/pkgs/development/r-modules/),
+[here](https://github.com/NixOS/nixpkgs/tree/nixos-unstable/pkgs/development/r-modules),
 and then building the whole tree on a CI platform called *Hydra*. Build failures
 then get fixed by volunteers (to learn how you can contribute, read the
 `vignette("z-contributing_to_nixpkgs")`). After the most important packages have

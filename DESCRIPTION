@@ -15,7 +15,7 @@ Description: Provides helper functions to create reproducible development
     environments using the Nix package manager.
 License: GPL (>= 3)
 URL: https://docs.ropensci.org/rix/
-BugReports: https://github.com/ropensci/rix
+BugReports: https://github.com/ropensci/rix/issues
 Depends:
     R (>= 2.10)
 Imports:
