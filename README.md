@@ -34,14 +34,21 @@ Use cases include running web apps (e.g., Shiny, `{plumber}` APIs) or
 which snapshots package versions, `{rix}` provides an entire ecosystem
 snapshot, including system-level dependencies.
 
-While Nix has a steep learning curve, `{rix}` simplifies creating Nix
-expressions, which define reproducible environments. You can work
-interactively in IDEs like RStudio or VS Code, or use Nix in CI/CD
-workflows. Nix includes nearly all CRAN and Bioconductor packages, with
-the ability to install specific package versions or GitHub snapshots.
-Nix also includes Python, Julia (and many of their respective packages)
-as well as many, many other tools (up to 100’000 pieces of software as
-of writing).
+While Nix has a steep learning curve, `{rix}`
+
+1.  simplifies creating Nix expressions, which define reproducible
+    environments.
+2.  lets you work interactively in IDEs like RStudio or VS Code, or use
+    Nix in CI/CD workflows.
+3.  provides helpers that make it easy to build those environments,
+    evaluate the same code in different development environments, and
+    finally to deploy software environments in production.
+
+Nix includes nearly all CRAN advanced Bioconductor packages, with the
+ability to install specific package versions or GitHub snapshots. Nix
+also includes Python, Julia (and many of their respective packages) as
+well as many, many other tools (up to 100’000 pieces of software as of
+writing).
 
 If you have R installed, you can start straight away from your R session
 by first installing `{rix}`:
@@ -57,7 +64,6 @@ library("rix")
 Now try to generate an expression using `rix()`:
 
 ``` r
-
 # Choose the path to your project
 # This will create two files: .Rprofile and default.nix
 path_default_nix <- "."
@@ -85,7 +91,9 @@ automatically by the main function, `rix()`.
 ## Quick Start for Returning Users
 
 <details>
+
 <summary>
+
 Click to expand
 </summary>
 
