@@ -1,5 +1,13 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.11.2 (2024-09-20)
+
+# Bug fixes
+
+- fix `R CMD check` and `R CMD build` when running them in a `nix-shell --pure`
+  development environment based on the `default.nix` of {rix} package root.
+  Use manually controlled Nix expression from `r_ver = "latest"` pinned source.
+
 # rix 0.11.1 (2024-09-20)
 
 ## Bug fixes
