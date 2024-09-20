@@ -1,5 +1,15 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.12.0 (2024-09-20)
+
+## Bug fixes
+
+- Fix roxygen2 check note.
+
+## Chores
+
+- Prepare for first CRAN submission! Polish the README.
+
 # rix 0.11.2 (2024-09-20)
 
 ## Bug fixes
