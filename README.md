@@ -39,10 +39,46 @@ expressions, which define reproducible environments. You can work
 interactively in IDEs like RStudio or VS Code, or use Nix in CI/CD
 workflows. Nix includes nearly all CRAN and Bioconductor packages, with
 the ability to install specific package versions or GitHub snapshots.
+Nix also includes Python, Julia (and many of their respective packages)
+as well as many, many other tools (up to 100’000 pieces of software as
+of writing).
 
-For isolation, `{rix}` includes a `rix_init()` function to prevent
-conflicts with system-installed R versions, offering better control over
-your environment.
+For isolation, `{rix}` includes a `rix_init()` function that creates a
+custom .Rprofile. It prevents conflicts with library paths from
+system-installed R versions, offering better control over your
+environment. `rix_init()` is called automatically by the main function,
+`rix()`.
+
+If you have R installed, you can start straight away from your R session
+by first installing `{rix}`:
+
+``` r
+install.packages("rix", repos = c(
+  "https://ropensci.r-universe.dev",
+  "https://cloud.r-project.org"
+))
+library("rix")
+```
+
+Now try to build an expression using `rix()`:
+
+``` r
+
+# Choose the path to your project
+# This will create two files: .Rprofile and default.nix
+path_default_nix <- "."
+
+rix(
+  r_ver = "4.3.3",
+  r_pkgs = c("dplyr", "ggplot2"),
+  system_pkgs = NULL,
+  git_pkgs = NULL,
+  ide = "code",
+  project_path = path_default_nix,
+  overwrite = TRUE,
+  print = TRUE
+)
+```
 
 ## Quick Start for Returning Users
 
@@ -62,19 +98,31 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
 You can then use `{rix}` to build and enter a Nix-based R environment:
 
 ``` r
-file.copy(
-  # default.nix is the file containing the Nix expression
-  from = system.file("extdata", "default.nix", package = "rix"),
-  to = ".", overwrite = TRUE
-)
+library(rix)
 
+path_default_nix <- "."
+
+rix(
+  r_ver = "4.3.3",
+  r_pkgs = c("dplyr", "ggplot2"),
+  system_pkgs = NULL,
+  git_pkgs = NULL,
+  ide = "code",
+  project_path = path_default_nix,
+  overwrite = TRUE,
+  print = TRUE
+)
+```
+
+``` r
 # nix_build() is a wrapper around the command line tool `nix-build`
 nix_build(project_path = ".")
 ```
 
 If you don’t have R installed, but have the Nix package manager
 installed, you can run a temporary R session with R using this command
-(it will build the same environment as the one above):
+(it will build an environment with the latest development version of
+`{rix}` ):
 
     nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/ropensci/rix/main/inst/extdata/default.nix)"
 
@@ -84,7 +132,7 @@ and start using them.
 
 ## Getting started for new users
 
-New to {rix} and Nix? Start by reading the
+New to `{rix}` and Nix? Start by reading the
 `vignette("a-getting-started")` ([online
 documentation](https://docs.ropensci.org/rix/articles/a-getting-started.html)).
 to learn how to set up and use Nix smoothly.
