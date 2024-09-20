@@ -195,7 +195,7 @@ If you have installed R on your system through the usual means of installation
 (so not Nix, as described before), you can install the `{rix}` package as usual
 as well. To install `{rix}`, run:
 
-```{r parsermd-chunk-2, eval = FALSE}
+```{r parsermd-chunk-2-0, eval = FALSE}
 install.packages("rix")
 ```
 
