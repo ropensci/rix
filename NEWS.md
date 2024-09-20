@@ -1,5 +1,48 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.11.1 (2024-09-20)
+
+## Bug fixes
+
+- `rix::rix()`: Clean detrius files/folders in temporary folders that are not
+  needed. Also fixes failing vignette builds in `R CMD build` (including helpers
+  `rix::rix_init()`, `rix:::hash_url()`) by properly handling file connections,
+  closing them on exit, and unlink temporary file folders. (#308)
+- `nix_build()`: Fix SIGINT termination (ctrl+c) for linux, so that all the
+  `nix-build` background processes are properly stopped when the user interupts
+  the build process.
+
+## Development services
+
+- `rix::rix()`: when hashing Git provider packages (e.g., GitHub) remotely via
+  the https://git2nixsha.dev API, https protocol is now used (previously http).
+  Hashing via this service is done when Nix is not installed or when requested
+  via option.
+
+## Chores
+
+- Update top-level `default.nix` for {rix} development environment. 
+- Remove `pre-commit` config because it does not play well with Nix
+  (R-tooling/package inst based on {renv})
+- Make `R CMD check` pass without `NOTE` because of file artefacts when running
+  vignettes and doing tests (`tests/testthat/test-rix.R`)
+- Polish lint and styling actions
+- Transfer to ROpenSci:
+  - updated docs links
+  - added reviewers to DESCRIPTION
+  - updated link in DESCRIPTION
+  - added link to CoC
+  - fixed links
+- `rix::rix()`: error when `ide = "studio"` and no additional R packages are
+  chosen. In the situation, the `rStudioWrapper` approach does not work and the
+  resulting Nix expression would not build. The returned error states to either
+  add `rstudio` to `system_pkgs`, or add R packages in `r_pkgs` or `git_pkgs`.
+- Explain `options(rix.sri_hash)` in `rix::rix()`
+- Source code now follows tidyverse style guide thanks to `{styler}`
+- API change: it is not necessary to provide the branchName argument for Github
+  packages anymore
+- GitHub Actions: we now use Rhub for checking the package
+
 # rix 0.11.0 (2024-09-12)
 
 - Gitlab packages can now be installed as well
