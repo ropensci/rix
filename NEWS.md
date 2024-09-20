@@ -26,22 +26,7 @@
   (R-tooling/package inst based on {renv})
 - Make `R CMD check` pass without `NOTE` because of file artefacts when running
   vignettes and doing tests (`tests/testthat/test-rix.R`)
-- Polish lint and styling actions
-- Transfer to ROpenSci:
-  - updated docs links
-  - added reviewers to DESCRIPTION
-  - updated link in DESCRIPTION
-  - added link to CoC
-  - fixed links
-- `rix::rix()`: error when `ide = "studio"` and no additional R packages are
-  chosen. In the situation, the `rStudioWrapper` approach does not work and the
-  resulting Nix expression would not build. The returned error states to either
-  add `rstudio` to `system_pkgs`, or add R packages in `r_pkgs` or `git_pkgs`.
-- Explain `options(rix.sri_hash)` in `rix::rix()`
-- Source code now follows tidyverse style guide thanks to `{styler}`
-- API change: it is not necessary to provide the branchName argument for Github
-  packages anymore
-- GitHub Actions: we now use Rhub for checking the package
+- Polish lint and styling actions″LC_ALL = "en_US.UTF-8"
 
 # rix 0.11.0 (2024-09-12)
 
