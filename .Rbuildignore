@@ -27,3 +27,4 @@ create_dev_env.R
 
 # flint files
 ^flint$
+^cran-comments\.md$
