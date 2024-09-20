@@ -91,9 +91,7 @@ automatically by the main function, `rix()`.
 ## Quick Start for Returning Users
 
 <details>
-
 <summary>
-
 Click to expand
 </summary>
 
@@ -205,8 +203,8 @@ Lackerbauer](https://github.com/ciil),
 [MrTarantoga](https://github.com/MrTarantoga) and every other person
 from the [Matrix Nixpkgs R channel](https://matrix.to/#/#r:nixos.org)).
 
-Finally, thanks to [David Solito](https://x.com/dsolito) for creating
-`{rix}`’s logo!
+Finally, thanks to [David Solito](https://www.davidsolito.com/about/)
+for creating `{rix}`’s logo!
 
 ## Recommended reading
 
