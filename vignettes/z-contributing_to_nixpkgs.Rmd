@@ -91,7 +91,7 @@ From there, you can see that `{AIUQ}`'s build failed because of another package,
 You can look for `{SuperGauss}` in the "Still failing jobs" tab, and see why
 `{SuperGauss}` failed, or you could check out a little dashboard I built that
 you can find
-[here](https://raw.githack.com/ropensci/nixpkgs-r-updates-fails/targets-runs/output/r-updates-fails.html).
+[here](https://raw.githack.com/b-rodrigues/nixpkgs-r-updates-fails/targets-runs/output/r-updates-fails.html).
 This dashboard shows essentially the same information you find on the "Still
 failing jobs" tab from before, but with several added niceties. First of all,
 there's a column called `fails_because_of` that shows the name of the package
