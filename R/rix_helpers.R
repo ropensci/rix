@@ -132,7 +132,6 @@ get_rpkgs <- function(r_pkgs, ide) {
 #' @param rPackages Character, list of R packages to install.
 #' @param flag_rpkgs Character, are there any R packages at all?
 #' @noRd
-#' # nolint start: object_name_linter
 generate_rpkgs <- function(rPackages, flag_rpkgs) {
   if (flag_rpkgs == "") {
     NULL
@@ -143,11 +142,10 @@ generate_rpkgs <- function(rPackages, flag_rpkgs) {
     inherit (pkgs.rPackages) %s;
   };
 ",
-      rPackages
+      rPackages # nolint object_name_linter
     )
   }
 }
-# nolint end: object_name_linter
 
 #' generate_local_r_pkgs Internal function that generates the string containing
 #' the correct Nix expression for installing local packages
