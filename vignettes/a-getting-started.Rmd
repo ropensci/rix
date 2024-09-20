@@ -152,6 +152,14 @@ Pinning a revision ensures that every package that Nix installs will always be
 at exactly the same versions, regardless of when in the future the packages get
 installed.
 
+### Other "Nix"es
+
+There are several implementations of the Nix package manager that you might want
+to try if you're feeling adventurous... for now, we recommend to stick with Nix.
+
+You can give [Lix](https://lix.systems/install/) a try, or
+[Tvix](https://tvix.dev/).
+
 ## rix workflow
 
 The idea of `{rix}` is for you to declare the environment you need using the
