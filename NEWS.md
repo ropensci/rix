@@ -2,7 +2,7 @@
 
 # rix 0.11.2 (2024-09-20)
 
-# Bug fixes
+## Bug fixes
 
 - fix `R CMD check` and `R CMD build` when running them in a `nix-shell --pure`
   development environment based on the `default.nix` of {rix} package root.
