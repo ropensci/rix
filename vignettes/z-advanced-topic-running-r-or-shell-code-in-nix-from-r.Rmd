@@ -231,8 +231,7 @@ from. Accordingly, we define the R 4.2.0 environment in a
 *`env`*`_1_2_R-4-2-0`using Nix via `rix::rix()`. The latter environment will be
 the target environment where `df_as_vector()` will be evaluated in.
 
-
-```{r parsermd-chunk-11}
+```{r, eval = F}
 library("rix")
 path_env_1_2 <- file.path(".", "_env_1_2_R-4-2-0")
 
@@ -243,6 +242,23 @@ rix(
   shell_hook = "R"
 )
 
+list.files(path_env_1_2)
+```
+
+```{r, include = F}
+library("rix")
+
+path_env_1_2 <- file.path(tempdir(), "_env_1_2_R-4-2-0")
+
+rix(
+  r_ver = "4.2.0",
+  overwrite = TRUE,
+  project_path = path_env_1_2,
+  shell_hook = "R"
+)
+```
+
+```{r, echo = F}
 list.files(path_env_1_2)
 ```
 
@@ -327,8 +343,7 @@ compile!).
 Let's build a subshell with the latest version of R, but an older version
 of `{stringr}`:
 
-
-```{r parsermd-chunk-18}
+```{r, eval = F}
 library("rix")
 
 path_env_stringr <- file.path(".", "_env_stringr_1.4.1")
@@ -343,8 +358,22 @@ rix(
 list.files(path = path_env_stringr, all.files = TRUE)
 ```
 
-```{r, include = FALSE}
-unlink(path_env_stringr, recursive = TRUE, force = TRUE)
+```{r, include = F}
+library("rix")
+
+path_env_stringr <- file.path(tempdir(), "_env_stringr_1.4.1")
+
+rix(
+  r_ver = "4.3.1",
+  r_pkgs = "stringr@1.4.1",
+  overwrite = TRUE,
+  project_path = path_env_stringr
+)
+
+```
+
+```{r, echo = F}
+list.files(path = path_env_stringr, all.files = TRUE)
 ```
 
 We can now run the code in the subshell
