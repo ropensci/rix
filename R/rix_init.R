@@ -62,8 +62,7 @@
 #' it and set the `rprofile_action` to `"append"`.
 #'
 #' @param project_path Character with the folder path to the isolated nix-R
-#'   project. Defaults to `"."`, which is the current working directory path. If
-#'   the folder does not exist yet, it will be created.
+#'   project. If the folder does not exist yet, it will be created.
 #' @param rprofile_action Character. Action to take with `.Rprofile` file
 #'   destined for `project_path` folder. Possible values include
 #'   `"create_missing"`, which only writes `.Rprofile` if it does not yet exist
@@ -94,7 +93,7 @@
 #'   message_type = c("simple")
 #' )
 #' }
-rix_init <- function(project_path = ".",
+rix_init <- function(project_path,
                      rprofile_action = c(
                        "create_missing", "create_backup",
                        "overwrite", "append"

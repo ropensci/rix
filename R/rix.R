@@ -19,7 +19,8 @@
 #' @param system_pkgs Vector of characters. List further software you wish to
 #'   install that are not R packages such as command line applications for
 #'   example. You can look for available software on the NixOS website
-#'   \url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=} # nolint
+#'   \url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=}
+#'   # nolint
 #' @param git_pkgs List. A list of packages to install from Git. See details for
 #'   more information.
 #' @param local_r_pkgs List. A list of local packages to install. These packages
@@ -34,32 +35,19 @@
 #'   for Visual Studio Code. You can also use "radian", an interactive REPL. For
 #'   other editors, use "other". This has been tested with RStudio, VS Code and
 #'   Emacs. If other editors don't work, please open an issue.
-#' @param project_path Character, defaults to the current working directory.
-#'   Where to write `default.nix`, for example "/home/path/to/project". The file
-#'   will thus be written to the file "/home/path/to/project/default.nix". If
-#'   the folder does not exist, it will be created.
+#' @param project_path Character. Where to write `default.nix`, for example
+#'   "/home/path/to/project". The file will thus be written to the file
+#'   "/home/path/to/project/default.nix". If the folder does not exist, it will
+#'   be created.
 #' @param overwrite Logical, defaults to FALSE. If TRUE, overwrite the
 #'   `default.nix` file in the specified path.
 #' @param print Logical, defaults to FALSE. If TRUE, print `default.nix` to
 #'   console.
 #' @param message_type Character. Message type, defaults to `"simple"`, which
 #'   gives minimal but sufficient feedback. Other values are currently
-#'   `"quiet`, which generates the files without message, and `"verbose"`,
-#'   displays all the messages.
-#' @param shell_hook Character of length 1, defaults to `NULL`. Commands added
-#'   to the `shellHook` variable are executed when the Nix shell starts. So by
-#'   default, using `nix-shell default.nix` will start a specific program,
-#'   possibly with flags (separated by space), and/or do shell actions. You can
-#'   for example use `shell_hook = R`, if you want to directly enter the
-#'   declared Nix R session when dropping into the Nix shell.
-#' @details This function will write a `default.nix` and an `.Rprofile` in the
-#'   chosen path. Using the Nix package manager, it is then possible to build a
-#'   reproducible development environment using the `nix-build` command in the
-#'   path. This environment will contain the chosen version of R and packages,
-#'   and will not interfere with any other installed version (via Nix or not) on
-#'   your machine. Every dependency, including both R package dependencies but
-#'   also system dependencies like compilers will get installed as well in that
-#'   environment.
+#'   `"quiet`, which generates the files without message, and `"verbose"`, displays all the messages.
+#' @param shell_hook Character of length 1, defaults to `NULL`. Commands added to the `shellHook` variable are executed when the Nix shell starts. So by default, using `nix-shell default.nix` will start a specific program, possibly with flags (separated by space), and/or do shell actions. You can for example use `shell_hook = R`, if you want to directly enter the declared Nix R session when dropping into the Nix shell.
+#' @details This function will write a `default.nix` and an `.Rprofile` in the chosen path. Using the Nix package manager, it is then possible to build a reproducible development environment using the `nix-build` command in the path. This environment will contain the chosen version of R and packages, and will not interfere with any other installed version (via Nix or not) on your machine. Every dependency, including both R package dependencies but also system dependencies like compilers will get installed as well in that environment.
 #'
 #'   It is possible to use environments built with Nix interactively, either
 #'   from the terminal, or using an interface such as RStudio. If you want to
@@ -157,7 +145,7 @@ rix <- function(r_ver = "latest",
                 local_r_pkgs = NULL,
                 tex_pkgs = NULL,
                 ide = c("other", "code", "radian", "rstudio", "rserver"),
-                project_path = ".",
+                project_path,
                 overwrite = FALSE,
                 print = FALSE,
                 message_type = "simple",
