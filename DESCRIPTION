@@ -11,10 +11,13 @@ Authors@R: c(
     person("Jacob", "Wujiciak-Jens", , "jacob@wujciak.de", role = "rev",
            comment = c(ORCID = "0000-0002-7281-3989", "Jacob reviewed the package (v. 0.9.1) for rOpenSci, see <https://github.com/ropensci/software-review/issues/625>"))
   )
-Description: Provides helper functions to create reproducible development
-    environments using the 'Nix' package manager. The included `rix()` function
-    generates an entire development environment description as a `default.nix`
-    file which can then be built using 'Nix'.
+Description: Simplifies the creation of reproducible development environments
+    using the 'Nix' package manager. The included `rix()` function generates a
+    complete description of the development environment as a `default.nix` file,
+    which can then be built using `Nix'. This results in project specific 
+    software environments with pinned versions of R, packages, linked system
+    dependencies, and other tools. Additional features help you run R code in
+    Nix' software environments for testing and production.
 License: GPL (>= 3)
 URL: https://docs.ropensci.org/rix/
 BugReports: https://github.com/ropensci/rix/issues
