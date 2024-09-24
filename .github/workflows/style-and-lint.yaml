@@ -50,6 +50,7 @@ jobs:
         if: env.has_changes == 'true'
         run: |
           git add \*.R
+          git add \*.Rmd
           git commit -m 'Style via {styler}'
 
       - uses: r-lib/actions/pr-push@v2

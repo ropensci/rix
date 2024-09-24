@@ -1,7 +1,5 @@
 #' Invoke shell command `nix-build` from an R session
 #' @param project_path Path to the folder where the `default.nix` file resides.
-#' The default is `"."`, which is the working directory in the current R
-#' session.
 #' @param message_type Character vector with messaging type, Either `"simple"`
 #' (default), `"quiet"` for no messaging, or `"verbose"`.
 #' @return integer of the process ID (PID) of `nix-build` shell command
@@ -22,7 +20,7 @@
 #' \dontrun{
 #' nix_build()
 #' }
-nix_build <- function(project_path = ".",
+nix_build <- function(project_path = getwd(),
                       message_type = c("simple", "quiet", "verbose")) {
   message_type <- match.arg(message_type,
     choices = c("simple", "quiet", "verbose")
