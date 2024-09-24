@@ -4,13 +4,12 @@
 
 0 errors | 0 warnings | 1 note
 
+Results on Rhub: https://github.com/ropensci/rix/actions/runs/11020276185
+
+Also ran R CMD check using R-devel with win-builder,
+also only 1 note.
+
 Note is because it's a new release.
-
-Results on Rhub:
-
-Results using R-devel with win-builder:
-
-
 
 #### Comments from CRAN maintainers from submission of the 20-09-2024:
 
