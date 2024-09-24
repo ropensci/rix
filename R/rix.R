@@ -19,8 +19,7 @@
 #' @param system_pkgs Vector of characters. List further software you wish to
 #'   install that are not R packages such as command line applications for
 #'   example. You can look for available software on the NixOS website
-#'   \url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=}
-#'   # nolint
+#'   \url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=} # nolint
 #' @param git_pkgs List. A list of packages to install from Git. See details for
 #'   more information.
 #' @param local_r_pkgs List. A list of local packages to install. These packages
@@ -44,10 +43,22 @@
 #' @param print Logical, defaults to FALSE. If TRUE, print `default.nix` to
 #'   console.
 #' @param message_type Character. Message type, defaults to `"simple"`, which
-#'   gives minimal but sufficient feedback. Other values are currently
-#'   `"quiet`, which generates the files without message, and `"verbose"`, displays all the messages.
-#' @param shell_hook Character of length 1, defaults to `NULL`. Commands added to the `shellHook` variable are executed when the Nix shell starts. So by default, using `nix-shell default.nix` will start a specific program, possibly with flags (separated by space), and/or do shell actions. You can for example use `shell_hook = R`, if you want to directly enter the declared Nix R session when dropping into the Nix shell.
-#' @details This function will write a `default.nix` and an `.Rprofile` in the chosen path. Using the Nix package manager, it is then possible to build a reproducible development environment using the `nix-build` command in the path. This environment will contain the chosen version of R and packages, and will not interfere with any other installed version (via Nix or not) on your machine. Every dependency, including both R package dependencies but also system dependencies like compilers will get installed as well in that environment.
+#'   gives minimal but sufficient feedback. Other values are currently `"quiet`,
+#'   which generates the files without message, and `"verbose"`, displays all
+#'   the messages.
+#' @param shell_hook Character of length 1, defaults to `NULL`. Commands added
+#' to the `shellHook` variable are executed when the Nix shell starts. So by
+#' default, using `nix-shell default.nix` will start a specific program,
+#' possibly with flags (separated by space), and/or do shell actions. You can
+#' for example use `shell_hook = R`, if you want to directly enter the declared
+#' Nix R session when dropping into the Nix shell. @details This function will
+#' write a `default.nix` and an `.Rprofile` in the chosen path. Using the Nix
+#' package manager, it is then possible to build a reproducible development
+#' environment using the `nix-build` command in the path. This environment will
+#' contain the chosen version of R and packages, and will not interfere with any
+#' other installed version (via Nix or not) on your machine. Every dependency,
+#' including both R package dependencies but also system dependencies like
+#' compilers will get installed as well in that environment.
 #'
 #'   It is possible to use environments built with Nix interactively, either
 #'   from the terminal, or using an interface such as RStudio. If you want to
@@ -63,12 +74,12 @@
 #'   argument to `"other"`. We recommend reading the
 #'   `vignette("e-interactive-use")` for more details.
 #'
-#'   Packages to install from Github or Gitlab must be provided in a list of 3 elements:
-#'   "package_name", "repo_url" and "commit". To install several packages,
-#'   provide a list of lists of these 3 elements, one per package to install. It
-#'   is also possible to install old versions of packages by specifying a
-#'   version. For example, to install the latest version of `{AER}` but an old
-#'   version of `{ggplot2}`, you could write: `r_pkgs = c("AER",
+#'   Packages to install from Github or Gitlab must be provided in a list of 3
+#'   elements: "package_name", "repo_url" and "commit". To install several
+#'   packages, provide a list of lists of these 3 elements, one per package to
+#'   install. It is also possible to install old versions of packages by
+#'   specifying a version. For example, to install the latest version of `{AER}`
+#'   but an old version of `{ggplot2}`, you could write: `r_pkgs = c("AER",
 #'   "ggplot2@2.2.1")`. Note however that doing this could result in dependency
 #'   hell, because an older version of a package might need older versions of
 #'   its dependencies, but other packages might need more recent versions of the
@@ -77,10 +88,10 @@
 #'   the Nix revision closest to that date, by setting `r_ver = "3.1.0"`, which
 #'   was the version of R current at the time. This ensures that Nix builds a
 #'   completely coherent environment. For security purposes, users that wish to
-#'   install packages from Github/Gitlab or from the CRAN archives must provide a
-#'   security hash for each package. `{rix}` automatically precomputes this hash
-#'   for the source directory of R packages from GitHub/Gitlab or from the CRAN
-#'   archives, to make sure the expected trusted sources that match the
+#'   install packages from Github/Gitlab or from the CRAN archives must provide
+#'   a security hash for each package. `{rix}` automatically precomputes this
+#'   hash for the source directory of R packages from GitHub/Gitlab or from the
+#'   CRAN archives, to make sure the expected trusted sources that match the
 #'   precomputed hashes in the `default.nix` are downloaded. If Nix is
 #'   available, then the hash will be computed on the user's machine, however,
 #'   if Nix is not available, then the hash gets computed on a server that we
