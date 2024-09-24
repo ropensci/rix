@@ -1,5 +1,5 @@
 Package: rix
-Title: Reproducible Environments with 'Nix'
+Title: Reproducible Data Science Environments with 'Nix'
 Version: 0.12.0
 Authors@R: c(
     person("Bruno", "Rodrigues", , "bruno@brodrigues.co", role = c("aut", "cre"),
