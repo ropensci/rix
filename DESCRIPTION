@@ -16,8 +16,8 @@ Description: Simplifies the creation of reproducible development environments
     complete description of the development environment as a `default.nix` file,
     which can then be built using `Nix'. This results in project specific 
     software environments with pinned versions of R, packages, linked system
-    dependencies, and other tools. Additional features help you run R code in
-    Nix' software environments for testing and production.
+    dependencies, and other tools. Additional helpers make it easy to run R code
+    in Nix' software environments for testing and production.
 License: GPL (>= 3)
 URL: https://docs.ropensci.org/rix/
 BugReports: https://github.com/ropensci/rix/issues
