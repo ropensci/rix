@@ -1,10 +1,16 @@
-## 23-09-2024 Resubmission
+## 23-09-2024 Resubmission, version 0.12.1
 
 ### R CMD check results
 
 0 errors | 0 warnings | 1 note
 
 Note is because it's a new release.
+
+Results on Rhub:
+
+Results using R-devel with win-builder:
+
+
 
 #### Comments from CRAN maintainers from submission of the 20-09-2024:
 

@@ -12,7 +12,7 @@ rix(
   local_r_pkgs = NULL,
   tex_pkgs = NULL,
   ide = c("other", "code", "radian", "rstudio", "rserver"),
-  project_path = ".",
+  project_path,
   overwrite = FALSE,
   print = FALSE,
   message_type = "simple",
@@ -56,10 +56,10 @@ for Visual Studio Code. You can also use "radian", an interactive REPL. For
 other editors, use "other". This has been tested with RStudio, VS Code and
 Emacs. If other editors don't work, please open an issue.}
 
-\item{project_path}{Character, defaults to the current working directory.
-Where to write \code{default.nix}, for example "/home/path/to/project". The file
-will thus be written to the file "/home/path/to/project/default.nix". If
-the folder does not exist, it will be created.}
+\item{project_path}{Character. Where to write \code{default.nix}, for example
+"/home/path/to/project". The file will thus be written to the file
+"/home/path/to/project/default.nix". If the folder does not exist, it will
+be created.}
 
 \item{overwrite}{Logical, defaults to FALSE. If TRUE, overwrite the
 \code{default.nix} file in the specified path.}
@@ -68,37 +68,23 @@ the folder does not exist, it will be created.}
 console.}
 
 \item{message_type}{Character. Message type, defaults to \code{"simple"}, which
-gives minimal but sufficient feedback. Other values are currently
-\verb{"quiet}, which generates the files without message, and \code{"verbose"},
-displays all the messages.}
+gives minimal but sufficient feedback. Other values are currently \verb{"quiet},
+which generates the files without message, and \code{"verbose"}, displays all
+the messages.}
 
 \item{shell_hook}{Character of length 1, defaults to \code{NULL}. Commands added
 to the \code{shellHook} variable are executed when the Nix shell starts. So by
 default, using \verb{nix-shell default.nix} will start a specific program,
 possibly with flags (separated by space), and/or do shell actions. You can
-for example use \code{shell_hook = R}, if you want to directly enter the
-declared Nix R session when dropping into the Nix shell.}
-}
-\value{
-Nothing, this function only has the side-effect of writing two files:
-\code{default.nix} and \code{.Rprofile} in the working directory. \code{default.nix}
-contains a Nix expression to build a reproducible environment using the Nix
-package manager, and \code{.Rprofile} ensures that a running R session from a
-Nix environment cannot access local libraries, nor install packages using
-\code{install.packages()} (nor remove nor update them).
-}
-\description{
-Generate a Nix expression that builds a reproducible development environment
-}
-\details{
-This function will write a \code{default.nix} and an \code{.Rprofile} in the
-chosen path. Using the Nix package manager, it is then possible to build a
-reproducible development environment using the \code{nix-build} command in the
-path. This environment will contain the chosen version of R and packages,
-and will not interfere with any other installed version (via Nix or not) on
-your machine. Every dependency, including both R package dependencies but
-also system dependencies like compilers will get installed as well in that
-environment.
+for example use \code{shell_hook = R}, if you want to directly enter the declared
+Nix R session when dropping into the Nix shell. @details This function will
+write a \code{default.nix} and an \code{.Rprofile} in the chosen path. Using the Nix
+package manager, it is then possible to build a reproducible development
+environment using the \code{nix-build} command in the path. This environment will
+contain the chosen version of R and packages, and will not interfere with any
+other installed version (via Nix or not) on your machine. Every dependency,
+including both R package dependencies but also system dependencies like
+compilers will get installed as well in that environment.
 
 It is possible to use environments built with Nix interactively, either
 from the terminal, or using an interface such as RStudio. If you want to
@@ -114,12 +100,12 @@ command line, or from another editor (such as Emacs or Vim), set the \code{ide}
 argument to \code{"other"}. We recommend reading the
 \code{vignette("e-interactive-use")} for more details.
 
-Packages to install from Github or Gitlab must be provided in a list of 3 elements:
-"package_name", "repo_url" and "commit". To install several packages,
-provide a list of lists of these 3 elements, one per package to install. It
-is also possible to install old versions of packages by specifying a
-version. For example, to install the latest version of \code{{AER}} but an old
-version of \code{{ggplot2}}, you could write: \code{r_pkgs = c("AER", "ggplot2@2.2.1")}. Note however that doing this could result in dependency
+Packages to install from Github or Gitlab must be provided in a list of 3
+elements: "package_name", "repo_url" and "commit". To install several
+packages, provide a list of lists of these 3 elements, one per package to
+install. It is also possible to install old versions of packages by
+specifying a version. For example, to install the latest version of \code{{AER}}
+but an old version of \code{{ggplot2}}, you could write: \code{r_pkgs = c("AER", "ggplot2@2.2.1")}. Note however that doing this could result in dependency
 hell, because an older version of a package might need older versions of
 its dependencies, but other packages might need more recent versions of the
 same dependencies. If instead you want to use an environment as it would
@@ -127,10 +113,10 @@ have looked at the time of \code{{ggplot2}}'s version 2.2.1 release, then use
 the Nix revision closest to that date, by setting \code{r_ver = "3.1.0"}, which
 was the version of R current at the time. This ensures that Nix builds a
 completely coherent environment. For security purposes, users that wish to
-install packages from Github/Gitlab or from the CRAN archives must provide a
-security hash for each package. \code{{rix}} automatically precomputes this hash
-for the source directory of R packages from GitHub/Gitlab or from the CRAN
-archives, to make sure the expected trusted sources that match the
+install packages from Github/Gitlab or from the CRAN archives must provide
+a security hash for each package. \code{{rix}} automatically precomputes this
+hash for the source directory of R packages from GitHub/Gitlab or from the
+CRAN archives, to make sure the expected trusted sources that match the
 precomputed hashes in the \code{default.nix} are downloaded. If Nix is
 available, then the hash will be computed on the user's machine, however,
 if Nix is not available, then the hash gets computed on a server that we
@@ -167,7 +153,18 @@ environment will be up-to-date on the date that the \code{default.nix} will be
 generated, and then each subsequent call to \code{nix-build} will result in the
 same environment. We highly recommend you read the vignette titled
 "z - Advanced topic: Understanding the rPackages set release cycle and
-using bleeding edge packages".
+using bleeding edge packages".}
+}
+\value{
+Nothing, this function only has the side-effect of writing two files:
+\code{default.nix} and \code{.Rprofile} in the working directory. \code{default.nix}
+contains a Nix expression to build a reproducible environment using the Nix
+package manager, and \code{.Rprofile} ensures that a running R session from a
+Nix environment cannot access local libraries, nor install packages using
+\code{install.packages()} (nor remove nor update them).
+}
+\description{
+Generate a Nix expression that builds a reproducible development environment
 }
 \examples{
 \dontrun{

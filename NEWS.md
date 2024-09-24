@@ -1,5 +1,34 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.12.1 (2024-09-24)
+
+- Fix roxygen2 check note & Update README
+- `default.nix` in {rix} root. Use manually controlled Nix expression from "latest" commit Fix `R CMD build` and `R CMD check` in standard `default.nix` dev env.
+- Update default.nix
+- update top-level `default.nix` for {rix} development environment. 
+- Remove `pre-commit` config because it does not play well with Nix (R-tooling/package inst based on {renv})
+- make `R CMD check` pass without `note` because of file artefacts when running vignettes and doing tests (`tests/testthat/test-rix.R`)
+- Update default.nix
+- `rix::rix()`: fix failing vignette builds in`R CMD build` in main function and helpers (`rix::rix_init()`, `rix:::hash_url()`) by properly handling file connections, closing them on exit, and unlink temporary file folders. Removes detrius files/folders (#308)
+- `nix_build()`: Fix SIGINT termination (ctrl+c) for linux, so that all the `nix-build` background processes are properly stopped for user interrupts.
+- Polish lint and styling actions
+- rOpenSci transfer: updated docs links
+- The git2nixsha.dev api is now being served by https
+- Gitlab packages can now be installed as well
+- Transfer to ropensci: updated more links
+- Transfer to ropensci: added reviewers to DESCRIPTION
+- Transfer to ropensci: update link in DESCRIPTION
+- Transfer to r-opensci: added link to CoC
+- Transfer to r-opensci: fixed links
+- Fix directory creation in with_nix(), using recursive = TRUE in dir.create()
+- `rix::rix()`: error when `ide = "studio"` and no additional R packages are chosen. In the situation, the `rStudioWrapper` approach does not work and the resulting Nix expression would not build. The returned error states to either add `rstudio` to `system_pkgs`, or add R packages in `r_pkgs` or `git_pkgs`.
+- Update default.nix
+- explain `options(rix.sri_hash)` in `rix::rix()`
+- Source code now follows tidyverse style guide thanks to `{styler}`
+-Api change: it is not necessary to provide the branchName argument for Github packages anymore
+-Github Actions: we now use Rhub for checking the package
+
+
 # rix 0.12.0 (2024-09-20)
 
 ## Bug fixes

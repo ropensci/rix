@@ -6,15 +6,14 @@
 setup via Nix.}
 \usage{
 rix_init(
-  project_path = ".",
+  project_path,
   rprofile_action = c("create_missing", "create_backup", "overwrite", "append"),
   message_type = c("simple", "quiet", "verbose")
 )
 }
 \arguments{
 \item{project_path}{Character with the folder path to the isolated nix-R
-project. Defaults to \code{"."}, which is the current working directory path. If
-the folder does not exist yet, it will be created.}
+project. If the folder does not exist yet, it will be created.}
 
 \item{rprofile_action}{Character. Action to take with \code{.Rprofile} file
 destined for \code{project_path} folder. Possible values include
