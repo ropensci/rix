@@ -35,7 +35,7 @@ with no space after 'doi:', 'https:' and angle brackets for
 auto-linking. (If you want to add a title as well please put it in
 quotes: "Title")
 
-We don't have any references.
+We added a reference to a paper describing Nix.
 
 - Please ensure that your functions do not write by default or in your
 examples/vignettes/tests in the user's home filespace (including the
