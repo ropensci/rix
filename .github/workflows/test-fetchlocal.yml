@@ -50,7 +50,7 @@ jobs:
 
       - name: Build default.nix with 1 local package
         run: |
-          nix-shell ./inst/extdata/default.nix --run "Rscript -e \"library(rix);rix('4.3.1', local_r_pkgs = 'chronicler_0.2.1.tar.gz', overwrite = TRUE)\""
+          nix-shell ./inst/extdata/default.nix --run "Rscript -e \"library(rix);rix('4.3.1', local_r_pkgs = 'chronicler_0.2.1.tar.gz', project_path = '.', overwrite = TRUE)\""
 
       - name: Build default.nix
         run: nix-build
