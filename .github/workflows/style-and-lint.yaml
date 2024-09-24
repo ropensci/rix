@@ -45,6 +45,8 @@ jobs:
           git config --local user.name "$GITHUB_ACTOR"
           git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
           git diff-index --quiet HEAD || echo "has_changes=true" >> $GITHUB_ENV
+          git add \*.R
+          git commit -m 'Style via {styler}'
           
       - name: commit if changes
         if: env.has_changes == 'true'
