@@ -20,7 +20,7 @@
 #' \dontrun{
 #' nix_build()
 #' }
-nix_build <- function(project_path,
+nix_build <- function(project_path = getwd(),
                       message_type = c("simple", "quiet", "verbose")) {
   message_type <- match.arg(message_type,
     choices = c("simple", "quiet", "verbose")
