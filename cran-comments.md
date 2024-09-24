@@ -56,7 +56,7 @@ Regarding functions `rix()` and `rix_init()`: we don't set `project_path` to
 
 0 errors | 0 warnings | 1 note
 
-Results on Rhub: 
+Results on Rhub:
 https://github.com/ropensci/rix/actions/runs/10964768061/job/30449117244#step:6:130
 
 The Note is stating that this is a new submission:
