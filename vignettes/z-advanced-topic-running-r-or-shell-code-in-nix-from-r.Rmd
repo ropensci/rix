@@ -369,7 +369,6 @@ rix(
   overwrite = TRUE,
   project_path = path_env_stringr
 )
-
 ```
 
 ```{r, echo = F}
