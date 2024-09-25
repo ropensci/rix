@@ -1,5 +1,16 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.12.2 (2024-09-25)
+
+# Chores
+
+- Update shipped `inst/extdata/default.nix` with this patch release of {rix}
+- Remove duplicate `NEWS` entries in 0.12.1 released previously, which is the
+  first CRAN release version.
+- Added reference to Elco et al. (2004) in the `DESCRIPTION` (forgotten in 
+  first CRAN release 0.12.1)
+
+
 # rix 0.12.1 (2024-09-25)
 
 ## User-facing changes
