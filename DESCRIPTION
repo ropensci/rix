@@ -7,15 +7,21 @@ Authors@R: c(
     person("Philipp", "Baumann", , "baumann-philipp@protonmail.com", role = "aut",
            comment = c(ORCID = "0000-0002-3194-8975")),
     person("David", "Watkins", , "wwatkins@usgs.gov", role = "rev",
-           comment = c("David reviewed the package (v. 0.9.1) for rOpenSci, see <https://github.com/ropensci/software-review/issues/625>")),
+           comment = c("David reviewed the package (v. 0.9.1) for rOpenSci,
+                        see <https://github.com/ropensci/software-review/issues/625>")),
     person("Jacob", "Wujiciak-Jens", , "jacob@wujciak.de", role = "rev",
-           comment = c(ORCID = "0000-0002-7281-3989", "Jacob reviewed the package (v. 0.9.1) for rOpenSci, see <https://github.com/ropensci/software-review/issues/625>"))
+           comment = c(ORCID = "0000-0002-7281-3989", "Jacob reviewed the
+                       package (v. 0.9.1) for rOpenSci,
+                       see <https://github.com/ropensci/software-review/issues/625>"))
   )
 Description: Simplifies the creation of reproducible data science environments
-    using the 'Nix' package manager, as described in Eelco et al. (2004) <doi:10.5555/1052676.1052686>. 
-    The included `rix()` function generates a complete description of the environment as a `default.nix` file, which can then be built using 'Nix'. 
-    This results in project specific software environments with pinned versions of R, packages, linked system dependencies, and other tools. 
-    Additional helpers make it easy to run R code in 'Nix' software environments for testing and production.
+    using the 'Nix' package manager, as described in
+    Eelco et al. (2004) <doi:10.5555/1052676.1052686>. The included `rix()`
+    function generates a complete description of the environment as a 
+    `default.nix` file, which can then be built using 'Nix'. This results in
+    project specific software environments with pinned versions of R, packages,
+    linked system dependencies, and other tools. Additional helpers make it easy
+    to run R code in 'Nix' software environments for testing and production.
 License: GPL (>= 3)
 URL: https://docs.ropensci.org/rix/
 BugReports: https://github.com/ropensci/rix/issues
