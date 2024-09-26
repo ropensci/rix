@@ -1,3 +1,18 @@
+## 26-09-2024 Submission, version 0.12.3
+
+0 errors | 0 warnings | 1 note
+
+Possibly misspelled words in DESCRIPTION:
+  Dolstra (19:5)
+
+Results on Rhub: https://github.com/ropensci/rix/actions/runs/11056226443
+
+Also ran R CMD check using R-devel with win-builder,
+also only 1 note.
+
+Note is because is because of the name of the author of the
+thesis that we cite, Dolstra. It is not a typo.
+
 ## 23-09-2024 Resubmission, version 0.12.1
 
 ### R CMD check results
