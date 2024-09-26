@@ -4,18 +4,18 @@
 
 # Chores
 
+- Update the url in the hex logo
 - Update shipped `inst/extdata/default.nix` with this patch release of {rix}
 - Remove duplicate `NEWS` entries in 0.12.1 released previously, which is the
   first CRAN release version.
-- Added reference to Elco et al. (2004) in the `DESCRIPTION` (forgotten in 
+- Added reference to Dolstra (2006) in the `DESCRIPTION` (forgotten in
   first CRAN release 0.12.1)
-
 
 # rix 0.12.1 (2024-09-25)
 
 ## User-facing changes
 
-- `rix()`: The is no default argument in `project_path` anymore. Before, it 
+- `rix()`: The is no default argument in `project_path` anymore. Before, it
   defaulted to the current directory, which violated CRAN policy to have any
   default path in writing functions.
 
