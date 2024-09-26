@@ -141,9 +141,10 @@ rix_init <- function(project_path,
   rprofile_file <- file.path(project_path, ".Rprofile")
 
   rprofile_text <- get_rprofile_text(rprofile_deparsed)
+  on.exit(close(file(rprofile_file)), add = TRUE)
   write_rprofile <- function(rprofile_text, rprofile_file) {
     writeLines(
-      text = rprofile_text,
+      text = enc2utf8(rprofile_text),
       con = file(rprofile_file)
     )
   }
@@ -192,7 +193,7 @@ rix_init <- function(project_path,
 
         if (message_type == "verbose") {
           cat("\n* Current lines of local `.Rprofile` are\n:")
-          cat(readLines(con = rprofile_file), sep = "\n")
+          cat(readLines(con = file(rprofile_file), sep = "\n"))
         }
         set_message_session_PATH(message_type = message_type)
       }
@@ -221,11 +222,6 @@ rix_init <- function(project_path,
     cat("\n\n* Current lines of local `.Rprofile` are:\n\n")
     cat(readLines(con = file(rprofile_file)), sep = "\n")
   }
-
-  on.exit(
-    close(file(rprofile_file)),
-    add = TRUE
-  )
 }
 
 #' Get character vector of length two with comment and code write `.Rprofile`
