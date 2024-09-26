@@ -1,5 +1,16 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.12.3 (2024-09-26)
+
+## Bug fixes
+
+- `rix_init()`, `rix()`: fix bug in `rix_init()`, that led to empty `.Rprofile`
+  files.
+
+## Chores
+
+- Update `inst/extdata/default.nix`
+
 # rix 0.12.2 (2024-09-25)
 
 ## Chores
