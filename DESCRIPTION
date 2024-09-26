@@ -17,7 +17,7 @@ Authors@R: c(
 Description: Simplifies the creation of reproducible data science environments
     using the 'Nix' package manager, as described in
     Dolstra (2006) <ISBN 90-393-4130-3>. The included `rix()`
-    function generates a complete description of the environment as a 
+    function generates a complete description of the environment as a
     `default.nix` file, which can then be built using 'Nix'. This results in
     project specific software environments with pinned versions of R, packages,
     linked system dependencies, and other tools. Additional helpers make it easy

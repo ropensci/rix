@@ -52,11 +52,10 @@ While Nix has a steep learning curve, `{rix}`
    same code in different development environments, and finally to deploy
    software environments in production.
 
-Nix includes nearly all CRAN advanced Bioconductor packages, with the ability to
+Nix includes nearly all CRAN and Bioconductor packages, with the ability to
 install specific package versions or GitHub snapshots. Nix also includes Python,
 Julia (and many of their respective packages) as well as many, many other tools
 (up to 100'000 pieces of software as of writing).
-
 
 If you have R installed, you can start straight away from your R session by
 first installing `{rix}`:
