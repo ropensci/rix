@@ -2,7 +2,11 @@
 
 # rix 0.12.2 (2024-09-25)
 
-# Chores
+## Bug fixes
+
+- Fixed a bug in `rix_init()` that resulted in empty `.Rprofile` files
+
+## Chores
 
 - Update the url in the hex logo
 - Update shipped `inst/extdata/default.nix` with this patch release of {rix}
