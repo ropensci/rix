@@ -2,7 +2,7 @@
 
 # rix 0.12.2 (2024-09-25)
 
-# Chores
+## Chores
 
 - Update the url in the hex logo
 - Update shipped `inst/extdata/default.nix` with this patch release of {rix}
