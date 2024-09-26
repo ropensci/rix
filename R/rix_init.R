@@ -62,7 +62,8 @@
 #' it and set the `rprofile_action` to `"append"`.
 #'
 #' @param project_path Character with the folder path to the isolated nix-R
-#'   project. If the folder does not exist yet, it will be created.
+#'   project. Defaults to `"."`, which is the current working directory path. If
+#'   the folder does not exist yet, it will be created.
 #' @param rprofile_action Character. Action to take with `.Rprofile` file
 #'   destined for `project_path` folder. Possible values include
 #'   `"create_missing"`, which only writes `.Rprofile` if it does not yet exist
@@ -93,7 +94,7 @@
 #'   message_type = c("simple")
 #' )
 #' }
-rix_init <- function(project_path,
+rix_init <- function(project_path = ".",
                      rprofile_action = c(
                        "create_missing", "create_backup",
                        "overwrite", "append"
@@ -139,12 +140,13 @@ rix_init <- function(project_path,
   rprofile_quoted <- nix_rprofile()
   rprofile_deparsed <- deparse_chr1(expr = rprofile_quoted, collapse = "\n")
   rprofile_file <- file.path(project_path, ".Rprofile")
-  rprofile_con <- file(rprofile_file, open = "wb", encoding = "native.enc")
 
   rprofile_text <- get_rprofile_text(rprofile_deparsed)
-  on.exit(close(rprofile_con))
   write_rprofile <- function(rprofile_text, rprofile_file) {
-    writeLines(enc2utf8(rprofile_text), rprofile_con, useBytes = TRUE)
+    writeLines(
+      text = rprofile_text,
+      con = file(rprofile_file)
+    )
   }
 
   is_nix_r <- is_nix_r_session()
@@ -167,7 +169,7 @@ rix_init <- function(project_path,
           )
         }
       } else {
-        write_rprofile(rprofile_text, rprofile_file = rprofile_con)
+        write_rprofile(rprofile_text, rprofile_file)
         if (isFALSE(is_quiet)) {
           message_rprofile(action_string = "Added", project_path = project_path)
         }
@@ -177,7 +179,7 @@ rix_init <- function(project_path,
     create_backup = {
       if (isTRUE(rprofile_exists)) {
         file.copy(from = rprofile_file, to = rprofile_backup)
-        write_rprofile(rprofile_text, rprofile_file = rprofile_con)
+        write_rprofile(rprofile_text, rprofile_file)
         if (isFALSE(is_quiet)) {
           cat(
             "\n==> Backed up existing `.Rprofile` in file:\n", rprofile_backup,
@@ -191,13 +193,13 @@ rix_init <- function(project_path,
 
         if (message_type == "verbose") {
           cat("\n* Current lines of local `.Rprofile` are\n:")
-          cat(readLines(con = rprofile_con), sep = "\n")
+          cat(readLines(con = rprofile_file), sep = "\n")
         }
         set_message_session_PATH(message_type = message_type)
       }
     },
     overwrite = {
-      write_rprofile(rprofile_text, rprofile_file = rprofile_con)
+      write_rprofile(rprofile_text, rprofile_file)
       if (isTRUE(rprofile_exists)) {
         message_rprofile(
           action_string = "Overwrote", project_path = project_path
@@ -209,7 +211,7 @@ rix_init <- function(project_path,
       }
     },
     append = {
-      cat(paste0(rprofile_text, "\n"), file = rprofile_con, append = TRUE)
+      cat(paste0(rprofile_text, "\n"), file = rprofile_file, append = TRUE)
       message_rprofile(
         action_string = "Appended", project_path = project_path
       )
@@ -218,8 +220,13 @@ rix_init <- function(project_path,
 
   if (message_type == "verbose") {
     cat("\n\n* Current lines of local `.Rprofile` are:\n\n")
-    cat(readLines(con = rprofile_action), sep = "\n")
+    cat(readLines(con = file(rprofile_file)), sep = "\n")
   }
+
+  on.exit(
+    close(file(rprofile_file)),
+    add = TRUE
+  )
 }
 
 #' Get character vector of length two with comment and code write `.Rprofile`
