@@ -169,8 +169,8 @@ rix_init <- function(project_path,
   # as an active file connection makes the file exist, but is empty
   # Consider empty files as not existing to avoid not writing
   # .Rprofile
-  rprofile_exists <- (file.exists(rprofile_file) &
-    `!=`(file.size(rprofile_file), 0))
+  rprofile_exists <- (file.exists(rprofile_file) &&
+    `!=`(file.size(rprofile_file), 0L))
 
   timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")
   rprofile_backup <- paste0(rprofile_file, "_backup_", timestamp)
@@ -215,7 +215,7 @@ rix_init <- function(project_path,
       }
     },
     overwrite = {
-      write_rprofile(rprofile_text, rprofile_file = rprofile_file, "wb")
+      write_rprofile(rprofile_text, rprofile_file = rprofile_file, mode = "wb")
       if (isTRUE(rprofile_exists)) {
         message_rprofile(
           action_string = "Overwrote", project_path = project_path
@@ -227,7 +227,7 @@ rix_init <- function(project_path,
       }
     },
     append = {
-      write_rprofile(rprofile_text, rprofile_file = rprofile_file, "a+")
+      write_rprofile(rprofile_text, rprofile_file = rprofile_file, mode = "a+")
       message_rprofile(
         action_string = "Appended", project_path = project_path
       )
