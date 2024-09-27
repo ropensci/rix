@@ -1,6 +1,9 @@
 testthat::test_that("Snapshot test of rix_init(), overwrite", {
   path_env_nix <- tempdir()
 
+  # Create an empty file, and overwrite it
+  rprofile_file <- paste0(path_env_nix, "/.Rprofile")
+
   save_rix_init_test <- function(path_env_nix) {
     rix_init(
       project_path = path_env_nix,
@@ -11,7 +14,8 @@ testthat::test_that("Snapshot test of rix_init(), overwrite", {
     paste0(path_env_nix, "/.Rprofile")
   }
 
-  testthat::announce_snapshot_file("find_rev/golden_Rprofile.txt")
+  rprofile_con <- file(rprofile_file, open = "wb", encoding = "native.enc")
+  on.exit(close(rprofile_con), add = TRUE)
 
   testthat::expect_snapshot_file(
     path = save_rix_init_test(path_env_nix),
@@ -37,8 +41,6 @@ testthat::test_that("Snapshot test of rix_init(), create_missing, no file", {
 
     paste0(path_env_nix, "/.Rprofile")
   }
-
-  testthat::announce_snapshot_file("find_rev/golden_Rprofile.txt")
 
   testthat::expect_snapshot_file(
               path = save_rix_init_test(path_env_nix),
@@ -101,19 +103,19 @@ testthat::test_that("Snapshot test of rix_init(), append", {
     paste0(path_env_nix, "/.Rprofile")
   }
 
-  #testthat::announce_snapshot_file("find_rev/append_Rprofile.txt")
+  rprofile_file <- paste0(path_env_nix, "/.Rprofile")
+  rprofile_con <- file(rprofile_file, open = "a+", encoding = "native.enc")
+
+  writeLines(enc2utf8("This is in the original Rprofile"),
+             rprofile_con,
+             useBytes = TRUE)
+
+  close(rprofile_con)
 
   testthat::expect_snapshot_file(
               path = save_rix_init_test(path_env_nix),
               name = "append_Rprofile.txt",
               )
-
-  rprofile_file <- paste0(path_env_nix, "/.Rprofile")
-  rprofile_con <- file(rprofile_file, open = "wb", encoding = "native.enc")
-
-  writeLines(enc2utf8("This is the origin Rprofile\n"),
-             rprofile_con,
-             useBytes = TRUE)
 
   on.exit(
     unlink(path_env_nix, recursive = TRUE, force = TRUE),

@@ -139,12 +139,24 @@ rix_init <- function(project_path,
   rprofile_quoted <- nix_rprofile()
   rprofile_deparsed <- deparse_chr1(expr = rprofile_quoted, collapse = "\n")
   rprofile_file <- file.path(project_path, ".Rprofile")
-  rprofile_con <- file(rprofile_file, open = "wb", encoding = "native.enc")
+
   rprofile_text <- get_rprofile_text(rprofile_deparsed)
 
-  on.exit(close(rprofile_con))
-  write_rprofile <- function(rprofile_text, rprofile_file) {
+  # This function creates the connection, write the text
+  # and closes the connexion
+  # Makes it "as pure as possible"
+  write_rprofile <- function(rprofile_text, rprofile_file, mode) {
+    create_rprofile_con <- function(rprofile_file, mode){
+      rprofile_con <- file(
+        rprofile_file,
+        open = mode,
+        encoding = "native.enc"
+      )
+    }
+
+    rprofile_con <- create_rprofile_con(rprofile_file, mode)
     writeLines(enc2utf8(rprofile_text), rprofile_con, useBytes = TRUE)
+    on.exit(close(rprofile_con))
   }
 
   is_nix_r <- is_nix_r_session()
@@ -168,7 +180,7 @@ rix_init <- function(project_path,
           )
         }
       } else {
-        write_rprofile(rprofile_text, rprofile_file = rprofile_con)
+        write_rprofile(rprofile_text, rprofile_file = rprofile_file, mode = "wb")
         if (isFALSE(is_quiet)) {
           message_rprofile(action_string = "Added", project_path = project_path)
         }
@@ -178,7 +190,7 @@ rix_init <- function(project_path,
     create_backup = {
       if (isTRUE(rprofile_exists)) {
         file.copy(from = rprofile_file, to = rprofile_backup)
-        write_rprofile(rprofile_text, rprofile_file = rprofile_con)
+        write_rprofile(rprofile_text, rprofile_file = rprofile_file, mode = "wb")
         if (isFALSE(is_quiet)) {
           cat(
             "\n==> Backed up existing `.Rprofile` in file:\n", rprofile_backup,
@@ -192,13 +204,13 @@ rix_init <- function(project_path,
 
         if (message_type == "verbose") {
           cat("\n* Current lines of local `.Rprofile` are\n:")
-          cat(readLines(con = rprofile_con), sep = "\n")
+          cat(readLines(con = rprofile_file), sep = "\n")
         }
         set_message_session_PATH(message_type = message_type)
       }
     },
     overwrite = {
-      write_rprofile(rprofile_text, rprofile_file = rprofile_con)
+      write_rprofile(rprofile_text, rprofile_file = rprofile_file, "wb")
       if (isTRUE(rprofile_exists)) {
         message_rprofile(
           action_string = "Overwrote", project_path = project_path
@@ -210,17 +222,19 @@ rix_init <- function(project_path,
       }
     },
     append = {
-      cat(paste0(rprofile_text, "\n"), file = rprofile_con, append = TRUE)
+      #writeLines(paste0(rprofile_text, "\n"), rprofile_con, mode = "a+")
+      write_rprofile(rprofile_text, rprofile_file = rprofile_file, "a+")
       message_rprofile(
         action_string = "Appended", project_path = project_path
       )
     }
-  )
+    )
 
   if (message_type == "verbose") {
     cat("\n\n* Current lines of local `.Rprofile` are:\n\n")
-    cat(readLines(con = rprofile_action), sep = "\n")
+    cat(readLines(con = rprofile_file), sep = "\n")
   }
+
 }
 
 #' Get character vector of length two with comment and code write `.Rprofile`
