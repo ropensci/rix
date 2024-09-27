@@ -43,9 +43,9 @@ testthat::test_that("Snapshot test of rix_init(), create_missing, no file", {
   }
 
   testthat::expect_snapshot_file(
-              path = save_rix_init_test(path_env_nix),
-              name = "golden_Rprofile.txt",
-              )
+    path = save_rix_init_test(path_env_nix),
+    name = "golden_Rprofile.txt",
+  )
 
   on.exit(
     unlink(path_env_nix, recursive = TRUE, force = TRUE),
@@ -54,7 +54,6 @@ testthat::test_that("Snapshot test of rix_init(), create_missing, no file", {
 })
 
 testthat::test_that("Snapshot test of rix_init(), create_missing, empty file", {
-
   # Empty should be considered as missing
   # We're creating an empty .Rprofile by opening a file connection
   # and then rix_init() should consider it missing and write
@@ -107,15 +106,16 @@ testthat::test_that("Snapshot test of rix_init(), append", {
   rprofile_con <- file(rprofile_file, open = "a+", encoding = "native.enc")
 
   writeLines(enc2utf8("This is in the original Rprofile"),
-             rprofile_con,
-             useBytes = TRUE)
+    rprofile_con,
+    useBytes = TRUE
+  )
 
   close(rprofile_con)
 
   testthat::expect_snapshot_file(
-              path = save_rix_init_test(path_env_nix),
-              name = "append_Rprofile.txt",
-              )
+    path = save_rix_init_test(path_env_nix),
+    name = "append_Rprofile.txt",
+  )
 
   on.exit(
     unlink(path_env_nix, recursive = TRUE, force = TRUE),
