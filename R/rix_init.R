@@ -143,10 +143,10 @@ rix_init <- function(project_path,
   rprofile_text <- get_rprofile_text(rprofile_deparsed)
 
   # This function creates the connection, write the text
-  # and closes the connexion
+  # and closes the connection
   # Makes it "as pure as possible"
   write_rprofile <- function(rprofile_text, rprofile_file, mode) {
-    create_rprofile_con <- function(rprofile_file, mode){
+    create_rprofile_con <- function(rprofile_file, mode) {
       rprofile_con <- file(
         rprofile_file,
         open = mode,
@@ -170,7 +170,7 @@ rix_init <- function(project_path,
   # Consider empty files as not existing to avoid not writing
   # .Rprofile
   rprofile_exists <- (file.exists(rprofile_file) &
-                      `!=`(file.size(rprofile_file), 0))
+    `!=`(file.size(rprofile_file), 0))
 
   timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")
   rprofile_backup <- paste0(rprofile_file, "_backup_", timestamp)
@@ -232,13 +232,12 @@ rix_init <- function(project_path,
         action_string = "Appended", project_path = project_path
       )
     }
-    )
+  )
 
   if (message_type == "verbose") {
     cat("\n\n* Current lines of local `.Rprofile` are:\n\n")
     cat(readLines(con = rprofile_file), sep = "\n")
   }
-
 }
 
 #' Get character vector of length two with comment and code write `.Rprofile`
