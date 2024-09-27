@@ -169,8 +169,8 @@ rix_init <- function(project_path,
   # as an active file connection makes the file exist, but is empty
   # Consider empty files as not existing to avoid not writing
   # .Rprofile
-  rprofile_exists <- (file.exists(rprofile_file) &&
-    `!=`(file.size(rprofile_file), 0L))
+  rprofile_exists <- file.exists(rprofile_file) &&
+    `!=`(file.size(rprofile_file), 0L)
 
   timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")
   rprofile_backup <- paste0(rprofile_file, "_backup_", timestamp)
