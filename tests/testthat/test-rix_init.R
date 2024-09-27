@@ -14,9 +14,9 @@ testthat::test_that("Snapshot test of rix_init(), overwrite", {
   testthat::announce_snapshot_file("find_rev/golden_Rprofile.txt")
 
   testthat::expect_snapshot_file(
-              path = save_rix_init_test(path_env_nix),
-              name = "golden_Rprofile.txt",
-              )
+    path = save_rix_init_test(path_env_nix),
+    name = "golden_Rprofile.txt",
+  )
 
   on.exit(
     unlink(path_env_nix, recursive = TRUE, force = TRUE),
