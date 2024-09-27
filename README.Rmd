@@ -60,12 +60,7 @@ While Nix has a steep learning curve, `{rix}`
    same code in different development environments, and finally to deploy
    software environments in production.
 
-If you want to watch a 5-Minute video introduction:
-
-<div align="center">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/OOu6gjQ310c?si=tQ-s9ZgEBxak8k8G" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-</div>
-
+If you want to watch a 5-Minute video introduction click [here](https://www.youtube.com/embed/OOu6gjQ310c?si=tQ-s9ZgEBxak8k8G).
 
 Nix includes nearly all CRAN and Bioconductor packages, with the ability to
 install specific package versions or GitHub snapshots. Nix also includes Python,
