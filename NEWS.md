@@ -1,5 +1,11 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.12.4 (2024-09-27)
+
+- `rix_init()`, `rix()`: previous attempt at fixing bug was only partially
+  correct, it is now fixed. Several more tests were added to avoid this in the
+  future.
+
 # rix 0.12.3 (2024-09-26)
 
 ## Bug fixes
