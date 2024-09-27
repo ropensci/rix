@@ -140,8 +140,8 @@ rix_init <- function(project_path,
   rprofile_deparsed <- deparse_chr1(expr = rprofile_quoted, collapse = "\n")
   rprofile_file <- file.path(project_path, ".Rprofile")
   rprofile_con <- file(rprofile_file, open = "wb", encoding = "native.enc")
-
   rprofile_text <- get_rprofile_text(rprofile_deparsed)
+
   on.exit(close(rprofile_con))
   write_rprofile <- function(rprofile_text, rprofile_file) {
     writeLines(enc2utf8(rprofile_text), rprofile_con, useBytes = TRUE)
@@ -150,10 +150,11 @@ rix_init <- function(project_path,
   is_nix_r <- is_nix_r_session()
   is_rstudio <- is_rstudio_session()
 
-  # signal message if not quiet
+                                        # signal message if not quiet
   message_r_session_nix_rstudio(is_nix_r, is_rstudio, message_type)
 
-  rprofile_exists <- file.exists(rprofile_file)
+  rprofile_exists <- exists(rprofile_file)
+
   timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")
   rprofile_backup <- paste0(rprofile_file, "_backup_", timestamp)
 
