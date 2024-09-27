@@ -150,7 +150,7 @@ rix_init <- function(project_path,
   is_nix_r <- is_nix_r_session()
   is_rstudio <- is_rstudio_session()
 
-                                        # signal message if not quiet
+  # signal message if not quiet
   message_r_session_nix_rstudio(is_nix_r, is_rstudio, message_type)
 
   rprofile_exists <- exists(rprofile_file)
