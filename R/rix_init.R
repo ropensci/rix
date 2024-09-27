@@ -165,7 +165,12 @@ rix_init <- function(project_path,
   # signal message if not quiet
   message_r_session_nix_rstudio(is_nix_r, is_rstudio, message_type)
 
-  rprofile_exists <- `!=`(file.size(rprofile_file), 0)
+  # Test for existence and size instead of only existence,
+  # as an active file connection makes the file exist, but is empty
+  # Consider empty files as not existing to avoid not writing
+  # .Rprofile
+  rprofile_exists <- (file.exists(rprofile_file) &
+                      `!=`(file.size(rprofile_file), 0))
 
   timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")
   rprofile_backup <- paste0(rprofile_file, "_backup_", timestamp)
@@ -222,7 +227,6 @@ rix_init <- function(project_path,
       }
     },
     append = {
-      #writeLines(paste0(rprofile_text, "\n"), rprofile_con, mode = "a+")
       write_rprofile(rprofile_text, rprofile_file = rprofile_file, "a+")
       message_rprofile(
         action_string = "Appended", project_path = project_path
