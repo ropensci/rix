@@ -153,7 +153,7 @@ rix_init <- function(project_path,
   # signal message if not quiet
   message_r_session_nix_rstudio(is_nix_r, is_rstudio, message_type)
 
-  rprofile_exists <- exists(rprofile_file)
+  rprofile_exists <- `!=`(file.size(rprofile_file), 0)
 
   timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")
   rprofile_backup <- paste0(rprofile_file, "_backup_", timestamp)
