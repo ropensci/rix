@@ -1,3 +1,17 @@
+## 02-10-2024 Submission, version 0.12.4
+
+0 errors | 0 warnings | 1 note
+
+Note is because previous submission was 6 days ago.
+We contacted Uwe Ligges explaining that users found a bug and
+that we wished to submit a fix.
+
+Results on Rhub: https://github.com/ropensci/rix/actions/runs/11149347578
+(linux, macos and windows)
+
+Also ran R CMD check using R-devel with win-builder,
+also only 1 note, same as above.
+
 ## 26-09-2024 Submission, version 0.12.3
 
 0 errors | 0 warnings | 1 note
