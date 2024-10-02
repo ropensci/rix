@@ -212,6 +212,13 @@ rix_init <- function(project_path,
           cat(readLines(con = rprofile_file), sep = "\n")
         }
         set_message_session_PATH(message_type = message_type)
+      } else {
+        cat("\n* No existing `.Rprofile` to backup, creating one instead...\n:")
+        rix_init(
+          project_path = project_path,
+          rprofile_action = "create_missing",
+          message_type = message_type
+        )
       }
     },
     overwrite = {
