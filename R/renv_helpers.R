@@ -20,6 +20,70 @@ read_renv_lock <- function(renv_lock_path = "renv.lock") {
     renv_lock
 }
 
+#' renv2nix
+#'
+#' @param renv_lock_path location of the renv.lock file, defaults to "renv.lock"
+#' @param ... any other paramters to pass to [rix]
+#'
+#' @return nothing side effects only
+#' @export
+#'
+renv2nix <- function(renv_lock_path = "renv.lock", ...) {
+    renv_lock <- read_renv_lock(renv_lock_path = renv_lock_path)
+    repo_pkgs_lgl <- logical(length = length(renv_lock$Packages))
+    for (i in seq_along(renv_lock$Packages)) {
+        if (renv_lock$Packages[[i]]$Source == "Repository") {
+            repo_pkgs_lgl[i] <- TRUE
+        } else {
+            repo_pkgs_lgl[i] <- FALSE
+        }
+    }
+    git_pkgs <- NULL
+    local_r_pkgs <- NULL
+    # remotes package supports these types
+    # github (is assumed) gitlab,bitbucket, git, local, svn, url, version, cran, bioc.
+    # may need handling for ssh and any other support non https protocols?
+    if (any(!repo_pkgs_lgl)) {
+        for (x in renv_lock$Packages[!repo_pkgs_lgl]) {
+            if (x$RemoteType == "github") {
+                git_pkgs[[x$Package]] <- list(
+                    package_name = x$Package,
+                    repo_url = paste0(
+                        # RemoteHost is listed as api.github.com for some reason
+                        "https://github.com/", x$RemoteUser, "/",
+                        x$RemoteRepo
+                    ),
+                    commit = x$RemoteSha
+                )
+            #  this may work with other git remotes and possibly also bitbucket / svn needs checking
+            } else if (x$RemoteType == "gitlab") {
+                git_pkgs[[x$Package]] <- list (
+                    package_name = x$Package,
+                    repo_url = paste0(
+                        "https://", x$RemoteHost, "/", x$RemoteUser, "/",
+                        x$RemoteRepo
+                    ),
+                    commit = x$RemoteSha
+                )
+            }
+            # as local_r_pkgs expects an archive not sure how to set type here..
+            #  else if (x$RemoteType == "local") else {
+            #      local_r_pkgs[[x$Package]] <- c(
+            #          package_name = paste0(x$RemoteUrl, "/", x$Package, ".tar.gz")
+            #      )
+            #  }
+        }
+    }
+    rix(
+        r_ver = renv_lock$R$Version,
+        r_pkgs = names(renv_lock$Packages[repo_pkgs_lgl]),
+        git_pkgs = git_pkgs,
+        local_r_pkgs = local_r_pkgs,
+        ...
+    )
+}
+
+
 #' renv_lock_pkgs
 #'
 #' gets the names of all the packages in an renv.lock file

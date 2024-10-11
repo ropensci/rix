@@ -3,6 +3,7 @@
 export(available_r)
 export(ga_cachix)
 export(nix_build)
+export(renv2nix)
 export(renv_lock_pkgs)
 export(renv_lock_r_ver)
 export(rix)
