@@ -23,12 +23,16 @@ read_renv_lock <- function(renv_lock_path = "renv.lock") {
 #' renv2nix
 #'
 #' @param renv_lock_path location of the renv.lock file, defaults to "renv.lock"
+#' @param return_rix_call return the generated rix function call instead of
+#' evaluating it this is for debugging purposes, defaults to FALSE
 #' @param ... any other paramters to pass to [rix]
 #'
 #' @return nothing side effects only
 #' @export
 #'
-renv2nix <- function(renv_lock_path = "renv.lock", ...) {
+renv2nix <- function(
+    renv_lock_path = "renv.lock", return_rix_call = FALSE, ...
+) {
     renv_lock <- read_renv_lock(renv_lock_path = renv_lock_path)
     repo_pkgs_lgl <- logical(length = length(renv_lock$Packages))
     for (i in seq_along(renv_lock$Packages)) {
@@ -74,13 +78,19 @@ renv2nix <- function(renv_lock_path = "renv.lock", ...) {
             #  }
         }
     }
-    rix(
+    rix_call <- call("rix",
         r_ver = renv_lock$R$Version,
         r_pkgs = names(renv_lock$Packages[repo_pkgs_lgl]),
         git_pkgs = git_pkgs,
         local_r_pkgs = local_r_pkgs,
-        ...
+        list(...)
     )
+    if (return_rix_call) {
+        # print(rix_call)
+        # return(deparse(substitute(rix_call)))
+        return(rix_call)
+    }
+    eval(rix_call)
 }
 
 

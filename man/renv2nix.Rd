@@ -4,10 +4,13 @@
 \alias{renv2nix}
 \title{renv2nix}
 \usage{
-renv2nix(renv_lock_path = "renv.lock", ...)
+renv2nix(renv_lock_path = "renv.lock", return_rix_call = FALSE, ...)
 }
 \arguments{
 \item{renv_lock_path}{location of the renv.lock file, defaults to "renv.lock"}
+
+\item{return_rix_call}{return the generated rix function call instead of
+evaluating it this is for debugging purposes, defaults to FALSE}
 
 \item{...}{any other paramters to pass to \link{rix}}
 }
