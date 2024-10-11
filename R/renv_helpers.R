@@ -45,3 +45,22 @@ renv_lock_pkgs <- function(renv_lock_path = "renv.lock") {
     names(renv_lock$Packages)
 }
 
+#' renv_lock_r_ver
+#'
+#' @param renv_lock_path location of the renv.lock file from which to get the
+#' R version, defaults to "renv.lock"
+#'
+#' @return a length 1 chatacter vector with the version of R recorded in
+#'  renv.lock
+#'
+#' @export
+#'
+#' @examples
+#'
+#' rix(r_ver = renv_lock_r_ver())
+#'
+renv_lock_r_ver <- function(renv_lock_path = "renv.lock") {
+    renv_lock <- read_renv_lock(renv_lock_path = renv_lock_path)
+    renv_lock$R$Version
+}
+
