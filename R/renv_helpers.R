@@ -1,0 +1,32 @@
+#' renv_lock_pkgs
+#'
+#' gets the names of all the packages in an renv.lock file
+#'
+#' This does NOT get the versions of those packages or handle transitive
+#' dependencies in the renv.lock file not directly used in the project.
+#' It simply returns a vector of all the package names.
+#'
+#' @param renv_lock_path location of the renv.lock file from which to get the
+#' list of packages, defaults to "renv.lock"
+#'
+#' @return a character vector of all the package names listed in the renv.lock
+#' file proved in renv_lock_path.
+#'
+#' @export
+#'
+#' @examples
+#'
+#' rix(r_pkgs = renv_lock_pkgs())
+#'
+renv_lock_pkgs <- function(renv_lock_path = "renv.lock") {
+    if (!file.exists(renv_lock_path)) {
+        stop(renv_lock_path," does not exist!")
+    }
+    tryCatch(
+        renv_lock <- jsonlite::read_json(renv_lock_path),
+        error = function(e) {
+            stop("Error reading renv.lock file\n", e)
+        }
+    )
+    names(renv_lock$Packages)
+}
