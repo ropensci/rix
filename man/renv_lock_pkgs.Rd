@@ -4,11 +4,15 @@
 \alias{renv_lock_pkgs}
 \title{renv_lock_pkgs}
 \usage{
-renv_lock_pkgs(renv_lock_path = "renv.lock")
+renv_lock_pkgs(renv_lock_path = "renv.lock", exclude_other_sources = TRUE)
 }
 \arguments{
 \item{renv_lock_path}{location of the renv.lock file from which to get the
 list of packages, defaults to "renv.lock"}
+
+\item{exclude_other_sources}{exclude packages not from Repository sources
+such as those from github repositories, defaults to TRUE. These are likely
+to not yet be packaged in nix.}
 }
 \value{
 a character vector of all the package names listed in the renv.lock
