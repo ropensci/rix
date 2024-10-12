@@ -32,6 +32,7 @@ read_renv_lock <- function(renv_lock_path = "renv.lock") {
 #'
 renv2nix <- function(
     renv_lock_path = "renv.lock", return_rix_call = FALSE, ...
+
 ) {
     renv_lock <- read_renv_lock(renv_lock_path = renv_lock_path)
     repo_pkgs_lgl <- logical(length = length(renv_lock$Packages))
@@ -82,9 +83,13 @@ renv2nix <- function(
         r_ver = renv_lock$R$Version,
         r_pkgs = names(renv_lock$Packages[repo_pkgs_lgl]),
         git_pkgs = git_pkgs,
-        local_r_pkgs = local_r_pkgs,
-        list(...)
+        local_r_pkgs = local_r_pkgs
     )
+    dots <- list(...)
+    for(arg in names(dots)) {
+        rix_call[[arg]] <- dots[[arg]]
+    }
+
     if (return_rix_call) {
         # print(rix_call)
         # return(deparse(substitute(rix_call)))
