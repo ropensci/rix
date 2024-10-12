@@ -20,7 +20,7 @@ read_renv_lock <- function(renv_lock_path = "renv.lock") {
     renv_lock
 }
 
-#' renv_remote_pkgs
+#' renv_remote_pkg
 #'
 #' Construct a list to be passed in a list to the git_pkgs argument of [rix]
 #' The list returned contains the information necessary to have nix attempt to
@@ -40,7 +40,7 @@ read_renv_lock <- function(renv_lock_path = "renv.lock") {
 #' \dontrun{
 #' renv_remote_pkgs(read_renv_lock()$Packages$renv)
 #' }
-renv_remote_pkgs <- function(
+renv_remote_pkg <- function(
     renv_lock_pkg_info,
     type = renv_lock_pkg_info$RemoteType
 ) {
@@ -105,7 +105,7 @@ renv2nix <- function(
         # local_r_pkgs <- NULL
         if (any(!repo_pkgs_lgl)) {
             for (x in renv_lock$Packages[!repo_pkgs_lgl]) {
-                git_pkgs[[x$Package]] <- renv_remote_pkgs(x)
+                git_pkgs[[x$Package]] <- renv_remote_pkg(x)
             }
         }
         rix_call <- call("rix",
