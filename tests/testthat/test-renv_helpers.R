@@ -39,8 +39,12 @@ testthat::test_that("Testing `renv_remote_pkg()`", {
         )
     )
 
-    testthat::expect_equal(renv_remote_pkg(synthetic_renv_lock_example$githubpkg), expected_git_pkg$githubpkg)
-    testthat::expect_equal(renv_remote_pkg(synthetic_renv_lock_example$gitlabpkg), expected_git_pkg$gitlabpkg)
+    testthat::expect_equal(
+        renv_remote_pkg(synthetic_renv_lock_example$githubpkg), expected_git_pkg$githubpkg
+    )
+    testthat::expect_equal(
+        renv_remote_pkg(synthetic_renv_lock_example$gitlabpkg), expected_git_pkg$gitlabpkg
+    )
 })
 
 testthat::test_that("Testing `renv2nix()`", {
