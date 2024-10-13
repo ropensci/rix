@@ -8,16 +8,16 @@
 #'
 #' @importFrom jsonlite read_json
 read_renv_lock <- function(renv_lock_path = "renv.lock") {
-    if (!file.exists(renv_lock_path)) {
-        stop(renv_lock_path," does not exist!")
+  if (!file.exists(renv_lock_path)) {
+    stop(renv_lock_path, " does not exist!")
+  }
+  tryCatch(
+    renv_lock <- jsonlite::read_json(renv_lock_path),
+    error = function(e) {
+      stop("Error reading renv.lock file\n", e)
     }
-    tryCatch(
-        renv_lock <- jsonlite::read_json(renv_lock_path),
-        error = function(e) {
-            stop("Error reading renv.lock file\n", e)
-        }
-    )
-    renv_lock
+  )
+  renv_lock
 }
 
 #' renv_remote_pkg
@@ -42,35 +42,34 @@ read_renv_lock <- function(renv_lock_path = "renv.lock") {
 #' }
 renv_remote_pkg <- function(
     renv_lock_pkg_info,
-    type = renv_lock_pkg_info$RemoteType
-) {
-    type <- match.arg(type, c(
-        "github", "gitlab"
-        # , "bitbucket", "git", "local", "svn", "url", "version", "cran", "bioc"
-    ))
-    pkg_info <- vector(mode = "list", length = 3)
-    names(pkg_info) <- c("package_name", "repo_url", "commit")
-    switch (type,
-        "github" = {
-            pkg_info[[1]] <- renv_lock_pkg_info$Package
-            pkg_info[[2]] <- paste0(
-                # RemoteHost is listed as api.github.com for some reason
-                "https://github.com/", renv_lock_pkg_info$RemoteUser, "/",
-                renv_lock_pkg_info$RemoteRepo
-            )
-            pkg_info[[3]] <- renv_lock_pkg_info$RemoteSha
-        },
-        "gitlab" = {
-            pkg_info[[1]] <- renv_lock_pkg_info$Package
-            pkg_info[[2]] <- paste0(
-                "https://", renv_lock_pkg_info$RemoteHost, "/",
-                renv_lock_pkg_info$RemoteUser, "/",
-                renv_lock_pkg_info$RemoteRepo
-            )
-            pkg_info[[3]] <- renv_lock_pkg_info$RemoteSha
-        }
-    )
-    pkg_info
+    type = renv_lock_pkg_info$RemoteType) {
+  type <- match.arg(type, c(
+    "github", "gitlab"
+    # , "bitbucket", "git", "local", "svn", "url", "version", "cran", "bioc"
+  ))
+  pkg_info <- vector(mode = "list", length = 3)
+  names(pkg_info) <- c("package_name", "repo_url", "commit")
+  switch(type,
+    "github" = {
+      pkg_info[[1]] <- renv_lock_pkg_info$Package
+      pkg_info[[2]] <- paste0(
+        # RemoteHost is listed as api.github.com for some reason
+        "https://github.com/", renv_lock_pkg_info$RemoteUser, "/",
+        renv_lock_pkg_info$RemoteRepo
+      )
+      pkg_info[[3]] <- renv_lock_pkg_info$RemoteSha
+    },
+    "gitlab" = {
+      pkg_info[[1]] <- renv_lock_pkg_info$Package
+      pkg_info[[2]] <- paste0(
+        "https://", renv_lock_pkg_info$RemoteHost, "/",
+        renv_lock_pkg_info$RemoteUser, "/",
+        renv_lock_pkg_info$RemoteRepo
+      )
+      pkg_info[[3]] <- renv_lock_pkg_info$RemoteSha
+    }
+  )
+  pkg_info
 }
 
 #' renv2nix
@@ -87,49 +86,48 @@ renv2nix <- function(
     renv_lock_path = "renv.lock",
     return_rix_call = FALSE,
     method = "fast",
-    ...
-) {
-    method <- match.arg(method, c("fast", "accurate"))
-    renv_lock <- read_renv_lock(renv_lock_path = renv_lock_path)
-    if (method == "fast") {
-        repo_pkgs_lgl <- logical(length = length(renv_lock$Packages))
-        for (i in seq_along(renv_lock$Packages)) {
-            if (renv_lock$Packages[[i]]$Source == "Repository") {
-                repo_pkgs_lgl[i] <- TRUE
-            } else {
-                repo_pkgs_lgl[i] <- FALSE
-            }
-        }
-        git_pkgs <- NULL
-        # as local_r_pkgs expects an archive not sure how to set type here..
-        # local_r_pkgs <- NULL
-        if (any(!repo_pkgs_lgl)) {
-            for (x in renv_lock$Packages[!repo_pkgs_lgl]) {
-                git_pkgs[[x$Package]] <- renv_remote_pkg(x)
-            }
-        }
-        rix_call <- call("rix",
-            r_ver = renv_lock$R$Version,
-            r_pkgs = names(renv_lock$Packages[repo_pkgs_lgl]),
-            git_pkgs = git_pkgs#,
-            #local_r_pkgs = local_r_pkgs
-        )
-        dots <- list(...)
-        for(arg in names(dots)) {
-            rix_call[[arg]] <- dots[[arg]]
-        }
-
-        if (return_rix_call) {
-            # print(rix_call)
-            return(rix_call)
-        }
-        eval(rix_call)
-    } else {
-        stop(
-            "'accurate' renv based environments with package version matching",
-            " is not yet implemented :("
-        )
+    ...) {
+  method <- match.arg(method, c("fast", "accurate"))
+  renv_lock <- read_renv_lock(renv_lock_path = renv_lock_path)
+  if (method == "fast") {
+    repo_pkgs_lgl <- logical(length = length(renv_lock$Packages))
+    for (i in seq_along(renv_lock$Packages)) {
+      if (renv_lock$Packages[[i]]$Source == "Repository") {
+        repo_pkgs_lgl[i] <- TRUE
+      } else {
+        repo_pkgs_lgl[i] <- FALSE
+      }
     }
+    git_pkgs <- NULL
+    # as local_r_pkgs expects an archive not sure how to set type here..
+    # local_r_pkgs <- NULL
+    if (any(!repo_pkgs_lgl)) {
+      for (x in renv_lock$Packages[!repo_pkgs_lgl]) {
+        git_pkgs[[x$Package]] <- renv_remote_pkg(x)
+      }
+    }
+    rix_call <- call("rix",
+      r_ver = renv_lock$R$Version,
+      r_pkgs = names(renv_lock$Packages[repo_pkgs_lgl]),
+      git_pkgs = git_pkgs # ,
+      # local_r_pkgs = local_r_pkgs
+    )
+    dots <- list(...)
+    for (arg in names(dots)) {
+      rix_call[[arg]] <- dots[[arg]]
+    }
+
+    if (return_rix_call) {
+      # print(rix_call)
+      return(rix_call)
+    }
+    eval(rix_call)
+  } else {
+    stop(
+      "'accurate' renv based environments with package version matching",
+      " is not yet implemented :("
+    )
+  }
 }
 
 #' renv_lock_r_ver
@@ -147,7 +145,6 @@ renv2nix <- function(
 #' rix(r_ver = renv_lock_r_ver())
 #'
 renv_lock_r_ver <- function(renv_lock_path = "renv.lock") {
-    renv_lock <- read_renv_lock(renv_lock_path = renv_lock_path)
-    renv_lock$R$Version
+  renv_lock <- read_renv_lock(renv_lock_path = renv_lock_path)
+  renv_lock$R$Version
 }
-
