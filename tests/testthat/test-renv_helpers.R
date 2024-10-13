@@ -105,7 +105,7 @@ testthat::test_that("Testing `renv2nix()`", {
 
 testthat::test_that("Testing `renv_lock_r_ver()`", {
     tmpf <- tempfile()
-    synthetic_renv_lock_example <- jsonlite::write_json(list(R = list(Version = "4.4.1")), tmpf, auto_unbox = TRUE)
+    jsonlite::write_json(list(R = list(Version = "4.4.1")), tmpf, auto_unbox = TRUE)
     testthat::expect_equal(renv_lock_r_ver(renv_lock_path = tmpf), "4.4.1")
     unlink(tmpf)
 })
