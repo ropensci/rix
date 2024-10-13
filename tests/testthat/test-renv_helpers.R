@@ -43,3 +43,10 @@ testthat::test_that("Testing `renv_remote_pkg()`", {
     testthat::expect_equal(renv_remote_pkg(synthetic_renv_lock_example$gitlabpkg), expected_git_pkg$gitlabpkg)
 })
 
+testthat::test_that("Testing `renv_lock_r_ver()`", {
+    tmpf <- tempfile()
+    synthetic_renv_lock_example <- jsonlite::write_json(list(R = list(Version = "4.4.1")), tmpf, auto_unbox = TRUE)
+    testthat::expect_equal(renv_lock_r_ver(renv_lock_path = tmpf), "4.4.1")
+    unlink(tmpf)
+})
+
