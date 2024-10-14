@@ -20,7 +20,8 @@ evaluating it this is for debugging purposes, defaults to FALSE}
 \item{...}{any other parameters to pass to \link{rix}}
 }
 \value{
-nothing side effects only
+nothing side effects only, unless \code{return_rix_call = TRUE} in which case an unevaluated
+call to the \link{rix} function is returned
 }
 \description{
 renv2nix

@@ -79,7 +79,8 @@ renv_remote_pkg <- function(
 #' evaluating it this is for debugging purposes, defaults to FALSE
 #' @param ... any other parameters to pass to [rix]
 #'
-#' @return nothing side effects only
+#' @return nothing side effects only, unless `return_rix_call = TRUE` in which case an unevaluated
+#' call to the [rix] function is returned
 #' @export
 #'
 renv2nix <- function(
