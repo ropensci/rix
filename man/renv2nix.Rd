@@ -7,7 +7,7 @@
 renv2nix(
   renv_lock_path = "renv.lock",
   return_rix_call = FALSE,
-  method = "fast",
+  method = c("fast", "accurate"),
   ...
 )
 }
@@ -16,6 +16,15 @@ renv2nix(
 
 \item{return_rix_call}{return the generated rix function call instead of
 evaluating it this is for debugging purposes, defaults to FALSE}
+
+\item{method}{the method of generating a nix environment from and renv.lock file.
+"fast" is an inexact conversion which simply extracts the R version and a list of all the
+packages in an renv.lock file and adds them to the \code{r_pkgs} argument of \link{rix}, unless they
+are from external package repositories such as being installed directly from a github
+repository in which case an attempt is made to handle them and pass them to the
+\code{git_pkgs} argument of \link{rix}
+
+Currently defaults to "fast", "accurate" is not yet implemented}
 
 \item{...}{any other parameters to pass to \link{rix}}
 }

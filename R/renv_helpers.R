@@ -77,6 +77,14 @@ renv_remote_pkg <- function(
 #' @param renv_lock_path location of the renv.lock file, defaults to "renv.lock"
 #' @param return_rix_call return the generated rix function call instead of
 #' evaluating it this is for debugging purposes, defaults to FALSE
+#' @param method the method of generating a nix environment from and renv.lock file.
+#' "fast" is an inexact conversion which simply extracts the R version and a list of all the
+#' packages in an renv.lock file and adds them to the `r_pkgs` argument of [rix], unless they
+#' are from external package repositories such as being installed directly from a github
+#' repository in which case an attempt is made to handle them and pass them to the
+#' `git_pkgs` argument of [rix]
+#'
+#' Currently defaults to "fast", "accurate" is not yet implemented
 #' @param ... any other parameters to pass to [rix]
 #'
 #' @return nothing side effects only, unless `return_rix_call = TRUE` in which case an unevaluated
@@ -86,7 +94,7 @@ renv_remote_pkg <- function(
 renv2nix <- function(
     renv_lock_path = "renv.lock",
     return_rix_call = FALSE,
-    method = "fast",
+    method = c("fast", "accurate"),
     ...) {
   method <- match.arg(method, c("fast", "accurate"))
   renv_lock <- read_renv_lock(renv_lock_path = renv_lock_path)
