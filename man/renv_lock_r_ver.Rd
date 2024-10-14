@@ -11,7 +11,7 @@ renv_lock_r_ver(renv_lock_path = "renv.lock")
 R version, defaults to "renv.lock"}
 }
 \value{
-a length 1 chatacter vector with the version of R recorded in
+a length 1 character vector with the version of R recorded in
 renv.lock
 }
 \description{

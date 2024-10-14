@@ -136,7 +136,7 @@ renv2nix <- function(
 #' @param renv_lock_path location of the renv.lock file from which to get the
 #' R version, defaults to "renv.lock"
 #'
-#' @return a length 1 chatacter vector with the version of R recorded in
+#' @return a length 1 character vector with the version of R recorded in
 #'  renv.lock
 #'
 #' @export
