@@ -72,6 +72,25 @@ renv_remote_pkg <- function(
   pkg_info
 }
 
+#' renv_remote_pkgs
+#'
+#' Construct a list to be passed the git_pkgs argument of [rix]
+#' The list returned contains the information necessary to have nix attempt to
+#' build the packages from their external repositories.
+#'
+#' @param renv_lock_pkgs the list of package information from an renv.lock file.
+#'
+#' @return a list of lists with three elements named:
+#'  "package_name", "repo_url", "commit"
+#'
+#' @examples
+#' \dontrun{
+#' renv_remote_pkgs(read_renv_lock()$Packages)
+#' }
+renv_remote_pkgs <- function(renv_lock_pkgs) {
+  lapply(renv_lock_pkgs, renv_remote_pkg)
+}
+
 #' renv2nix
 #'
 #' @param renv_lock_path location of the renv.lock file, defaults to "renv.lock"
@@ -111,9 +130,7 @@ renv2nix <- function(
     # as local_r_pkgs expects an archive not sure how to set type here..
     # local_r_pkgs <- NULL
     if (any(!repo_pkgs_lgl)) {
-      for (x in renv_lock$Packages[!repo_pkgs_lgl]) {
-        git_pkgs[[x$Package]] <- renv_remote_pkg(x)
-      }
+      git_pkgs <- renv_remote_pkgs(renv_lock$Packages[!repo_pkgs_lgl])
     }
     rix_call <- call("rix",
       r_ver = renv_lock$R$Version,
