@@ -47,6 +47,12 @@ renv_remote_pkg <- function(
     "github", "gitlab"
     # , "bitbucket", "git", "local", "svn", "url", "version", "cran", "bioc"
   ))
+  if (type != renv_lock_pkg_info$RemoteType) {
+    stop(
+      "Remote type (", renv_lock_pkg_info$RemoteType,
+      ") does not match the provided type (", type , ")"
+    )
+  }
   pkg_info <- vector(mode = "list", length = 3)
   names(pkg_info) <- c("package_name", "repo_url", "commit")
   switch(type,
@@ -79,6 +85,10 @@ renv_remote_pkg <- function(
 #' build the packages from their external repositories.
 #'
 #' @param renv_lock_pkgs the list of package information from an renv.lock file.
+#' @param type the type of remote package, defaults to NULL meaning the RemoteType of the
+#' renv entry will be used.
+#' currently supported types: 'github' 'gitlab'
+#' see [remotes](https://remotes.r-lib.org/) for more.
 #'
 #' @return a list of lists with three elements named:
 #'  "package_name", "repo_url", "commit"
@@ -87,8 +97,12 @@ renv_remote_pkg <- function(
 #' \dontrun{
 #' renv_remote_pkgs(read_renv_lock()$Packages)
 #' }
-renv_remote_pkgs <- function(renv_lock_pkgs) {
-  lapply(renv_lock_pkgs, renv_remote_pkg)
+renv_remote_pkgs <- function(renv_lock_pkgs, type = NULL) {
+  if (is.null(type)) {
+    lapply(renv_lock_pkgs, renv_remote_pkg)
+  } else {
+    lapply(renv_lock_pkgs, renv_remote_pkg, type)
+  }
 }
 
 #' renv2nix
