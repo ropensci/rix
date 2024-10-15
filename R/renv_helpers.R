@@ -147,8 +147,6 @@ renv2nix <- function(
 #' @return a length 1 character vector with the version of R recorded in
 #'  renv.lock
 #'
-#' @export
-#'
 #' @examples
 #'
 #' rix(r_ver = renv_lock_r_ver())
