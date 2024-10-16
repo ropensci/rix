@@ -20,64 +20,6 @@ read_renv_lock <- function(renv_lock_path = "renv.lock") {
   renv_lock
 }
 
-#' renv_remote_pkg
-#'
-#' Construct a list to be passed in a list to the git_pkgs argument of [rix]
-#' The list returned contains the information necessary to have nix attempt to
-#' build the package from an external repository.
-#'
-#' @param renv_lock_pkg_info a the list representation of a single package
-#' entry from an renv.lock file.
-#' @param type the type of remote package, defaults to the RemoteType of the
-#' renv entry.
-#' currently supported types: 'github' 'gitlab'
-#' see [remotes](https://remotes.r-lib.org/) for more.
-#'
-#' @return a list with three elements named:
-#'  "package_name", "repo_url", "commit"
-#'
-#' @examples
-#' \dontrun{
-#' renv_remote_pkgs(read_renv_lock()$Packages$renv)
-#' }
-renv_remote_pkg <- function(
-    renv_lock_pkg_info,
-    type = renv_lock_pkg_info$RemoteType) {
-  type <- match.arg(type, c(
-    "github", "gitlab"
-    # , "bitbucket", "git", "local", "svn", "url", "version", "cran", "bioc"
-  ))
-  if (type != renv_lock_pkg_info$RemoteType) {
-    stop(
-      "Remote type (", renv_lock_pkg_info$RemoteType,
-      ") does not match the provided type (", type , ")"
-    )
-  }
-  pkg_info <- vector(mode = "list", length = 3)
-  names(pkg_info) <- c("package_name", "repo_url", "commit")
-  switch(type,
-    "github" = {
-      pkg_info[[1]] <- renv_lock_pkg_info$Package
-      pkg_info[[2]] <- paste0(
-        # RemoteHost is listed as api.github.com for some reason
-        "https://github.com/", renv_lock_pkg_info$RemoteUser, "/",
-        renv_lock_pkg_info$RemoteRepo
-      )
-      pkg_info[[3]] <- renv_lock_pkg_info$RemoteSha
-    },
-    "gitlab" = {
-      pkg_info[[1]] <- renv_lock_pkg_info$Package
-      pkg_info[[2]] <- paste0(
-        "https://", renv_lock_pkg_info$RemoteHost, "/",
-        renv_lock_pkg_info$RemoteUser, "/",
-        renv_lock_pkg_info$RemoteRepo
-      )
-      pkg_info[[3]] <- renv_lock_pkg_info$RemoteSha
-    }
-  )
-  pkg_info
-}
-
 #' renv_remote_pkgs
 #'
 #' Construct a list to be passed the git_pkgs argument of [rix]
@@ -97,12 +39,61 @@ renv_remote_pkg <- function(
 #' \dontrun{
 #' renv_remote_pkgs(read_renv_lock()$Packages)
 #' }
-renv_remote_pkgs <- function(renv_lock_pkgs, type = NULL) {
-  if (is.null(type)) {
-    lapply(renv_lock_pkgs, renv_remote_pkg)
-  } else {
-    lapply(renv_lock_pkgs, renv_remote_pkg, type)
+renv_remote_pkgs <- function(
+  renv_lock_remote_pkgs, type = NULL) {
+  # , "bitbucket", "git", "local", "svn", "url", "version", "cran", "bioc"
+  if(!(is.null(type) || (type %in% c("github","gitlab")))) {
+    stop("Unsupported type: ", type)
   }
+  initial_type_state <- type
+  git_pkgs <- vector(mode = "list", length = length(renv_lock_remote_pkgs))
+  names(git_pkgs) <- names(renv_lock_remote_pkgs)
+  for (i in seq_along(renv_lock_remote_pkgs)) {
+    renv_lock_pkg_info <- renv_lock_remote_pkgs[[i]]
+    if(is.null(type)){
+      if(is.null(renv_lock_pkg_info$RemoteType)){
+        stop(
+          "Not a package installed from a remote outside of the main package repositories\n",
+          "renv_remote_pkgs() only handles pkgs where remote type is specified"
+        )
+      } else {
+        type <- renv_lock_pkg_info$RemoteType
+      }
+    } else {
+      if (type != renv_lock_pkg_info$RemoteType) {
+        stop(
+          "Remote type (", renv_lock_pkg_info$RemoteType,
+          ") does not match the provided type (", type , ")"
+        )
+      }
+    }
+
+    pkg_info <- vector(mode = "list", length = 3)
+    names(pkg_info) <- c("package_name", "repo_url", "commit")
+    switch(type,
+      "github" = {
+        pkg_info[[1]] <- renv_lock_pkg_info$Package
+        pkg_info[[2]] <- paste0(
+          # RemoteHost is listed as api.github.com for some reason
+          "https://github.com/", renv_lock_pkg_info$RemoteUser, "/",
+          renv_lock_pkg_info$RemoteRepo
+        )
+        pkg_info[[3]] <- renv_lock_pkg_info$RemoteSha
+      },
+      "gitlab" = {
+        pkg_info[[1]] <- renv_lock_pkg_info$Package
+        pkg_info[[2]] <- paste0(
+          "https://", renv_lock_pkg_info$RemoteHost, "/",
+          renv_lock_pkg_info$RemoteUser, "/",
+          renv_lock_pkg_info$RemoteRepo
+        )
+        pkg_info[[3]] <- renv_lock_pkg_info$RemoteSha
+      }
+    )
+    type <- initial_type_state
+    git_pkgs[[i]] <- pkg_info
+  }
+  git_pkgs
 }
 
 #' renv2nix
