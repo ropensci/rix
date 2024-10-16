@@ -136,15 +136,24 @@ renv2nix <- function(
     for (i in seq_along(renv_lock$Packages)) {
       if (renv_lock$Packages[[i]]$Source == "Repository") {
         repo_pkgs_lgl[i] <- TRUE
-      } else {
+      } else if (renv_lock$Packages[[i]]$RemoteType %in% c("github", "gitlab")) {
         repo_pkgs_lgl[i] <- FALSE
+      } else {
+        repo_pkgs_lgl[i] <- NA
+        warning(
+          renv_lock$Packages[[i]]$Package, " has the unsupported remote type ",
+          renv_lock$Packages[[i]]$RemoteType, " and will not be included in the Nix environment.",
+          "\n Consider manually specifying the git remote or a local package install."
+        )
       }
     }
     git_pkgs <- NULL
     # as local_r_pkgs expects an archive not sure how to set type here..
     # local_r_pkgs <- NULL
-    if (any(!repo_pkgs_lgl)) {
-      git_pkgs <- renv_remote_pkgs(renv_lock$Packages[!repo_pkgs_lgl])
+    if (isTRUE(any(!repo_pkgs_lgl))) {
+      remote_pkgs_lgl <- !repo_pkgs_lgl
+      remote_pkgs_lgl[is.na(remote_pkgs_lgl)] <- FALSE
+      git_pkgs <- renv_remote_pkgs(renv_lock$Packages[remote_pkgs_lgl])
     }
     rix_call <- call("rix",
       r_ver = renv_lock$R$Version,
