@@ -42,8 +42,9 @@ read_renv_lock <- function(renv_lock_path = "renv.lock") {
 renv_remote_pkgs <- function(
   renv_lock_remote_pkgs, type = NULL) {
   # , "bitbucket", "git", "local", "svn", "url", "version", "cran", "bioc"
-  if(!(is.null(type) || (type %in% c("github","gitlab")))) {
-    stop("Unsupported type: ", type)
+  supported_pkg_types <- c("github","gitlab")
+  if(!(is.null(type) || (type %in% supported_pkg_types))) {
+    stop("Unsupported remote type: ", type)
   }
   initial_type_state <- type
   git_pkgs <- vector(mode = "list", length = length(renv_lock_remote_pkgs))
@@ -56,14 +57,20 @@ renv_remote_pkgs <- function(
           "Not a package installed from a remote outside of the main package repositories\n",
           "renv_remote_pkgs() only handles pkgs where remote type is specified"
         )
-      } else {
+      } else if(renv_lock_pkg_info$RemoteType %in% supported_pkg_types) {
         type <- renv_lock_pkg_info$RemoteType
+      } else {
+        stop(
+          renv_lock_pkg_info$Package, " has unsupported remote type: ",
+          renv_lock_pkg_info$RemoteType, "\nSupported types are: ",
+          paste0(supported_pkg_types, collapse = ", ")
+        )
       }
     } else {
       if (type != renv_lock_pkg_info$RemoteType) {
         stop(
-          "Remote type (", renv_lock_pkg_info$RemoteType,
-          ") does not match the provided type (", type , ")"
+          "Remote type (", renv_lock_pkg_info$RemoteType, ") of ", renv_lock_pkg_info$Package,
+          " does not match the provided type (", type , ")"
         )
       }
     }
