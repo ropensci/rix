@@ -84,6 +84,24 @@ testthat::test_that("testing renv_helpers", {
       renv_remote_pkgs(synthetic_renv_lock_example$Packages),
       "Not a package installed from a remote outside of the main package repositories"
     )
+    testthat::expect_error(
+      renv_remote_pkgs(synthetic_renv_lock_example$Packages[
+        c("githubpkg", "gitlabpkg", "unsupported")
+      ], type = "unsupported"),
+      "Unsupported remote type:"
+    )
+    testthat::expect_error(
+      renv_remote_pkgs(synthetic_renv_lock_example$Packages[
+        c("githubpkg", "gitlabpkg", "unsupported")
+      ]),
+      "has unsupported remote type"
+    )
+    testthat::expect_error(
+      renv_remote_pkgs(synthetic_renv_lock_example$Packages[
+        c("githubpkg", "gitlabpkg", "unsupported")
+      ], type = "github"),
+      "does not match the provided type"
+    )
   })
 
   testthat::test_that("Testing `renv2nix()`", {
