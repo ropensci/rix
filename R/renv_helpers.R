@@ -123,14 +123,17 @@ renv2nix <- function(
   method <- match.arg(method, c("fast", "accurate"))
   renv_lock <- read_renv_lock(renv_lock_path = renv_lock_path)
   if (method == "fast") {
-    repo_pkgs_lgl <- logical(length = length(renv_lock$Packages))
+    repo_pkgs <- list()
+    remote_pkgs <- list()
+    # unsupported_pkgs <- list()
+    renv_lock_pkg_names <- names(renv_lock$Packages)
     for (i in seq_along(renv_lock$Packages)) {
       if (renv_lock$Packages[[i]]$Source == "Repository") {
-        repo_pkgs_lgl[i] <- TRUE
+        repo_pkgs[[renv_lock_pkg_names[i]]] <- renv_lock$Packages[[i]]
       } else if (renv_lock$Packages[[i]]$RemoteType %in% c("github", "gitlab")) {
-        repo_pkgs_lgl[i] <- FALSE
+        remote_pkgs[[renv_lock_pkg_names[i]]] <- renv_lock$Packages[[i]]
       } else {
-        repo_pkgs_lgl[i] <- NA
+        # unsupported_pkgs[[renv_lock_pkg_names[i]]] <- renv_lock$Packages[[i]]
         warning(
           renv_lock$Packages[[i]]$Package, " has the unsupported remote type ",
           renv_lock$Packages[[i]]$RemoteType, " and will not be included in the Nix environment.",
@@ -141,14 +144,12 @@ renv2nix <- function(
     git_pkgs <- NULL
     # as local_r_pkgs expects an archive not sure how to set type here..
     # local_r_pkgs <- NULL
-    if (isTRUE(any(!repo_pkgs_lgl))) {
-      remote_pkgs_lgl <- !repo_pkgs_lgl
-      remote_pkgs_lgl[is.na(remote_pkgs_lgl)] <- FALSE
-      git_pkgs <- renv_remote_pkgs(renv_lock$Packages[remote_pkgs_lgl])
+    if(length(remote_pkgs) > 0) {
+      git_pkgs <- renv_remote_pkgs(remote_pkgs)
     }
     rix_call <- call("rix",
       r_ver = renv_lock$R$Version,
-      r_pkgs = names(renv_lock$Packages[repo_pkgs_lgl]),
+      r_pkgs = names(repo_pkgs),
       git_pkgs = git_pkgs # ,
       # local_r_pkgs = local_r_pkgs
     )
