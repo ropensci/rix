@@ -77,7 +77,7 @@ testthat::test_that("testing renv_helpers", {
 
   testthat::test_that("Testing `renv_remote_pkg()`", {
     testthat::expect_equal(
-      renv_remote_pkgs(synthetic_renv_lock_example$Packages[c("githubpkg","gitlabpkg")]),
+      renv_remote_pkgs(synthetic_renv_lock_example$Packages[c("githubpkg", "gitlabpkg")]),
       expected_git_pkg
     )
     testthat::expect_error(
