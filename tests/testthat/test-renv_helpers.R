@@ -107,6 +107,7 @@ testthat::test_that("testing renv_helpers", {
   testthat::test_that("Testing `renv2nix()`", {
     tmpf <- tempfile()
     jsonlite::write_json(synthetic_renv_lock_example, tmpf, auto_unbox = TRUE)
+    expect_error(renv2nix(tmpf, method = "accurate"), "not yet implemented")
     test_call <- call(
       "rix", r_ver = "4.4.1", r_pkgs = c("MASS", "R6"), git_pkgs = expected_git_pkg
     )
