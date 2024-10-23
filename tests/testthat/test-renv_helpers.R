@@ -49,6 +49,15 @@ testthat::test_that("testing renv_helpers", {
         RemoteRepo = "repo",
         RemoteSha = "45p9megdp0i5230rtw1lisy6rquc466zb9yxn7eh",
         RemoteHost = "gitlab.com"
+      ),
+      unsupported = list(
+        Package = "unsupported",
+        Source = "unsupported",
+        RemoteType = "unsupported",
+        RemoteUser = "user",
+        RemoteRepo = "repo",
+        RemoteSha = "i52gyxn30rtw1l45p9me7ehdp0rquc466isy6zb9",
+        RemoteHost = "unsupported.com"
       )
     )
   )
@@ -83,7 +92,11 @@ testthat::test_that("testing renv_helpers", {
     test_call <- call(
       "rix", r_ver = "4.4.1", r_pkgs = c("MASS", "R6"), git_pkgs = expected_git_pkg
     )
-    testthat::expect_equal(test_call, renv2nix(tmpf, return_rix_call = TRUE))
+    warns <- testthat::capture_warnings({
+      call <- renv2nix(tmpf, return_rix_call = TRUE)
+    })
+    testthat::expect_equal(call, test_call)
+    testthat::expect_match(warns, "has the unsupported remote type")
     unlink(tmpf)
   })
 
