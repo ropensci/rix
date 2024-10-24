@@ -114,9 +114,8 @@ renv_remote_pkgs <- function(
 #' are from external package repositories such as being installed directly from a github
 #' repository in which case an attempt is made to handle them and pass them to the
 #' `git_pkgs` argument of [rix]
-#'
 #' Currently defaults to "fast", "accurate" is not yet implemented
-#' @param ... any other parameters to pass to [rix]
+#' @inheritDotParams rix system_pkgs local_r_pkgs tex_pkgs ide project_path overwrite print message_type shell_hook
 #'
 #' @return nothing side effects only, unless `return_rix_call = TRUE` in which case an unevaluated
 #' call to the [rix] function is returned
