@@ -111,18 +111,17 @@ testthat::test_that("testing renv_helpers", {
     test_call <- call(
       "rix", r_ver = "4.4.1", r_pkgs = c("MASS", "R6"), git_pkgs = expected_git_pkg
     )
-    warns <- testthat::capture_warnings({
-      call <- renv2nix(tmpf, return_rix_call = TRUE)
-    })
-    testthat::expect_equal(call, test_call)
-    testthat::expect_match(warns, "has the unsupported remote type")
 
-    warns <- testthat::capture_warnings({
+    testthat::expect_warning({
+      call <- renv2nix(tmpf, return_rix_call = TRUE)
+    }, "has the unsupported remote type")
+    testthat::expect_equal(call, test_call)
+
+    warns <- testthat::expect_warning({
       call <- renv2nix(tmpf, return_rix_call = TRUE, ide = "rstudio")
-    })
+    }, "has the unsupported remote type")
     test_call$ide <- "rstudio"
     testthat::expect_equal(call, test_call)
-    testthat::expect_match(warns, "has the unsupported remote type")
 
     unlink(tmpf)
   })
