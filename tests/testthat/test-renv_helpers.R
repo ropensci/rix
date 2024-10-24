@@ -116,6 +116,14 @@ testthat::test_that("testing renv_helpers", {
     })
     testthat::expect_equal(call, test_call)
     testthat::expect_match(warns, "has the unsupported remote type")
+
+    warns <- testthat::capture_warnings({
+      call <- renv2nix(tmpf, return_rix_call = TRUE, ide = "rstudio")
+    })
+    test_call$ide <- "rstudio"
+    testthat::expect_equal(call, test_call)
+    testthat::expect_match(warns, "has the unsupported remote type")
+
     unlink(tmpf)
   })
 
