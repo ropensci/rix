@@ -115,7 +115,7 @@ renv_remote_pkgs <- function(
 #' repository in which case an attempt is made to handle them and pass them to the
 #' `git_pkgs` argument of [rix]
 #' Currently defaults to "fast", "accurate" is not yet implemented
-#' @inheritDotParams rix system_pkgs local_r_pkgs tex_pkgs ide project_path overwrite print message_type shell_hook
+#' @inheritDotParams rix system_pkgs local_r_pkgs:shell_hook
 #'
 #' @return nothing side effects only, unless `return_rix_call = TRUE` in which case an unevaluated
 #' call to the [rix] function is returned
