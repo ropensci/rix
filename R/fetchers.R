@@ -151,7 +151,11 @@ get_imports <- function(path) {
 
   imports <- imports[, existing_columns, drop = FALSE]
 
-  output <- unname(trimws(unlist(strsplit(unlist(imports), split = ","))))
+  if (!is.null(imports) && length(imports) > 0) {
+    output <- unname(trimws(unlist(strsplit(unlist(imports), split = ","))))
+  } else {
+    output <- character(0) 
+  }
 
   # Remove version of R that may be listed in 'Depends'
   output <- Filter(function(x) !grepl("R \\(.*\\)", x), output)
