@@ -134,7 +134,7 @@ renv2nix <- function(
     # unsupported_pkgs <- list()
     renv_lock_pkg_names <- names(renv_lock$Packages)
     for (i in seq_along(renv_lock$Packages)) {
-      if (renv_lock$Packages[[i]]$Source == "Repository") {
+      if (renv_lock$Packages[[i]]$Source %in% c("Repository", "Bioconductor")) {
         repo_pkgs[[renv_lock_pkg_names[i]]] <- renv_lock$Packages[[i]]
       } else if (renv_lock$Packages[[i]]$RemoteType %in% c("github", "gitlab")) {
         remote_pkgs[[renv_lock_pkg_names[i]]] <- renv_lock$Packages[[i]]
