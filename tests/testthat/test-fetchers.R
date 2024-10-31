@@ -43,7 +43,11 @@ testthat::test_that("Test fetchgit works with packages with empty imports", {
   testthat::skip_on_cran()
   testthat::expect_equal(
     fetchgit(
-      list(package_name = "helloworld", repo_url = "https://github.com/jrosell/helloworld/", commit = "48ceefdfb4858743454ede71d19999c2e6b38ed2")
+      list(
+        package_name = "helloworld",
+        repo_url = "https://github.com/jrosell/helloworld/",
+        commit = "48ceefdfb4858743454ede71d19999c2e6b38ed2"
+      )
     ),
     "\n    (pkgs.rPackages.buildRPackage {\n      name = \"helloworld\";\n      src = pkgs.fetchgit {\n        url = \"https://github.com/jrosell/helloworld/\";\n        rev = \"48ceefdfb4858743454ede71d19999c2e6b38ed2\";\n        sha256 = \"sha256-vaO7ItKMO6PfvNDhWNDdw5ST/K081HplyW3RoQhNsEs=\";\n      };\n      propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.rPackages) ;\n      };\n    })\n"
   )
