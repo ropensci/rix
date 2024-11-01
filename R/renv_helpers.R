@@ -105,20 +105,25 @@ renv_remote_pkgs <- function(
 
 #' renv2nix
 #'
-#' @param renv_lock_path location of the renv.lock file, defaults to "renv.lock"
-#' @param return_rix_call return the generated rix function call instead of
-#' evaluating it this is for debugging purposes, defaults to FALSE
-#' @param method the method of generating a nix environment from and renv.lock file.
-#' "fast" is an inexact conversion which simply extracts the R version and a list of all the
-#' packages in an renv.lock file and adds them to the `r_pkgs` argument of [rix], unless they
-#' are from external package repositories such as being installed directly from a github
-#' repository in which case an attempt is made to handle them and pass them to the
-#' `git_pkgs` argument of [rix]
-#' Currently defaults to "fast", "accurate" is not yet implemented
+#' @param renv_lock_path Character, path of the renv.lock file, defaults to
+#'   "renv.lock"
+#' @param return_rix_call Logical, return the generated rix function call
+#'   instead of evaluating it this is for debugging purposes, defaults to
+#'   `FALSE`
+#' @param method Character, the method of generating a nix environment from an
+#'   renv.lock file. "fast" is an inexact conversion which simply extracts the R
+#'   version and a list of all the packages in an renv.lock file and adds them
+#'   to the `r_pkgs` argument of `rix()`. This will use a snapshot of `nixpkgs`
+#'   that should contain package versions that are not too different from the
+#'   ones defined in the `renv.lock` file. For packages installed from Github or
+#'   similar, an attempt is made to handle them and pass them to the `git_pkgs`
+#'   argument of `rix()`. Currently defaults to "fast", "accurate" is not yet
+#'   implemented.
 #' @inheritDotParams rix system_pkgs local_r_pkgs:shell_hook
 #'
-#' @return nothing side effects only, unless `return_rix_call = TRUE` in which case an unevaluated
-#' call to the [rix] function is returned
+#' @return Nothing, this function is called for its side effects only, unless
+#'   `return_rix_call = TRUE` in which case an unevaluated call to `rix()`
+#'   is returned
 #' @export
 #'
 renv2nix <- function(
@@ -142,7 +147,7 @@ renv2nix <- function(
         # unsupported_pkgs[[renv_lock_pkg_names[i]]] <- renv_lock$Packages[[i]]
         warning(
           renv_lock$Packages[[i]]$Package, " has the unsupported remote type ",
-          renv_lock$Packages[[i]]$RemoteType, " and will not be included in the Nix environment.",
+          renv_lock$Packages[[i]]$RemoteType, " and will not be included in the Nix expression.",
           "\n Consider manually specifying the git remote or a local package install."
         )
       }
@@ -171,8 +176,8 @@ renv2nix <- function(
     eval(rix_call)
   } else {
     stop(
-      "'accurate' renv based environments with package version matching",
-      " is not yet implemented :("
+   "The 'accurate' method to generate Nix expressions with exact package versions",
+   "matching the ones in the `renv.lock` file is not yet implemented."
     )
   }
 }
