@@ -12,18 +12,22 @@ renv2nix(
 )
 }
 \arguments{
-\item{renv_lock_path}{location of the renv.lock file, defaults to "renv.lock"}
+\item{renv_lock_path}{Character, path of the renv.lock file, defaults to
+"renv.lock"}
 
-\item{return_rix_call}{return the generated rix function call instead of
-evaluating it this is for debugging purposes, defaults to FALSE}
+\item{return_rix_call}{Logical, return the generated rix function call
+instead of evaluating it this is for debugging purposes, defaults to
+\code{FALSE}}
 
-\item{method}{the method of generating a nix environment from and renv.lock file.
-"fast" is an inexact conversion which simply extracts the R version and a list of all the
-packages in an renv.lock file and adds them to the \code{r_pkgs} argument of \link{rix}, unless they
-are from external package repositories such as being installed directly from a github
-repository in which case an attempt is made to handle them and pass them to the
-\code{git_pkgs} argument of \link{rix}
-Currently defaults to "fast", "accurate" is not yet implemented}
+\item{method}{Character, the method of generating a nix environment from an
+renv.lock file. "fast" is an inexact conversion which simply extracts the R
+version and a list of all the packages in an renv.lock file and adds them
+to the \code{r_pkgs} argument of \code{rix()}. This will use a snapshot of \code{nixpkgs}
+that should contain package versions that are not too different from the
+ones defined in the \code{renv.lock} file. For packages installed from Github or
+similar, an attempt is made to handle them and pass them to the \code{git_pkgs}
+argument of \code{rix()}. Currently defaults to "fast", "accurate" is not yet
+implemented.}
 
 \item{...}{
   Arguments passed on to \code{\link[=rix]{rix}}
@@ -141,8 +145,9 @@ using bleeding edge packages".}
   }}
 }
 \value{
-nothing side effects only, unless \code{return_rix_call = TRUE} in which case an unevaluated
-call to the \link{rix} function is returned
+Nothing, this function is called for its side effects only, unless
+\code{return_rix_call = TRUE} in which case an unevaluated call to \code{rix()}
+is returned
 }
 \description{
 renv2nix
