@@ -148,12 +148,13 @@ testthat::test_that("testing renv_helpers", {
 
   testthat::test_that("Testing `renv2nix()` on actual renv.lock files", {
 
-    testthat::announce_snapshot_file("_snaps/renv2nix/default_v0-14-0.nix")
+    path_env_nix <- tempdir()
 
     testthat::expect_snapshot_file(
                 path = renv2nix(renv_lock_path = "testdata/renv-samples/renv_v0-14-0.lock",
-                                path = "_snaps/renv2nix/", overwrite = TRUE),
-                name = "renv_v0-14-0.lock"
+                                project_path = path_env_nix,
+                                overwrite = TRUE),
+                name = "default_v0-14-0.nix"
               )
   })
 })
