@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.13.0 (2024-11-18)
+
+- `renv2nix()`: converts `renv.lock` file into a `default.nix` expression. For
+  now, only the R version is matched, not package versions.
+
 # rix 0.12.4 (2024-09-27)
 
 - `rix_init()`, `rix()`: previous attempt at fixing bug was only partially
