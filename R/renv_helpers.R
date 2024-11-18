@@ -40,10 +40,10 @@ read_renv_lock <- function(renv_lock_path = "renv.lock") {
 #' renv_remote_pkgs(read_renv_lock()$Packages)
 #' }
 renv_remote_pkgs <- function(
-  renv_lock_remote_pkgs, type = NULL) {
+    renv_lock_remote_pkgs, type = NULL) {
   # , "bitbucket", "git", "local", "svn", "url", "version", "cran", "bioc"
-  supported_pkg_types <- c("github","gitlab")
-  if(!(is.null(type) || (type %in% supported_pkg_types))) {
+  supported_pkg_types <- c("github", "gitlab")
+  if (!(is.null(type) || (type %in% supported_pkg_types))) {
     stop("Unsupported remote type: ", type)
   }
   initial_type_state <- type
@@ -51,13 +51,13 @@ renv_remote_pkgs <- function(
   names(git_pkgs) <- names(renv_lock_remote_pkgs)
   for (i in seq_along(renv_lock_remote_pkgs)) {
     renv_lock_pkg_info <- renv_lock_remote_pkgs[[i]]
-    if(is.null(type)){
-      if(is.null(renv_lock_pkg_info$RemoteType)){
+    if (is.null(type)) {
+      if (is.null(renv_lock_pkg_info$RemoteType)) {
         stop(
           "Not a package installed from a remote outside of the main package repositories\n",
           "renv_remote_pkgs() only handles pkgs where remote type is specified"
         )
-      } else if(renv_lock_pkg_info$RemoteType %in% supported_pkg_types) {
+      } else if (renv_lock_pkg_info$RemoteType %in% supported_pkg_types) {
         type <- renv_lock_pkg_info$RemoteType
       } else {
         stop(
@@ -70,7 +70,7 @@ renv_remote_pkgs <- function(
       if (type != renv_lock_pkg_info$RemoteType) {
         stop(
           "Remote type (", renv_lock_pkg_info$RemoteType, ") of ", renv_lock_pkg_info$Package,
-          " does not match the provided type (", type , ")"
+          " does not match the provided type (", type, ")"
         )
       }
     }
@@ -155,7 +155,7 @@ renv2nix <- function(
     git_pkgs <- NULL
     # as local_r_pkgs expects an archive not sure how to set type here..
     # local_r_pkgs <- NULL
-    if(length(remote_pkgs) > 0) {
+    if (length(remote_pkgs) > 0) {
       git_pkgs <- renv_remote_pkgs(remote_pkgs)
     }
     rix_call <- call("rix",
@@ -176,8 +176,8 @@ renv2nix <- function(
     eval(rix_call)
   } else {
     stop(
-   "The 'accurate' method to generate Nix expressions with exact package versions",
-   "matching the ones in the `renv.lock` file is not yet implemented."
+      "The 'accurate' method to generate Nix expressions with exact package versions",
+      "matching the ones in the `renv.lock` file is not yet implemented."
     )
   }
 }
