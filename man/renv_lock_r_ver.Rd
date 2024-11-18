@@ -18,7 +18,7 @@ renv.lock
 renv_lock_r_ver
 }
 \examples{
-
+\dontrun{
 rix(r_ver = renv_lock_r_ver())
-
+}
 }

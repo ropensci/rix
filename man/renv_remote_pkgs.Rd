@@ -7,12 +7,12 @@
 renv_remote_pkgs(renv_lock_remote_pkgs, type = NULL)
 }
 \arguments{
+\item{renv_lock_remote_pkgs}{the list of package information from an renv.lock file.}
+
 \item{type}{the type of remote package, defaults to NULL meaning the RemoteType of the
 renv entry will be used.
 currently supported types: 'github' 'gitlab'
 see \href{https://remotes.r-lib.org/}{remotes} for more.}
-
-\item{renv_lock_pkgs}{the list of package information from an renv.lock file.}
 }
 \value{
 a list of lists with three elements named:

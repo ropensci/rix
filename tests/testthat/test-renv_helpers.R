@@ -115,17 +115,24 @@ testthat::test_that("testing renv_helpers", {
     jsonlite::write_json(synthetic_renv_lock_example, tmpf, auto_unbox = TRUE)
     expect_error(renv2nix(tmpf, method = "accurate"), "not yet implemented")
     test_call <- call(
-      "rix", r_ver = "4.4.1", r_pkgs = c("MASS", "R6"), git_pkgs = expected_git_pkg
+      "rix",
+      r_ver = "4.4.1", r_pkgs = c("MASS", "R6"), git_pkgs = expected_git_pkg
     )
 
-    testthat::expect_warning({
-      call <- renv2nix(tmpf, return_rix_call = TRUE)
-    }, "has the unsupported remote type")
+    testthat::expect_warning(
+      {
+        call <- renv2nix(tmpf, return_rix_call = TRUE)
+      },
+      "has the unsupported remote type"
+    )
     testthat::expect_equal(call, test_call)
 
-    warns <- testthat::expect_warning({
-      call <- renv2nix(tmpf, return_rix_call = TRUE, ide = "rstudio")
-    }, "has the unsupported remote type")
+    warns <- testthat::expect_warning(
+      {
+        call <- renv2nix(tmpf, return_rix_call = TRUE, ide = "rstudio")
+      },
+      "has the unsupported remote type"
+    )
     test_call$ide <- "rstudio"
     testthat::expect_equal(call, test_call)
 
@@ -138,6 +145,4 @@ testthat::test_that("testing renv_helpers", {
     testthat::expect_equal(renv_lock_r_ver(renv_lock_path = tmpf), "4.4.1")
     unlink(tmpf)
   })
-
 })
-

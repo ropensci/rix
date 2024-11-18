@@ -62,7 +62,7 @@ later R session setup:
 \enumerate{
 \item \strong{Adjusting \code{R_LIBS_USER} path:}
 By default, the first path of \code{R_LIBS_USER} points to the user library
-outside the Nix store (see also \code{\link[base:.libPaths]{base::.libPaths()}}). This creates
+outside the Nix store (see also \code{\link[base:libPaths]{base::.libPaths()}}). This creates
 friction and potential impurity as R packages from the system's R user
 library are loaded. While this feature can be useful for interactively
 testing an R package in a Nix environment before adding it to a \code{.nix}
