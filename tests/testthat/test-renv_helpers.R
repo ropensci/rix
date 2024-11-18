@@ -145,4 +145,15 @@ testthat::test_that("testing renv_helpers", {
     testthat::expect_equal(renv_lock_r_ver(renv_lock_path = tmpf), "4.4.1")
     unlink(tmpf)
   })
+
+  testthat::test_that("Testing `renv2nix()` on actual renv.lock files", {
+
+    testthat::announce_snapshot_file("_snaps/renv2nix/default_v0-14-0.nix")
+
+    testthat::expect_snapshot_file(
+                path = renv2nix(renv_lock_path = "testdata/renv-samples/renv_v0-14-0.lock",
+                                path = "_snaps/renv2nix/", overwrite = TRUE),
+                name = "renv_v0-14-0.lock"
+              )
+  })
 })
