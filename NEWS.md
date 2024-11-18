@@ -4,6 +4,7 @@
 
 - `renv2nix()`: converts `renv.lock` file into a `default.nix` expression. For
   now, only the R version is matched, not package versions.
+  Thanks to [RichardJActon](https://github.com/RichardJActon) for implementing.
 
 # rix 0.12.4 (2024-09-27)
 
