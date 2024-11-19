@@ -151,8 +151,6 @@ testthat::test_that("testing renv_helpers", {
     path_env_nix <- tempdir()
 
     save_renv2nix_test <- function(renv_lock_path, path_env_nix, output_nix_file, ...) {
-      # we will need to remove this suppressWarnings and deal with the emo package
-      suppressWarnings(
         renv2nix(
           renv_lock_path = renv_lock_path,
           project_path = path_env_nix,
@@ -160,7 +158,6 @@ testthat::test_that("testing renv_helpers", {
           overwrite = TRUE,
           ...
         )
-      )
 
       file.copy(
         from = paste0(path_env_nix, "/default.nix"),
