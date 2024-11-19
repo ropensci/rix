@@ -1,5 +1,11 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.13.1 (2024-11-19)
+
+- `renv2nix()`: added new argument, `override_r_ver`, to manually set R version
+    in generated Nix expression. This deals with situations where an `renv.lock`
+    lists a version of R that is not (yet) included in nixpkgs.
+
 # rix 0.13.0 (2024-11-18)
 
 - `renv2nix()`: converts `renv.lock` file into a `default.nix` expression. For
