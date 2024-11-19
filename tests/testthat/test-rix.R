@@ -38,6 +38,7 @@ testthat::test_that("rix(), ide is 'rstudio', Linux", {
       ide = ide,
       project_path = path_default_nix,
       overwrite = TRUE,
+      message_type = "quiet",
       shell_hook = NULL
     )
 
@@ -96,6 +97,7 @@ testthat::test_that("rix(), ide is 'other' or 'code'", {
         ),
         ide = ide,
         project_path = path_default_nix,
+        message_type = "quiet",
         overwrite = TRUE,
         shell_hook = NULL
       )
@@ -151,6 +153,7 @@ testthat::test_that("Quarto gets added to sys packages", {
         ide = interface,
         project_path = path_default_nix,
         overwrite = TRUE,
+        message_type = "quiet",
         shell_hook = NULL
       )
     )
@@ -203,6 +206,7 @@ testthat::test_that("If on darwin and ide = rstudio, raise warning", {
       r_pkgs = "dplyr",
       project_path = path_default_nix,
       overwrite = TRUE,
+      message_type = "quiet",
       shell_hook = NULL
     )
 
@@ -229,6 +233,7 @@ testthat::test_that("If R version is 4.4.0, raise warning", {
       r_pkgs = NULL,
       project_path = path_default_nix,
       overwrite = TRUE,
+      message_type = "simple",
       shell_hook = NULL
     )
 
@@ -281,6 +286,7 @@ testthat::test_that("If on ide = rstudio, but no R packages, raise error", {
       r_pkgs = NULL,
       project_path = path_default_nix,
       overwrite = TRUE,
+      message_type = "quiet",
       shell_hook = NULL
     )
 
@@ -307,6 +313,7 @@ testthat::test_that("If R version is == 3.5.3, raise warning", {
       r_pkgs = NULL,
       project_path = path_default_nix,
       overwrite = TRUE,
+      message_type = "simple",
       shell_hook = NULL
     )
 
@@ -361,6 +368,7 @@ testthat::test_that("rix(), bleeding_edge", {
         ide = ide,
         project_path = path_default_nix,
         overwrite = TRUE,
+        message_type = "quiet",
         shell_hook = NULL
       )
     )
@@ -420,6 +428,7 @@ testthat::test_that("rix(), frozen_edge", {
         ide = ide,
         project_path = path_default_nix,
         overwrite = TRUE,
+        message_type = "quiet",
         shell_hook = NULL
       )
     )
@@ -485,6 +494,7 @@ testthat::test_that("rix(), only one Github package", {
       ),
       ide = "other",
       project_path = path_default_nix,
+      message_type = "quiet",
       overwrite = TRUE
     )
 

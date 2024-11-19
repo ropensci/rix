@@ -4,11 +4,14 @@
 \alias{renv_lock_r_ver}
 \title{renv_lock_r_ver}
 \usage{
-renv_lock_r_ver(renv_lock_path = "renv.lock")
+renv_lock_r_ver(renv_lock, override_r_ver = NULL)
 }
 \arguments{
-\item{renv_lock_path}{location of the renv.lock file from which to get the
-R version, defaults to "renv.lock"}
+\item{renv_lock}{renv.lock file from which to get the R version}
+
+\item{override_r_ver}{Character, override the R version defined in the
+\code{renv.lock} file with another version. This is especially useful if
+the \code{renv.lock} file lists a version of R not (yet) available through Nix.}
 }
 \value{
 a length 1 character vector with the version of R recorded in

@@ -8,7 +8,7 @@ testthat::test_that("Snapshot test of rix_init(), overwrite", {
     rix_init(
       project_path = path_env_nix,
       rprofile_action = "overwrite",
-      message_type = "simple"
+      message_type = "quiet"
     )
 
     paste0(path_env_nix, "/.Rprofile")
@@ -36,7 +36,7 @@ testthat::test_that("Snapshot test of rix_init(), create_missing, no file", {
     rix_init(
       project_path = path_env_nix,
       rprofile_action = "create_missing",
-      message_type = "simple"
+      message_type = "quiet"
     )
 
     paste0(path_env_nix, "/.Rprofile")
@@ -66,7 +66,7 @@ testthat::test_that("Snapshot test of rix_init(), create_missing, empty file", {
     rix_init(
       project_path = path_env_nix,
       rprofile_action = "create_missing",
-      message_type = "simple"
+      message_type = "quiet"
     )
 
     rprofile_file
@@ -96,7 +96,7 @@ testthat::test_that("Snapshot test of rix_init(), append", {
     rix_init(
       project_path = path_env_nix,
       rprofile_action = "append",
-      message_type = "simple"
+      message_type = "quiet"
     )
 
     paste0(path_env_nix, "/.Rprofile")

@@ -8,6 +8,7 @@ renv2nix(
   renv_lock_path = "renv.lock",
   return_rix_call = FALSE,
   method = c("fast", "accurate"),
+  override_r_ver = NULL,
   ...
 )
 }
@@ -28,6 +29,11 @@ ones defined in the \code{renv.lock} file. For packages installed from Github or
 similar, an attempt is made to handle them and pass them to the \code{git_pkgs}
 argument of \code{rix()}. Currently defaults to "fast", "accurate" is not yet
 implemented.}
+
+\item{override_r_ver}{Character defaults to NULL, override the R version
+defined in the \code{renv.lock} file with another version. This is especially
+useful if the \code{renv.lock} file lists a version of R not (yet) available
+through Nix.}
 
 \item{...}{
   Arguments passed on to \code{\link[=rix]{rix}}

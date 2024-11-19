@@ -14,6 +14,7 @@ testthat::test_that("Testing that `nix_build()` builds derivation", {
     r_ver = "4.3.1",
     overwrite = TRUE,
     project_path = path_subshell,
+    message_type = "quiet",
     shell_hook = NULL
   )
 
