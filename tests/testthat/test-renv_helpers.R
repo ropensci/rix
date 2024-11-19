@@ -149,13 +149,58 @@ testthat::test_that("testing renv_helpers", {
   testthat::test_that("Testing `renv2nix()` on actual renv.lock files", {
     path_env_nix <- tempdir()
 
+    save_renv2nix_test <- function(renv_lock_path, path_env_nix, output_nix_file) {
+        renv2nix(
+          renv_lock_path = renv_lock_path,
+          project_path = path_env_nix,
+          overwrite = TRUE
+      )
+
+      file.copy(
+        from = paste0(path_env_nix, "/default.nix"),
+        to = paste0(path_env_nix, output_nix_file)
+      )
+
+      paste0(path_env_nix, output_nix_file)
+    }
+
     testthat::expect_snapshot_file(
-      path = renv2nix(
-        renv_lock_path = "testdata/renv-samples/renv_v0-14-0.lock",
-        project_path = path_env_nix,
-        overwrite = TRUE
-      ),
-      name = "default_v0-14-0.nix"
+    # Suppress the warning about creating an expression with an old version of R
+                path = suppressWarnings(save_renv2nix_test(
+                  "testdata/renv-samples/renv_v0-14-0.lock",
+                  path_env_nix,
+                  "/default_v0-14-0.nix"
+                )),
+                name = "default_v0-14-0.nix"
+              )
+
+    testthat::expect_snapshot_file(
+                path = save_renv2nix_test(
+                  "testdata/renv-samples/renv_v0-15-5.lock",
+                  path_env_nix,
+                  "/default_v0-15-5.nix"
+                ),
+                name = "default_v0-15-5.nix"
+              )
+
+    testthat::expect_snapshot_file(
+                path = save_renv2nix_test(
+                  "testdata/renv-samples/renv_v0-17-3.lock",
+                  path_env_nix,
+                  "/default_v0-17-3.nix"
+                ),
+                name = "default_v0-17-3.nix"
+              )
+
+    testthat::expect_snapshot_file(
+                path = save_renv2nix_test(
+                  "testdata/renv-samples/renv_v1-0-7.lock",
+                  path_env_nix,
+                  "/default_v1-0-7.nix"
+                ),
+                name = "default_v1-0-7.nix"
     )
+
+    on.exit(unlink(path_env_nix))
   })
 })
