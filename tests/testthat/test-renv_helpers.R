@@ -171,41 +171,41 @@ testthat::test_that("testing renv_helpers", {
     }
 
     testthat::expect_snapshot_file(
-    # Suppress the warning about creating an expression with an old version of R
-                path = suppressWarnings(save_renv2nix_test(
-                  "testdata/renv-samples/renv_v0-14-0.lock",
-                  path_env_nix,
-                  "/default_v0-14-0.nix"
-                )),
-                name = "default_v0-14-0.nix"
-              )
+      # Suppress the warning about creating an expression with an old version of R
+      path = suppressWarnings(save_renv2nix_test(
+        "testdata/renv-samples/renv_v0-14-0.lock",
+        path_env_nix,
+        "/default_v0-14-0.nix"
+      )),
+      name = "default_v0-14-0.nix"
+    )
 
     testthat::expect_snapshot_file(
-                path = save_renv2nix_test(
-                  "testdata/renv-samples/renv_v0-15-5.lock",
-                  path_env_nix,
-                  "/default_v0-15-5.nix"
-                ),
-                name = "default_v0-15-5.nix"
-              )
+      path = save_renv2nix_test(
+        "testdata/renv-samples/renv_v0-15-5.lock",
+        path_env_nix,
+        "/default_v0-15-5.nix"
+      ),
+      name = "default_v0-15-5.nix"
+    )
 
     testthat::expect_snapshot_file(
-                path = save_renv2nix_test(
-                  "testdata/renv-samples/renv_v0-17-3.lock",
-                  path_env_nix,
-                  "/default_v0-17-3.nix"
-                ),
-                name = "default_v0-17-3.nix"
-              )
+      path = save_renv2nix_test(
+        "testdata/renv-samples/renv_v0-17-3.lock",
+        path_env_nix,
+        "/default_v0-17-3.nix"
+      ),
+      name = "default_v0-17-3.nix"
+    )
 
     testthat::expect_snapshot_file(
-                path = save_renv2nix_test(
-                  "testdata/renv-samples/renv_v1-0-7.lock",
-                  path_env_nix,
-                  "/default_v1-0-7.nix",
-                  override_r_ver = "4.3.3",
-                ),
-                name = "default_v1-0-7.nix"
+      path = save_renv2nix_test(
+        "testdata/renv-samples/renv_v1-0-7.lock",
+        path_env_nix,
+        "/default_v1-0-7.nix",
+        override_r_ver = "4.3.3",
+      ),
+      name = "default_v1-0-7.nix"
     )
 
     on.exit(unlink(path_env_nix))

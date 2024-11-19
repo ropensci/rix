@@ -202,7 +202,7 @@ renv2nix <- function(
 #' rix(r_ver = renv_lock_r_ver())
 #' }
 renv_lock_r_ver <- function(renv_lock, override_r_ver = NULL) {
-  if(is.null(override_r_ver)){
+  if (is.null(override_r_ver)) {
     renv_lock$R$Version
   } else {
     override_r_ver
