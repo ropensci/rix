@@ -116,12 +116,12 @@ testthat::test_that("testing renv_helpers", {
     expect_error(renv2nix(tmpf, method = "accurate"), "not yet implemented")
     test_call <- call(
       "rix",
-      r_ver = "4.4.1", r_pkgs = c("MASS", "R6"), git_pkgs = expected_git_pkg
+      r_ver = "4.4.1", r_pkgs = c("MASS", "R6"), git_pkgs = expected_git_pkg, message_type = "quiet"
     )
 
     testthat::expect_warning(
       {
-        call <- renv2nix(tmpf, return_rix_call = TRUE)
+        call <- renv2nix(tmpf, return_rix_call = TRUE, message_type = "quiet")
       },
       "has the unsupported remote type"
     )
@@ -129,7 +129,7 @@ testthat::test_that("testing renv_helpers", {
 
     warns <- testthat::expect_warning(
       {
-        call <- renv2nix(tmpf, return_rix_call = TRUE, ide = "rstudio")
+        call <- renv2nix(tmpf, return_rix_call = TRUE, message_type = "quiet", ide = "rstudio")
       },
       "has the unsupported remote type"
     )
@@ -149,11 +149,13 @@ testthat::test_that("testing renv_helpers", {
   testthat::test_that("Testing `renv2nix()` on actual renv.lock files", {
     path_env_nix <- tempdir()
 
-    save_renv2nix_test <- function(renv_lock_path, path_env_nix, output_nix_file) {
+    save_renv2nix_test <- function(renv_lock_path, path_env_nix, output_nix_file, ...) {
         renv2nix(
           renv_lock_path = renv_lock_path,
           project_path = path_env_nix,
-          overwrite = TRUE
+          message_type = "quiet",
+          overwrite = TRUE,
+          ...
       )
 
       file.copy(
@@ -196,7 +198,8 @@ testthat::test_that("testing renv_helpers", {
                 path = save_renv2nix_test(
                   "testdata/renv-samples/renv_v1-0-7.lock",
                   path_env_nix,
-                  "/default_v1-0-7.nix"
+                  "/default_v1-0-7.nix",
+                  override_r_ver = "4.3.3",
                 ),
                 name = "default_v1-0-7.nix"
     )
