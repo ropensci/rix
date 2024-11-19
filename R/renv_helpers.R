@@ -164,7 +164,7 @@ renv2nix <- function(
       git_pkgs <- renv_remote_pkgs(remote_pkgs)
     }
     rix_call <- call("rix",
-      r_ver = renv_lock_r_ver(renv_lock_path = renv_lock_path, override_r_ver = override_r_ver),
+      r_ver = renv_lock_r_ver(renv_lock = renv_lock, override_r_ver = override_r_ver),
       r_pkgs = names(repo_pkgs),
       git_pkgs = git_pkgs # ,
       # local_r_pkgs = local_r_pkgs
@@ -189,8 +189,7 @@ renv2nix <- function(
 
 #' renv_lock_r_ver
 #'
-#' @param renv_lock_path location of the renv.lock file from which to get the
-#' R version, defaults to "renv.lock"
+#' @param renv_lock renv.lock file from which to get the R version
 #' @param override_r_ver Character, override the R version defined in the
 #'   `renv.lock` file with another version. This is especially useful if
 #'   the `renv.lock` file lists a version of R not (yet) available through Nix.
@@ -202,8 +201,7 @@ renv2nix <- function(
 #' \dontrun{
 #' rix(r_ver = renv_lock_r_ver())
 #' }
-renv_lock_r_ver <- function(renv_lock_path = "renv.lock", override_r_ver = NULL) {
-  renv_lock <- read_renv_lock(renv_lock_path = renv_lock_path)
+renv_lock_r_ver <- function(renv_lock, override_r_ver = NULL) {
   if(is.null(override_r_ver)){
     renv_lock$R$Version
   } else {

@@ -142,7 +142,8 @@ testthat::test_that("testing renv_helpers", {
   testthat::test_that("Testing `renv_lock_r_ver()`", {
     tmpf <- tempfile()
     jsonlite::write_json(list(R = list(Version = "4.4.1")), tmpf, auto_unbox = TRUE)
-    testthat::expect_equal(renv_lock_r_ver(renv_lock_path = tmpf), "4.4.1")
+    renv_lock <- read_renv_lock(tmpf)
+    testthat::expect_equal(renv_lock_r_ver(renv_lock), "4.4.1")
     unlink(tmpf)
   })
 
