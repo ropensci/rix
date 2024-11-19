@@ -38,6 +38,7 @@ testthat::test_that("rix(), ide is 'rstudio', Linux", {
       ide = ide,
       project_path = path_default_nix,
       overwrite = TRUE,
+      message_type = "quiet",
       shell_hook = NULL
     )
 
@@ -96,6 +97,7 @@ testthat::test_that("rix(), ide is 'other' or 'code'", {
         ),
         ide = ide,
         project_path = path_default_nix,
+        message_type = "quiet",
         overwrite = TRUE,
         shell_hook = NULL
       )
@@ -143,7 +145,7 @@ testthat::test_that("Quarto gets added to sys packages", {
   )
 
   save_default_nix_test <- function(pkgs, interface, path_default_nix) {
-    # Because of rix_init, see above
+                                        # Because of rix_init, see above
     suppressWarnings(
       rix(
         r_ver = "4.3.1",
@@ -151,6 +153,7 @@ testthat::test_that("Quarto gets added to sys packages", {
         ide = interface,
         project_path = path_default_nix,
         overwrite = TRUE,
+        message_type = "quiet",
         shell_hook = NULL
       )
     )
@@ -172,13 +175,13 @@ testthat::test_that("Quarto gets added to sys packages", {
   testthat::announce_snapshot_file("rix/yes_quarto_default.nix")
 
   testthat::expect_snapshot_file(
-    path = save_default_nix_test(
-      pkgs = c("dplyr", "quarto", "data.table"),
-      interface = "other",
-      path_default_nix
-    ),
-    name = "yes_quarto_default.nix"
-  )
+              path = save_default_nix_test(
+                pkgs = c("dplyr", "quarto", "data.table"),
+                interface = "other",
+                path_default_nix
+              ),
+              name = "yes_quarto_default.nix"
+            )
 
   on.exit(
     unlink(path_default_nix, recursive = TRUE, force = TRUE),
@@ -203,6 +206,7 @@ testthat::test_that("If on darwin and ide = rstudio, raise warning", {
       r_pkgs = "dplyr",
       project_path = path_default_nix,
       overwrite = TRUE,
+      message_type = "quiet",
       shell_hook = NULL
     )
 
@@ -210,9 +214,9 @@ testthat::test_that("If on darwin and ide = rstudio, raise warning", {
   }
 
   testthat::expect_warning(
-    save_default_nix_test(path_default_nix),
-    regexp = "refer to the macOS"
-  )
+              save_default_nix_test(path_default_nix),
+              regexp = "refer to the macOS"
+            )
 })
 
 testthat::test_that("If R version is 4.4.0, raise warning", {
@@ -229,6 +233,7 @@ testthat::test_that("If R version is 4.4.0, raise warning", {
       r_pkgs = NULL,
       project_path = path_default_nix,
       overwrite = TRUE,
+      message_type = "simple",
       shell_hook = NULL
     )
 
@@ -236,9 +241,9 @@ testthat::test_that("If R version is 4.4.0, raise warning", {
   }
 
   testthat::expect_warning(
-    save_default_nix_test(path_default_nix),
-    regexp = "version is not available"
-  )
+              save_default_nix_test(path_default_nix),
+              regexp = "version is not available"
+            )
 })
 
 testthat::test_that("If R version is <= 4.1.1, raise warning", {
@@ -262,9 +267,9 @@ testthat::test_that("If R version is <= 4.1.1, raise warning", {
   }
 
   testthat::expect_warning(
-    save_default_nix_test(path_default_nix),
-    regexp = "older version of R"
-  )
+              save_default_nix_test(path_default_nix),
+              regexp = "older version of R"
+            )
 })
 
 testthat::test_that("If on ide = rstudio, but no R packages, raise error", {
@@ -281,6 +286,7 @@ testthat::test_that("If on ide = rstudio, but no R packages, raise error", {
       r_pkgs = NULL,
       project_path = path_default_nix,
       overwrite = TRUE,
+      message_type = "quiet",
       shell_hook = NULL
     )
 
@@ -288,9 +294,9 @@ testthat::test_that("If on ide = rstudio, but no R packages, raise error", {
   }
 
   testthat::expect_error(
-    save_default_nix_test(path_default_nix),
-    regexp = "didn't add any R packages"
-  )
+              save_default_nix_test(path_default_nix),
+              regexp = "didn't add any R packages"
+            )
 })
 
 testthat::test_that("If R version is == 3.5.3, raise warning", {
@@ -307,6 +313,7 @@ testthat::test_that("If R version is == 3.5.3, raise warning", {
       r_pkgs = NULL,
       project_path = path_default_nix,
       overwrite = TRUE,
+      message_type = "simple",
       shell_hook = NULL
     )
 
@@ -361,6 +368,7 @@ testthat::test_that("rix(), bleeding_edge", {
         ide = ide,
         project_path = path_default_nix,
         overwrite = TRUE,
+        message_type = "quiet",
         shell_hook = NULL
       )
     )
@@ -399,7 +407,7 @@ testthat::test_that("rix(), frozen_edge", {
   )
 
   save_default_nix_test <- function(ide, path_default_nix) {
-    # This will generate the warning to read the vignette for bleeding_edge
+                                        # This will generate the warning to read the vignette for bleeding_edge
     suppressWarnings(
       rix(
         r_ver = "frozen_edge",
@@ -420,6 +428,7 @@ testthat::test_that("rix(), frozen_edge", {
         ide = ide,
         project_path = path_default_nix,
         overwrite = TRUE,
+        message_type = "quiet",
         shell_hook = NULL
       )
     )
@@ -485,6 +494,7 @@ testthat::test_that("rix(), only one Github package", {
       ),
       ide = "other",
       project_path = path_default_nix,
+      message_type = "quiet",
       overwrite = TRUE
     )
 
