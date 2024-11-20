@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.13.2 (2024-11-20)
+
+- `renv2nix()`: switch from RemoteType to RemoteHost in `renv.lock` files to
+  detect packages to be added from Github or Gitlab
+
 # rix 0.13.1 (2024-11-19)
 
 - `renv2nix()`: added new argument, `override_r_ver`, to manually set R version
