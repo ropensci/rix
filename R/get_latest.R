@@ -17,12 +17,26 @@ get_latest <- function(r_version) {
   if (nchar(r_version) == 40) {
     return(r_version)
   } else if (
+    !(r_version %in% c(
+      "frozen_edge",
+      "bleeding_edge",
+      "latest"
+    )) && all(r_version > Filter(function(x) ("latest" != x), available_r()))
+  ) {
+    stop(
+      "The provided R version is too recent,\nand not yet included in `nixpkgs`.\n",
+      "You can list available versions using `available_r()`.\n",
+      "You can also directly provide a commit, but you need \n",
+      "to make sure it points to the right repo used by `rix()`.\n",
+      "You can also use 'bleeding_edge' and 'frozen_edge'."
+    )
+  } else if (
     !(r_version %in% c("bleeding_edge", "frozen_edge", available_r()))
   ) {
     stop(
       "The provided R version is likely wrong.\nPlease check that you ",
       "provided a correct R version.\nYou can list available versions using ",
-      "`available_r()`.\nYou can also directly provide a commit, but you need ",
+      "`available_r()`.\nYou can also directly provide a commit, but you need \n",
       "to make sure it points to the right repo used by `rix()`.\nYou can ",
       "also use 'bleeding_edge' and 'frozen_edge'."
     )
