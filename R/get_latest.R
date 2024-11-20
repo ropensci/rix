@@ -17,9 +17,11 @@ get_latest <- function(r_version) {
   if (nchar(r_version) == 40) {
     return(r_version)
   } else if (
-   !(r_version %in% c("frozen_edge",
-                      "bleeding_edge",
-                      "latest")) && all(r_version > Filter(function(x)("latest" != x), available_r()))
+    !(r_version %in% c(
+      "frozen_edge",
+      "bleeding_edge",
+      "latest"
+    )) && all(r_version > Filter(function(x) ("latest" != x), available_r()))
   ) {
     stop(
       "The provided R version is too recent,\nand not yet included in `nixpkgs`.\n",
@@ -29,7 +31,7 @@ get_latest <- function(r_version) {
       "You can also use 'bleeding_edge' and 'frozen_edge'."
     )
   } else if (
-           !(r_version %in% c("bleeding_edge", "frozen_edge", available_r()))
+    !(r_version %in% c("bleeding_edge", "frozen_edge", available_r()))
   ) {
     stop(
       "The provided R version is likely wrong.\nPlease check that you ",
