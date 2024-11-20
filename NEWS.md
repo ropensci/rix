@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.13.4 (2024-11-20)
+
+- `rix()`: now correctly handles packages with no dependencies, thanks to
+   [jrosell](https://github.com/jrosell)
+
 # rix 0.13.3 (2024-11-20)
 
 - `rix()`: Clearer error message when providing an R version that is too recent
