@@ -206,7 +206,6 @@ testthat::test_that("If on darwin and ide = rstudio, raise warning", {
       r_pkgs = "dplyr",
       project_path = path_default_nix,
       overwrite = TRUE,
-      message_type = "quiet",
       shell_hook = NULL
     )
 
