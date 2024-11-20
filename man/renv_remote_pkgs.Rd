@@ -4,14 +4,14 @@
 \alias{renv_remote_pkgs}
 \title{renv_remote_pkgs}
 \usage{
-renv_remote_pkgs(renv_lock_remote_pkgs, type = NULL)
+renv_remote_pkgs(renv_lock_remote_pkgs, host = NULL)
 }
 \arguments{
 \item{renv_lock_remote_pkgs}{the list of package information from an renv.lock file.}
 
-\item{type}{the type of remote package, defaults to NULL meaning the RemoteType of the
+\item{host}{the host of remote package, defaults to NULL meaning the RemoteHost of the
 renv entry will be used.
-currently supported types: 'github' 'gitlab'
+currently supported hosts: 'api.github.com' 'gitlab.com'
 see \href{https://remotes.r-lib.org/}{remotes} for more.}
 }
 \value{
