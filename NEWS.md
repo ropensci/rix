@@ -1,5 +1,9 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.13.3 (2024-11-20)
+
+- `rix()`: Clearer error message when providing an R version that is too recent
+
 # rix 0.13.2 (2024-11-20)
 
 - `renv2nix()`: switch from RemoteType to RemoteHost in `renv.lock` files to
