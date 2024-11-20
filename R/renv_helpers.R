@@ -27,9 +27,9 @@ read_renv_lock <- function(renv_lock_path = "renv.lock") {
 #' build the packages from their external repositories.
 #'
 #' @param renv_lock_remote_pkgs the list of package information from an renv.lock file.
-#' @param type the type of remote package, defaults to NULL meaning the RemoteType of the
+#' @param host the host of remote package, defaults to NULL meaning the RemoteHost of the
 #' renv entry will be used.
-#' currently supported types: 'github' 'gitlab'
+#' currently supported hosts: 'api.github.com' 'gitlab.com'
 #' see [remotes](https://remotes.r-lib.org/) for more.
 #'
 #' @return a list of lists with three elements named:
@@ -40,45 +40,45 @@ read_renv_lock <- function(renv_lock_path = "renv.lock") {
 #' renv_remote_pkgs(read_renv_lock()$Packages)
 #' }
 renv_remote_pkgs <- function(
-    renv_lock_remote_pkgs, type = NULL) {
+    renv_lock_remote_pkgs, host = NULL) {
   # , "bitbucket", "git", "local", "svn", "url", "version", "cran", "bioc"
-  supported_pkg_types <- c("github", "gitlab")
-  if (!(is.null(type) || (type %in% supported_pkg_types))) {
-    stop("Unsupported remote type: ", type)
+  supported_pkg_hosts <- c("api.github.com", "gitlab.com")
+  if (!(is.null(host) || (host %in% supported_pkg_hosts))) {
+    stop("Unsupported remote host: ", host)
   }
-  initial_type_state <- type
+  initial_host_state <- host
   git_pkgs <- vector(mode = "list", length = length(renv_lock_remote_pkgs))
   names(git_pkgs) <- names(renv_lock_remote_pkgs)
   for (i in seq_along(renv_lock_remote_pkgs)) {
     renv_lock_pkg_info <- renv_lock_remote_pkgs[[i]]
-    if (is.null(type)) {
-      if (is.null(renv_lock_pkg_info$RemoteType)) {
+    if (is.null(host)) {
+      if (is.null(renv_lock_pkg_info$RemoteHost)) {
         stop(
           "Not a package installed from a remote outside of the main package repositories\n",
-          "renv_remote_pkgs() only handles pkgs where remote type is specified"
+          "renv_remote_pkgs() only handles pkgs where RemoteHost is specified"
         )
-      } else if (renv_lock_pkg_info$RemoteType %in% supported_pkg_types) {
-        type <- renv_lock_pkg_info$RemoteType
+      } else if (renv_lock_pkg_info$RemoteHost %in% supported_pkg_hosts) {
+        host <- renv_lock_pkg_info$RemoteHost
       } else {
         stop(
-          renv_lock_pkg_info$Package, " has unsupported remote type: ",
-          renv_lock_pkg_info$RemoteType, "\nSupported types are: ",
-          paste0(supported_pkg_types, collapse = ", ")
+          renv_lock_pkg_info$Package, " has unsupported remote host: ",
+          renv_lock_pkg_info$RemoteHost, "\nSupported hosts are: ",
+          paste0(supported_pkg_hosts, collapse = ", ")
         )
       }
     } else {
-      if (type != renv_lock_pkg_info$RemoteType) {
+      if (host != renv_lock_pkg_info$RemoteHost) {
         stop(
-          "Remote type (", renv_lock_pkg_info$RemoteType, ") of ", renv_lock_pkg_info$Package,
-          " does not match the provided type (", type, ")"
+          "Remote host (", renv_lock_pkg_info$RemoteHost, ") of ", renv_lock_pkg_info$Package,
+          " does not match the provided host (", host, ")"
         )
       }
     }
 
     pkg_info <- vector(mode = "list", length = 3)
     names(pkg_info) <- c("package_name", "repo_url", "commit")
-    switch(type,
-      "github" = {
+    switch(host,
+      "api.github.com" = {
         pkg_info[[1]] <- renv_lock_pkg_info$Package
         pkg_info[[2]] <- paste0(
           # RemoteHost is listed as api.github.com for some reason
@@ -87,7 +87,7 @@ renv_remote_pkgs <- function(
         )
         pkg_info[[3]] <- renv_lock_pkg_info$RemoteSha
       },
-      "gitlab" = {
+      "gitlab.com" = {
         pkg_info[[1]] <- renv_lock_pkg_info$Package
         pkg_info[[2]] <- paste0(
           "https://", renv_lock_pkg_info$RemoteHost, "/",
@@ -97,7 +97,7 @@ renv_remote_pkgs <- function(
         pkg_info[[3]] <- renv_lock_pkg_info$RemoteSha
       }
     )
-    type <- initial_type_state
+    host <- initial_host_state
     git_pkgs[[i]] <- pkg_info
   }
   git_pkgs
@@ -146,19 +146,19 @@ renv2nix <- function(
     for (i in seq_along(renv_lock$Packages)) {
       if (renv_lock$Packages[[i]]$Source %in% c("Repository", "Bioconductor")) {
         repo_pkgs[[renv_lock_pkg_names[i]]] <- renv_lock$Packages[[i]]
-      } else if (renv_lock$Packages[[i]]$RemoteType %in% c("github", "gitlab")) {
+      } else if (renv_lock$Packages[[i]]$RemoteHost %in% c("api.github.com", "gitlab.com")) {
         remote_pkgs[[renv_lock_pkg_names[i]]] <- renv_lock$Packages[[i]]
       } else {
         # unsupported_pkgs[[renv_lock_pkg_names[i]]] <- renv_lock$Packages[[i]]
         warning(
-          renv_lock$Packages[[i]]$Package, " has the unsupported remote type ",
-          renv_lock$Packages[[i]]$RemoteType, " and will not be included in the Nix expression.",
+          renv_lock$Packages[[i]]$Package, " has the unsupported remote host ",
+          renv_lock$Packages[[i]]$RemoteHost, " and will not be included in the Nix expression.",
           "\n Consider manually specifying the git remote or a local package install."
         )
       }
     }
     git_pkgs <- NULL
-    # as local_r_pkgs expects an archive not sure how to set type here..
+    # as local_r_pkgs expects an archive not sure how to set host here..
     # local_r_pkgs <- NULL
     if (length(remote_pkgs) > 0) {
       git_pkgs <- renv_remote_pkgs(remote_pkgs)

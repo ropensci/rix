@@ -93,20 +93,20 @@ testthat::test_that("testing renv_helpers", {
     testthat::expect_error(
       renv_remote_pkgs(synthetic_renv_lock_example$Packages[
         c("githubpkg", "gitlabpkg", "unsupported")
-      ], type = "unsupported"),
-      "Unsupported remote type:"
+      ], host = "unsupported"),
+      "Unsupported remote host:"
     )
     testthat::expect_error(
       renv_remote_pkgs(synthetic_renv_lock_example$Packages[
         c("githubpkg", "gitlabpkg", "unsupported")
       ]),
-      "has unsupported remote type"
+      "has unsupported remote host"
     )
     testthat::expect_error(
       renv_remote_pkgs(synthetic_renv_lock_example$Packages[
         c("githubpkg", "gitlabpkg", "unsupported")
-      ], type = "github"),
-      "does not match the provided type"
+      ], host = "api.github.com"),
+      "does not match the provided host"
     )
   })
 
@@ -123,7 +123,7 @@ testthat::test_that("testing renv_helpers", {
       {
         call <- renv2nix(tmpf, return_rix_call = TRUE, message_type = "quiet")
       },
-      "has the unsupported remote type"
+      "has the unsupported remote host"
     )
     testthat::expect_equal(call, test_call)
 
@@ -131,7 +131,7 @@ testthat::test_that("testing renv_helpers", {
       {
         call <- renv2nix(tmpf, return_rix_call = TRUE, message_type = "quiet", ide = "rstudio")
       },
-      "has the unsupported remote type"
+      "has the unsupported remote host"
     )
     test_call$ide <- "rstudio"
     testthat::expect_equal(call, test_call)

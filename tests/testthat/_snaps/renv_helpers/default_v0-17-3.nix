@@ -131,7 +131,29 @@ let
       yaml
       zip;
   };
-    
+ 
+  git_archive_pkgs = [
+    (pkgs.rPackages.buildRPackage {
+      name = "emo";
+      src = pkgs.fetchgit {
+        url = "https://github.com/hadley/emo";
+        rev = "3f03b11491ce3d6fc5601e210927eff73bf8e350";
+        sha256 = "sha256-b9IlaJ6c0FlXKizvJU8SEv49mlp2de7Y0at5DK5yBVA=";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages) 
+          stringr
+          glue
+          crayon
+          magrittr
+          assertthat
+          lubridate
+          rlang
+          purrr;
+      };
+    })
+   ];
+   
   system_packages = builtins.attrValues {
     inherit (pkgs) 
       R
@@ -150,6 +172,6 @@ pkgs.mkShell {
    LC_PAPER = "en_US.UTF-8";
    LC_MEASUREMENT = "en_US.UTF-8";
 
-  buildInputs = [  rpkgs  system_packages   ];
+  buildInputs = [ git_archive_pkgs rpkgs  system_packages   ];
   
 }
