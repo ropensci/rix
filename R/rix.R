@@ -51,14 +51,16 @@
 #' default, using `nix-shell default.nix` will start a specific program,
 #' possibly with flags (separated by space), and/or do shell actions. You can
 #' for example use `shell_hook = R`, if you want to directly enter the declared
-#' Nix R session when dropping into the Nix shell. @details This function will
-#' write a `default.nix` and an `.Rprofile` in the chosen path. Using the Nix
-#' package manager, it is then possible to build a reproducible development
-#' environment using the `nix-build` command in the path. This environment will
-#' contain the chosen version of R and packages, and will not interfere with any
-#' other installed version (via Nix or not) on your machine. Every dependency,
-#' including both R package dependencies but also system dependencies like
-#' compilers will get installed as well in that environment.
+#' Nix R session when dropping into the Nix shell.
+#'
+#' @details This function will write a `default.nix` and an `.Rprofile` in the
+#'   chosen path. Using the Nix package manager, it is then possible to build a
+#'   reproducible development environment using the `nix-build` command in the
+#'   path. This environment will contain the chosen version of R and packages,
+#'   and will not interfere with any other installed version (via Nix or not) on
+#'   your machine. Every dependency, including both R package dependencies but
+#'   also system dependencies like compilers will get installed as well in that
+#'   environment.
 #'
 #'   It is possible to use environments built with Nix interactively, either
 #'   from the terminal, or using an interface such as RStudio. If you want to

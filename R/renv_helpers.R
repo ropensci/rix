@@ -107,6 +107,10 @@ renv_remote_pkgs <- function(
 #'
 #' @param renv_lock_path Character, path of the renv.lock file, defaults to
 #'   "renv.lock"
+#' @param project_path Character. Where to write `default.nix`, for example
+#'   "/home/path/to/project". The file will thus be written to the file
+#'   "/home/path/to/project/default.nix". If the folder does not exist, it will
+#'   be created.
 #' @param return_rix_call Logical, return the generated rix function call
 #'   instead of evaluating it this is for debugging purposes, defaults to
 #'   `FALSE`
@@ -126,12 +130,22 @@ renv_remote_pkgs <- function(
 #' @inheritDotParams rix system_pkgs local_r_pkgs:shell_hook
 #'
 #' @return Nothing, this function is called for its side effects only, unless
-#'   `return_rix_call = TRUE` in which case an unevaluated call to `rix()`
-#'   is returned
+#'   `return_rix_call = TRUE` in which case an unevaluated call to `rix()` is
+#'   returned
+#' @details In order for this function to work properly, we recommend not
+#'   running it inside the same folder as an existing `{renv}` project. Instead,
+#'   run it from a new, empty directory which path you pass to `project_path`,
+#'   and use `renv_lock_path` to point to the `renv.lock` file in the original
+#'   `{renv}` folder. If your project includes package with remote dependencies
+#'   (for example, a BioConductur package with a dependency on Github),
+#'   `renv2nix()` will not generate a valid `default.nix` file. The description
+#'   of the issue and a solution is given in the
+#'   `vignette("z-advanced-topic-handling-packages-with-remote-dependencies")`.
 #' @export
 #'
 renv2nix <- function(
     renv_lock_path = "renv.lock",
+    project_path,
     return_rix_call = FALSE,
     method = c("fast", "accurate"),
     override_r_ver = NULL,
@@ -166,7 +180,8 @@ renv2nix <- function(
     rix_call <- call("rix",
       r_ver = renv_lock_r_ver(renv_lock = renv_lock, override_r_ver = override_r_ver),
       r_pkgs = names(repo_pkgs),
-      git_pkgs = git_pkgs # ,
+      git_pkgs = git_pkgs,
+      project_path = project_path
       # local_r_pkgs = local_r_pkgs
     )
     dots <- list(...)
