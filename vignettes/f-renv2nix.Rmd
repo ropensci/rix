@@ -1,0 +1,109 @@
+---
+title: "f - Converting renv projects to Nix projects"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{e-interactive-use}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r, include=FALSE}
+library(rix)
+```
+
+## Introduction
+
+`{renv}` is very likely the most popular package to set up per project libraries
+of R packages. `{renv}` generates and manages so-called `renv.lock` at the level
+of a project, and using these files it is thus possible to have different
+versions of the same packages on the same system, without any interference.
+However, `{renv}` doesn't snapshot R itself, so different projects with
+different libraries of packages will end up using the same version of R, which
+could lead to issues, especially if you're trying to restore a old project which
+relied on an old version of R. Also, in some cases, it might be impossible to 
+restore a project due to incompatibilities at the level of the system-level
+dependencies, as these are not managed by `{renv}`.
+
+As explained extensively in this documentation already, Nix handles all the
+different pieces of the reproducibility puzzle: versions of R packages, versions
+of R, and versions of system-level dependencies are all handled by Nix. In other
+words, it's possible to have per project complete development environments that 
+are completely reproducible. 
+
+While Nix has been around for 20 years, it was never widely adopted by R users,
+who instead have already invested a lot of effort into `{renv}` and Docker.
+The goal of `{rix}` is to ease adoption of Nix for R users for new projects,
+but there is also a need to convert historical `{renv}` projects into Nix.
+
+This is where `renv2nix()` can help.
+
+## Converting an historical renv project
+
+There are two ways that you can convert an historical project: The recommend way
+is to copy the historical `renv.lock` file into a new, empty folder. Do not copy
+any of the other generated `{renv}` files nor folders. From there, call
+`renv2nix()` like so:
+
+```r
+renv2nix(
+  renv_lock_path = "path/to/rix_project/renv.lock",
+  project_path = "path/to/rix_project"
+)
+```
+
+This will generate a `default.nix` and `.Rprofile` file for your Nix project.
+
+The other way to achieve this is to point the `renv_lock_path` argument to the
+historical `renv.lock` file without copying it to a new folder:
+
+```r
+renv2nix(
+  renv_lock_path = "path/to/original/renv_project/renv.lock",
+  project_path = "path/to/rix_project"
+)
+```
+
+But this is not the recommended approach. Instead keep the original `renv.lock`
+file and the generated `default.nix` file together (ideally with the call to
+`renv2nix()` in an R script) and commit everything into version control.
+
+## Starting a new project
+
+If you start a new project, you don't need to use `renv2nix()`, as you could
+directly use `rix()` to generate a `default.nix` file. However, you could start
+with generating an `renv.lock` file using `renv::snapshot()` and then call
+`renv2nix()`, to generate the appropriate `default.nix` file. Because
+`renv::snapshot()` does not call `renv::init()` this will not generate any other
+file that could interfere with `{rix}`. Doing this could be useful if you have
+the habit of starting writing code and then would like to generate a
+`default.nix` file later. We don't really recommend working like this and
+instead urge you to start from an environment and work from the very beginning
+from that environment.
+
+## Caveats
+
+`renv2nix()` has two methods, `"fast"` and `"accurate"`. `"fast"` simply lists
+the version of R and R packages, and generates a `default.nix` expression
+without trying to match package versions exactly. We believe that this is
+acceptable for most use cases. The planned `"accurate"` method will instead try
+to do its best to match exact package versions. However, due to how Nix and
+`{renv}` handle snapshotting, it will not be possible to match package versions
+exactly even with the planned `"accurate"` method. If you absolutely need a very
+specific version of a package, there are other ways to achieve this, by
+providing for example the required version to the `r_pkgs` argument of `rix()`,
+like this: `rix(r_pkgs = "dplyr@0.8.0")`. This however tries to build the pacage
+from source, which can fail. If this is the case, don't hesitate to open an
+issue. Better handling of individual package versions is planned for a future
+release.
+
+As stated previously, don't convert an `renv.lock` file into a `default.nix`
+file from a folder that contains the `renv.lock` file and the `{renv}` generated
+`.Rprofile` file and `renv/` folder. Instead, work from a new empty folder in
+which you copy the `renv.lock` file.
