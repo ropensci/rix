@@ -34,7 +34,7 @@
 #'   for Visual Studio Code. You can also use "radian", an interactive REPL. For
 #'   other editors, use "other". This has been tested with RStudio, VS Code and
 #'   Emacs. If other editors don't work, please open an issue.
-#' @param project_path Character. Where to write `default.nix`, for example
+#' @param project_path Character, where to write `default.nix`, for example
 #'   "/home/path/to/project". The file will thus be written to the file
 #'   "/home/path/to/project/default.nix". If the folder does not exist, it will
 #'   be created.
