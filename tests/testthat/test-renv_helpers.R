@@ -117,12 +117,21 @@ testthat::test_that("testing renv_helpers", {
     expect_error(renv2nix(tmpf, method = "accurate"), "not yet implemented")
     test_call <- call(
       "rix",
-      r_ver = "4.4.1", r_pkgs = c("MASS", "R6"), git_pkgs = expected_git_pkg, project_path =  path_env_nix, message_type = "quiet"
+      r_ver = "4.4.1",
+      r_pkgs = c("MASS", "R6"),
+      git_pkgs = expected_git_pkg,
+      project_path =  path_env_nix,
+      message_type = "quiet"
     )
 
     testthat::expect_warning(
     {
-      call <- renv2nix(tmpf, project_path =  path_env_nix, return_rix_call = TRUE, message_type = "quiet")
+      call <- renv2nix(
+        tmpf,
+        project_path = path_env_nix,
+        return_rix_call = TRUE,
+        message_type = "quiet"
+      )
     },
     "has the unsupported remote host"
     )
@@ -130,7 +139,13 @@ testthat::test_that("testing renv_helpers", {
 
     warns <- testthat::expect_warning(
     {
-      call <- renv2nix(tmpf, project_path =  path_env_nix, return_rix_call = TRUE, message_type = "quiet", ide = "rstudio")
+      call <- renv2nix(
+        tmpf,
+        project_path = path_env_nix,
+        return_rix_call = TRUE,
+        message_type = "quiet",
+        ide = "rstudio"
+      )
     },
     "has the unsupported remote host"
     )
