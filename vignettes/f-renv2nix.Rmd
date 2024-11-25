@@ -89,6 +89,8 @@ environment.
 
 ## Caveats
 
+### Package versions are not exactly the same between the renv.lock and default.nix files
+
 `renv2nix()` has two methods, `"fast"` and `"accurate"`. `"fast"` simply lists
 the version of R and R packages, and generates a `default.nix` expression
 without trying to match package versions exactly. We believe that this is
@@ -103,7 +105,21 @@ the pacage from source, which can fail. If this is the case, don't hesitate to
 open an issue. Better handling of individual package versions is planned for a
 future release.
 
+### Don’t use the same folder for your Nix and {renv} projects
+
 As stated previously, don't convert an `renv.lock` file into a `default.nix`
 file from a folder that contains the `renv.lock` file and the `{renv}` generated
 `.Rprofile` file and `renv/` folder. Instead, work from a new empty folder in
 which you copy the `renv.lock` file.
+
+### Mind the R version
+
+Many R users do not update R very often, so when they generate an `renv.lock`
+file, the `renv.lock` will list an old version of R, but quite recent packages.
+The way `{rix}` generates `default.nix` files is by looking at the version of R
+and then install packages that were current at that time. So if the `renv.lock`
+file lists an old version of R, the packages that will be included in the
+`default.nix` file will also be old. You could even end up in a situation where
+a package is not available because it only recently got released on CRAN. To
+avoid problems, use the `override_r_ver` argument of `renv2nix()` to provide a
+more recent version of R, that matches roughly when the packages were released.
