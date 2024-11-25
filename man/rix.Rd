@@ -56,7 +56,7 @@ for Visual Studio Code. You can also use "radian", an interactive REPL. For
 other editors, use "other". This has been tested with RStudio, VS Code and
 Emacs. If other editors don't work, please open an issue.}
 
-\item{project_path}{Character. Where to write \code{default.nix}, for example
+\item{project_path}{Character, where to write \code{default.nix}, for example
 "/home/path/to/project". The file will thus be written to the file
 "/home/path/to/project/default.nix". If the folder does not exist, it will
 be created.}
@@ -77,14 +77,28 @@ to the \code{shellHook} variable are executed when the Nix shell starts. So by
 default, using \verb{nix-shell default.nix} will start a specific program,
 possibly with flags (separated by space), and/or do shell actions. You can
 for example use \code{shell_hook = R}, if you want to directly enter the declared
-Nix R session when dropping into the Nix shell. @details This function will
-write a \code{default.nix} and an \code{.Rprofile} in the chosen path. Using the Nix
-package manager, it is then possible to build a reproducible development
-environment using the \code{nix-build} command in the path. This environment will
-contain the chosen version of R and packages, and will not interfere with any
-other installed version (via Nix or not) on your machine. Every dependency,
-including both R package dependencies but also system dependencies like
-compilers will get installed as well in that environment.
+Nix R session when dropping into the Nix shell.}
+}
+\value{
+Nothing, this function only has the side-effect of writing two files:
+\code{default.nix} and \code{.Rprofile} in the working directory. \code{default.nix}
+contains a Nix expression to build a reproducible environment using the Nix
+package manager, and \code{.Rprofile} ensures that a running R session from a
+Nix environment cannot access local libraries, nor install packages using
+\code{install.packages()} (nor remove nor update them).
+}
+\description{
+Generate a Nix expression that builds a reproducible development environment
+}
+\details{
+This function will write a \code{default.nix} and an \code{.Rprofile} in the
+chosen path. Using the Nix package manager, it is then possible to build a
+reproducible development environment using the \code{nix-build} command in the
+path. This environment will contain the chosen version of R and packages,
+and will not interfere with any other installed version (via Nix or not) on
+your machine. Every dependency, including both R package dependencies but
+also system dependencies like compilers will get installed as well in that
+environment.
 
 It is possible to use environments built with Nix interactively, either
 from the terminal, or using an interface such as RStudio. If you want to
@@ -153,18 +167,7 @@ environment will be up-to-date on the date that the \code{default.nix} will be
 generated, and then each subsequent call to \code{nix-build} will result in the
 same environment. We highly recommend you read the vignette titled
 "z - Advanced topic: Understanding the rPackages set release cycle and
-using bleeding edge packages".}
-}
-\value{
-Nothing, this function only has the side-effect of writing two files:
-\code{default.nix} and \code{.Rprofile} in the working directory. \code{default.nix}
-contains a Nix expression to build a reproducible environment using the Nix
-package manager, and \code{.Rprofile} ensures that a running R session from a
-Nix environment cannot access local libraries, nor install packages using
-\code{install.packages()} (nor remove nor update them).
-}
-\description{
-Generate a Nix expression that builds a reproducible development environment
+using bleeding edge packages".
 }
 \examples{
 \dontrun{

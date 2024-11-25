@@ -154,7 +154,7 @@ get_imports <- function(path) {
   if (!is.null(imports) && length(imports) > 0) {
     output <- unname(trimws(unlist(strsplit(unlist(imports), split = ","))))
   } else {
-    output <- character(0) 
+    output <- character(0)
   }
 
   # Remove version of R that may be listed in 'Depends'
