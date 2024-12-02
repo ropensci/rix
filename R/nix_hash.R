@@ -92,7 +92,7 @@ hash_url <- function(url) {
   sri_hash <- nix_sri_hash(path = path_to_source_root)
 
   paths <- list.files(path_to_src, full.names = TRUE, recursive = TRUE)
-  desc_path <- grep("DESCRIPTION", paths, value = TRUE)
+  desc_path <- grep(file.path(list.files(path_to_src), "DESCRIPTION"), paths, value = TRUE)
 
   deps <- get_imports(desc_path)
 
