@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.13.5 (2024-12-03)
+
+- `rix()`: now correctly handles packages with several DESCRIPTION files, such as
+   `{basilisk}`, thanks to [mihem](https://github.com/mihem)
+
 # rix 0.13.4 (2024-11-20)
 
 - `rix()`: now correctly handles packages with no dependencies, thanks to
