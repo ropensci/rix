@@ -9,10 +9,9 @@
 #' @export
 #' @examples
 #' \dontrun{
-#'   setup_cachix()
+#' setup_cachix()
 #' }
 setup_cachix <- function(nix_conf_path = "~/.config/nix") {
-
   nix_conf_file <- file.path(nix_conf_path, "nix.conf")
 
   # Test for existence and size instead of only existence,
@@ -20,37 +19,43 @@ setup_cachix <- function(nix_conf_path = "~/.config/nix") {
   nix_conf_exists <- file.exists(nix_conf_file) &&
     `!=`(file.size(nix_conf_file), 0L)
 
-  if(!nix_conf_exists){
+  if (!nix_conf_exists) {
     stop("~/.config/nix/nix.conf does not exist, did you install Nix?")
-  } 
+  }
 
   nix_conf_content <- readLines(con = nix_conf_file)
 
   if (
-       (grepl("rstats-on-nix", nix_conf_content[1]))
-       ) {
-      stop("rstats-on-nix cache already configured!")
+    (grepl("rstats-on-nix", nix_conf_content[1]))
+  ) {
+    stop("rstats-on-nix cache already configured!")
+  } else {
+    if (identical(Sys.getenv("TESTTHAT"), "true")) {
+      cat("this is running in a test, no backup performed")
     } else {
-      if(identical(Sys.getenv("TESTTHAT"), "true")){
-          cat("this is running in a test, no backup performed")
-        } else {
-          timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")
-          nix_conf_backup <- paste0(nix_conf_file, "_backup_", timestamp)
-          file.copy(from = nix_conf_file, to = nix_conf_backup)
-        }
-
-
-        nix_conf_content[1] <- paste0(
-          append(nix_conf_content[1],
-                 "https://rstats-on-nix.cachix.org"),
-          collapse = " ")
-
-        nix_conf_content[2] <- paste0(
-          append(nix_conf_content[2],
-                 "rstats-on-nix.cachix.org-1:mzXrOo5XyDwy6MWSY0v8XYXTeYFSg7QSfv9Vq3Xvwyk="),
-          collapse = " ")
-
-        writeLines(enc2utf8(nix_conf_content), nix_conf_file, useBytes = TRUE)
-        nix_conf_file
+      timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")
+      nix_conf_backup <- paste0(nix_conf_file, "_backup_", timestamp)
+      file.copy(from = nix_conf_file, to = nix_conf_backup)
     }
+
+
+    nix_conf_content[1] <- paste0(
+      append(
+        nix_conf_content[1],
+        "https://rstats-on-nix.cachix.org"
+      ),
+      collapse = " "
+    )
+
+    nix_conf_content[2] <- paste0(
+      append(
+        nix_conf_content[2],
+        "rstats-on-nix.cachix.org-1:mzXrOo5XyDwy6MWSY0v8XYXTeYFSg7QSfv9Vq3Xvwyk="
+      ),
+      collapse = " "
+    )
+
+    writeLines(enc2utf8(nix_conf_content), nix_conf_file, useBytes = TRUE)
+    nix_conf_file
   }
+}
