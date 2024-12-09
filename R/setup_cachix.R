@@ -1,9 +1,9 @@
 #' setup_cachix Setup up cachix as a substituter
-#' @details This function edits `~/.config/nix/nix.conf` to add
-#'   the `rstats-on-nix` public cache as a substituter. The `rstats-on-nix`
-#'   public cache, hosted on Cachix, contains many prebuild binaries of R
-#'   R packages for x86_64 Linux and macOS (Intel architectures for packages
-#'   released before 2021 and Apple Silicon from 2021). This function
+#' @details This function edits `~/.config/nix/nix.conf` to add the
+#'   `rstats-on-nix` public cache as a substituter. The `rstats-on-nix` public
+#'   cache, hosted on Cachix, contains many prebuild binaries of R R packages
+#'   for x86_64 Linux and macOS (Intel architectures for packages released
+#'   before 2021 and Apple Silicon from 2021 onwards). This function
 #'   automatically performs a backup of `~/.config/nix/nix.conf`.
 #' @return Nothing, changes a file in the user's home directory.
 #' @export
@@ -33,14 +33,16 @@ setup_cachix <- function(nix_conf_path = "~/.config/nix") {
 
       nix_conf_content <- readLines(con = nix_conf_file)
       if (!(any(grepl("https://rstats-on-nix.cachix.org", nix_conf_content)))) {
-      nix_conf_content <- gsub("substituter = .*",
-                               "\\1 https://rstats-on-nix.cachix.org",
-                               nix_conf_content)
 
-      nix_conf_content <- gsub("trusted-public-keys = .*",
-   "\\1 rstats-on-nix.cachix.org-1:mzXrOo5XyDwy6MWSY0v8XYXTeYFSg7QSfv9Vq3Xvwyk=",
-                               nix_conf_content)
+        nix_conf_content[1] <- paste0(
+          append(nix_conf_content[1],
+                 "https://rstats-on-nix.cachix.org"),
+          collapse = " ")
 
+        nix_conf_content[2] <- paste0(
+          append(nix_conf_content[2],
+  "rstats-on-nix.cachix.org-1:mzXrOo5XyDwy6MWSY0v8XYXTeYFSg7QSfv9Vq3Xvwyk="),
+          collapse = " ")
 
       writeLines(enc2utf8(nix_conf_content), nix_conf_file, useBytes = TRUE)
       nix_conf_file
