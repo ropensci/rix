@@ -57,15 +57,15 @@ setup_cachix <- function(nix_conf_path = "~/.config/nix") {
 
 
 #' @noRd
-nix_conf_exists <- function(nix_conf_file){
-                                        # Test for existence and size instead of only existence,
-                                        # as an active file connection makes the file exist, but is empty
+nix_conf_exists <- function(nix_conf_file) {
+  # Test for existence and size instead of only existence,
+  # as an active file connection makes the file exist, but is empty
   file.exists(nix_conf_file) &&
     `!=`(file.size(nix_conf_file), 0L)
 }
 
 #' @noRd
-is_cachix_configured <- function(nix_conf_content){
+is_cachix_configured <- function(nix_conf_content) {
   substituter_line <- grep("substituters", nix_conf_content)
   (grepl("rstats-on-nix", nix_conf_content[substituter_line]))
 }
