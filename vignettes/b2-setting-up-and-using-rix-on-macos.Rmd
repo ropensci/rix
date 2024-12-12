@@ -69,7 +69,7 @@ This should immediately start an R session inside your terminal. You can now run
 something like this:
 
 ```
-rix(r_ver = "latest",
+rix(r_ver = "4.4.2",
     r_pkgs = c("dplyr", "ggplot2"),
     system_pkgs = NULL,
     git_pkgs = NULL,
@@ -110,11 +110,10 @@ to learn more.
 
 ### R Support for Apple Silicon in Nixpkgs
 
-In Nixpkgs, the M series processors of the ARM64 family, also known under
-AArch64, supports R since R version 3.5.3. Earlier versions of R will not 
-compile on modern Apple processor architectures for the corresponding Nixpkgs
-revisions at that time. Hence, the `darwin-aarch64` platform has constrained
-backwards-compatibility.
+The Apple Silicon architecture wasn't well supported before 2021 on Nix. Our
+`rstats-on-nix` fork of `nixpkgs` provides improved compatibility by backporting
+fixes to R and R packages, but only from 2021 onwards. If you need to use an
+older R version, it is quite unlikely that it is going to work.
 
 ### Shared libraries issue
 
@@ -129,7 +128,7 @@ we have observed crashes with R packages that depend on system libraries, such
 as {data.table} or {dplyr}, and their (reverse) dependencies. Because user
 libraries from the system would also appear on the search path in R from
 `nixpkgs` for Linux, running `rix()` also runs `rix_init()` which creates a
-custom `.Rprofile` in your project's path. This custom `.Rprofile` ensure that
+custom `.Rprofile` in your project's path. This custom `.Rprofile` ensures that
 only packages declaratively defined in your `default.nix` and built to be part
 of the Nix store (one R package is one separate derivation listed in a unique
 Nix path) appear on the R library path.

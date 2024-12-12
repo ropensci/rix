@@ -31,7 +31,7 @@ IDE (there will be more discussion on editors in the vignette
 With the `rix::rix()` function, you can easily generate the right `default.nix`
 file. You need to provide the following inputs to `rix()`:
 
-- `r_ver`: the version of R required. Use "latest" for the latest version;
+- `r_ver`: the version of R required. Use "latest-upstream" for the latest version;
 - `r_pkgs`: the required R packages. For example "dplyr" (more on this in the
   vignette `vignette("d1-installing-r-packages-in-a-nix-environment")`);
 - `system_pkgs`: the required system packages, if needed. For example "quarto",
@@ -52,7 +52,7 @@ Run the following command to generate the right `default.nix` file:
 path_default_nix <- tempdir()
 
 rix(
-  r_ver = "latest",
+  r_ver = "latest-upstream",
   r_pkgs = c("dplyr", "ggplot2"),
   system_pkgs = NULL,
   git_pkgs = NULL,

@@ -53,7 +53,7 @@ documents from R using the `{quarto}` package) and git:
 path_default_nix <- tempdir()
 
 rix(
-  r_ver = "latest",
+  r_ver = "latest-upstream",
   r_pkgs = c("quarto"),
   system_pkgs = c("quarto", "git"),
   git_pkgs = NULL,
@@ -128,7 +128,7 @@ argument of `rix()` like this:
 path_default_nix <- tempdir()
 
 rix(
-  r_ver = "latest",
+  r_ver = "latest-upstream",
   r_pkgs = c("quarto"),
   system_pkgs = "quarto",
   tex_pkgs = c("amsmath"),

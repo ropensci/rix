@@ -37,12 +37,14 @@ or a fixed CRAN snapshot like those [Posit
 provides](https://packagemanager.posit.co/__docs__/user/get-repo-url/#ui-frozen-urls))
 and the [R installation manager](https://github.com/r-lib/rig) to install the
 correct version of R (unless you use a Docker image as base that already ships
-the required version by default). As for the last point, the only way out is to
-be able to compile the software for the target architecture. There's a lot of
-moving pieces, and knowledge that you need to have to get it right.
+the required version by default). 
+
+As for the last bullet point, the only way out is to be able to compile the
+software for the target architecture. There's a lot of moving pieces, and
+knowledge that you need to have to get it right.
 
 But it turns out that this is not the only solution. Docker + `{renv}` (or some
-other way to deal with packages) is likely the most popular way to ensure
+other way to deal with R packages) is likely the most popular way to ensure
 reproducibility of your projects, but there are other tools to achieve this. One
 such tool is called Nix.
 
@@ -79,11 +81,12 @@ programming language that we need). But why use Nix instead of the usual ways to
 install software on our operating systems?
 
 The first thing that you should know is that Nix's repository, `nixpkgs`, is
-huge. Humongously huge. As I'm writing these lines, [there's more than 100'000
+huge. Humongously huge. As I'm writing these lines, [there's more than 120'000
 pieces of software available](https://search.nixos.org/packages), and the
-*entirety of CRAN* is also available through `nixpkgs`. So instead of installing
-R as you usually do and then use `install.packages()` to install packages, you
-could use Nix to handle everything. But still, why use Nix at all?
+*entirety of CRAN and Bioconductor* is also available through `nixpkgs`. So
+instead of installing R as you usually do and then use `install.packages()` to
+install packages, you could use Nix to handle everything. But still, why use Nix
+at all?
 
 Nix has an interesting feature: using Nix, it is possible to install software in
 (relatively) isolated environments. So using Nix, you can install as many
@@ -128,10 +131,9 @@ OS) and can be used to install software like with any other package manager. If
 you're familiar with the Ubuntu Linux distribution, you likely have used
 `apt-get` to install software. On macOS, you may have used `homebrew` for
 similar purposes. Nix functions in a similar way, but has many advantages over
-classic package managers. The main advantage of Nix, at least for our purposes,
-is that its repository of software is huge. As of writing, it contains more than
-100.000 packages, and the entirety of CRAN and Bioconductor is available through
-Nix's repositories.
+classic package managers, as it focuses on reproducible builds and downloads
+packages from `nixpkgs`, 
+[currently the largest software repository](https://repology.org/repositories/graphs).
 
 This means that using Nix, it is possible to install not only R, but also all
 the packages required for your project. The obvious question is why use Nix
@@ -163,7 +165,7 @@ You can give [Lix](https://lix.systems/install/) a try, or
 ## rix workflow
 
 The idea of `{rix}` is for you to declare the environment you need using the
-provided `rix()` function. `rix()` is the package’s main function and generates
+provided `rix()` function. `rix()` is the package's main function and generates
 a file called `default.nix` which is then used by the Nix package manager to
 build that environment. Ideally, you would set up such an environment for each
 of your projects. You can then use this environment to either work
@@ -191,7 +193,7 @@ error if you try to use it.
 
 `rix()` has several arguments:
 
-- the R version you need for your project;
+- the R version you need for your project or a snapshot date;
 - a list of R packages that your project needs;
 - an optional list of additional software (for example a Python interpreter, or Quarto);
 - an optional list with packages to install from Github;
@@ -204,7 +206,7 @@ For example:
 
 ```{r parsermd-chunk-1, eval = FALSE}
 rix(
-  r_ver = "latest",
+  r_ver = "latest-upstream",
   r_pkgs = c("dplyr", "chronicler"),
   ide = "other"
 )
@@ -212,11 +214,49 @@ rix(
 
 The call above writes a `default.nix` file in the current working directory.
 This `default.nix` can in turn be used by Nix to build an environment containing
-the latest version of R, with the `{dplyr}` and `{chronicler}` packages.
+the latest version of R included in the upstream `nixpkgs`, 
+with the `{dplyr}` and `{chronicler}` packages. 
 
 Take note of the `ide = "other"` argument: this argument, and the values it
 can take, are further discussed in the vignette `vignette("e-interactive-use")`
 but continue reading this vignette and then vignettes numbered by a "d".
+
+You can instead provide a specific R version:
+
+```{r, eval = FALSE}
+rix(
+  r_ver = "4.4.1",
+  r_pkgs = c("dplyr", "chronicler"),
+  ide = "other"
+)
+```
+
+or a date:
+
+```{r, eval = FALSE}
+rix(
+  date = "2024-12-14",
+  r_pkgs = c("dplyr", "chronicler"),
+  ide = "other"
+)
+```
+
+Providing a specific R version or a date will not use the upstream/official
+`nixpkgs` package repository, but our `rstats-on-nix` fork. We decided to use a
+fork instead of the official `nixpkgs` for older releases, because it allows us
+to backport fixes and improve package compatibility, which is espcially
+important for Apple Silicon. It also allows us to provide newer releases of R
+more quickly than through the official channels. For example, as of writing
+(December 18th 2024), R version 4.4.2 is not yet included in upstream `nixpkgs` but
+is already available through our fork. Thanks to our fork, we are also able to 
+snapshot CRAN more frequently, and thus include more CRAN and Bioconductor
+package versions than in the upstream `nixpkgs` repository.
+
+### Converting from an renv.lock file
+
+`{rix}` also includes an `renv2nix()` function that converts an `renv.lock`
+file into a valid Nix expression. Read the vignette `vignette("f-renv2nix")`
+to learn more.
 
 ### Using default.nix files
 
@@ -249,7 +289,7 @@ nix-shell
 
 You will *drop* into a Nix shell which provides the installed software. It is not
 mandatory to call `nix-build` first: you can immediately call `nix-shell`. The
-advantage of using `nix-build` first is that it create a file called `result`
+advantage of using `nix-build` first is that it creates a file called `result`
 which will prevent the environment to get garbage collected if you clean
 the Nix store.
 
@@ -268,6 +308,6 @@ the orphaned packages.
 Now that you know more about Nix and `{rix}`, it is time to get these tools
 installed on your system.
 
-- If you’re running either Linux or Windows, read the Linux or Windows vignette: `vignette("b1-setting-up-and-using-rix-on-linux-and-windows")`
-- If you’re running macOS, read the macOS vignette: `vignette("b2-setting-up-and-using-rix-on-macos")`
+- If you're running either Linux or Windows, read the Linux or Windows vignette: `vignette("b1-setting-up-and-using-rix-on-linux-and-windows")`
+- If you're running macOS, read the macOS vignette: `vignette("b2-setting-up-and-using-rix-on-macos")`
 

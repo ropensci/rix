@@ -27,11 +27,11 @@ versions of CRAN packages and how to install packages from GitHub.
 ## A word of caution
 
 It is important at this stage to understand that you should not call
-`install.packages()` from a running Nix environment. If you want to add
-packages while analyzing data, you need to add it the `default.nix` 
-expression and rebuild the environment. The same goes for installing
-packages from Github; use the method described in this vignette instead 
-of using something like `remotes::install_github()`.
+`install.packages()` from a running Nix environment. Doing so will raise an
+error to avoid issues. If you want to add packages while analyzing data, you
+need to add it the `default.nix` expression and rebuild the environment. The
+same goes for installing packages from Github; use the method described in this
+vignette instead of using something like `remotes::install_github()`.
 
 We recommend you create a script called `create_env.R` or similar, and add the call to `rix()` there:
 
@@ -56,22 +56,23 @@ Calling `install.packages()` is a bad idea for several reasons:
   you were able to add packages using `install.packages()`, your environment
   would end up in a state where the `default.nix` definition of the environment
   and the actual environment don't match anymore.
-- using `install.packages()` will likely simply not work, and if it does, will
-  cause issues. For example, if you call `install.packages("ggplot2")` from one
-  Nix shell, it will not install `{ggplot2}` "inside" the Nix shell, but will
-  install it on your user's system library of packages. This is because the Nix
-  shell cannot be changed at run-time, and so, R will instead install the
-  packages in the user's library. This version of `{ggplot2}`, because it is in
-  that system-wide library of packages, will be available to any other Nix
-  shell. If you call `install.packages("ggplot2")` again from another Nix shell,
+- using `install.packages()` would likely simply not work, and if it would work,
+  it would cause issues. For example, if you call `install.packages("ggplot2")`
+  from one Nix shell, it will not install `{ggplot2}` "inside" the Nix shell,
+  but will install it on your user's system library of packages. This is because
+  the Nix shell cannot be changed at run-time, and so, R will instead install
+  the packages in the user's library. This version of `{ggplot2}`, because it is
+  in that system-wide library of packages, will be available to any other Nix
+  shells. If you call `install.packages("ggplot2")` again from another Nix shell,
   say 6 months later, this will replace the first version of `{ggplot2}` with
   the latest version.
 
 Ideally, you should only manage R versions and R packages using Nix, and
-uninstall any system-managed version of R and R packages. But if you do wish to keep
-a system-managed version of R and R packages, `rix::rix()` also runs `rix::rix_init()`
-automatically which generates an `.Rprofile` file that avoids any clashes between
-your global user library and Nix-managed libraries of R packages.
+uninstall any system-managed version of R and R packages. But if you do wish to
+keep a system-managed version of R and R packages, `rix::rix()` also runs
+`rix::rix_init()` automatically which generates an `.Rprofile` file that avoids
+any clashes between your global user library and Nix-managed libraries of R
+packages.
 
 ## Installing old packages archived on CRAN
 
@@ -178,11 +179,15 @@ rix(
 The above expression will install R version 4.2.1, and `{dplyr}` at version
 0.8.0 and `{janitor}` at version 1.0.0. This can be useful, especially for
 packages that have been archived, but otherwise, this feature should ideally be
-used sparingly. If you want to reconstruct an environment as it was around 2019,
-use the version of R that was current at that time. This will ensure that every
-package that gets installed is at a version compatible with that version of R,
-which might not be the case if you need to install a very old version of one
-particular package.
+used sparingly, for two reasons. First, if you want to reconstruct an
+environment as it was around 2019, use the version of R that was current at that
+time. This will ensure that every package that gets installed is at a version
+compatible with that version of R, which might not be the case if you need to
+install a very old version of one particular package. Second, doing so will
+install the package from source. For packages that don't require compilation,
+this should be fine, but packages that require compilation will likely fail to
+compile successfully. We are working on handling this better for future versions
+of `{rix}`.
 
 ## Installing packages from Github
 
@@ -312,7 +317,6 @@ rix(
 #> }
 ```
 
-
 This will install two packages from Github: the `{housing}` package and more
 specifically the code as it is in the `fusen` branch; however the branch name is
 not required, as the commit is enough to pin the exact version of the code
@@ -337,6 +341,12 @@ been downloaded beforehand. If you want to include a local package that you are
 developing, make sure to first build it using `devtools::build()` to build the
 `.tar.gz` archive, but if you can, consider uploading the source code to your
 package on Github and installing it from Github instead.
+
+## Converting from an renv.lock file
+
+`{rix}` also includes an `renv2nix()` function that converts an `renv.lock`
+file into a valid Nix expression. Read the vignette `vignette("f-renv2nix")`
+to learn more.
 
 ## A complete example
 
