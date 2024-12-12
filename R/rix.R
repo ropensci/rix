@@ -14,6 +14,10 @@
 #'   it first. It is also possible to provide either "bleeding_edge" or
 #'   "frozen_edge" if you need an environment with bleeding edge packages. Read
 #'   more in the "Details" section below.
+#' @param date Character. Instead of providing `r_ver`, it is also possible
+#'   to provide a date. This will build an environment containing R and R
+#'   packages (and other dependencies) as of that date. You can check which
+#'   dates are available with `available_dates()`.
 #' @param r_pkgs Vector of characters. List the required R packages for your
 #'   analysis here.
 #' @param system_pkgs Vector of characters. List further software you wish to
