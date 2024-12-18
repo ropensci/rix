@@ -7,7 +7,7 @@
 available_df <- function() {
   available_df_url <- "https://github.com/ropensci/rix/blob/main/inst/extdata/available_df.csv"
 
-  read.csv(available_dates_file)
+  read.csv(available_df_url)
 }
 
 #' List available R versions from the rstats-on-nix fork of Nixpkgs
