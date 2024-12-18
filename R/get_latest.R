@@ -64,7 +64,7 @@ get_right_commit <- function(r_version) {
     return(max(available_df$date[available_df$`R.version` == r_version]))
   } else {
     # nolint next: line_length_linter
-    api_url <- "https://api.github.com/repos/NixOS/nixpkgs/commits?sha=nixpkgs-unstable"
+    api_url <- "https://api.github.com/repos/NixOS/nixpkgs/commits?sha=master"
   }
 
   # handle to get error for status code 404
