@@ -44,7 +44,7 @@ setup_cachix <- function(nix_conf_path = "~/.config/nix") {
     nix_conf_content[key_line] <- paste0(
       append(
         nix_conf_content[key_line],
-        "rstats-on-nix.cachix.org-1:mzXrOo5XyDwy6MWSY0v8XYXTeYFSg7QSfv9Vq3Xvwyk="
+        "rstats-on-nix.cachix.org-1:vdiiVgocg6WeJrODIqdprZRUrhi1JzhBnXv7aWI6+F0="
       ),
       collapse = " "
     )
