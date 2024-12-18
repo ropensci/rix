@@ -23,7 +23,6 @@ using either of these systems, you can ignore this vignette, and read the
 `vignette("b2-setting-up-and-using-rix-on-macos")`
 vignette instead.*
 
-
 ## Introduction
 
 When it comes to Nix, there are really only two supported operating systems:
@@ -37,7 +36,6 @@ don't have Nix installed, which means you can generate Nix expressions, you
 just can't build them. So if you can’t install Nix on your system, but have 
 R already installed, you can skip to the last section of this vignette to 
 simply install the `{rix}` package.
-
 
 ## Installing Nix
 
@@ -128,12 +126,11 @@ This will map `/nix` to `/home/path_to/nix` which can be on a larger partition.
 If you have enough space on your root partition, you can ignore the above
 instructions.
 
-
 ## Case 1: you don’t have R installed and wish to install it using Nix as well
 
 If you have successfully installed Nix, but don't have yet R installed on your
 system, you could install R as you would usually do on your operating system,
-and then install the `{rix}` package, and from there, generated project-specific
+and then install the `{rix}` package, and from there, generate project-specific
 expressions and build them. But you could also install R using Nix. Running the
 following line in a terminal will drop you in an interactive R session that you
 can use to start generating expressions:
@@ -147,7 +144,7 @@ something like this:
 
 ```{r, eval = F}
 rix(
-  r_ver = "latest",
+  r_ver = "4.4.2",
   r_pkgs = c("dplyr", "ggplot2"),
   system_pkgs = NULL,
   git_pkgs = NULL,
@@ -173,7 +170,7 @@ generating a `default.nix` like so:
 
 ```{r, eval = F}
 rix(
-  r_ver = "latest",
+  r_ver = "latest-upstream",
   r_pkgs = NULL,
   git_pkgs = list(
     package_name = "rix",
@@ -188,11 +185,10 @@ rix(
 
 Change the commit to a more recent one and adapt the `project_path` argument if needed.
 
-
-## Case 2: you have R installed through your OS’s package manager
+## Case 2: you have R installed through your OS's package manager
 
 If you have installed R on your system through the usual means of installation
-(so not Nix, as described before), you can install the `{rix}` package as usual
+(so not with Nix, as described before), you can install the `{rix}` package as usual
 as well. To install `{rix}`, run:
 
 ```{r parsermd-chunk-2-0, eval = FALSE}
@@ -208,6 +204,7 @@ install.packages("rix", repos = c(
 ))
 ```
 
-You can then use the `{rix}` package to generate expressions. Consult the 
-next vignette `vignette("c-using-rix-to-build-project-specific-environments")` to learn more.
+You can then use the `{rix}` package to generate expressions. Consult the next
+vignette `vignette("c-using-rix-to-build-project-specific-environments")` to
+learn more.
 

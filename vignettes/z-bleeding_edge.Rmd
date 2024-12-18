@@ -52,7 +52,7 @@ then get fixed by volunteers (to learn how you can contribute, read the
 been fixed, the whole rPackages set gets updated and made available through
 `nixpkgs` master branch.
 
-Essentially this means that if you start a project with `{rix}` using `"latest"`
+Essentially this means that if you start a project with `{rix}` using `"latest-upstream"`
 as the `r_ver` just after the rPackages set got updated, this project will use
 very fresh packages. But if instead you start a project just before an R
 release, then the environment will be using older packages. In practice this
