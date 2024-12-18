@@ -246,6 +246,62 @@ testthat::test_that("If on ide = rstudio, but no R packages, raise error", {
 })
 
 
+testthat::test_that("rix(), date working", {
+  os_type <- Sys.info()["sysname"]
+  skip_if(os_type == "Windows")
+
+  tmpdir <- tempdir()
+
+  path_default_nix <- paste0(
+    tmpdir, paste0(sample(letters, 5), collapse = "")
+  )
+  dir.create(path_default_nix)
+  path_default_nix <- normalizePath(path_default_nix)
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+
+  save_default_nix_test <- function(ide, path_default_nix) {
+      rix(
+        date = "2024-12-14",
+        r_pkgs = c("dplyr", "janitor", "AER@1.2-8", "quarto"),
+        tex_pkgs = c("zmsmath", "amsmath"),
+        git_pkgs = list(
+          list(
+            package_name = "housing",
+            repo_url = "https://github.com/rap4all/housing/",
+            commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"
+          ),
+          list(
+            package_name = "fusen",
+            repo_url = "https://github.com/ThinkR-open/fusen",
+            commit = "d617172447d2947efb20ad6a4463742b8a5d79dc"
+          )
+        ),
+        ide = ide,
+        project_path = path_default_nix,
+        overwrite = TRUE,
+        message_type = "quiet",
+        shell_hook = NULL
+      )
+
+    file.path(path_default_nix, "default.nix")
+  }
+
+  testthat::announce_snapshot_file("rix/date_default.nix")
+
+  testthat::expect_snapshot_file(
+    path = save_default_nix_test(ide = "other", path_default_nix),
+    name = "date_default.nix",
+  )
+})
+
+
 testthat::test_that("rix(), bleeding_edge", {
   os_type <- Sys.info()["sysname"]
   skip_if(os_type == "Windows")

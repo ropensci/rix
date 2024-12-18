@@ -59,9 +59,8 @@ get_right_commit <- function(r_version) {
   } else if (
     r_version %in% Filter(function(x) `!=`(x, "latest-upstream"), available_r())
   ) { # all but latest
-    available_df <- available_df()
     # If a user provides an R version, use most recent date for that version
-    return(max(available_df$date[available_df$`R.version` == r_version]))
+    return(get_date_from_version(r_version))
   } else {
     # nolint next: line_length_linter
     api_url <- "https://api.github.com/repos/NixOS/nixpkgs/commits?sha=master"

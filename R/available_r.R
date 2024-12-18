@@ -28,3 +28,19 @@ available_r <- function() {
 available_dates <- function() {
   unique(available_df()$date)
 }
+
+#' Get latest R version for given date
+#' @return A character vector showing the version for a given date
+#'
+get_version_from_date <- function(date) {
+  available_df <- available_df()
+  available_df$`R.version`[available_df$date == date]
+}
+
+#' Get latest most recent date for given R version
+#' @return A character vector showing the version for a given date
+#'
+get_date_from_version <- function(r_version) {
+  available_df <- available_df()
+  max(available_df$date[available_df$`R.version` == r_version])
+}
