@@ -5,7 +5,9 @@
 #' @examples
 #' available_dates()
 available_df <- function() {
+  # nolint start: line_length_linter
   available_df_url <- "https://raw.githubusercontent.com/ropensci/rix/refs/heads/main/inst/extdata/available_df.csv"
+  # nolint end
 
   read.csv(available_df_url)
 }
