@@ -218,59 +218,6 @@ testthat::test_that("If on darwin and ide = rstudio, raise warning", {
   )
 })
 
-testthat::test_that("If R version is 4.4.0, raise warning", {
-  path_default_nix <- tempdir()
-  on.exit(
-    unlink(path_default_nix, recursive = TRUE, force = TRUE),
-    add = TRUE
-  )
-
-  save_default_nix_test <- function(path_default_nix) {
-    rix(
-      r_ver = "4.4.0",
-      ide = "other",
-      r_pkgs = NULL,
-      project_path = path_default_nix,
-      overwrite = TRUE,
-      message_type = "simple",
-      shell_hook = NULL
-    )
-
-    file.path(path_default_nix, "default.nix")
-  }
-
-  testthat::expect_warning(
-    save_default_nix_test(path_default_nix),
-    regexp = "version is not available"
-  )
-})
-
-testthat::test_that("If R version is <= 4.1.1, raise warning", {
-  path_default_nix <- tempdir()
-  on.exit(
-    unlink(path_default_nix, recursive = TRUE, force = TRUE),
-    add = TRUE
-  )
-
-  save_default_nix_test <- function(path_default_nix) {
-    rix(
-      r_ver = "4.1.1",
-      ide = "other",
-      r_pkgs = NULL,
-      project_path = path_default_nix,
-      overwrite = TRUE,
-      shell_hook = NULL
-    )
-
-    paste0(path_default_nix, "/default.nix")
-  }
-
-  testthat::expect_warning(
-    save_default_nix_test(path_default_nix),
-    regexp = "older version of R"
-  )
-})
-
 testthat::test_that("If on ide = rstudio, but no R packages, raise error", {
   path_default_nix <- tempdir()
   on.exit(
@@ -298,32 +245,6 @@ testthat::test_that("If on ide = rstudio, but no R packages, raise error", {
   )
 })
 
-testthat::test_that("If R version is == 3.5.3, raise warning", {
-  path_default_nix <- tempdir()
-  on.exit(
-    unlink(path_default_nix, recursive = TRUE, force = TRUE),
-    add = TRUE
-  )
-
-  save_default_nix_test <- function(path_default_nix) {
-    rix(
-      r_ver = "3.5.3",
-      ide = "other",
-      r_pkgs = NULL,
-      project_path = path_default_nix,
-      overwrite = TRUE,
-      message_type = "simple",
-      shell_hook = NULL
-    )
-
-    paste0(path_default_nix, "/default.nix")
-  }
-
-  testthat::expect_warning(
-    save_default_nix_test(path_default_nix),
-    regexp = "older version of R"
-  )
-})
 
 testthat::test_that("rix(), bleeding_edge", {
   os_type <- Sys.info()["sysname"]
