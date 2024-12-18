@@ -7,7 +7,7 @@
 #' make_nixpkgs_url("4.2.0")
 #' @noRd
 make_nixpkgs_url <- function(r_ver) {
-  if (r_ver %in% c("latest")) {
+  if (r_ver %in% c("latest-upstream")) {
     github_repo <- "NixOS/nixpkgs/"
   } else {
     github_repo <- "rstats-on-nix/nixpkgs/"
