@@ -147,7 +147,7 @@ something like this:
 
 ```{r, eval = F}
 rix(
-  r_ver = "latest",
+  r_ver = "latest-upstream",
   r_pkgs = c("dplyr", "ggplot2"),
   system_pkgs = NULL,
   git_pkgs = NULL,
@@ -173,7 +173,7 @@ generating a `default.nix` like so:
 
 ```{r, eval = F}
 rix(
-  r_ver = "latest",
+  r_ver = "latest-upstream",
   r_pkgs = NULL,
   git_pkgs = list(
     package_name = "rix",

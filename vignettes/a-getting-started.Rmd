@@ -204,7 +204,7 @@ For example:
 
 ```{r parsermd-chunk-1, eval = FALSE}
 rix(
-  r_ver = "latest",
+  r_ver = "latest-upstream",
   r_pkgs = c("dplyr", "chronicler"),
   ide = "other"
 )

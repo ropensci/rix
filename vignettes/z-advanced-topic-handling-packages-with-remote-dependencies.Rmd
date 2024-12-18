@@ -47,7 +47,7 @@ the following `rix::rix()` call:
 path_default_nix <- tempdir()
 
 rix(
-  r_ver = "latest",
+  r_ver = "latest-upstream",
   r_pkgs = NULL,
   system_pkgs = NULL,
   git_pkgs = list(
@@ -91,7 +91,7 @@ create a new expression using `{rix}` to install `{highlite}`:
 path_default_nix <- tempdir()
 
 rix(
-  r_ver = "latest",
+  r_ver = "latest-upstream",
   r_pkgs = NULL,
   system_pkgs = NULL,
   git_pkgs = list(

@@ -5,7 +5,7 @@
 #'   package manager, and `.Rprofile` ensures that a running R session from a
 #'   Nix environment cannot access local libraries, nor install packages using
 #'   `install.packages()` (nor remove nor update them).
-#' @param r_ver Character, defaults to "latest". The required R version, for
+#' @param r_ver Character, defaults to "latest-upstream". The required R version, for
 #'   example "4.0.0". You can check which R versions are available using
 #'   `available_r()`. For reproducibility purposes, you can also provide a
 #'   `nixpkgs` revision directly. For older versions of R, `nix-build` might
@@ -139,10 +139,10 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' # Build an environment with the latest version of R
+#' # Build an environment with the latest version of R available from Nixpkgs
 #' # and the dplyr and ggplot2 packages
 #' rix(
-#'   r_ver = "latest",
+#'   r_ver = "latest-upstream",
 #'   r_pkgs = c("dplyr", "ggplot2"),
 #'   system_pkgs = NULL,
 #'   git_pkgs = NULL,
@@ -155,7 +155,7 @@
 #'   shell_hook = NULL
 #' )
 #' }
-rix <- function(r_ver = "latest",
+rix <- function(r_ver = "latest-upstream",
                 r_pkgs = NULL,
                 system_pkgs = NULL,
                 git_pkgs = NULL,
@@ -180,27 +180,6 @@ rix <- function(r_ver = "latest",
 `r_ver`. Please read the vignette
 https://docs.ropensci.org/rix/articles/z-bleeding_edge.html
 before continuing."
-    )
-  }
-
-  if (
-    message_type != "quiet" && r_ver %in% available_r() &&
-      r_ver != "latest" && r_ver <= "4.1.1"
-  ) {
-    warning(
-      "You are generating an expression for an older version of R.\n",
-      "To use this environment, you should directly use `nix-shell` and not ",
-      "try to build it first using `nix-build`."
-    )
-  }
-
-  if (message_type != "quiet" && r_ver == "4.4.0") {
-    warning(
-      paste0(
-        "You chose '4.4.0' as the R version, however this version is not ",
-        "available in nixpkgs. The generated expression will thus install ",
-        "R version 4.4.1."
-      )
     )
   }
 
