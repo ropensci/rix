@@ -5,7 +5,7 @@
 #' @examples
 #' available_dates()
 available_df <- function() {
-  available_df_url <- "https://github.com/ropensci/rix/blob/main/inst/extdata/available_df.csv"
+  available_df_url <- "https://raw.githubusercontent.com/ropensci/rix/refs/heads/main/inst/extdata/available_df.csv"
 
   read.csv(available_df_url)
 }
