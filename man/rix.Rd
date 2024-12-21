@@ -5,7 +5,8 @@
 \title{Generate a Nix expression that builds a reproducible development environment}
 \usage{
 rix(
-  r_ver = "latest",
+  r_ver = NULL,
+  date = NULL,
   r_pkgs = NULL,
   system_pkgs = NULL,
   git_pkgs = NULL,
@@ -20,15 +21,22 @@ rix(
 )
 }
 \arguments{
-\item{r_ver}{Character, defaults to "latest". The required R version, for
+\item{r_ver}{Character. The required R version, for
 example "4.0.0". You can check which R versions are available using
-\code{available_r()}. For reproducibility purposes, you can also provide a
+\code{available_r()}, and for more details check \code{available_df()}.
+For reproducibility purposes, you can also provide a
 \code{nixpkgs} revision directly. For older versions of R, \code{nix-build} might
 fail with an error stating 'this derivation is not meant to be built'. In
 this case, simply drop into the shell with \code{nix-shell} instead of building
 it first. It is also possible to provide either "bleeding_edge" or
 "frozen_edge" if you need an environment with bleeding edge packages. Read
 more in the "Details" section below.}
+
+\item{date}{Character. Instead of providing \code{r_ver}, it is also possible
+to provide a date. This will build an environment containing R and R
+packages (and other dependencies) as of that date. You can check which
+dates are available with \code{available_dates()}. For more details about versions
+check \code{available_df()}.}
 
 \item{r_pkgs}{Vector of characters. List the required R packages for your
 analysis here.}
@@ -171,10 +179,10 @@ using bleeding edge packages".
 }
 \examples{
 \dontrun{
-# Build an environment with the latest version of R
+# Build an environment with the latest version of R available from Nixpkgs
 # and the dplyr and ggplot2 packages
 rix(
-  r_ver = "latest",
+  r_ver = "latest-upstream",
   r_pkgs = c("dplyr", "ggplot2"),
   system_pkgs = NULL,
   git_pkgs = NULL,

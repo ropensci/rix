@@ -12,7 +12,7 @@ get_latest <- function(r_version) {
 
   stopifnot("r_version has to be a character." = is.character(r_version))
 
-  # If the use provides a commit, then the commit gets used.
+  # If the user provides a commit, then the commit gets used.
   # User needs to know which repo it belongs to
   if (nchar(r_version) == 40) {
     return(r_version)
@@ -20,8 +20,8 @@ get_latest <- function(r_version) {
     !(r_version %in% c(
       "frozen_edge",
       "bleeding_edge",
-      "latest"
-    )) && all(r_version > Filter(function(x) ("latest" != x), available_r()))
+      "latest-upstream"
+    )) && all(r_version > Filter(function(x) ("latest-upstream" != x), available_r()))
   ) {
     stop(
       "The provided R version is too recent,\nand not yet included in `nixpkgs`.\n",
@@ -36,7 +36,7 @@ get_latest <- function(r_version) {
     stop(
       "The provided R version is likely wrong.\nPlease check that you ",
       "provided a correct R version.\nYou can list available versions using ",
-      "`available_r()`.\nYou can also directly provide a commit, but you need \n",
+      "`available_df()`.\nYou can also directly provide a commit, but you need \n",
       "to make sure it points to the right repo used by `rix()`.\nYou can ",
       "also use 'bleeding_edge' and 'frozen_edge'."
     )
@@ -57,12 +57,13 @@ get_right_commit <- function(r_version) {
     # nolint next: line_length_linter
     api_url <- "https://api.github.com/repos/rstats-on-nix/nixpkgs/commits?sha=r-daily"
   } else if (
-    r_version %in% Filter(function(x) `!=`(x, "latest"), available_r())
+    r_version %in% Filter(function(x) `!=`(x, "latest-upstream"), available_r())
   ) { # all but latest
-    return(sysdata$revision[sysdata$version == r_version])
+    # If a user provides an R version, use most recent date for that version
+    return(get_date_from_version(r_version))
   } else {
     # nolint next: line_length_linter
-    api_url <- "https://api.github.com/repos/NixOS/nixpkgs/commits?sha=nixpkgs-unstable"
+    api_url <- "https://api.github.com/repos/NixOS/nixpkgs/commits?sha=master"
   }
 
   # handle to get error for status code 404
