@@ -14,6 +14,7 @@ available_df <- function() {
 
 #' List available R versions from the rstats-on-nix fork of Nixpkgs
 #' @return A character vector containing the available R versions.
+#' @export
 #'
 #' @examples
 #' available_r()
@@ -24,6 +25,7 @@ available_r <- function() {
 
 #' List available dates.
 #' @return A character vector containing the available dates
+#' @export
 #'
 #' @examples
 #' available_dates()
