@@ -1,5 +1,13 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.14.0 (2024-12-26)
+
+- Environments now get built by pulling packages from our `rstats-on-nix` Nixpkgs fork. This
+  fork of Nixpkgs backports fixes for both Win/Linux and macOS, ensuring a better user
+  experience when building environments with older versions of R and R packages. It also
+  provides dated snapshots that can be accessed using the new `date` argument to `rix()`.
+  Backwards compatibility is broken with previous versions of `{rix}` however.
+
 # rix 0.13.5 (2024-12-03)
 
 - `rix()`: now correctly handles packages with several DESCRIPTION files, such as
