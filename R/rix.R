@@ -184,6 +184,10 @@ rix <- function(r_ver = NULL,
     stop("Provide either an R version or a date, not both.")
   }
 
+  if (is.null(date) && r_ver == "latest") {
+    stop("'latest' was deprecated in favour of latest-upstream as of version 0.14.0.")
+  }
+
   if (
     !(message_type %in% c("simple", "quiet")) &&
       r_ver %in% c("bleeding_edge", "frozen_edge")
