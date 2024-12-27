@@ -14,6 +14,13 @@ You can still generate Nix expressions, but you won't be able to build them.")
 
   if (nix_conf_exists(nix_conf_path) && !is_cachix_configured(readLines(nix_conf_path))) {
     message("To speed up the build process of your development environments,
-don't forget to run `setup_cachix()`!")
+run `setup_cachix()` now to configure the rstats-on-nix binary repository!
+(you only need to do this once per machine you use {rix} on)")
+  }
+
+  if (!nix_conf_exists(nix_conf_path) && nix_build_installed()) {
+    message("To speed up the build process of your development environments,
+run `setup_cachix()` now to configure the rstats-on-nix binary repository!
+(you only need to do this once per machine you use {rix} on)")
   }
 }

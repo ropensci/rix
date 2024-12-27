@@ -1,10 +1,11 @@
-#' setup_cachix Setup up cachix as a substituter
+#' setup_cachix Setup up the rstats-on-nix binary repository
 #' @details This function edits `~/.config/nix/nix.conf` to add the
 #'   `rstats-on-nix` public cache as a substituter. The `rstats-on-nix` public
-#'   cache, hosted on Cachix, contains many prebuild binaries of R R packages
+#'   cache, hosted on Cachix, contains many prebuild binaries of R and R packages
 #'   for x86_64 Linux and macOS (Intel architectures for packages released
 #'   before 2021 and Apple Silicon from 2021 onwards). This function
-#'   automatically performs a backup of `~/.config/nix/nix.conf`.
+#'   automatically performs a backup of `~/.config/nix/nix.conf`, or creates
+#'   one if there is no `nix.conf` file
 #' @return Nothing, changes a file in the user's home directory.
 #' @export
 #' @examples
@@ -12,6 +13,30 @@
 #' setup_cachix()
 #' }
 setup_cachix <- function(nix_conf_path = "~/.config/nix") {
+
+  nix_conf_file <- file.path(nix_conf_path, "nix.conf")
+
+  if(nix_conf_exists(nix_conf_file)) {
+    add_to_existing_nix_conf_file(nix_conf_path)
+  } else {
+    add_new_nix_conf_file(nix_conf_path)
+    source <- system.file(
+      file.path("extdata", "nix.conf"),
+      package = "rix",
+      mustWork = TRUE
+    )
+    file.copy(source, nix_conf_path)
+    message("New Nix user config file saved to: ", nix_conf_path)
+  }
+}
+
+#' @noRd
+add_new_nix_conf_file <- function(nix_conf_path = "~/.config/nix") {
+}
+
+#' @noRd
+add_to_existing_nix_conf_file <- function(nix_conf_path = "~/.config/nix") {
+
   nix_conf_file <- file.path(nix_conf_path, "nix.conf")
 
   if (!nix_conf_exists(nix_conf_file)) {
