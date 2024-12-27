@@ -13,30 +13,33 @@
 #' setup_cachix()
 #' }
 setup_cachix <- function(nix_conf_path = "~/.config/nix") {
-
   nix_conf_file <- file.path(nix_conf_path, "nix.conf")
 
-  if(nix_conf_exists(nix_conf_file)) {
+  if (nix_conf_exists(nix_conf_file)) {
     add_to_existing_nix_conf_file(nix_conf_path)
   } else {
     add_new_nix_conf_file(nix_conf_path)
-    source <- system.file(
-      file.path("extdata", "nix.conf"),
-      package = "rix",
-      mustWork = TRUE
-    )
-    file.copy(source, nix_conf_path)
-    message("New Nix user config file saved to: ", nix_conf_path)
   }
 }
 
 #' @noRd
-add_new_nix_conf_file <- function(nix_conf_path = "~/.config/nix") {
+add_new_nix_conf_file <- function(nix_conf_path) {
+  if (!dir.exists(nix_conf_path)) {
+    dir.create(nix_conf_path, recursive = TRUE)
+  }
+
+  source <- system.file(
+    file.path("extdata", "nix.conf"),
+    package = "rix",
+    mustWork = TRUE
+  )
+
+  file.copy(source, nix_conf_path)
+  message("New Nix user config file saved to: ", nix_conf_path)
 }
 
 #' @noRd
-add_to_existing_nix_conf_file <- function(nix_conf_path = "~/.config/nix") {
-
+add_to_existing_nix_conf_file <- function(nix_conf_path) {
   nix_conf_file <- file.path(nix_conf_path, "nix.conf")
 
   if (!nix_conf_exists(nix_conf_file)) {
