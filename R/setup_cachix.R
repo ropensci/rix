@@ -1,12 +1,20 @@
 #' setup_cachix Setup up the rstats-on-nix binary repository
 #' @details This function edits `~/.config/nix/nix.conf` to add the
 #'   `rstats-on-nix` public cache as a substituter. The `rstats-on-nix` public
-#'   cache, hosted on Cachix, contains many prebuild binaries of R and R packages
-#'   for x86_64 Linux and macOS (Intel architectures for packages released
-#'   before 2021 and Apple Silicon from 2021 onwards). This function
-#'   automatically performs a backup of `~/.config/nix/nix.conf`, or creates
-#'   one if there is no `nix.conf` file
-#' @return Nothing, changes a file in the user's home directory.
+#'   cache, hosted on Cachix, contains many prebuild binaries of R and R
+#'   packages for x86_64 Linux and macOS (Intel architectures for packages
+#'   released before 2021 and Apple Silicon from 2021 onwards). This function
+#'   automatically performs a backup of `~/.config/nix/nix.conf`, or creates one
+#'   if there is no `nix.conf` file. If you installed Nix by following the
+#'   instructions provided in the "Getting started" vignette and also followed
+#'   the instructions to install Cachix and configure the cache, you don't need
+#'   to run this. This function is useful in mainly two cases: if you somehow
+#'   mess up `~/.config/nix/nix.conf` and need to generate a new one from
+#'   scratch, or if you're using Nix inside Docker, write a `RUN Rscript -e
+#'   'rix::setup_cachix()'` statement to configure the cache there. Because
+#'   Docker runs using `root` by default no need to install the `cachix` client
+#'   to configure the cache, running `setup_cachix()` is enough.
+#' @return Nothing; changes a file in the user's home directory.
 #' @export
 #' @examples
 #' \dontrun{
@@ -95,5 +103,5 @@ nix_conf_exists <- function(nix_conf_file) {
 #' @noRd
 is_cachix_configured <- function(nix_conf_content) {
   substituter_line <- grep("substituters", nix_conf_content)
-  (grepl("rstats-on-nix", nix_conf_content[substituter_line]))
+  any((grepl("rstats-on-nix", nix_conf_content[substituter_line])))
 }
