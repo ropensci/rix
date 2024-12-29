@@ -175,7 +175,7 @@ rix <- function(r_ver = NULL,
   )
 
   if (!is.null(date) && !(date %in% available_dates())) {
-    # nolint next: line_length_linter
+    # nolint start: line_length_linter
     stop("The provided date is not available.\nRun available_dates() to see which dates are available.")
     # nolint end
   }
