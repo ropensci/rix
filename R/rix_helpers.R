@@ -132,7 +132,8 @@ get_rpkgs <- function(r_pkgs, ide) {
 #' correct Nix expression to get R packages.
 #' @param rPackages Character, list of R packages to install.
 #' @param flag_rpkgs Character, are there any R packages at all?
-#' @noRd # nolint start: object_name_linter
+#' @noRd
+# nolint start: object_name_linter
 generate_rpkgs <- function(rPackages, flag_rpkgs) {
   if (flag_rpkgs == "") {
     NULL

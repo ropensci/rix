@@ -154,6 +154,37 @@ Pinning a revision ensures that every package that Nix installs will always be
 at exactly the same versions, regardless of when in the future the packages get
 installed.
 
+## Installing and configuring Nix
+
+Install Nix using the [Determinate Systems installer](https://determinate.systems/posts/determinate-nix-installer):
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+```
+
+Then, install the `cachix` client and configure our `rstats-on-nix` cache: this will install
+binary versions of many R packages which will speed up the building process of
+environments:
+
+```bash
+nix-env -iA cachix -f https://cachix.org/api/v1/install
+```
+
+then use the cache:
+
+```bash
+cachix use rstats-on-nix
+```
+
+You only need to do this once per machine you want to use `{rix}` on. Many thanks
+to [Cachix](https://www.cachix.org/) for sponsoring the `rstats-on-nix` cache!
+
+`{rix}` also includes a function called `setup_cachix()` which will configure
+the cache but it is recommended to use the `cachix` client instead. This is
+because `setup_cachix()` will not edit the files that require admin/root
+privileges and only edit the user-level files. This may not be enough depending
+on how you installed Nix. Using the `cachix` client takes care of everything.
+
 ### Other "Nix"es
 
 There are several implementations of the Nix package manager that you might want

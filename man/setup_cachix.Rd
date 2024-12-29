@@ -2,23 +2,32 @@
 % Please edit documentation in R/setup_cachix.R
 \name{setup_cachix}
 \alias{setup_cachix}
-\title{setup_cachix Setup up cachix as a substituter}
+\title{setup_cachix Setup up the rstats-on-nix binary repository}
 \usage{
 setup_cachix(nix_conf_path = "~/.config/nix")
 }
 \value{
-Nothing, changes a file in the user's home directory.
+Nothing; changes a file in the user's home directory.
 }
 \description{
-setup_cachix Setup up cachix as a substituter
+setup_cachix Setup up the rstats-on-nix binary repository
 }
 \details{
 This function edits \verb{~/.config/nix/nix.conf} to add the
 \code{rstats-on-nix} public cache as a substituter. The \code{rstats-on-nix} public
-cache, hosted on Cachix, contains many prebuild binaries of R R packages
-for x86_64 Linux and macOS (Intel architectures for packages released
-before 2021 and Apple Silicon from 2021 onwards). This function
-automatically performs a backup of \verb{~/.config/nix/nix.conf}.
+cache, hosted on Cachix, contains many prebuild binaries of R and R
+packages for x86_64 Linux and macOS (Intel architectures for packages
+released before 2021 and Apple Silicon from 2021 onwards). This function
+automatically performs a backup of \verb{~/.config/nix/nix.conf}, or creates one
+if there is no \code{nix.conf} file. If you installed Nix by following the
+instructions provided in the "Getting started" vignette and also followed
+the instructions to install Cachix and configure the cache, you don't need
+to run this. This function is useful in mainly two cases: if you somehow
+mess up \verb{~/.config/nix/nix.conf} and need to generate a new one from
+scratch, or if you're using Nix inside Docker, write a \verb{RUN Rscript -e 'rix::setup_cachix()'} statement to configure the cache there. Because
+Docker runs using \code{root} by default no need to install the \code{cachix} client
+to configure the cache, running \code{setup_cachix()} is enough. See the
+'z - Advanced topic: Using Nix inside Docker' vignette for more details.
 }
 \examples{
 \dontrun{

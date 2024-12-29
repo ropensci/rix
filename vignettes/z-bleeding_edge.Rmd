@@ -115,6 +115,21 @@ also from the dedicated `rstats-on-nix` cache. Our cache also contains the
 latest version of R, which sometimes can also lag behind on the official
 `nixpkgs` repository.
 
+When building an environment, if you see the following message:
+
+```
+warning: ignoring the client-specified setting 'trusted-substituters', because it is a restricted setting and you are not a trusted user
+```
+
+then this means that the cache was not configured properly. Try:
+
+```
+cachix use rstats-on-nix
+```
+
+again, and check that the `/etc/nix/nix.conf` file has a line that looks like
+`trusted-users = root YOUR_USERNAME`. If not, add it using admin/root privileges.
+
 ## Making your own cache
 
 If you need packages that are not included in the `rstats-on-nix` cache, you can

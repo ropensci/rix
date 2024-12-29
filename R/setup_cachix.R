@@ -13,7 +13,8 @@
 #'   scratch, or if you're using Nix inside Docker, write a `RUN Rscript -e
 #'   'rix::setup_cachix()'` statement to configure the cache there. Because
 #'   Docker runs using `root` by default no need to install the `cachix` client
-#'   to configure the cache, running `setup_cachix()` is enough.
+#'   to configure the cache, running `setup_cachix()` is enough. See the
+#'   'z - Advanced topic: Using Nix inside Docker' vignette for more details.
 #' @return Nothing; changes a file in the user's home directory.
 #' @export
 #' @examples
