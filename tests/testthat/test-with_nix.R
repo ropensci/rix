@@ -15,7 +15,6 @@ testthat::test_that("Testing `with_nix()` if Nix is installed", {
 
   # Suppress the warning related to generating an expression
   # for an old version of R
-  suppressWarnings(
     rix(
       r_ver = "3.5.3",
       overwrite = TRUE,
@@ -23,7 +22,6 @@ testthat::test_that("Testing `with_nix()` if Nix is installed", {
       message_type = "quiet",
       shell_hook = NULL
     )
-  )
 
   out_subshell <- with_nix(
     expr = function() {

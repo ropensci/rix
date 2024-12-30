@@ -21,7 +21,7 @@ library(rix)
 ## Project-specific Nix environments
 
 Now that you have the required software installed, it’s to time learn more about
-declaring and using reproducible inveronments.
+declaring and using reproducible environments.
 
 The ideal workflow when using `{rix}` is to create a new, separate environment
 at the start of a project. Let's say that you wish to analyse some data set, and

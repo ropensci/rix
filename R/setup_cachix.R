@@ -24,6 +24,12 @@
 setup_cachix <- function(nix_conf_path = "~/.config/nix") {
   nix_conf_file <- file.path(nix_conf_path, "nix.conf")
 
+  if (!nix_build_installed()) {
+    stop("Nix is not installed in this system,
+there is no need to configure the cache.
+Install Nix first.")
+  }
+
   if (nix_conf_exists(nix_conf_file)) {
     add_to_existing_nix_conf_file(nix_conf_path)
   } else {
@@ -50,10 +56,6 @@ add_new_nix_conf_file <- function(nix_conf_path) {
 #' @noRd
 add_to_existing_nix_conf_file <- function(nix_conf_path) {
   nix_conf_file <- file.path(nix_conf_path, "nix.conf")
-
-  if (!nix_conf_exists(nix_conf_file)) {
-    stop("~/.config/nix/nix.conf does not exist, did you install Nix?")
-  }
 
   nix_conf_content <- readLines(con = nix_conf_file)
 

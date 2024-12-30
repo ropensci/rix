@@ -1,9 +1,3 @@
-testthat::test_that("setup_cachix(): error if no config file", {
-  testthat::expect_error(
-    setup_cachix(nix_conf_path = "."), "does not exist"
-  )
-})
-
 testthat::test_that("setup_cachix(): error if already configured", {
   testthat::expect_error(
     setup_cachix(nix_conf_path = "testdata/nix_conf_samples/nix_already/"), "already configured"

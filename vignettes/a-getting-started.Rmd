@@ -156,15 +156,16 @@ installed.
 
 ## Installing and configuring Nix
 
-Install Nix using the [Determinate Systems installer](https://determinate.systems/posts/determinate-nix-installer):
+Install Nix using the
+[Determinate Systems installer](https://determinate.systems/posts/determinate-nix-installer):
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 ```
 
-Then, install the `cachix` client and configure our `rstats-on-nix` cache: this will install
-binary versions of many R packages which will speed up the building process of
-environments:
+Then, install the `cachix` client and configure our `rstats-on-nix` cache: this
+will install binary versions of many R packages which will speed up the building
+process of environments:
 
 ```bash
 nix-env -iA cachix -f https://cachix.org/api/v1/install
@@ -184,6 +185,8 @@ the cache but it is recommended to use the `cachix` client instead. This is
 because `setup_cachix()` will not edit the files that require admin/root
 privileges and only edit the user-level files. This may not be enough depending
 on how you installed Nix. Using the `cachix` client takes care of everything.
+Use `setup_cachix()` when building a Docker image or if you somehow mess up
+the configuration file (which should be located in `~/.config/nix.conf`).
 
 ### Other "Nix"es
 

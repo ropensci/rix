@@ -16,15 +16,15 @@ You can still generate Nix expressions, but you won't be able to build them.")
     message("To speed up the build process of your development environments,
 configure the rstats-on-nix binary repository! Read the `Getting started`
 vignette for instructions see
-https://docs.ropensci.org/rix/articles/a-getting-started.html#installing-and-configuring-nix.
-(you only need to do this once per machine you use {rix} on)")
+https://docs.ropensci.org/rix/articles/a-getting-started.html#installing-and-configuring-nix
+(you only need to do this once per machine you use {rix} on).")
   }
 
   if (!nix_conf_exists(nix_conf_path) && nix_build_installed()) {
     message("To speed up the build process of your development environments,
 configure the rstats-on-nix binary repository! Read the `Getting started`
 vignette for instructions see
-https://docs.ropensci.org/rix/articles/a-getting-started.html#installing-and-configuring-nix.
-(you only need to do this once per machine you use {rix} on)")
+https://docs.ropensci.org/rix/articles/a-getting-started.html#installing-and-configuring-nix
+(you only need to do this once per machine you use {rix} on).")
   }
 }
