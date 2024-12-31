@@ -2,7 +2,7 @@
 title: "f - Converting renv projects to Nix projects"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{e-interactive-use}
+  %\VignetteIndexEntry{f-converting-renv-projects-to-nix-projects}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

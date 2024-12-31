@@ -1,4 +1,6 @@
 #' setup_cachix Setup up the rstats-on-nix binary repository
+#' @param nix_conf_path Character, path to folder containing 'nix.conf' file.
+#'   Defaults to "~/.config/nix".
 #' @details This function edits `~/.config/nix/nix.conf` to add the
 #'   `rstats-on-nix` public cache as a substituter. The `rstats-on-nix` public
 #'   cache, hosted on Cachix, contains many prebuild binaries of R and R
@@ -38,6 +40,8 @@ Install Nix first.")
 }
 
 #' @noRd
+#' @param nix_conf_path Character, path to folder containing 'nix.conf' file.
+#'   Defaults to "~/.config/nix".
 add_new_nix_conf_file <- function(nix_conf_path) {
   if (!dir.exists(nix_conf_path)) {
     dir.create(nix_conf_path, recursive = TRUE)
@@ -54,6 +58,8 @@ add_new_nix_conf_file <- function(nix_conf_path) {
 }
 
 #' @noRd
+#' @param nix_conf_path Character, path to folder containing 'nix.conf' file.
+#'   Defaults to "~/.config/nix".
 add_to_existing_nix_conf_file <- function(nix_conf_path) {
   nix_conf_file <- file.path(nix_conf_path, "nix.conf")
 
@@ -96,6 +102,7 @@ add_to_existing_nix_conf_file <- function(nix_conf_path) {
 
 
 #' @noRd
+#' @param nix_conf_path Connection to nix_conf_file
 nix_conf_exists <- function(nix_conf_file) {
   # Test for existence and size instead of only existence,
   # as an active file connection makes the file exist, but is empty
@@ -104,6 +111,7 @@ nix_conf_exists <- function(nix_conf_file) {
 }
 
 #' @noRd
+#' @param nix_conf_path Content of 'nix.conf' file
 is_cachix_configured <- function(nix_conf_content) {
   substituter_line <- grep("substituters", nix_conf_content)
   any((grepl("rstats-on-nix", nix_conf_content[substituter_line])))

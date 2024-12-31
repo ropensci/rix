@@ -35,6 +35,7 @@ available_dates <- function() {
 }
 
 #' Get latest R version for given date
+#' @param date Character, one of the available dates.
 #' @return A character vector showing the version for a given date
 #' @noRd
 #'
@@ -44,6 +45,7 @@ get_version_from_date <- function(date) {
 }
 
 #' Get latest most recent date for given R version
+#' @param date Character, one of the available r versions.
 #' @return A character vector showing the version for a given date
 #' @noRd
 #'
