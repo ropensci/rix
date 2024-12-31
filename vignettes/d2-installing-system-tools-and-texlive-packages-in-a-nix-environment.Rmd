@@ -21,7 +21,7 @@ library(rix)
 ## Introduction
 
 More than 100'000 pieces of software are available through the Nix package
-manager. Nix’s repository of packages is called `nixpkgs` and it includes the
+manager. Nix's repository of packages is called `nixpkgs` and it includes the
 entirety of CRAN and Bioconductor. `nixpkgs` is actually "just" a Github
 repository containing thousands upon thousands of Nix expressions. When
 installing a package, these expressions get evaluated, and the package in
@@ -40,7 +40,6 @@ Python packages to make Quarto work well with both languages also get installed.
 
 It is possible to use `rix()` to add tools to an environment and this vignette
 explains how.
-
 
 ## Adding tools to an environment
 

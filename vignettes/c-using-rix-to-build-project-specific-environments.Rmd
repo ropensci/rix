@@ -234,7 +234,7 @@ rix(
 
 The first line is quite important, as it shows which *revision* of `nixpkgs` is
 being used for this environment, as well as the fork. In the two last
-expressions, the expression will use our `rstats-on-nix` fork which includes
+examples, the expression will use our `rstats-on-nix` fork which includes
 many fixes for older packages, especially for Apple Silicon devices. The first
 expression in this vignette, the one generated with `r_ver = "latest-upstream"`
 uses the upstream `nixpkgs` from the NixOS project.

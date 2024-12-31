@@ -37,7 +37,7 @@ or a fixed CRAN snapshot like those [Posit
 provides](https://packagemanager.posit.co/__docs__/user/get-repo-url/#ui-frozen-urls))
 and the [R installation manager](https://github.com/r-lib/rig) to install the
 correct version of R (unless you use a Docker image as base that already ships
-the required version by default). 
+the required version by default).
 
 As for the last bullet point, the only way out is to be able to compile the
 software for the target architecture. There's a lot of moving pieces, and

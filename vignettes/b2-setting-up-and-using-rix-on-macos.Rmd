@@ -25,7 +25,7 @@ instead.*
 
 ## Introduction
 
-When it comes to Nix, there are really only two supported operating systems: 
+When it comes to Nix, there are really only two supported operating systems:
 macOS and Linux distributions. Windows is "supported" because it is actually
 running Linux thanks to WSL2. In practice this means that Linux distributions
 and Windows can be considered one system, and macOS another, separate, system,
@@ -50,7 +50,6 @@ curl --proto '=https' --tlsv1.2 -sSf \
 
 Once you have Nix installed, you can build the expressions you generate with
 `{rix}`!
-
 
 ## What if you don't have R already installed?
 
@@ -125,7 +124,7 @@ appears in the search paths (check `libPaths()`). For macOS, the user library is
 at
 `/Library/Frameworks/R.framework/Versions/<major>.<minor>-<arch>/Resources/library`;
 we have observed crashes with R packages that depend on system libraries, such
-as {data.table} or {dplyr}, and their (reverse) dependencies. Because user
+as `{data.table}` or `{dplyr}`, and their (reverse) dependencies. Because user
 libraries from the system would also appear on the search path in R from
 `nixpkgs` for Linux, running `rix()` also runs `rix_init()` which creates a
 custom `.Rprofile` in your project's path. This custom `.Rprofile` ensures that
@@ -163,8 +162,8 @@ on macOS. When you try to generate an expression with `ide =
 - help us package RStudio for macOS on `nixpgs`. See
   [here](https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/rstudio/default.nix),
   the Nix expression for RStudio.
-  
-We recommend you continue with the next vignette before tackling the more 
+
+We recommend you continue with the next vignette before tackling the more
 advanced topics listed above: `vignette("c-using-rix-to-build-project-specific-environments")`.
 
 ## Why do we need all these special tweaks?
@@ -185,5 +184,4 @@ expressions and doesn't require a Nix installation. As a workaround, we have
 added mechanisms in `nix_build()` and `with_nix()` that append the path of the
 Nix store to the `PATH` variable in an active session automatically (via
 `Sys.setenv()`, when you use RStudio on macOS. You don't have to do anything. We
-have you covered, and you get a friendly message that informs you. special side
-effect.
+have you covered, and you get a friendly message that informs you.
