@@ -1,6 +1,7 @@
 #' Return data frame with R, Bioc versions and supported platforms
 #' @return A data frame
 #' @export
+#' @importFrom utils read.csv
 #'
 #' @examples
 #' available_dates()
@@ -35,6 +36,7 @@ available_dates <- function() {
 
 #' Get latest R version for given date
 #' @return A character vector showing the version for a given date
+#' @noRd
 #'
 get_version_from_date <- function(date) {
   available_df <- available_df()
@@ -43,6 +45,7 @@ get_version_from_date <- function(date) {
 
 #' Get latest most recent date for given R version
 #' @return A character vector showing the version for a given date
+#' @noRd
 #'
 get_date_from_version <- function(r_version) {
   available_df <- available_df()

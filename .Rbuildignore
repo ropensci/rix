@@ -22,8 +22,8 @@ create_dev_env.R
 ^.*.tar.gz
 ^\.pre-commit-config\.yaml$
 ^data-raw$
-.envrc
-.direnv
+^.envrc$
+^.direnv$
 
 # flint files
 ^flint$
