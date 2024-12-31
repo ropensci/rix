@@ -481,10 +481,287 @@ rix(
 #> }
 ```
 
-
 The next vignette,
 `vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")`,
 explains how you can install tools such as text editors, git, Quarto, TexLive
 packages, and any other tool available through `nixpkgs` for your development
 environments.
 
+## Package installation issues
+
+Some R packages are quite difficult to install: that is usually not an issue for
+most users that use either Windows or macOS as their operating systems, because
+when calling `install.packages()` a compiled binary gets downloaded from CRAN
+and installed in a matter of seconds. On Ubuntu, likely the most popular Linux
+distribution, binary packages for R packages are also available via the
+[r2u](https://eddelbuettel.github.io/r2u/) repository. However, if you need to
+install old packages, these instead will need to be installed from source, as
+binaries for old packages are not kept. For most packages, this is not an issue,
+but some packages require compilation and this is where issues start.
+
+Nix solves this, because all packages must have their dependencies also
+declared, so installing old packages should not be an issue. However, it can
+happen that one particular package that you want to install may not build. This
+can happen because, even though we spend a lot of time making sure R packages
+work flawlessly with Nix, there are many R packages (almost 30'000 between CRAN
+and BioConductor) and there's not many of us (R contributors for Nix). Should
+you have trouble installing a package, feel free to open an issue and we'll do
+our best to fix it!
+
+We also made sure that old packages would work by backporting many fixes, and
+actually building many old versions of popular packages for all the dates
+included in `available_dates()`.
+
+Here is the list of packages that were built and tested (but keep in mind that
+this list doesn't show all the dependencies of all the packages that also have
+to work, and that just because a package isn't listed, doesn't mean it's not
+going to work!):
+
+<details>
+  <summary>Click to show package list</summary>
+
+```
+
+DBI
+
+R6
+
+RColorBrewer
+
+RCurl
+
+RSQLite
+
+Rcpp
+
+RcppEigen
+
+arrow
+
+askpass
+
+backports
+
+base64enc
+
+bit
+
+bit64
+
+blob
+
+broom
+
+bslib
+
+cachem
+
+callr
+
+cellranger
+
+cli
+
+clipr
+
+collapse
+
+colorspace
+
+cpp11
+
+crayon
+
+curl
+
+data_table
+
+dbplyr
+
+devtools
+
+digest
+
+dplyr
+
+duckdb
+
+evaluate
+
+fansi
+
+farver
+
+fastmap
+
+fontawesome
+
+forcats
+
+fs
+
+gargle
+
+generics
+
+ggplot2
+
+glue
+
+gtable
+
+haven
+
+highr
+
+hms
+
+htmltools
+
+htmlwidgets
+
+httr
+
+icosa
+
+igraph
+
+isoband
+
+jquerylib
+
+jsonlite
+
+kit
+
+knitr
+
+labeling
+
+languageserver
+
+later
+
+lifecycle
+
+lubridate
+
+magrittr
+
+memoise
+
+mime
+
+modelr
+
+munsell
+
+nloptr
+
+openssl
+
+openxlsx
+
+pillar
+
+pkgconfig
+
+prettyunits
+
+processx
+
+progress
+
+promises
+
+ps
+
+purrr
+
+rJava
+
+ragg
+
+rappdirs
+
+readr
+
+readxl
+
+rematch
+
+rematch2
+
+rlang
+
+rmarkdown
+
+rprojroot
+
+rstan
+
+rstudioapi
+
+rvest
+
+sass
+
+scales
+
+selectr
+
+Seurat
+
+sf
+
+shiny
+
+stars
+
+stringi
+
+stringr
+
+sys
+
+systemfonts
+
+terra
+
+textshaping
+
+tibble
+
+tidyr
+
+tidyselect
+
+tidyverse
+
+timechange
+
+tinytex
+
+tzdb
+
+utf8
+
+vctrs
+
+viridisLite
+
+withr
+
+xfun
+
+xlsx
+
+xml2
+
+yaml
+
+zoo
+
+```
+
+</details>
