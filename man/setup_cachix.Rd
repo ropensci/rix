@@ -6,6 +6,10 @@
 \usage{
 setup_cachix(nix_conf_path = "~/.config/nix")
 }
+\arguments{
+\item{nix_conf_path}{Character, path to folder containing 'nix.conf' file.
+Defaults to "~/.config/nix".}
+}
 \value{
 Nothing; changes a file in the user's home directory.
 }
