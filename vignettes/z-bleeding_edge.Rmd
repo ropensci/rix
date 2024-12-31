@@ -52,7 +52,7 @@ then get fixed by volunteers (to learn how you can contribute, read the
 been fixed, the whole rPackages set gets updated and made available through
 `nixpkgs` master branch.
 
-Essentially this means that if you start a project with `{rix}` using `"latest"`
+Essentially this means that if you start a project with `{rix}` using `"latest-upstream"`
 as the `r_ver` just after the rPackages set got updated, this project will use
 very fresh packages. But if instead you start a project just before an R
 release, then the environment will be using older packages. In practice this
@@ -114,6 +114,21 @@ that’s it! Packages now not only will get pulled from the official cache, but
 also from the dedicated `rstats-on-nix` cache. Our cache also contains the
 latest version of R, which sometimes can also lag behind on the official
 `nixpkgs` repository.
+
+When building an environment, if you see the following message:
+
+```
+warning: ignoring the client-specified setting 'trusted-substituters', because it is a restricted setting and you are not a trusted user
+```
+
+then this means that the cache was not configured properly. Try:
+
+```
+cachix use rstats-on-nix
+```
+
+again, and check that the `/etc/nix/nix.conf` file has a line that looks like
+`trusted-users = root YOUR_USERNAME`. If not, add it using admin/root privileges.
 
 ## Making your own cache
 

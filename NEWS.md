@@ -1,5 +1,29 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.14.0 (2024-12-31)
+
+- This is a major release of `{rix}`:
+  * We have forked the Nixpkgs Github repository to include more R packages in
+  Nix, and have backported many fixes, which should improve the user experience
+  on Apple Silicon devices.
+  * We also set up a binary cache on Cachix (many thanks to Cachix for
+  sponsoring the cache!) so now packages get pulled from the official binary
+  cache, as well as from the `rstats-on-nix` cache. This greatly decreases build
+  times.
+  * `rix()` now includes a `date` argument, allowing users to build environments
+  as of a date. Around 4 to 6 dates for each year that is supported are
+  provided, starting from 2019. Check out available dates using the
+  `available_dates()` function. Read the *c - Using rix to build project
+  specific environments* vignette for more details. Should you want a specific
+  date that is not available, feel free to open an issue requesting it.
+  * `rix()` now only includes R versions 3.5.3 (released on March 2019) and up.
+  Earlier versions were complicated to get working on macOS and we assume it is
+  unlikely that many people would need earlier versions. Should that be the case
+  however, feel free to open an issue requesting it.
+
+  Many thanks to [mihem](https://github.com/mihem) for helping with testing this
+  major release of `{rix}`!
+
 # rix 0.13.5 (2024-12-03)
 
 - `rix()`: now correctly handles packages with several DESCRIPTION files, such as

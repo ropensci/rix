@@ -1,6 +1,6 @@
 
 let
-  pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2023-10-30.tar.gz") {};
+  pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2024-12-14.tar.gz") {};
  
   rpkgs = builtins.attrValues {
     inherit (pkgs.rPackages) 
@@ -79,7 +79,8 @@ let
   tex = (pkgs.texlive.combine {
     inherit (pkgs.texlive) 
       scheme-small
-      amsmath;
+      amsmath
+      zmsmath;
   });
   
   system_packages = builtins.attrValues {
@@ -89,11 +90,7 @@ let
       nix
       quarto;
   };
- 
-  wrapped_pkgs = pkgs.rstudioWrapper.override {
-    packages = [ git_archive_pkgs rpkgs  ];
-  };
- 
+  
 in
 
 pkgs.mkShell {
@@ -105,6 +102,6 @@ pkgs.mkShell {
    LC_PAPER = "en_US.UTF-8";
    LC_MEASUREMENT = "en_US.UTF-8";
 
-  buildInputs = [ git_archive_pkgs rpkgs tex system_packages  wrapped_pkgs ];
+  buildInputs = [ git_archive_pkgs rpkgs tex system_packages   ];
   
 }

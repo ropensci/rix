@@ -35,7 +35,7 @@ is just a matter of waiting for packages to download.
 
 However, in some cases, you might need to use packages that have not been
 pre-built and cached yet, for example if you use `rix(r_ver = "bleeding_edge")`
-or rix(r_ver = "frozen_edge")` to generate environments with bleeding edge
+or `rix(r_ver = "frozen_edge")` to generate environments with bleeding edge
 packages. Building these environments could potentially take quite long, because
 these packages need to be built from source on your computer.
 

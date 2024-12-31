@@ -53,6 +53,11 @@ RUN curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/
 
 # Adds Nix to the path, as described by the Determinate Systems installer's documentation
 ENV PATH="${PATH}:/nix/var/nix/profiles/default/bin"
+ENV user=root
+
+# Set up rstats-on-nix cache
+# No need to use the cachix client inside Docker
+RUN nix-shell --run "Rscript -e 'rix::setup_cachix()'"
 
 # This will overwrite the default.nix we downloaded previously with a new
 # expression generated from running `generate_env.R`
@@ -80,7 +85,6 @@ rix(
   r_pkgs = c("dplyr", "ggplot2"),
   ide = "other",
   project_path = ".",
-  shell_hook = "R",
   overwrite = TRUE
 )
 ```
@@ -90,6 +94,11 @@ nice separation of concerns. On one hand, you can continue using Docker to serve
 applications, and on the other hand, you can use Nix to ensure you don't have to
 store images, as you can always rebuild the correct environment in a completely
 reproducible manner.
+
+You can build the image using `docker build -t my_image .` and then run a
+container with `docker run --rm -it --name my_rix_container my_image` which will
+drop you in an interactive Nix shell. Of course, you can replace the last `CMD`
+statement with whatever you need.
 
 ## Dockerizing a Shiny application
 
@@ -121,6 +130,11 @@ RUN curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/
   --no-confirm
 
 ENV PATH="${PATH}:/nix/var/nix/profiles/default/bin"
+ENV user=root
+
+# Set up rstats-on-nix cache
+# No need to use the cachix client inside Docker
+RUN nix-shell --run "Rscript -e 'rix::setup_cachix()'"
 
 # This will overwrite the default.nix we downloaded with a new one
 RUN nix-shell --run "Rscript generate_env.R"

@@ -65,7 +65,7 @@ library(rix)
 path_to_project <- "~/Documents/kmeans"
 
 rix(
-  r_ver = "latest",
+  r_ver = "latest-upstream",
   r_pkgs = c("dplyr", "ggplot2"),
   system_pkgs = NULL,
   git_pkgs = NULL,
@@ -150,7 +150,7 @@ shell, which you can then use to generate new `default.nix` files:
 Running the command above will download R and `{rix}` and then start an R
 session inside your terminal. You can now run something like this:
 
-    rix(r_ver = "latest",
+    rix(r_ver = "latest-upstream",
         r_pkgs = c("dplyr", "ggplot2"),
         system_pkgs = NULL,
         git_pkgs = NULL,
@@ -181,7 +181,7 @@ call to `rix()` like so:
 
 ```{r, eval = FALSE}
 rix(
-  r_ver = "latest",
+  r_ver = "latest-upstream",
   r_pkgs = c("dplyr", "ggplot2"),
   system_pkgs = NULL,
   git_pkgs = NULL,

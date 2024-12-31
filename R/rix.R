@@ -5,15 +5,21 @@
 #'   package manager, and `.Rprofile` ensures that a running R session from a
 #'   Nix environment cannot access local libraries, nor install packages using
 #'   `install.packages()` (nor remove nor update them).
-#' @param r_ver Character, defaults to "latest". The required R version, for
+#' @param r_ver Character. The required R version, for
 #'   example "4.0.0". You can check which R versions are available using
-#'   `available_r()`. For reproducibility purposes, you can also provide a
+#'   `available_r()`, and for more details check `available_df()`.
+#'   For reproducibility purposes, you can also provide a
 #'   `nixpkgs` revision directly. For older versions of R, `nix-build` might
 #'   fail with an error stating 'this derivation is not meant to be built'. In
 #'   this case, simply drop into the shell with `nix-shell` instead of building
 #'   it first. It is also possible to provide either "bleeding_edge" or
 #'   "frozen_edge" if you need an environment with bleeding edge packages. Read
 #'   more in the "Details" section below.
+#' @param date Character. Instead of providing `r_ver`, it is also possible
+#'   to provide a date. This will build an environment containing R and R
+#'   packages (and other dependencies) as of that date. You can check which
+#'   dates are available with `available_dates()`. For more details about versions
+#'   check `available_df()`.
 #' @param r_pkgs Vector of characters. List the required R packages for your
 #'   analysis here.
 #' @param system_pkgs Vector of characters. List further software you wish to
@@ -135,10 +141,10 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' # Build an environment with the latest version of R
+#' # Build an environment with the latest version of R available from Nixpkgs
 #' # and the dplyr and ggplot2 packages
 #' rix(
-#'   r_ver = "latest",
+#'   r_ver = "latest-upstream",
 #'   r_pkgs = c("dplyr", "ggplot2"),
 #'   system_pkgs = NULL,
 #'   git_pkgs = NULL,
@@ -151,7 +157,8 @@
 #'   shell_hook = NULL
 #' )
 #' }
-rix <- function(r_ver = "latest",
+rix <- function(r_ver = NULL,
+                date = NULL,
                 r_pkgs = NULL,
                 system_pkgs = NULL,
                 git_pkgs = NULL,
@@ -167,6 +174,20 @@ rix <- function(r_ver = "latest",
     choices = c("quiet", "simple", "verbose")
   )
 
+  if (!is.null(date) && !(date %in% available_dates())) {
+    # nolint start: line_length_linter
+    stop("The provided date is not available.\nRun available_dates() to see which dates are available.")
+    # nolint end
+  }
+
+  if (!is.null(date) && !is.null(r_ver)) {
+    stop("Provide either an R version or a date, not both.")
+  }
+
+  if (is.null(date) && r_ver == "latest") {
+    stop("'latest' was deprecated in favour of latest-upstream as of version 0.14.0.")
+  }
+
   if (
     !(message_type %in% c("simple", "quiet")) &&
       r_ver %in% c("bleeding_edge", "frozen_edge")
@@ -176,27 +197,6 @@ rix <- function(r_ver = "latest",
 `r_ver`. Please read the vignette
 https://docs.ropensci.org/rix/articles/z-bleeding_edge.html
 before continuing."
-    )
-  }
-
-  if (
-    message_type != "quiet" && r_ver %in% available_r() &&
-      r_ver != "latest" && r_ver <= "4.1.1"
-  ) {
-    warning(
-      "You are generating an expression for an older version of R.\n",
-      "To use this environment, you should directly use `nix-shell` and not ",
-      "try to build it first using `nix-build`."
-    )
-  }
-
-  if (message_type != "quiet" && r_ver == "4.4.0") {
-    warning(
-      paste0(
-        "You chose '4.4.0' as the R version, however this version is not ",
-        "available in nixpkgs. The generated expression will thus install ",
-        "R version 4.4.1."
-      )
     )
   }
 
@@ -251,7 +251,7 @@ for more details."
   # Find url to use
   # In case of bleeding or frozen edge, the rstats-on-nix/nixpkgs
   # fork is used. Otherwise, upstream NixOS/nixpkgs
-  nix_repo <- make_nixpkgs_url(r_ver)
+  nix_repo <- make_nixpkgs_url(r_ver, date)
 
   rix_call <- match.call()
 
