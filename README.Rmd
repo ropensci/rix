@@ -124,7 +124,10 @@ rix(
 
 If you're already familiar with Nix and `{rix}`, install Nix using the
 [Determinate Systems
-installer](https://determinate.systems/posts/determinate-nix-installer):
+installer](https://determinate.systems/posts/determinate-nix-installer): (if
+you're using WSL, do check out the [detailed installation
+instructions](https://docs.ropensci.org/rix/articles/b1-setting-up-and-using-rix-on-linux-and-windows.html#windows-pre-requisites)
+though):
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install

@@ -1,5 +1,5 @@
 ---
-title: "b1 - Setting up and using rix on Linux and Windows"
+title: "b1 - Setting up and using Nix and rix on Linux and Windows"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{b1-setting-up-and-using-rix-on-linux-and-windows}
@@ -36,6 +36,12 @@ don't have Nix installed, which means you can generate Nix expressions, you
 just can't build them. So if you can’t install Nix on your system, but have 
 R already installed, you can skip to the last section of this vignette to 
 simply install the `{rix}` package.
+
+## Why rix *and* Nix?
+
+You don't have to install Nix to use `{rix}`: you can generate valid Nix
+expressions using `{rix}` even on a system where Nix isn't present. However, this
+means that you won't be able to build these expressions on that system.
 
 ## Installing Nix
 
@@ -101,14 +107,36 @@ have decided not to activate systemd, then you have to append `--init none`
 to the command. You can find more details about this on [The Determinate Nix
 Installer page](https://github.com/DeterminateSystems/nix-installer)):
 
-
 ```{sh parsermd-chunk-1, eval = FALSE}
 curl --proto '=https' --tlsv1.2 -sSf \
     -L https://install.determinate.systems/nix | \
      sh -s -- install
 ```
 
-Once you have Nix installed, you can build the expressions you generate with `{rix}`!
+Then, install the `cachix` client and configure our `rstats-on-nix` cache: this
+will install binary versions of many R packages which will speed up the building
+process of environments:
+
+```bash
+nix-env -iA cachix -f https://cachix.org/api/v1/install
+```
+
+then use the cache:
+
+```bash
+cachix use rstats-on-nix
+```
+
+You only need to do this once per machine you want to use `{rix}` on. Many thanks
+to [Cachix](https://www.cachix.org/) for sponsoring the `rstats-on-nix` cache!
+
+`{rix}` also includes a function called `setup_cachix()` which will configure
+the cache but it is recommended to use the `cachix` client instead. This is
+because `setup_cachix()` will not edit the files that require admin/root
+privileges and only edit the user-level files. This may not be enough depending
+on how you installed Nix. Using the `cachix` client takes care of everything.
+Use `setup_cachix()` when building a Docker image or if you somehow mess up
+the configuration file (which should be located in `~/.config/nix.conf`).
 
 On Linux, once Nix is installed, all the software that will be installed through
 Nix will be saved to the `/nix` directory on the root partition. It is common
@@ -208,3 +236,10 @@ You can then use the `{rix}` package to generate expressions. Consult the next
 vignette `vignette("c-using-rix-to-build-project-specific-environments")` to
 learn more.
 
+## Other "Nix"es
+
+There are several implementations of the Nix package manager that you might want
+to try if you're feeling adventurous... for now, we recommend to stick with Nix.
+
+You can give [Lix](https://lix.systems/install/) a try, or
+[Tvix](https://tvix.dev/).
