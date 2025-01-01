@@ -40,10 +40,10 @@ packages. Building these environments could potentially take quite long, because
 these packages need to be built from source on your computer.
 
 This vignette will explain how you can cut down on building times by building
-the environment once, and then cache it, so you don’t need to rebuild it on new
-machines. But before rolling out your own cache, try using ours as explained in
-`vignette("z-bleeding_edge")`, and if our cache didn’t cover your needs, set up
-your own. This vignette explains how.
+the environment once, and then caching it, so you don't need to rebuild it on
+new machines. But before rolling out your own cache, try using ours as explained
+in `vignette("z-bleeding_edge")`, and if our cache didn't cover your needs, set
+up your own. This vignette explains how.
 
 ## Using Github Actions to build the environment
 

@@ -45,23 +45,25 @@ connection is.
 As explained in the introduction, the *rPackages* set on `nixpkgs` gets updated
 shortly after a new release of R. The process involves first updating the
 package definitions found
-[here](https://github.com/NixOS/nixpkgs/tree/nixos-unstable/pkgs/development/r-modules),
+[here](https://github.com/NixOS/nixpkgs/tree/master/pkgs/development/r-modules),
 and then building the whole tree on a CI platform called *Hydra*. Build failures
 then get fixed by volunteers (to learn how you can contribute, read the
 `vignette("z-contributing_to_nixpkgs")`). After the most important packages have
 been fixed, the whole rPackages set gets updated and made available through
 `nixpkgs` master branch.
 
-Essentially this means that if you start a project with `{rix}` using `"latest-upstream"`
-as the `r_ver` just after the rPackages set got updated, this project will use
-very fresh packages. But if instead you start a project just before an R
-release, then the environment will be using older packages. In practice this
-rarely matters, unless you absolutely need a very recent version of a specific
-package because you need a specific feature, or if you need an environment with
-bleeding edge packages for development. For cases like this, we provide the
-`r_ver = "bleeding_edge"` and `r_ver = "frozen_edge"` options that makes it
-possible to use the most recent packages for your environment, but at a cost.
-You must be aware of this cost which we detail in the next section.
+Essentially this means that if you start a project with `{rix}` using
+`"latest-upstream"` as the `r_ver` just after the rPackages set got updated,
+this project will use very fresh packages. But if instead you start a project
+just before an R release, then the environment will be using older packages. In
+practice this rarely matters, unless you absolutely need a very recent version
+of a specific package because you need a specific feature, or if you need an
+environment with bleeding edge packages for development. For cases like this, we
+provide the `r_ver = "bleeding_edge"` and `r_ver = "frozen_edge"` options as
+well as `r_ver = "bioc_devel"` (if you also need development versions of
+Bioconductor as well) that makes it possible to use the most recent packages for
+your environment, but at a cost. You must be aware of this cost which we detail
+in the next section.
 
 ## Using bleeding and frozen edge package for your environments
 
@@ -70,20 +72,27 @@ Nix, running `install.packages(pkg)` will install the latest version of the
 `{pkg}` package available from CRAN (unless you changed the default repository
 url). With Nix, packages do not get downloaded from CRAN but for the `nixpkgs`
 repository and they may be outdated as explained above. If you require bleeding
-edge packages, use the `"bleeding_edge"` option to `r_ver`. This will **NOT**
-download packages from the official `nixpkgs` repository anymore, but from a
-fork that we maintain that you can find
-[here](https://github.com/rstats-on-nix/nixpkgs/tree/r-daily). This fork gets
+edge packages, use:
+
+- `"bleeding_edge"` for the very latest packages as available currently on CRAN
+  and Bioconductor (there could be a slight delay of some hours though): be
+  aware that building this expression will always result in a different,
+  updated environment. As such, `"bleeding_edge"` is ideal for running tests
+  against the current state of CRAN or Bioconductor on CI for example;
+- `"frozen_edge"`, which is the same as `"bleeding_edge"`, but with a pinned
+  revision: in other words, building this expression will always result in the
+  same environment.
+- `"bioc_devel"`: the same as `"bleeding_edge"` but also with added development
+  versions of Bioconductor packages instead of the latest release. Building this
+  expression will also always result in a different, updated environment.
+
+Just as when you provide a date or an R version to `rix()`, using these options
+will point to our `rstats-on-nix` fork of
+[Nixpkgs](https://github.com/rstats-on-nix/nixpkgs/tree/r-daily). This fork gets
 updated every 12 hours with the latest commits from both the `nixpkgs`
 repository and CRAN. This means that environments generated using this fork will
 contain bleeding packages for both the CRAN (and Bioconductor) packages as well
-as system-level dependencies. Also, be aware that this will generate an
-expression that is **NOT** reproducible! Each time you will rebuild the
-environment generated using the `"bleeding_edge"` option, you will get exactly
-that: an environment with bleeding edge packages at build time. If you want
-instead to have bleeding edge packages at the time you generate the expression,
-but then want reproducibility (in other words, building should always result in
-the same environment), then use the `"frozen_edge"` option instead.
+as system-level dependencies.
 
 In any case, whatever option you choose, using them comes at a cost of which you
 must be aware.
@@ -93,12 +102,12 @@ be built by *Hydra* yet. *Hydra* periodically builds packages and these get
 cached. So if you’re using Nix, pre-compiled binaries get used instead of being
 built from source. This is not the case if you use our fork, **unless** you also
 use the cache that we provide, courtesy of
-[cachix.org](https://app.cachix.org/cache/rstats-on-nix#pull). Cachix provides a
-cache for your own projects and works seamlessly with the official Nix cache.
-However, we are limited in space, and cannot possible cache all the CRAN
+[cachix.org](https://app.cachix.org/cache/rstats-on-nix#pull). However, we are
+limited in space, and cannot possible cache all the CRAN and Bioconductor
 packages. So only the most popular packages get built and cached, and hopefully
 the packages you need are part of this limited set. To use the cache, run the
-following commands on your computer. First, install the Cachix client:
+following commands on your computer. First, install the Cachix client (if you
+followed these instructions already when you set up `{rix}` you can skip them):
 
 ```
 nix-env -iA cachix -f https://cachix.org/api/v1/install
@@ -121,14 +130,10 @@ When building an environment, if you see the following message:
 warning: ignoring the client-specified setting 'trusted-substituters', because it is a restricted setting and you are not a trusted user
 ```
 
-then this means that the cache was not configured properly. Try:
-
-```
-cachix use rstats-on-nix
-```
-
-again, and check that the `/etc/nix/nix.conf` file has a line that looks like
-`trusted-users = root YOUR_USERNAME`. If not, add it using admin/root privileges.
+then this means that the cache was not configured properly. Try `cachix use
+rstats-on-nix` again, and check that the `/etc/nix/nix.conf` file has a line
+that looks like `trusted-users = root YOUR_USERNAME`. If not, add it using
+admin/root privileges.
 
 ## Making your own cache
 
