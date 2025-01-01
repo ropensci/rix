@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.14.1 (2025-01-01)
+
+- `rix()`: it is now possible to generate expressions pointing to the development
+  version of Bioconductor by using `rix(r_ver = "bioc_devel")`.
+
 # rix 0.14.0 (2024-12-31)
 
 - This is a major release of `{rix}`:

@@ -572,3 +572,49 @@ testthat::test_that("rix(), warning message if rix_init() already called", {
     regexp = "You may"
   )
 })
+
+
+testthat::test_that("rix(), bioc_devel", {
+  os_type <- Sys.info()["sysname"]
+  skip_if(os_type == "Windows")
+
+  tmpdir <- tempdir()
+
+  path_default_nix <- paste0(
+    tmpdir, paste0(sample(letters, 5), collapse = "")
+  )
+  dir.create(path_default_nix)
+  path_default_nix <- normalizePath(path_default_nix)
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+
+  save_default_nix_test <- function(ide, path_default_nix) {
+    # This will generate the warning to read the vignette for bioc_devel
+    suppressWarnings(
+      rix(
+        r_ver = "bioc_devel",
+        r_pkgs = "S4Vectors",
+        ide = ide,
+        project_path = path_default_nix,
+        overwrite = TRUE,
+        message_type = "quiet",
+        shell_hook = NULL
+      )
+    )
+
+    file.path(path_default_nix, "default.nix")
+  }
+
+  testthat::announce_snapshot_file("rix/bioc_devel_default.nix")
+
+  testthat::expect_snapshot_file(
+    path = save_default_nix_test(ide = "other", path_default_nix),
+    name = "bioc_devel_default.nix",
+  )
+})
