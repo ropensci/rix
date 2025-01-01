@@ -138,7 +138,8 @@
 #'   same environment. `"bioc_devel"` is the same as `"bleeding_edge"`, but also
 #'   adds the development version of Bioconductor. We highly recommend you read
 #'   the vignette titled
-#'   "z - Advanced topic: Understanding the rPackages set release cycle and using bleeding edge packages".
+#'   "z - Advanced topic: Understanding the rPackages set release cycle
+#'    and using bleeding edge packages".
 #' @export
 #' @examples
 #' \dontrun{
