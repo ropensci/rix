@@ -23,7 +23,7 @@ library(rix)
 It is important to understand the release cycle of the rPackages set and what
 steps you should take if you need bleeding edge packages. R packages on
 `nixpkgs` tend to get updated alongside a new release of R, and the reason is to
-ensure a certain level of quality. The vast majority of CRAN (and BioConductor)
+ensure a certain level of quality. The vast majority of CRAN (and Bioconductor)
 packages are made available through `nixpkgs` in a fully automated way. But some
 packages do require some manual intervention to work on Nix, and we only know
 this if we try to build these packages, but building packages requires quite a
@@ -76,7 +76,7 @@ fork that we maintain that you can find
 [here](https://github.com/rstats-on-nix/nixpkgs/tree/r-daily). This fork gets
 updated every 12 hours with the latest commits from both the `nixpkgs`
 repository and CRAN. This means that environments generated using this fork will
-contain bleeding packages for both the CRAN (and BioConductor) packages as well
+contain bleeding packages for both the CRAN (and Bioconductor) packages as well
 as system-level dependencies. Also, be aware that this will generate an
 expression that is **NOT** reproducible! Each time you will rebuild the
 environment generated using the `"bleeding_edge"` option, you will get exactly

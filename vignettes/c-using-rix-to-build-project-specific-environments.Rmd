@@ -31,10 +31,12 @@ IDE (there will be more discussion on editors in the vignette
 With the `rix::rix()` function, you can easily generate the right `default.nix`
 file. You need to provide the following inputs to `rix()`:
 
-- `r_ver`: the version of R required. Use "latest-upstream" for the latest version, and use `available_r()` to check which versions are available;
-- `date`: instead of `r_ver`, use `date` to specify a date. This date corresponds to a CRAN
-   snapshot of that day. Current R versions and latest release of BioConductor at that date
-   are also provided. Check available dates using `available_dates()`;
+- `r_ver`: the version of R required. Use `"latest-upstream"` for the latest
+  version, and use `available_r()` to check which versions are available;
+- `date`: instead of `r_ver`, use `date` to specify a date. This date
+   corresponds to a CRAN snapshot of that day. Current R versions and latest
+   release of Bioconductor at that date are also provided. Check available dates
+   using `available_dates()`;
 - `r_pkgs`: the required R packages. For example "dplyr" (more on this in the
   vignette `vignette("d1-installing-r-packages-in-a-nix-environment")`);
 - `system_pkgs`: the required system packages, if needed. For example "quarto",
@@ -47,7 +49,6 @@ file. You need to provide the following inputs to `rix()`:
 - `path`: the path where to save the `default.nix` file.
 - `overwrite`: whether to overwrite the `default.nix` file or not.
 - `print`: whether to print the `default.nix` file to the console or not.
-
 
 Run the following command to generate a `default.nix` file:
 
@@ -253,7 +254,7 @@ package from Github or from the CRAN archives. Read the vignette
 `vignette("d1-installing-r-packages-in-a-nix-environment")` to know more about
 this.
 
-`available_df()` provides an overview of available R and BioConductor releases,
+`available_df()` provides an overview of available R and Bioconductor releases,
 and their compatibility with different operating systems; in short, on Linux
 (including WSL on Windows), every available R version or date should work, while
 for macOS, every available date will likely work on Intel Macs, while only R

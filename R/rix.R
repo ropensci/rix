@@ -135,9 +135,10 @@
 #'   `nix-build` that environment will be up-to-date. With `"frozen_edge`" that
 #'   environment will be up-to-date on the date that the `default.nix` will be
 #'   generated, and then each subsequent call to `nix-build` will result in the
-#'   same environment. We highly recommend you read the vignette titled
-#'   "z - Advanced topic: Understanding the rPackages set release cycle and
-#'   using bleeding edge packages".
+#'   same environment. `"bioc_devel"` is the same as `"bleeding_edge"`, but also
+#'   adds the development version of Bioconductor. We highly recommend you read
+#'   the vignette titled
+#'   "z - Advanced topic: Understanding the rPackages set release cycle and using bleeding edge packages".
 #' @export
 #' @examples
 #' \dontrun{
@@ -190,10 +191,10 @@ rix <- function(r_ver = NULL,
 
   if (
     !(message_type %in% c("simple", "quiet")) &&
-      r_ver %in% c("bleeding_edge", "frozen_edge")
+      r_ver %in% c("bioc_devel", "bleeding_edge", "frozen_edge")
   ) {
     warning(
-      "You chose 'bleeding_edge' or 'frozen_edge' as the value for
+      "You chose 'bioc_devel', 'bleeding_edge' or 'frozen_edge' as the value for
 `r_ver`. Please read the vignette
 https://docs.ropensci.org/rix/articles/z-bleeding_edge.html
 before continuing."
@@ -249,7 +250,7 @@ for more details."
   # nolint end
 
   # Find url to use
-  # In case of bleeding or frozen edge, the rstats-on-nix/nixpkgs
+  # In all cases but 'latest-upstream', the rstats-on-nix/nixpkgs
   # fork is used. Otherwise, upstream NixOS/nixpkgs
   nix_repo <- make_nixpkgs_url(r_ver, date)
 

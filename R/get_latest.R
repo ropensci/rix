@@ -18,6 +18,7 @@ get_latest <- function(r_version) {
     return(r_version)
   } else if (
     !(r_version %in% c(
+      "bioc_devel",
       "frozen_edge",
       "bleeding_edge",
       "latest-upstream"
@@ -26,12 +27,13 @@ get_latest <- function(r_version) {
     stop(
       "The provided R version is too recent,\nand not yet included in `nixpkgs`.\n",
       "You can list available versions using `available_r()`.\n",
+      "You can also use a date, see `available_dates()`.\n",
       "You can also directly provide a commit, but you need \n",
       "to make sure it points to the right repo used by `rix()`.\n",
-      "You can also use 'bleeding_edge' and 'frozen_edge'."
+      "You can also use 'bioc_devel', 'bleeding_edge' and 'frozen_edge'."
     )
   } else if (
-    !(r_version %in% c("bleeding_edge", "frozen_edge", available_r()))
+    !(r_version %in% c("bioc_devel", "bleeding_edge", "frozen_edge", available_r()))
   ) {
     stop(
       "The provided R version is likely wrong.\nPlease check that you ",
@@ -44,6 +46,8 @@ get_latest <- function(r_version) {
     stop("ERROR! You don't seem to be connected to the internet.")
   } else if (r_version == "bleeding_edge") {
     latest_commit <- "refs/heads/r-daily"
+  } else if (r_version == "bioc_devel") {
+    latest_commit <- "refs/heads/r-bioc-devel"
   } else {
     latest_commit <- get_right_commit(r_version)
   }
@@ -58,7 +62,7 @@ get_right_commit <- function(r_version) {
     api_url <- "https://api.github.com/repos/rstats-on-nix/nixpkgs/commits?sha=r-daily"
   } else if (
     r_version %in% Filter(function(x) `!=`(x, "latest-upstream"), available_r())
-  ) { # all but latest
+  ) { # all but latest-upstream
     # If a user provides an R version, use most recent date for that version
     return(get_date_from_version(r_version))
   } else {

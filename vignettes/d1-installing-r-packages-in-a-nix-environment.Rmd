@@ -504,7 +504,7 @@ declared, so installing old packages should not be an issue. However, it can
 happen that one particular package that you want to install may not build. This
 can happen because, even though we spend a lot of time making sure R packages
 work flawlessly with Nix, there are many R packages (almost 30'000 between CRAN
-and BioConductor) and there's not many of us (R contributors for Nix). Should
+and Bioconductor) and there's not many of us (R contributors for Nix). Should
 you have trouble installing a package, feel free to open an issue and we'll do
 our best to fix it!
 
