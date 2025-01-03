@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.14.1 (2025-01-01)
+
+- `rix()`: it is now possible to generate expressions pointing to the development
+  version of Bioconductor by using `rix(r_ver = "bioc-devel")`.
+
 # rix 0.14.0 (2024-12-31)
 
 - This is a major release of `{rix}`:
@@ -230,7 +235,7 @@
 
 # rix 0.7.0 (2024-05-21)
 
-- Added the possibility to create "bleeding_edge" and "frozen_edge" environments
+- Added the possibility to create "bleeding-edge" and "frozen-edge" environments
 - Added the possibility to use *radian* as the environment's console (courtesy of [kupac](https://github.com/ropensci/rix/pull/161)) and *RStudio server*
 - Added `ga_cachix()`, a function to create a GA workflow file that builds and pushes an environment to a Cachix cache
 

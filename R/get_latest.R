@@ -18,32 +18,46 @@ get_latest <- function(r_version) {
     return(r_version)
   } else if (
     !(r_version %in% c(
-      "frozen_edge",
-      "bleeding_edge",
+      "bioc-devel",
+      "r-devel-bioc-devel",
+      "r-devel",
+      "frozen-edge",
+      "bleeding-edge",
       "latest-upstream"
     )) && all(r_version > Filter(function(x) ("latest-upstream" != x), available_r()))
   ) {
     stop(
       "The provided R version is too recent,\nand not yet included in `nixpkgs`.\n",
       "You can list available versions using `available_r()`.\n",
+      "You can also use a date, see `available_dates()`.\n",
       "You can also directly provide a commit, but you need \n",
       "to make sure it points to the right repo used by `rix()`.\n",
-      "You can also use 'bleeding_edge' and 'frozen_edge'."
+      "You can also use 'r-devel', 'r-devel-bioc-devel', bioc-devel'\n",
+      "'bleeding-edge' and 'frozen-edge'."
     )
   } else if (
-    !(r_version %in% c("bleeding_edge", "frozen_edge", available_r()))
-  ) {
+           !(r_version %in% c("r-devel-bioc-devel", "r-devel", "bioc-devel",
+                              "bleeding-edge", "frozen-edge", available_r()))
+         ) {
     stop(
-      "The provided R version is likely wrong.\nPlease check that you ",
-      "provided a correct R version.\nYou can list available versions using ",
-      "`available_df()`.\nYou can also directly provide a commit, but you need \n",
-      "to make sure it points to the right repo used by `rix()`.\nYou can ",
-      "also use 'bleeding_edge' and 'frozen_edge'."
+      "The provided R version is too recent,\nand not yet included in `nixpkgs`.\n",
+      "You can list available versions using `available_r()`.\n",
+      "You can also use a date, see `available_dates()`.\n",
+      "You can also directly provide a commit, but you need \n",
+      "to make sure it points to the right repo used by `rix()`.\n",
+      "You can also use 'r-devel', 'r-devel-bioc-devel', bioc-devel'\n",
+      "'bleeding-edge' and 'frozen-edge'."
     )
   } else if (!is_online) {
     stop("ERROR! You don't seem to be connected to the internet.")
-  } else if (r_version == "bleeding_edge") {
+  } else if (r_version == "bleeding-edge") {
     latest_commit <- "refs/heads/r-daily"
+  } else if (r_version == "bioc-devel") {
+    latest_commit <- "refs/heads/r-bioc-devel"
+  } else if (r_version == "r-devel") {
+    latest_commit <- "refs/heads/r-devel"
+  } else if (r_version == "r-devel-bioc-devel") {
+    latest_commit <- "refs/heads/r-devel-bioc-devel"
   } else {
     latest_commit <- get_right_commit(r_version)
   }
@@ -53,12 +67,12 @@ get_latest <- function(r_version) {
 
 #' @noRd
 get_right_commit <- function(r_version) {
-  if (r_version == "frozen_edge") {
+  if (r_version == "frozen-edge") {
     # nolint next: line_length_linter
     api_url <- "https://api.github.com/repos/rstats-on-nix/nixpkgs/commits?sha=r-daily"
   } else if (
     r_version %in% Filter(function(x) `!=`(x, "latest-upstream"), available_r())
-  ) { # all but latest
+  ) { # all but latest-upstream
     # If a user provides an R version, use most recent date for that version
     return(get_date_from_version(r_version))
   } else {

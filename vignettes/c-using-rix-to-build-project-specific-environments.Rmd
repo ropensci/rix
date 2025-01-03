@@ -31,10 +31,12 @@ IDE (there will be more discussion on editors in the vignette
 With the `rix::rix()` function, you can easily generate the right `default.nix`
 file. You need to provide the following inputs to `rix()`:
 
-- `r_ver`: the version of R required. Use "latest-upstream" for the latest version, and use `available_r()` to check which versions are available;
-- `date`: instead of `r_ver`, use `date` to specify a date. This date corresponds to a CRAN
-   snapshot of that day. Current R versions and latest release of BioConductor at that date
-   are also provided. Check available dates using `available_dates()`;
+- `r_ver`: the version of R required. Use `"latest-upstream"` for the latest
+  version, and use `available_r()` to check which versions are available;
+- `date`: instead of `r_ver`, use `date` to specify a date. This date
+   corresponds to a CRAN snapshot of that day. Current R versions and latest
+   release of Bioconductor at that date are also provided. Check available dates
+   using `available_dates()`;
 - `r_pkgs`: the required R packages. For example "dplyr" (more on this in the
   vignette `vignette("d1-installing-r-packages-in-a-nix-environment")`);
 - `system_pkgs`: the required system packages, if needed. For example "quarto",
@@ -47,7 +49,6 @@ file. You need to provide the following inputs to `rix()`:
 - `path`: the path where to save the `default.nix` file.
 - `overwrite`: whether to overwrite the `default.nix` file or not.
 - `print`: whether to print the `default.nix` file to the console or not.
-
 
 Run the following command to generate a `default.nix` file:
 
@@ -125,6 +126,43 @@ it from this environment and VS Code will use this specific R version library of
 packages. We will explore this in greater detail in the vignette
 `vignette("e-interactive-use")`.
 
+## Which `r_ver` should you choose?
+
+There are several options for `r_ver` and each have a specific purpose. The
+table below explains this:
+
+|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
+| **r_ver**              | **Intended use**                           | **State of R**          | **State of CRAN**          | **State of Bioconductor**          | **State of other packages in**          |
+|                        |                                            | **version**             | **packages**               | **packages**                       | **Nixpkgs**                             |
+|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
+| `"latest-upstream"`    | Start new project and versions             | Current or previous     | Outdated (up to 6 months)  | Outdated (up to 6 months)          | Current at time of generation           |
+|                        | don’t matter                               |                         |                            |                                    |                                         |
+|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
+| `"4.4.2"` (or other)   | Reproducing old project or starting a new  | Same as in `r_ver`      | Outdated (up to 2 months   | Outdated (up to 2 months           | Potentially outdated (up to 12 months)  |
+|                        | project where versions don’t matter        |                         | if using latest release)   | if using latest release)           |                                         |
+|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
+| `"2024-12-14"` (date)  | Reproducing old project or starting a new  | Current at that date    | Current at that date       | Current at that date               | Potentially outdated (up to 12 months)  |
+|                        | project using the most recent date         |                         |                            |                                    |                                         |
+|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
+| `"bleeding-edge"`      | To develop against the latest              | Always current          | Always current             | Always current                     | Always current                          |
+|                        | release of CRAN                            |                         |                            |                                    |                                         |
+|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
+| `"frozen-edge"`        | To develop against the latest release of   | Current at time of      | Current at time of         | Current at time of                 | Current at time of generation           |
+|                        | CRAN, but manually manage updates          | generation              | generation                 | generation                         |                                         |
+|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
+| `"r-devel"`            | To develop/test against the development    | Development version     | Always current             | Always current                     | Always current                          |
+|                        | version of R                               |                         |                            |                                    |                                         |
+|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
+| `"r-devel-bioc-devel"` | To develop/test against the development    | Development version     | Always current             | Development version                | Always current                          |
+|                        | version of R and Bioconductor              |                         |                            |                                    |                                         |
+|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
+| `"bioc-devel"`         | To develop/test against the development    | Always current          | Always current             | Development version                | Always current                          |
+|                        | version of Bioconductor                    |                         |                            |                                    |                                         |
+|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
+
+If you want to benefit from relatively fresh packages and have a stable
+environment for production purposes, using `"latest-upstream"` or the most
+recent available date for `r_ver` is probably your best option.
 
 ## Running old projects with {rix}
 
@@ -253,7 +291,7 @@ package from Github or from the CRAN archives. Read the vignette
 `vignette("d1-installing-r-packages-in-a-nix-environment")` to know more about
 this.
 
-`available_df()` provides an overview of available R and BioConductor releases,
+`available_df()` provides an overview of available R and Bioconductor releases,
 and their compatibility with different operating systems; in short, on Linux
 (including WSL on Windows), every available R version or date should work, while
 for macOS, every available date will likely work on Intel Macs, while only R

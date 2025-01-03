@@ -302,7 +302,7 @@ testthat::test_that("rix(), date working", {
 })
 
 
-testthat::test_that("rix(), bleeding_edge", {
+testthat::test_that("rix(), bleeding-edge", {
   os_type <- Sys.info()["sysname"]
   skip_if(os_type == "Windows")
 
@@ -323,10 +323,10 @@ testthat::test_that("rix(), bleeding_edge", {
   )
 
   save_default_nix_test <- function(ide, path_default_nix) {
-    # This will generate the warning to read the vignette for bleeding_edge
+    # This will generate the warning to read the vignette for bleeding-edge
     suppressWarnings(
       rix(
-        r_ver = "bleeding_edge",
+        r_ver = "bleeding-edge",
         r_pkgs = c("dplyr", "janitor", "AER@1.2-8", "quarto"),
         tex_pkgs = c("zmsmath", "amsmath"),
         git_pkgs = list(
@@ -352,15 +352,15 @@ testthat::test_that("rix(), bleeding_edge", {
     file.path(path_default_nix, "default.nix")
   }
 
-  testthat::announce_snapshot_file("rix/bleeding_edge_default.nix")
+  testthat::announce_snapshot_file("rix/bleeding-edge_default.nix")
 
   testthat::expect_snapshot_file(
     path = save_default_nix_test(ide = "other", path_default_nix),
-    name = "bleeding_edge_default.nix",
+    name = "bleeding-edge_default.nix",
   )
 })
 
-testthat::test_that("rix(), frozen_edge", {
+testthat::test_that("rix(), frozen-edge", {
   # because of the sed command, this will only work on Linux
   skip_if(Sys.info()["sysname"] != "Linux")
 
@@ -374,7 +374,7 @@ testthat::test_that("rix(), frozen_edge", {
   on.exit(
     {
       system(
-        paste0("sed -i 's/", frozen_edge_commit, "/REVISION/' _snaps/rix/frozen_edge_default.nix")
+        paste0("sed -i 's/", frozen_edge_commit, "/REVISION/' _snaps/rix/frozen-edge_default.nix")
       )
       unlink(path_default_nix, recursive = TRUE, force = FALSE)
       unlink(tmpdir, recursive = TRUE, force = FALSE)
@@ -383,10 +383,10 @@ testthat::test_that("rix(), frozen_edge", {
   )
 
   save_default_nix_test <- function(ide, path_default_nix) {
-    # This will generate the warning to read the vignette for bleeding_edge
+    # This will generate the warning to read the vignette for bleeding-edge
     suppressWarnings(
       rix(
-        r_ver = "frozen_edge",
+        r_ver = "frozen-edge",
         r_pkgs = c("dplyr", "janitor", "AER@1.2-8", "quarto"),
         tex_pkgs = c("amsmath"),
         git_pkgs = list(
@@ -412,24 +412,24 @@ testthat::test_that("rix(), frozen_edge", {
     file.path(path_default_nix, "/default.nix")
   }
 
-  testthat::announce_snapshot_file("rix/frozen_edge_default.nix")
+  testthat::announce_snapshot_file("rix/frozen-edge_default.nix")
 
-  frozen_edge_commit <- get_right_commit("frozen_edge")
+  frozen_edge_commit <- get_right_commit("frozen-edge")
 
   system(
-    paste0("sed -i 's/REVISION/", frozen_edge_commit, "/' _snaps/rix/frozen_edge_default.nix")
+    paste0("sed -i 's/REVISION/", frozen_edge_commit, "/' _snaps/rix/frozen-edge_default.nix")
   )
 
   testthat::expect_snapshot_file(
     path = save_default_nix_test(ide = "other", path_default_nix),
-    name = "frozen_edge_default.nix",
+    name = "frozen-edge_default.nix",
   )
 
 
   on.exit(
     {
       system(
-        paste0("sed -i 's/", frozen_edge_commit, "/REVISION/' _snaps/rix/frozen_edge_default.nix")
+        paste0("sed -i 's/", frozen_edge_commit, "/REVISION/' _snaps/rix/frozen-edge_default.nix")
       )
       unlink(path_default_nix, recursive = TRUE, force = FALSE)
     },
@@ -570,5 +570,141 @@ testthat::test_that("rix(), warning message if rix_init() already called", {
   testthat::expect_warning(
     save_default_nix_test(path_default_nix),
     regexp = "You may"
+  )
+})
+
+
+testthat::test_that("rix(), bioc-devel", {
+  os_type <- Sys.info()["sysname"]
+  skip_if(os_type == "Windows")
+
+  tmpdir <- tempdir()
+
+  path_default_nix <- paste0(
+    tmpdir, paste0(sample(letters, 5), collapse = "")
+  )
+  dir.create(path_default_nix)
+  path_default_nix <- normalizePath(path_default_nix)
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+
+  save_default_nix_test <- function(ide, path_default_nix) {
+    # This will generate the warning to read the vignette for bioc-devel
+    suppressWarnings(
+      rix(
+        r_ver = "bioc-devel",
+        r_pkgs = "S4Vectors",
+        ide = ide,
+        project_path = path_default_nix,
+        overwrite = TRUE,
+        message_type = "quiet",
+        shell_hook = NULL
+      )
+    )
+
+    file.path(path_default_nix, "default.nix")
+  }
+
+  testthat::announce_snapshot_file("rix/bioc-devel_default.nix")
+
+  testthat::expect_snapshot_file(
+    path = save_default_nix_test(ide = "other", path_default_nix),
+    name = "bioc-devel_default.nix",
+  )
+})
+
+testthat::test_that("rix(), r-devel", {
+  os_type <- Sys.info()["sysname"]
+  skip_if(os_type == "Windows")
+
+  tmpdir <- tempdir()
+
+  path_default_nix <- paste0(
+    tmpdir, paste0(sample(letters, 5), collapse = "")
+  )
+  dir.create(path_default_nix)
+  path_default_nix <- normalizePath(path_default_nix)
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+
+  save_default_nix_test <- function(ide, path_default_nix) {
+    # This will generate the warning to read the vignette for r-devel
+    suppressWarnings(
+      rix(
+        r_ver = "r-devel",
+        r_pkgs = "dplyr",
+        ide = ide,
+        project_path = path_default_nix,
+        overwrite = TRUE,
+        message_type = "quiet",
+        shell_hook = NULL
+      )
+    )
+
+    file.path(path_default_nix, "default.nix")
+  }
+
+  testthat::announce_snapshot_file("rix/r-devel_default.nix")
+
+  testthat::expect_snapshot_file(
+    path = save_default_nix_test(ide = "other", path_default_nix),
+    name = "r-devel_default.nix",
+  )
+})
+
+testthat::test_that("rix(), r-devel-bioc-devel", {
+  os_type <- Sys.info()["sysname"]
+  skip_if(os_type == "Windows")
+
+  tmpdir <- tempdir()
+
+  path_default_nix <- paste0(
+    tmpdir, paste0(sample(letters, 5), collapse = "")
+  )
+  dir.create(path_default_nix)
+  path_default_nix <- normalizePath(path_default_nix)
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+
+  save_default_nix_test <- function(ide, path_default_nix) {
+    # This will generate the warning to read the vignette for r-devel-bioc-devel
+    suppressWarnings(
+      rix(
+        r_ver = "r-devel-bioc-devel",
+        r_pkgs = "dplyr",
+        ide = ide,
+        project_path = path_default_nix,
+        overwrite = TRUE,
+        message_type = "quiet",
+        shell_hook = NULL
+      )
+    )
+
+    file.path(path_default_nix, "default.nix")
+  }
+
+  testthat::announce_snapshot_file("rix/r-devel-bioc-devel_default.nix")
+
+  testthat::expect_snapshot_file(
+    path = save_default_nix_test(ide = "other", path_default_nix),
+    name = "r-devel-bioc-devel_default.nix",
   )
 })
