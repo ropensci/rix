@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 library(rix)
 ```
 
-*We recommend you first read `vignette("z-bleeding_edge")` before this one.*
+*We recommend you first read `vignette("z-bleeding-edge")` before this one.*
 
 ## Introduction
 
@@ -34,15 +34,15 @@ instead of building it on your computer. This means that building an environment
 is just a matter of waiting for packages to download.
 
 However, in some cases, you might need to use packages that have not been
-pre-built and cached yet, for example if you use `rix(r_ver = "bleeding_edge")`
-or `rix(r_ver = "frozen_edge")` to generate environments with bleeding edge
+pre-built and cached yet, for example if you use `rix(r_ver = "bleeding-edge")`
+or `rix(r_ver = "frozen-edge")` to generate environments with bleeding edge
 packages. Building these environments could potentially take quite long, because
 these packages need to be built from source on your computer.
 
 This vignette will explain how you can cut down on building times by building
 the environment once, and then caching it, so you don't need to rebuild it on
 new machines. But before rolling out your own cache, try using ours as explained
-in `vignette("z-bleeding_edge")`, and if our cache didn't cover your needs, set
+in `vignette("z-bleeding-edge")`, and if our cache didn't cover your needs, set
 up your own. This vignette explains how.
 
 ## Using Github Actions to build the environment
@@ -59,7 +59,7 @@ which you version on Github:
 ```
 library(rix)
 
-rix(r_ver = "bleeding_edge",
+rix(r_ver = "bleeding-edge",
     r_pkgs = c("dplyr", "ggplot2"),
     system_pkgs = NULL,
     git_pkgs = NULL,

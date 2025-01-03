@@ -133,19 +133,19 @@ The table below illustrates this all the different types of environment you can 
 | `"2024-12-14"` (date)  | Reproducing old project or starting a new  | Current at that date    | Current at that date       | Current at that date               | Potentially outdated (up to 12 months)  |
 |                        | project using the most recent date         |                         |                            |                                    |                                         |
 |------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
-| `"bleeding_edge"`      | To develop against the latest              | Always current          | Always current             | Always current                     | Always current                          |
+| `"bleeding-edge"`      | To develop against the latest              | Always current          | Always current             | Always current                     | Always current                          |
 |                        | release of CRAN                            |                         |                            |                                    |                                         |
 |------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
-| `"frozen_edge"`        | To develop against the latest release of   | Current at time of      | Current at time of         | Current at time of                 | Current at time of generation           |
+| `"frozen-edge"`        | To develop against the latest release of   | Current at time of      | Current at time of         | Current at time of                 | Current at time of generation           |
 |                        | CRAN, but manually manage updates          | generation              | generation                 | generation                         |                                         |
 |------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
-| `"r_devel"`            | To develop/test against the development    | Development version     | Always current             | Always current                     | Always current                          |
+| `"r-devel"`            | To develop/test against the development    | Development version     | Always current             | Always current                     | Always current                          |
 |                        | version of R                               |                         |                            |                                    |                                         |
 |------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
-| `"r_devel_bioc_devel"` | To develop/test against the development    | Development version     | Always current             | Development version                | Always current                          |
+| `"r-devel-bioc-devel"` | To develop/test against the development    | Development version     | Always current             | Development version                | Always current                          |
 |                        | version of R and Bioconductor              |                         |                            |                                    |                                         |
 |------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
-| `"bioc_devel"`         | To develop/test against the development    | Always current          | Always current             | Development version                | Always current                          |
+| `"bioc-devel"`         | To develop/test against the development    | Always current          | Always current             | Development version                | Always current                          |
 |                        | version of Bioconductor                    |                         |                            |                                    |                                         |
 |------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
 

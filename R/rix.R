@@ -12,8 +12,8 @@
 #'   `nixpkgs` revision directly. For older versions of R, `nix-build` might
 #'   fail with an error stating 'this derivation is not meant to be built'. In
 #'   this case, simply drop into the shell with `nix-shell` instead of building
-#'   it first. It is also possible to provide either "bleeding_edge" or
-#'   "frozen_edge" if you need an environment with bleeding edge packages. Read
+#'   it first. It is also possible to provide either "bleeding-edge" or
+#'   "frozen-edge" if you need an environment with bleeding edge packages. Read
 #'   more in the "Details" section below.
 #' @param date Character. Instead of providing `r_ver`, it is also possible
 #'   to provide a date. This will build an environment containing R and R
@@ -124,24 +124,25 @@
 #'   list(LANG = "de_CH.UTF-8", <...>)` and the aforementioned locale variable
 #'   names.
 #'
-#'   It is possible to use `"bleeding_edge`" or `"frozen_edge`" as the value for
+#'   It is possible to use `"bleeding-edge`" or `"frozen-edge`" as the value for
 #'   the `r_ver` argument. This will create an environment with the very latest
-#'   R packages. `"bleeding_edge`" means that every time you will build the
+#'   R packages. `"bleeding-edge`" means that every time you will build the
 #'   environment, the packages will get updated. This is especially useful for
 #'   environments that need to be constantly updated, for example when
-#'   developing a package. In contrast, `"frozen_edge`" will create an
+#'   developing a package. In contrast, `"frozen-edge`" will create an
 #'   environment that will remain stable at build time. So if you create a
-#'   `default.nix` file using `"bleeding_edge`", each time you build it using
-#'   `nix-build` that environment will be up-to-date. With `"frozen_edge`" that
+#'   `default.nix` file using `"bleeding-edge`", each time you build it using
+#'   `nix-build` that environment will be up-to-date. With `"frozen-edge`" that
 #'   environment will be up-to-date on the date that the `default.nix` will be
 #'   generated, and then each subsequent call to `nix-build` will result in the
-#'   same environment. `"bioc_devel"` is the same as `"bleeding_edge"`, but also
-#'   adds the development version of Bioconductor. `"r_devel"` is the same as
+#'   same environment. `"bioc-devel"` is the same as `"bleeding-edge"`, but also
+#'   adds the development version of Bioconductor. `"r-devel"` is the same as
 #'   bleeding edge, but with the R development version instead of the latest
-#'   stable version and `"r_devel_bioc_devel"` is the same as `"r_devel"` but
+#'   stable version and `"r-devel-bioc-devel"` is the same as `"r-devel"` but
 #'   with Bioconductor on the development version. We highly recommend you read
 #'   the vignette titled
-#'   "z - Advanced topic: Understanding the rPackages set release cycle and using bleeding edge packages".
+#'   "z - Advanced topic: Understanding the rPackages set release cycle and
+#'   using bleeding edge packages".
 #' @export
 #' @examples
 #' \dontrun{
@@ -194,12 +195,12 @@ rix <- function(r_ver = NULL,
 
   if (
     !(message_type %in% c("simple", "quiet")) &&
-      r_ver %in% c("bleeding_edge", "frozen_edge", "r_devel", "bioc_devel", "r_devel_bioc_devel")
+      r_ver %in% c("bleeding-edge", "frozen-edge", "r-devel", "bioc-devel", "r-devel-bioc-devel")
   ) {
     warning(
-      "You chose 'bleeding_edge', 'frozen_edge', 'r_devel', 'bioc_devel' or 'r_devel_bioc_devel' as the value for
-`r_ver`. Please read the vignette
-https://docs.ropensci.org/rix/articles/z-bleeding_edge.html
+      "You chose 'bleeding-edge', 'frozen-edge', 'r-devel', 'bioc-devel' or 'r-devel-bioc-devel'
+as the value for `r_ver`. Please read the vignette
+https://docs.ropensci.org/rix/articles/z-bleeding-edge.html
 before continuing."
     )
   }

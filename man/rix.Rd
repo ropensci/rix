@@ -28,8 +28,8 @@ For reproducibility purposes, you can also provide a
 \code{nixpkgs} revision directly. For older versions of R, \code{nix-build} might
 fail with an error stating 'this derivation is not meant to be built'. In
 this case, simply drop into the shell with \code{nix-shell} instead of building
-it first. It is also possible to provide either "bleeding_edge" or
-"frozen_edge" if you need an environment with bleeding edge packages. Read
+it first. It is also possible to provide either "bleeding-edge" or
+"frozen-edge" if you need an environment with bleeding edge packages. Read
 more in the "Details" section below.}
 
 \item{date}{Character. Instead of providing \code{r_ver}, it is also possible
@@ -162,15 +162,15 @@ there are good reasons to not stick to the default, you can set your
 preferred locale variables via \verb{options(rix.nix_locale_variables = list(LANG = "de_CH.UTF-8", <...>)} and the aforementioned locale variable
 names.
 
-It is possible to use \verb{"bleeding_edge}" or \verb{"frozen_edge}" as the value for
+It is possible to use \verb{"bleeding-edge}" or \verb{"frozen-edge}" as the value for
 the \code{r_ver} argument. This will create an environment with the very latest
-R packages. \verb{"bleeding_edge}" means that every time you will build the
+R packages. \verb{"bleeding-edge}" means that every time you will build the
 environment, the packages will get updated. This is especially useful for
 environments that need to be constantly updated, for example when
-developing a package. In contrast, \verb{"frozen_edge}" will create an
+developing a package. In contrast, \verb{"frozen_edg}" will create an
 environment that will remain stable at build time. So if you create a
-\code{default.nix} file using \verb{"bleeding_edge}", each time you build it using
-\code{nix-build} that environment will be up-to-date. With \verb{"frozen_edge}" that
+\code{default.nix} file using \verb{"bleeding-edge}", each time you build it using
+\code{nix-build} that environment will be up-to-date. With \verb{"frozen-edge}" that
 environment will be up-to-date on the date that the \code{default.nix} will be
 generated, and then each subsequent call to \code{nix-build} will result in the
 same environment. We highly recommend you read the vignette titled

@@ -59,11 +59,11 @@ just before an R release, then the environment will be using older packages. In
 practice this rarely matters, unless you absolutely need a very recent version
 of a specific package because you need a specific feature, or if you need an
 environment with bleeding edge packages for development. For cases like this, we
-provide the `r_ver = "bleeding_edge"` and `r_ver = "frozen_edge"` options. If
+provide the `r_ver = "bleeding-edge"` and `r_ver = "frozen-edge"` options. If
 you need to test the current development version of R, you can use
-`r_ver = "r_devel"`, and if you need to test the current development version
-of Bioconductor use `r_ver = "bioc_devel"` and if you need both the development
-version of R and Bioconductor use `r_ver = "r_devel_bioc_devel"`. The table below
+`r_ver = "r-devel"`, and if you need to test the current development version
+of Bioconductor use `r_ver = "bioc-devel"` and if you need both the development
+version of R and Bioconductor use `r_ver = "r-devel-bioc-devel"`. The table below
 illustrates this more clearly:
 
 |------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
@@ -79,19 +79,19 @@ illustrates this more clearly:
 | `"2024-12-14"` (date)  | Reproducing old project or starting a new  | Current at that date    | Current at that date       | Current at that date               | Potentially outdated (up to 12 months)  |
 |                        | project using the most recent date         |                         |                            |                                    |                                         |
 |------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
-| `"bleeding_edge"`      | To develop against the latest              | Always current          | Always current             | Always current                     | Always current                          |
+| `"bleeding-edge"`      | To develop against the latest              | Always current          | Always current             | Always current                     | Always current                          |
 |                        | release of CRAN                            |                         |                            |                                    |                                         |
 |------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
-| `"frozen_edge"`        | To develop against the latest release of   | Current at time of      | Current at time of         | Current at time of                 | Current at time of generation           |
+| `"frozen-edge"`        | To develop against the latest release of   | Current at time of      | Current at time of         | Current at time of                 | Current at time of generation           |
 |                        | CRAN, but manually manage updates          | generation              | generation                 | generation                         |                                         |
 |------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
-| `"r_devel"`            | To develop/test against the development    | Development version     | Always current             | Always current                     | Always current                          |
+| `"r-devel"`            | To develop/test against the development    | Development version     | Always current             | Always current                     | Always current                          |
 |                        | version of R                               |                         |                            |                                    |                                         |
 |------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
-| `"r_devel_bioc_devel"` | To develop/test against the development    | Development version     | Always current             | Development version                | Always current                          |
+| `"r-devel-bioc-devel"` | To develop/test against the development    | Development version     | Always current             | Development version                | Always current                          |
 |                        | version of R and Bioconductor              |                         |                            |                                    |                                         |
 |------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
-| `"bioc_devel"`         | To develop/test against the development    | Always current          | Always current             | Development version                | Always current                          |
+| `"bioc-devel"`         | To develop/test against the development    | Always current          | Always current             | Development version                | Always current                          |
 |                        | version of Bioconductor                    |                         |                            |                                    |                                         |
 |------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
 
@@ -107,21 +107,21 @@ url). With Nix, packages do not get downloaded from CRAN but for the `nixpkgs`
 repository and they may be outdated as explained above. If you require bleeding
 edge packages, use:
 
-- `"bleeding_edge"` for the very latest packages as available currently on CRAN
+- `"bleeding-edge"` for the very latest packages as available currently on CRAN
   and Bioconductor (there could be a slight delay of some hours though): be
   aware that building this expression will always result in a different,
-  updated environment. As such, `"bleeding_edge"` is ideal for running tests
+  updated environment. As such, `"bleeding-edge"` is ideal for running tests
   against the current state of CRAN or Bioconductor on CI for example;
-- `"frozen_edge"`, which is the same as `"bleeding_edge"`, but with a pinned
+- `"frozen-edge"`, which is the same as `"bleeding-edge"`, but with a pinned
   revision: in other words, building this expression will always result in the
   same environment.
-- `"r_devel"`: the same as `"bleeding_edge"` but also with added development
+- `"r-devel"`: the same as `"bleeding-edge"` but also with added development
   version of R. Building this expression will also always result in a different,
   updated environment.
-- `"bioc_devel"`: the same as `"bleeding_edge"` but also with added development
+- `"bioc-devel"`: the same as `"bleeding-edge"` but also with added development
   versions of Bioconductor packages instead of the latest release. Building this
   expression will also always result in a different, updated environment.
-- `"r_devel_bioc_devel"`: the same as `"bioc_devel"` but also with added
+- `"r-devel-bioc-devel"`: the same as `"bioc-devel"` but also with added
   development version of R. Building this expression will also always result in
   a different, updated environment.
 
