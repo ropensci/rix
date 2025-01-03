@@ -4,25 +4,23 @@ let
   
   git_archive_pkgs = [
     (pkgs.rPackages.buildRPackage {
-      name = "lookup";
+      name = "housing";
       src = pkgs.fetchgit {
-        url = "https://github.com/jimhester/lookup/";
-        rev = "eba63db477dd2f20153b75e2949eb333a36cccfc";
-        sha256 = "sha256-arl7LVxL8xGUW3LhuDCSUjcfswX0rdofL/7v8Klw8FM=";
+        url = "https://github.com/rap4all/housing/";
+        rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";
+        sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";
       };
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) 
-          gh
-          memoise
-          Rcpp
-          codetools
-          crayon
-          rex
-          highlite
-          jsonlite
-          rstudioapi
-          withr
-          httr;
+          dplyr
+          ggplot2
+          janitor
+          purrr
+          readxl
+          rlang
+          rvest
+          stringr
+          tidyr;
       };
     })
    ];

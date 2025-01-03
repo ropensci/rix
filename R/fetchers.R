@@ -12,9 +12,13 @@ fetchgit <- function(git_pkg) {
 
   output <- get_sri_hash_deps(repo_url, commit)
   sri_hash <- output$sri_hash
-  imports <- output$deps
-  imports <- unlist(strsplit(imports, split = " "))
-  imports <- paste(c("", imports), collapse = "\n          ")
+  # If package has no remote dependencies
+  if(identical(output$deps$remotes, character(0))){
+    imports <- output$deps$imports
+    imports <- paste(c("", imports), collapse = "\n          ")
+  } else {
+    stop("not yet implemented!")
+  }
 
   sprintf(
     '
@@ -60,8 +64,7 @@ fetchzip <- function(archive_pkg, sri_hash = NULL) {
   if (is.null(sri_hash)) {
     output <- get_sri_hash_deps(repo_url, commit = NULL)
     sri_hash <- output$sri_hash
-    imports <- output$deps
-    imports <- unlist(strsplit(imports, split = " "))
+    imports <- output$deps$imports
     imports <- paste(c("", imports), collapse = "\n          ")
   } else {
     sri_hash <- sri_hash
@@ -105,7 +108,7 @@ remove_base <- function(list_imports) {
     list_imports
   )
 
-  paste(na.omit(imports_nobase), collapse = " ")
+  na.omit(imports_nobase)
 }
 
 
@@ -145,11 +148,25 @@ get_imports <- function(path) {
 
   columns_of_interest <- c("Depends", "Imports", "LinkingTo")
 
-  imports <- as.data.frame(read.dcf(desc_path))
+  imports_df <- as.data.frame(read.dcf(desc_path))
 
-  existing_columns <- intersect(columns_of_interest, colnames(imports))
+  existing_columns <- intersect(columns_of_interest, colnames(imports_df))
 
-  imports <- imports[, existing_columns, drop = FALSE]
+  imports <- imports_df[, existing_columns, drop = FALSE]
+
+  existing_remotes <- intersect("Remotes", colnames(imports_df))
+
+  if(!identical(existing_remotes, character(0))){
+    remotes <- imports_df[, existing_remotes, drop = FALSE]
+
+    # remotes are of the form username/packagename so we need
+    # to only keep packagename
+    remotes <- gsub("\n", "", x = unlist(strsplit(remotes$Remotes, ",")))
+
+    remotes <- sub(".*?/", "", remotes)
+  } else {
+    remotes <- character(0)
+  }
 
   if (!is.null(imports) && length(imports) > 0) {
     output <- unname(trimws(unlist(strsplit(unlist(imports), split = ","))))
@@ -165,7 +182,18 @@ get_imports <- function(path) {
 
   output <- remove_base(unique(output))
 
-  gsub("\\.", "_", output)
+  output <- gsub("\\.", "_", output)
+
+  # Remote packages are included in imports, so we need
+  # remove remotes from imports
+  output_imports <- setdiff(output, remotes)
+  output_remotes <- remotes
+
+  list(
+    "package" = imports_df$Package,
+    "imports" = output_imports,
+    "remotes" = output_remotes
+    )
 }
 
 
@@ -305,7 +333,7 @@ fetchpkgs <- function(git_pkgs, archive_pkgs) {
 #' "jimhester/highlite,\ngaborcsardi/gh,\nhadley/memoise"
 #' @return A list of lists to pass to rix(git_pkgs = ...)
 #' @noRd
-remotes2nix <- functions(remotes){
+remotes2nix <- function(remotes){
   # Input looks like
   # "jimhester/highlite,\ngaborcsardi/gh,\nhadley/memoise"
   remotes <- gsub("\n", "", x = unlist(strsplit(remotes, ",")))
@@ -314,8 +342,10 @@ remotes2nix <- functions(remotes){
   urls <- paste0("https://github.com/", remotes)
   commits <- rep("HEAD", length(remotes))
 
-  lapply(seq_along(pkgs_names), function(i) {
+  pkgs <- lapply(seq_along(pkgs_names), function(i) {
     list("package_name" = pkgs_names[i], "repo_url" = urls[i], "commit" = commits[i])
   })
+
+  list("remote_name" = )
 
 }
