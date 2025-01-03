@@ -167,13 +167,18 @@ the \code{r_ver} argument. This will create an environment with the very latest
 R packages. \verb{"bleeding-edge}" means that every time you will build the
 environment, the packages will get updated. This is especially useful for
 environments that need to be constantly updated, for example when
-developing a package. In contrast, \verb{"frozen_edg}" will create an
+developing a package. In contrast, \verb{"frozen-edge}" will create an
 environment that will remain stable at build time. So if you create a
 \code{default.nix} file using \verb{"bleeding-edge}", each time you build it using
 \code{nix-build} that environment will be up-to-date. With \verb{"frozen-edge}" that
 environment will be up-to-date on the date that the \code{default.nix} will be
 generated, and then each subsequent call to \code{nix-build} will result in the
-same environment. We highly recommend you read the vignette titled
+same environment. \code{"bioc-devel"} is the same as \code{"bleeding-edge"}, but also
+adds the development version of Bioconductor. \code{"r-devel"} is the same as
+bleeding edge, but with the R development version instead of the latest
+stable version and \code{"r-devel-bioc-devel"} is the same as \code{"r-devel"} but
+with Bioconductor on the development version. We highly recommend you read
+the vignette titled
 "z - Advanced topic: Understanding the rPackages set release cycle and
 using bleeding edge packages".
 }
