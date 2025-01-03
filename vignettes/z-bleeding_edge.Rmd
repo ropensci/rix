@@ -59,11 +59,44 @@ just before an R release, then the environment will be using older packages. In
 practice this rarely matters, unless you absolutely need a very recent version
 of a specific package because you need a specific feature, or if you need an
 environment with bleeding edge packages for development. For cases like this, we
-provide the `r_ver = "bleeding_edge"` and `r_ver = "frozen_edge"` options as
-well as `r_ver = "bioc_devel"` (if you also need development versions of
-Bioconductor as well) that makes it possible to use the most recent packages for
-your environment, but at a cost. You must be aware of this cost which we detail
-in the next section.
+provide the `r_ver = "bleeding_edge"` and `r_ver = "frozen_edge"` options. If
+you need to test the current development version of R, you can use
+`r_ver = "r_devel"`, and if you need to test the current development version
+of Bioconductor use `r_ver = "bioc_devel"` and if you need both the development
+version of R and Bioconductor use `r_ver = "r_devel_bioc_devel"`. The table below
+illustrates this more clearly:
+
+|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
+| **r_ver**              | **Intended use**                           | **State of R**          | **State of CRAN**          | **State of Bioconductor**          | **State of other packages in**          |
+|                        |                                            | **version**             | **packages**               | **packages**                       | **Nixpkgs**                             |
+|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
+| `"latest-upstream"`    | Start of new project where versions        | Current or previous     | Outdated (up to 6 months)  | Outdated (up to 6 months)          | Current at time of generation           |
+|                        | don’t matter                               |                         |                            |                                    |                                         |
+|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
+| `"4.4.2"` (or other)   | Reproducing old project or starting a new  | Same as in `r_ver`      | Outdated (up to 2 months   | Outdated (up to 2 months           | Potentially outdated (up to 12 months)  |
+|                        | project where versions don’t matter        |                         | if using latest release)   | if using latest release)           |                                         |
+|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
+| `"2024-12-14"` (date)  | Reproducing old project or starting a new  | Current at that date    | Current at that date       | Current at that date               | Potentially outdated (up to 12 months)  |
+|                        | project using the most recent date         |                         |                            |                                    |                                         |
+|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
+| `"bleeding_edge"`      | To develop against the latest              | Always current          | Always current             | Always current                     | Always current                          |
+|                        | release of CRAN                            |                         |                            |                                    |                                         |
+|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
+| `"frozen_edge"`        | To develop against the latest release of   | Current at time of      | Current at time of         | Current at time of                 | Current at time of generation           |
+|                        | CRAN, but manually manage updates          | generation              | generation                 | generation                         |                                         |
+|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
+| `"r_devel"`            | To develop/test against the development    | Development version     | Always current             | Always current                     | Always current                          |
+|                        | version of R                               |                         |                            |                                    |                                         |
+|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
+| `"r_devel_bioc_devel"` | To develop/test against the development    | Development version     | Always current             | Development version                | Always current                          |
+|                        | version of R and Bioconductor              |                         |                            |                                    |                                         |
+|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
+| `"bioc_devel"`         | To develop/test against the development    | Always current          | Always current             | Development version                | Always current                          |
+|                        | version of Bioconductor                    |                         |                            |                                    |                                         |
+|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
+
+If you want to benefit from relatively fresh packages and have a stable environment
+that for production purposes, using a date for `r_ver` is your best option.
 
 ## Using bleeding and frozen edge package for your environments
 
@@ -82,9 +115,15 @@ edge packages, use:
 - `"frozen_edge"`, which is the same as `"bleeding_edge"`, but with a pinned
   revision: in other words, building this expression will always result in the
   same environment.
+- `"r_devel"`: the same as `"bleeding_edge"` but also with added development
+  version of R. Building this expression will also always result in a different,
+  updated environment.
 - `"bioc_devel"`: the same as `"bleeding_edge"` but also with added development
   versions of Bioconductor packages instead of the latest release. Building this
   expression will also always result in a different, updated environment.
+- `"r_devel_bioc_devel"`: the same as `"bioc_devel"` but also with added
+  development version of R. Building this expression will also always result in
+  a different, updated environment.
 
 Just as when you provide a date or an R version to `rix()`, using these options
 will point to our `rstats-on-nix` fork of

@@ -136,10 +136,12 @@
 #'   environment will be up-to-date on the date that the `default.nix` will be
 #'   generated, and then each subsequent call to `nix-build` will result in the
 #'   same environment. `"bioc_devel"` is the same as `"bleeding_edge"`, but also
-#'   adds the development version of Bioconductor. We highly recommend you read
+#'   adds the development version of Bioconductor. `"r_devel"` is the same as
+#'   bleeding edge, but with the R development version instead of the latest
+#'   stable version and `"r_devel_bioc_devel"` is the same as `"r_devel"` but
+#'   with Bioconductor on the development version. We highly recommend you read
 #'   the vignette titled
-#'   "z - Advanced topic: Understanding the rPackages set release cycle
-#'    and using bleeding edge packages".
+#'   "z - Advanced topic: Understanding the rPackages set release cycle and using bleeding edge packages".
 #' @export
 #' @examples
 #' \dontrun{
@@ -192,10 +194,10 @@ rix <- function(r_ver = NULL,
 
   if (
     !(message_type %in% c("simple", "quiet")) &&
-      r_ver %in% c("bioc_devel", "bleeding_edge", "frozen_edge")
+      r_ver %in% c("bleeding_edge", "frozen_edge", "r_devel", "bioc_devel", "r_devel_bioc_devel")
   ) {
     warning(
-      "You chose 'bioc_devel', 'bleeding_edge' or 'frozen_edge' as the value for
+      "You chose 'bleeding_edge', 'frozen_edge', 'r_devel', 'bioc_devel' or 'r_devel_bioc_devel' as the value for
 `r_ver`. Please read the vignette
 https://docs.ropensci.org/rix/articles/z-bleeding_edge.html
 before continuing."
