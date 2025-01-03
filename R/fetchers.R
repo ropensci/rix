@@ -16,12 +16,15 @@ fetchgit <- function(git_pkg) {
   if(identical(output$deps$remotes, character(0))){
     imports <- output$deps$imports
     imports <- paste(c("", imports), collapse = "\n          ")
+
   } else {
     stop("not yet implemented!")
+    # call fetchgit recursively on remotes?
+    # need to merge fetchgits and fetchgit?
   }
 
   sprintf(
-    '
+      '
     (pkgs.rPackages.buildRPackage {
       name = \"%s\";
       src = pkgs.fetchgit {
@@ -34,12 +37,14 @@ fetchgit <- function(git_pkg) {
       };
     })
 ',
-    package_name,
-    repo_url,
-    commit,
-    sri_hash,
-    imports
-  )
+package_name,
+repo_url,
+commit,
+sri_hash,
+imports
+)
+
+
 }
 
 
@@ -158,14 +163,19 @@ get_imports <- function(path) {
 
   if(!identical(existing_remotes, character(0))){
     remotes <- imports_df[, existing_remotes, drop = FALSE]
-
     # remotes are of the form username/packagename so we need
     # to only keep packagename
     remotes <- gsub("\n", "", x = unlist(strsplit(remotes$Remotes, ",")))
-
-    remotes <- sub(".*?/", "", remotes)
+    remotes_pkgs_names <- sub(".*?/", "", remotes)
+    urls <- paste0("https://github.com/", remotes)
+    commits <- rep("HEAD", length(remotes))
+    remote_pkgs <- lapply(seq_along(remotes_pkgs_names), function(i) {
+      list("package_name" = remotes_pkgs_names[i],
+           "repo_url" = urls[i],
+           "commit" = commits[i])
+    })
   } else {
-    remotes <- character(0)
+    remote_pkgs <- character(0)
   }
 
   if (!is.null(imports) && length(imports) > 0) {
@@ -186,13 +196,12 @@ get_imports <- function(path) {
 
   # Remote packages are included in imports, so we need
   # remove remotes from imports
-  output_imports <- setdiff(output, remotes)
-  output_remotes <- remotes
+  output_imports <- setdiff(output, remotes_pkgs_names)
 
   list(
     "package" = imports_df$Package,
     "imports" = output_imports,
-    "remotes" = output_remotes
+    "remotes" = remote_pkgs
     )
 }
 
@@ -327,28 +336,4 @@ fetchpkgs <- function(git_pkgs, archive_pkgs) {
           collapse = "\n"
           )
   )
-}
-
-
-#' remotes2nix Generates a list to pass to rix(git_pkgs = ...) to generate a valid
-#' Nix expression from a REMOTES field in a DESCRIPTION file
-#' @param remotes String, output of read.dcf of the form
-#' "jimhester/highlite,\ngaborcsardi/gh,\nhadley/memoise"
-#' @return A list of lists to pass to rix(git_pkgs = ...)
-#' @noRd
-remotes2nix <- function(remotes){
-  # Input looks like
-  # "jimhester/highlite,\ngaborcsardi/gh,\nhadley/memoise"
-  remotes <- gsub("\n", "", x = unlist(strsplit(remotes, ",")))
-
-  pkgs_names <- sub(".*?/", "", remotes)
-  urls <- paste0("https://github.com/", remotes)
-  commits <- rep("HEAD", length(remotes))
-
-  pkgs <- lapply(seq_along(pkgs_names), function(i) {
-    list("package_name" = pkgs_names[i], "repo_url" = urls[i], "commit" = commits[i])
-  })
-
-  list("remote_name" = )
-
 }
