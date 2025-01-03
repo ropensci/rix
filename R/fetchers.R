@@ -320,10 +320,13 @@ fetchzips <- function(archive_pkgs) {
 #' from the CRAN archives.
 #' @noRd
 fetchpkgs <- function(git_pkgs, archive_pkgs) {
-  paste(fetchgits(git_pkgs),
-        fetchzips(archive_pkgs),
-        collapse = "\n"
-        )
+  sprintf("
+  git_archive_pkgs = [%s  ];\n", 
+    paste(fetchgits(git_pkgs),
+          fetchzips(archive_pkgs),
+          collapse = "\n"
+          )
+  )
 }
 
 
