@@ -293,7 +293,29 @@ fetchzips <- function(archive_pkgs) {
 #' @noRd
 fetchpkgs <- function(git_pkgs, archive_pkgs) {
   paste(fetchgits(git_pkgs),
-    fetchzips(archive_pkgs),
-    collapse = "\n"
-  )
+        fetchzips(archive_pkgs),
+        collapse = "\n"
+        )
+}
+
+
+#' remotes2nix Generates a list to pass to rix(git_pkgs = ...) to generate a valid
+#' Nix expression from a REMOTES field in a DESCRIPTION file
+#' @param remotes String, output of read.dcf of the form
+#' "jimhester/highlite,\ngaborcsardi/gh,\nhadley/memoise"
+#' @return A list of lists to pass to rix(git_pkgs = ...)
+#' @noRd
+remotes2nix <- functions(remotes){
+  # Input looks like
+  # "jimhester/highlite,\ngaborcsardi/gh,\nhadley/memoise"
+  remotes <- gsub("\n", "", x = unlist(strsplit(remotes, ",")))
+
+  pkgs_names <- sub(".*?/", "", remotes)
+  urls <- paste0("https://github.com/", remotes)
+  commits <- rep("HEAD", length(remotes))
+
+  lapply(seq_along(pkgs_names), function(i) {
+    list("package_name" = pkgs_names[i], "repo_url" = urls[i], "commit" = commits[i])
+  })
+
 }
