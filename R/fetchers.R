@@ -26,42 +26,37 @@ fetchgit <- function(git_pkg) {
     sri_hash,
     imports,
     remotes
-    )
+  )
 
-  if(is.null(remotes)){ # if no remote dependencies
+  if (is.null(remotes)) { # if no remote dependencies
 
     output <- main_package_expression
-
   } else { # if there are remote dependencies, start over
     remote_packages_expressions <- fetchgits(remotes)
 
     output <- paste0(remote_packages_expressions,
-                     main_package_expression,
-                     collapse = "\n")
+      main_package_expression,
+      collapse = "\n"
+    )
   }
 
   output
-
 }
 
 
-generate_git_nix_expression <- function(
-                                        package_name,
+generate_git_nix_expression <- function(package_name,
                                         repo_url,
                                         commit,
                                         sri_hash,
                                         imports,
-                                        remote_deps = NULL
-                                        ){
-
-
+                                        remote_deps = NULL) {
   # If there are remote dependencies, pass this string
   flag_remote_deps <- if (is.null(remote_deps)) {
     ""
   } else {
     # Extract package names
-    remote_pkgs_names <- sapply(remote_deps, function(x)x$package_name)
-    paste0(" ++ [ ", paste0(remote_pkgs_names, collapse = " ")," ]")
+    remote_pkgs_names <- sapply(remote_deps, function(x) x$package_name)
+    paste0(" ++ [ ", paste0(remote_pkgs_names, collapse = " "), " ]")
   }
 
   sprintf(
@@ -78,14 +73,14 @@ generate_git_nix_expression <- function(
       }%s;
     });
 ',
-package_name,
-package_name,
-repo_url,
-commit,
-sri_hash,
-imports,
-flag_remote_deps
-)
+    package_name,
+    package_name,
+    repo_url,
+    commit,
+    sri_hash,
+    imports,
+    flag_remote_deps
+  )
 }
 
 
@@ -203,7 +198,7 @@ get_imports <- function(path) {
 
   existing_remotes <- intersect("Remotes", colnames(imports_df))
 
-  if(!identical(existing_remotes, character(0))){
+  if (!identical(existing_remotes, character(0))) {
     remotes <- imports_df[, existing_remotes, drop = FALSE]
     # remotes are of the form username/packagename so we need
     # to only keep packagename
@@ -212,9 +207,11 @@ get_imports <- function(path) {
     urls <- paste0("https://github.com/", remotes)
     commits <- rep("HEAD", length(remotes))
     remote_pkgs <- lapply(seq_along(remote_pkgs_names), function(i) {
-      list("package_name" = remote_pkgs_names[i],
-           "repo_url" = urls[i],
-           "commit" = commits[i])
+      list(
+        "package_name" = remote_pkgs_names[i],
+        "repo_url" = urls[i],
+        "commit" = commits[i]
+      )
     })
   } else {
     remote_pkgs_names <- character(0)
@@ -245,7 +242,7 @@ get_imports <- function(path) {
     "package" = imports_df$Package,
     "imports" = output_imports,
     "remotes" = remote_pkgs
-    )
+  )
 }
 
 
@@ -373,7 +370,7 @@ fetchzips <- function(archive_pkgs) {
 #' @noRd
 fetchpkgs <- function(git_pkgs, archive_pkgs) {
   paste(fetchgits(git_pkgs),
-        fetchzips(archive_pkgs),
-        collapse = "\n"
-        )
+    fetchzips(archive_pkgs),
+    collapse = "\n"
+  )
 }

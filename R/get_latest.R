@@ -36,9 +36,11 @@ get_latest <- function(r_version) {
       "'bleeding-edge' and 'frozen-edge'."
     )
   } else if (
-           !(r_version %in% c("r-devel-bioc-devel", "r-devel", "bioc-devel",
-                              "bleeding-edge", "frozen-edge", available_r()))
-         ) {
+    !(r_version %in% c(
+      "r-devel-bioc-devel", "r-devel", "bioc-devel",
+      "bleeding-edge", "frozen-edge", available_r()
+    ))
+  ) {
     stop(
       "The provided R version is too recent,\nand not yet included in `nixpkgs`.\n",
       "You can list available versions using `available_r()`.\n",

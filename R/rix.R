@@ -295,7 +295,7 @@ for more details."
     # walk through the list to grab the first element
     # which will be the name of the package
     pkgs <- strsplit(cran_pkgs$archive_pkg, split = "@")
-    pkgs_names <- sapply(pkgs, function(x)x[[1]])
+    pkgs_names <- sapply(pkgs, function(x) x[[1]])
     paste0(c(pkgs_names, git_pkgs_names), collapse = " ")
   } else {
     ""
