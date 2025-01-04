@@ -284,7 +284,13 @@ for more details."
   flag_git_archive <- if (
     !is.null(cran_pkgs$archive_pkgs) || !is.null(git_pkgs)
   ) {
-    "git_archive_pkgs"
+    # If git_pkgs is a list of lists, then sapply will succeed
+    # if not, then we can access "package_name" directly
+    git_pkgs_names <- tryCatch(
+      sapply(git_pkgs, function(x) x$package_name),
+      error = function(e) git_pkgs$package_name
+    )
+    paste0(cran_pkgs$archive_pkgs, git_pkgs_names, collapse = " ")
   } else {
     ""
   }

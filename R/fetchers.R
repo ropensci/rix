@@ -76,7 +76,7 @@ generate_git_nix_expression <- function(
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) %s;
       }%s;
-    })
+    });
 ',
 package_name,
 package_name,
@@ -371,11 +371,8 @@ fetchzips <- function(archive_pkgs) {
 #' from the CRAN archives.
 #' @noRd
 fetchpkgs <- function(git_pkgs, archive_pkgs) {
-  sprintf("
-  git_archive_pkgs = [%s  ];\n", 
-    paste(fetchgits(git_pkgs),
-          fetchzips(archive_pkgs),
-          collapse = "\n"
-          )
-  )
+  paste(fetchgits(git_pkgs),
+        fetchzips(archive_pkgs),
+        collapse = "\n"
+        )
 }
