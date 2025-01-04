@@ -13,19 +13,60 @@ fetchgit <- function(git_pkg) {
   output <- get_sri_hash_deps(repo_url, commit)
   sri_hash <- output$sri_hash
   # If package has no remote dependencies
-  if(identical(output$deps$remotes, character(0))){
-    imports <- output$deps$imports
-    imports <- paste(c("", imports), collapse = "\n          ")
 
+  imports <- output$deps$imports
+  imports <- paste(c("", imports), collapse = "\n          ")
+
+  remotes <- output$deps$remotes
+
+  main_package_expression <- generate_git_nix_expression(
+    package_name,
+    repo_url,
+    commit,
+    sri_hash,
+    imports,
+    remotes
+    )
+
+  if(is.null(remotes)){ # if no remote dependencies
+
+    output <- main_package_expression
+
+  } else { # if there are remote dependencies, start over
+    remote_packages_expressions <- fetchgits(remotes)
+
+    output <- paste0(remote_packages_expressions,
+                     main_package_expression,
+                     collapse = "\n")
+  }
+
+  output
+
+}
+
+
+generate_git_nix_expression <- function(
+                                        package_name,
+                                        repo_url,
+                                        commit,
+                                        sri_hash,
+                                        imports,
+                                        remote_deps = NULL
+                                        ){
+
+
+  # If there are remote dependencies, pass this string
+  flag_remote_deps <- if (is.null(remote_deps)) {
+    ""
   } else {
-    stop("not yet implemented!")
-    # call fetchgit recursively on remotes?
-    # need to merge fetchgits and fetchgit?
+    # Extract package names
+    remote_pkgs_names <- sapply(remote_deps, function(x)x$package_name)
+    paste0(" ++ [ ", paste0(remote_pkgs_names, collapse = " ")," ]")
   }
 
   sprintf(
-      '
-    (pkgs.rPackages.buildRPackage {
+    '
+    %s = (pkgs.rPackages.buildRPackage {
       name = \"%s\";
       src = pkgs.fetchgit {
         url = \"%s\";
@@ -34,17 +75,17 @@ fetchgit <- function(git_pkg) {
       };
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) %s;
-      };
+      }%s;
     })
 ',
+package_name,
 package_name,
 repo_url,
 commit,
 sri_hash,
-imports
+imports,
+flag_remote_deps
 )
-
-
 }
 
 
@@ -166,16 +207,17 @@ get_imports <- function(path) {
     # remotes are of the form username/packagename so we need
     # to only keep packagename
     remotes <- gsub("\n", "", x = unlist(strsplit(remotes$Remotes, ",")))
-    remotes_pkgs_names <- sub(".*?/", "", remotes)
+    remote_pkgs_names <- sub(".*?/", "", remotes)
     urls <- paste0("https://github.com/", remotes)
     commits <- rep("HEAD", length(remotes))
-    remote_pkgs <- lapply(seq_along(remotes_pkgs_names), function(i) {
-      list("package_name" = remotes_pkgs_names[i],
+    remote_pkgs <- lapply(seq_along(remote_pkgs_names), function(i) {
+      list("package_name" = remote_pkgs_names[i],
            "repo_url" = urls[i],
            "commit" = commits[i])
     })
   } else {
-    remote_pkgs <- character(0)
+    remote_pkgs_names <- character(0)
+    remote_pkgs <- NULL
   }
 
   if (!is.null(imports) && length(imports) > 0) {
@@ -196,7 +238,7 @@ get_imports <- function(path) {
 
   # Remote packages are included in imports, so we need
   # remove remotes from imports
-  output_imports <- setdiff(output, remotes_pkgs_names)
+  output_imports <- setdiff(output, remote_pkgs_names)
 
   list(
     "package" = imports_df$Package,
