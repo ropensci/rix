@@ -119,7 +119,7 @@ fetchzip <- function(archive_pkg, sri_hash = NULL) {
 
   sprintf(
     '
-    (pkgs.rPackages.buildRPackage {
+    %s = (pkgs.rPackages.buildRPackage {
       name = \"%s\";
       src = pkgs.fetchzip {
        url = \"%s\";
@@ -128,8 +128,9 @@ fetchzip <- function(archive_pkg, sri_hash = NULL) {
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) %s;
       };
-    })
+    }),
 ',
+    package_name,
     package_name,
     repo_url,
     sri_hash,
