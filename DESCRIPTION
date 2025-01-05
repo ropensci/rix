@@ -19,8 +19,8 @@ Authors@R: c(
            comment = c(ORCID = "0000-0002-4349-1458")),
     person("Elio", "Campitelli", , "eliocampitelli@gmail.com", role = "ctb",
            comment = c(ORCID = "0000-0002-7742-9230")),
-    person("László", "Kupcsik", , "your-email-here", role = "ctb",
-           comment = c(ORCID = "your-orcid-here")),
+    person("László", "Kupcsik", , "koopac@gmail.com", role = "ctb",
+           comment = c(ORCID = "0000-0003-3535-5496)")),
     person("Michael", "Heming", , "mhem@mailbox.org", role = "ctb",
            comment = c(ORCID = "0000-0002-9568-2790"))
   )
