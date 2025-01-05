@@ -296,7 +296,6 @@ for more details."
     # so we need to split at the '@' character and then
     # walk through the list to grab the first element
     # which will be the name of the package
-    pkgs <- strsplit(cran_pkgs$archive_pkg, split = "@")
     cran_archive_names <- if (!is.null(cran_pkgs$archive_pkgs)) {
       pkgs <- strsplit(cran_pkgs$archive_pkgs, split = "@")
       sapply(pkgs, function(x) x[[1]])
