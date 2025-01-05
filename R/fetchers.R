@@ -365,12 +365,13 @@ fetchzips <- function(archive_pkgs) {
 #' @return Nix definition string for building the packages
 #' @noRd
 fetchpkgs <- function(git_pkgs, archive_pkgs) {
-  all_remotes <- unique(unlist(lapply(git_pkgs, get_remote)))
-  
   # Only include git packages that aren't already remote dependencies
-  needed_git_pkgs <- git_pkgs[!sapply(git_pkgs, function(pkg) {
-    pkg$package_name %in% all_remotes
-  })]
+  if (all(sapply(git_pkgs, is.list))) {
+    all_remotes <- unique(unlist(lapply(git_pkgs, get_remote)))
+    git_pkgs <- git_pkgs[!sapply(git_pkgs, function(pkg) {
+      pkg$package_name %in% all_remotes
+    })]
+  }
 
   # Combine git and archive package definitions
   paste(
