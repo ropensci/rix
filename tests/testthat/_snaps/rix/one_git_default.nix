@@ -2,8 +2,7 @@
 let
   pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2023-10-30.tar.gz") {};
   
-  git_archive_pkgs = [
-    (pkgs.rPackages.buildRPackage {
+    housing = (pkgs.rPackages.buildRPackage {
       name = "housing";
       src = pkgs.fetchgit {
         url = "https://github.com/rap4all/housing/";
@@ -22,9 +21,8 @@ let
           stringr
           tidyr;
       };
-    })
-   ];
-   
+    });
+    
   system_packages = builtins.attrValues {
     inherit (pkgs) 
       R
@@ -43,6 +41,6 @@ pkgs.mkShell {
    LC_PAPER = "en_US.UTF-8";
    LC_MEASUREMENT = "en_US.UTF-8";
 
-  buildInputs = [ git_archive_pkgs   system_packages   ];
+  buildInputs = [ housing   system_packages   ];
   
 }

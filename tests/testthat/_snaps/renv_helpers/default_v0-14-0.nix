@@ -167,8 +167,7 @@ let
       zip;
   };
  
-  git_archive_pkgs = [
-    (pkgs.rPackages.buildRPackage {
+    colourScaleR = (pkgs.rPackages.buildRPackage {
       name = "colourScaleR";
       src = pkgs.fetchgit {
         url = "https://github.com/richardjacton/colourScaleR";
@@ -185,9 +184,8 @@ let
           gridExtra
           purrr;
       };
-    })
-   ];
-   
+    });
+    
   system_packages = builtins.attrValues {
     inherit (pkgs) 
       R
@@ -206,6 +204,6 @@ pkgs.mkShell {
    LC_PAPER = "en_US.UTF-8";
    LC_MEASUREMENT = "en_US.UTF-8";
 
-  buildInputs = [ git_archive_pkgs rpkgs  system_packages   ];
+  buildInputs = [ colourScaleR rpkgs  system_packages   ];
   
 }

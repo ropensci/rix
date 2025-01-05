@@ -132,8 +132,7 @@ let
       zip;
   };
  
-  git_archive_pkgs = [
-    (pkgs.rPackages.buildRPackage {
+    emo = (pkgs.rPackages.buildRPackage {
       name = "emo";
       src = pkgs.fetchgit {
         url = "https://github.com/hadley/emo";
@@ -151,9 +150,8 @@ let
           rlang
           purrr;
       };
-    })
-   ];
-   
+    });
+    
   system_packages = builtins.attrValues {
     inherit (pkgs) 
       R
@@ -172,6 +170,6 @@ pkgs.mkShell {
    LC_PAPER = "en_US.UTF-8";
    LC_MEASUREMENT = "en_US.UTF-8";
 
-  buildInputs = [ git_archive_pkgs rpkgs  system_packages   ];
+  buildInputs = [ emo rpkgs  system_packages   ];
   
 }

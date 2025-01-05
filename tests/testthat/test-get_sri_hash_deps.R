@@ -12,7 +12,7 @@ testthat::test_that("get_sri_hash_deps returns correct sri hash and dependencies
           "dplyr", "ggplot2", "janitor", "purrr",
           "readxl", "rlang", "rvest", "stringr", "tidyr"
         ),
-        "remotes" = character(0)
+        "remotes" = NULL
       )
     )
   )
