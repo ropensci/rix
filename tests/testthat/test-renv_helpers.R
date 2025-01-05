@@ -222,6 +222,18 @@ testthat::test_that("testing renv_helpers", {
       name = "default_v1-0-7.nix"
     )
 
+    # This should not get datathin twice in the generated
+    # default.nix
+    testthat::expect_snapshot_file(
+      path = save_renv2nix_test(
+        "testdata/renv-samples/renv_datathin.lock",
+        path_env_nix,
+        "/default_datathin.nix",
+        override_r_ver = "4.4.2",
+        ),
+      name = "default_datathin.nix"
+    )
+
     on.exit(unlink(path_env_nix))
   })
 })
