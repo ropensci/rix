@@ -369,8 +369,28 @@ fetchzips <- function(archive_pkgs) {
 #' from the CRAN archives.
 #' @noRd
 fetchpkgs <- function(git_pkgs, archive_pkgs) {
-  paste(fetchgits(git_pkgs),
+  # This removes all packages that are already included
+  # because they are remote packages from another package
+  all_remote_package_names <- unlist(lapply(git_pkgs, get_remote))
+  package_names <- sapply(git_pkgs, `[[`, "package_name")
+  git_pkgs_corrected <- setdiff(package_names, all_remote_package_names)
+  paste(fetchgits(git_pkgs_corrected),
     fetchzips(archive_pkgs),
     collapse = "\n"
   )
+}
+
+#' get_remote Retrieves the names of remote dependencies for a given Git package
+#' @param git_pkg A list of three elements: "package_name", the name of the
+#'   package, "repo_url", the repository's URL, and "commit", the commit hash of
+#'   interest.
+#' @return A character vector containing the names of remote dependencies.
+#' @noRd
+get_remote <- function(git_pkg) {
+  repo_url <- git_pkg$repo_url
+  commit <- git_pkg$commit
+  output <- get_sri_hash_deps(repo_url, commit)
+  remotes <- output$deps$remotes
+  remote_package_names <- sapply(remotes, `[[`, "package_name")
+  return(remote_package_names)
 }
