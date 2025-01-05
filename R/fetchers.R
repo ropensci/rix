@@ -203,14 +203,38 @@ get_imports <- function(path) {
     # remotes are of the form username/packagename so we need
     # to only keep packagename
     remotes <- gsub("\n", "", x = unlist(strsplit(remotes$Remotes, ",")))
-    remote_pkgs_names <- sub(".*?/", "", remotes)
-    urls <- paste0("https://github.com/", remotes)
-    commits <- rep("HEAD", length(remotes))
+    # Get user names
+    remote_pkgs_usernames <- strsplit(remotes, "/") |>
+      sapply(function(x)x[[1]])
+
+    # Now remove user name and
+    # split at "@" or "#" character to get name and commit or PR separated
+    remote_pkgs_names_and_refs <- sub(".*?/", "", remotes)
+    remote_pkgs_names_and_refs <- strsplit(remote_pkgs_names_and_refs, "(@|#)")
+
+    remote_pkgs_names <- remote_pkgs_names_and_refs |>
+      sapply(function(x)x[[1]])
+
+    # Check if we have a list of lists of two elements: a package name
+    # and a ref. If not, add "HEAD" to it.
+    remote_pkgs_refs <- lapply(remote_pkgs_names_and_refs, function(sublist) {
+      if (length(sublist) == 1) {
+        c(sublist, "HEAD")
+      } else {
+        sublist
+      }
+    }) |>
+      sapply(function(x)x[[2]])
+
+    urls <- paste0("https://github.com/",
+                   remote_pkgs_usernames, "/",
+                   remote_pkgs_names)
+
     remote_pkgs <- lapply(seq_along(remote_pkgs_names), function(i) {
       list(
         "package_name" = remote_pkgs_names[i],
         "repo_url" = urls[i],
-        "commit" = commits[i]
+        "commit" = remote_pkgs_refs[i]
       )
     })
   } else {
