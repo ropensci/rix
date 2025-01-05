@@ -385,18 +385,39 @@ fetchzips <- function(archive_pkgs) {
   }
 }
 
-#' fetchpkgs Downloads and installs packages hosted in the CRAN archives or
-#' Github.
-#' @param git_pkgs A list of three elements: "package_name", the name of the
-#' package, "repo_url", the repository's url and "commit", the commit hash of
-#' interest. This argument can also be a list of lists of these four elements.
-#' @param archive_pkgs A character, or an atomic vector of characters.
-#' @return A character. The Nix definition to download and build the R package
-#' from the CRAN archives.
+#' fetchpkgs Downloads and installs packages from CRAN archives or Github
+#' @param git_pkgs List of Git packages with name, url and commit
+#' @param archive_pkgs Vector of CRAN archive package names
+#' @return Nix definition string for building the packages
 #' @noRd
 fetchpkgs <- function(git_pkgs, archive_pkgs) {
-  paste(fetchgits(git_pkgs),
+  # Only include git packages that aren't already remote dependencies
+  if (all(sapply(git_pkgs, is.list))) {
+    all_remotes <- unique(unlist(lapply(git_pkgs, get_remote)))
+    git_pkgs <- git_pkgs[!sapply(git_pkgs, function(pkg) {
+      pkg$package_name %in% all_remotes
+    })]
+  }
+
+  # Combine git and archive package definitions
+  paste(
+    fetchgits(git_pkgs),
     fetchzips(archive_pkgs),
     collapse = "\n"
   )
+}
+
+#' get_remote Retrieves the names of remote dependencies for a given Git package
+#' @param git_pkg A list of three elements: "package_name", the name of the
+#'   package, "repo_url", the repository's URL, and "commit", the commit hash of
+#'   interest.
+#' @return A character vector containing the names of remote dependencies.
+#' @noRd
+get_remote <- function(git_pkg) {
+  repo_url <- git_pkg$repo_url
+  commit <- git_pkg$commit
+  output <- get_sri_hash_deps(repo_url, commit)
+  remotes <- output$deps$remotes
+  remote_package_names <- sapply(remotes, `[[`, "package_name")
+  return(remote_package_names)
 }
