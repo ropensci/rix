@@ -375,7 +375,7 @@ fetchpkgs <- function(git_pkgs, archive_pkgs) {
 
   # Combine git and archive package definitions
   paste(
-    fetchgits(needed_git_pkgs),
+    fetchgits(git_pkgs),
     fetchzips(archive_pkgs),
     collapse = "\n"
   )
