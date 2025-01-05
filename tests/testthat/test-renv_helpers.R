@@ -230,7 +230,7 @@ testthat::test_that("testing renv_helpers", {
         path_env_nix,
         "/default_datathin.nix",
         override_r_ver = "4.4.2",
-        ),
+      ),
       name = "default_datathin.nix"
     )
 
