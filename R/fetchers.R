@@ -371,9 +371,10 @@ fetchzips <- function(archive_pkgs) {
 fetchpkgs <- function(git_pkgs, archive_pkgs) {
   # This removes all packages that are already included
   # because they are remote packages from another package
-  all_remote_package_names <- unlist(lapply(git_pkgs, get_remote))
-  package_names <- sapply(git_pkgs, `[[`, "package_name")
-  git_pkgs_corrected <- setdiff(package_names, all_remote_package_names)
+  remote_package_names <- unlist(lapply(git_pkgs, get_remote))
+  git_pkgs_names <- sapply(git_pkgs, `[[`, "package_name")
+  git_pkgs_name_corrected <- setdiff(git_pkgs_names, remote_package_names)
+  git_pkgs_corrected <- git_pkgs[sapply(git_pkgs, function(pkg) pkg$package_name %in% git_pkgs_name_corrected)]
   paste(fetchgits(git_pkgs_corrected),
     fetchzips(archive_pkgs),
     collapse = "\n"
