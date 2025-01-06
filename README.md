@@ -113,6 +113,92 @@ rix(
 )
 ```
 
+The table below illustrates this all the different types of environment
+you can generate:
+
+<table border="1">
+  <thead>
+    <tr>
+      <th>r_ver</th>
+      <th>Intended use</th>
+      <th>State of R version</th>
+      <th>State of CRAN packages</th>
+      <th>State of Bioconductor packages</th>
+      <th>State of other packages in Nixpkgs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>"latest-upstream"</td>
+      <td>Start of new project where versions don’t matter</td>
+      <td>Current or previous</td>
+      <td>Outdated (up to 6 months)</td>
+      <td>Outdated (up to 6 months)</td>
+      <td>Current at time of generation</td>
+    </tr>
+    <tr>
+      <td>"4.4.2" (or other)</td>
+      <td>Reproducing old project or starting a new project where versions don’t matter</td>
+      <td>Same as in `r_ver`</td>
+      <td>Outdated (up to 2 months if using latest release)</td>
+      <td>Outdated (up to 2 months if using latest release)</td>
+      <td>Potentially outdated (up to 12 months)</td>
+    </tr>
+    <tr>
+      <td>"2024-12-14" (date)</td>
+      <td>Reproducing old project or starting a new project using the most recent date</td>
+      <td>Current at that date</td>
+      <td>Current at that date</td>
+      <td>Current at that date</td>
+      <td>Potentially outdated (up to 12 months)</td>
+    </tr>
+    <tr>
+      <td>"bleeding-edge"</td>
+      <td>To develop against the latest release of CRAN</td>
+      <td>Always current</td>
+      <td>Always current</td>
+      <td>Always current</td>
+      <td>Always current</td>
+    </tr>
+    <tr>
+      <td>"frozen-edge"</td>
+      <td>To develop against the latest release of CRAN, but manually manage updates</td>
+      <td>Current at time of generation</td>
+      <td>Current at time of generation</td>
+      <td>Current at time of generation</td>
+      <td>Current at time of generation</td>
+    </tr>
+    <tr>
+      <td>"r-devel"</td>
+      <td>To develop/test against the development version of R</td>
+      <td>Development version</td>
+      <td>Always current</td>
+      <td>Always current</td>
+      <td>Always current</td>
+    </tr>
+    <tr>
+      <td>"r-devel-bioc-devel"</td>
+      <td>To develop/test against the development version of R and Bioconductor</td>
+      <td>Development version</td>
+      <td>Always current</td>
+      <td>Development version</td>
+      <td>Always current</td>
+    </tr>
+    <tr>
+      <td>"bioc-devel"</td>
+      <td>To develop/test against the development version of Bioconductor</td>
+      <td>Always current</td>
+      <td>Always current</td>
+      <td>Development version</td>
+      <td>Always current</td>
+    </tr>
+  </tbody>
+</table>
+
+If you want to benefit from relatively fresh packages and have a stable
+environment that for production purposes, using a date for `r_ver` is
+your best option.
+
 ## Quick-start for returning users
 
 <details>
@@ -123,6 +209,9 @@ Click to expand
 If you’re already familiar with Nix and `{rix}`, install Nix using the
 [Determinate Systems
 installer](https://determinate.systems/posts/determinate-nix-installer):
+(if you’re using WSL, do check out the [detailed installation
+instructions](https://docs.ropensci.org/rix/articles/b1-setting-up-and-using-rix-on-linux-and-windows.html#windows-pre-requisites)
+though):
 
 ``` bash
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
