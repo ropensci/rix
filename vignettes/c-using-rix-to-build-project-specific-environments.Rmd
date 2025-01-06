@@ -131,34 +131,86 @@ packages. We will explore this in greater detail in the vignette
 There are several options for `r_ver` and each have a specific purpose. The
 table below explains this:
 
-|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
-| **r_ver**              | **Intended use**                           | **State of R**          | **State of CRAN**          | **State of Bioconductor**          | **State of other packages in**          |
-|                        |                                            | **version**             | **packages**               | **packages**                       | **Nixpkgs**                             |
-|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
-| `"latest-upstream"`    | Start new project and versions             | Current or previous     | Outdated (up to 6 months)  | Outdated (up to 6 months)          | Current at time of generation           |
-|                        | don’t matter                               |                         |                            |                                    |                                         |
-|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
-| `"4.4.2"` (or other)   | Reproducing old project or starting a new  | Same as in `r_ver`      | Outdated (up to 2 months   | Outdated (up to 2 months           | Potentially outdated (up to 12 months)  |
-|                        | project where versions don’t matter        |                         | if using latest release)   | if using latest release)           |                                         |
-|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
-| `"2024-12-14"` (date)  | Reproducing old project or starting a new  | Current at that date    | Current at that date       | Current at that date               | Potentially outdated (up to 12 months)  |
-|                        | project using the most recent date         |                         |                            |                                    |                                         |
-|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
-| `"bleeding-edge"`      | To develop against the latest              | Always current          | Always current             | Always current                     | Always current                          |
-|                        | release of CRAN                            |                         |                            |                                    |                                         |
-|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
-| `"frozen-edge"`        | To develop against the latest release of   | Current at time of      | Current at time of         | Current at time of                 | Current at time of generation           |
-|                        | CRAN, but manually manage updates          | generation              | generation                 | generation                         |                                         |
-|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
-| `"r-devel"`            | To develop/test against the development    | Development version     | Always current             | Always current                     | Always current                          |
-|                        | version of R                               |                         |                            |                                    |                                         |
-|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
-| `"r-devel-bioc-devel"` | To develop/test against the development    | Development version     | Always current             | Development version                | Always current                          |
-|                        | version of R and Bioconductor              |                         |                            |                                    |                                         |
-|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
-| `"bioc-devel"`         | To develop/test against the development    | Always current          | Always current             | Development version                | Always current                          |
-|                        | version of Bioconductor                    |                         |                            |                                    |                                         |
-|------------------------|--------------------------------------------|-------------------------|----------------------------|------------------------------------|-----------------------------------------|
+```{=html}
+<table border="1">
+  <thead>
+    <tr>
+      <th>r_ver</th>
+      <th>Intended use</th>
+      <th>State of R version</th>
+      <th>State of CRAN packages</th>
+      <th>State of Bioconductor packages</th>
+      <th>State of other packages in Nixpkgs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>"latest-upstream"</td>
+      <td>Start of new project where versions don’t matter</td>
+      <td>Current or previous</td>
+      <td>Outdated (up to 6 months)</td>
+      <td>Outdated (up to 6 months)</td>
+      <td>Current at time of generation</td>
+    </tr>
+    <tr>
+      <td>"4.4.2" (or other)</td>
+      <td>Reproducing old project or starting a new project where versions don’t matter</td>
+      <td>Same as in `r_ver`</td>
+      <td>Outdated (up to 2 months if using latest release)</td>
+      <td>Outdated (up to 2 months if using latest release)</td>
+      <td>Potentially outdated (up to 12 months)</td>
+    </tr>
+    <tr>
+      <td>"2024-12-14" (date)</td>
+      <td>Reproducing old project or starting a new project using the most recent date</td>
+      <td>Current at that date</td>
+      <td>Current at that date</td>
+      <td>Current at that date</td>
+      <td>Potentially outdated (up to 12 months)</td>
+    </tr>
+    <tr>
+      <td>"bleeding-edge"</td>
+      <td>To develop against the latest release of CRAN</td>
+      <td>Always current</td>
+      <td>Always current</td>
+      <td>Always current</td>
+      <td>Always current</td>
+    </tr>
+    <tr>
+      <td>"frozen-edge"</td>
+      <td>To develop against the latest release of CRAN, but manually manage updates</td>
+      <td>Current at time of generation</td>
+      <td>Current at time of generation</td>
+      <td>Current at time of generation</td>
+      <td>Current at time of generation</td>
+    </tr>
+    <tr>
+      <td>"r-devel"</td>
+      <td>To develop/test against the development version of R</td>
+      <td>Development version</td>
+      <td>Always current</td>
+      <td>Always current</td>
+      <td>Always current</td>
+    </tr>
+    <tr>
+      <td>"r-devel-bioc-devel"</td>
+      <td>To develop/test against the development version of R and Bioconductor</td>
+      <td>Development version</td>
+      <td>Always current</td>
+      <td>Development version</td>
+      <td>Always current</td>
+    </tr>
+    <tr>
+      <td>"bioc-devel"</td>
+      <td>To develop/test against the development version of Bioconductor</td>
+      <td>Always current</td>
+      <td>Always current</td>
+      <td>Development version</td>
+      <td>Always current</td>
+    </tr>
+  </tbody>
+</table>
+```
 
 If you want to benefit from relatively fresh packages and have a stable
 environment for production purposes, using `"latest-upstream"` or the most
