@@ -13,7 +13,7 @@ Authors@R: c(
            comment = c(ORCID = "0000-0002-7281-3989", "Jacob reviewed the
                        package (v. 0.9.1) for rOpenSci,
                        see <https://github.com/ropensci/software-review/issues/625>")),
-    person("Richard J.", "Acton", , "racton@uni-koeln.de", role = "ctb",
+    person("Richard J.", "Acton", , "actonr@babraham.ac.uk", role = "ctb",
            comment = c(ORCID = "0000-0002-2574-9611")),
     person("Jordi", "Rosell", , "jroselln@gmail.com", role = "ctb",
            comment = c(ORCID = "0000-0002-4349-1458")),
