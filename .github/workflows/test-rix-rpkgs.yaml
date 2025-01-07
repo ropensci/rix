@@ -42,3 +42,6 @@ jobs:
 
       - name: Build default.nix
         run: nix-build
+
+      - name: Try running the shell
+        run: nix-shell --run "echo OK"
