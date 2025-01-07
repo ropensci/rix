@@ -33,9 +33,9 @@ jobs:
           # If you chose API tokens for write access OR if you have a private cache
           authToken: '${{ secrets.CACHIX_AUTH }}'
 
-      - name: Build default.nix with 2 local packages
+      - name: Build default.nix with system and tex packages
         run: |
-          nix-shell default.nix --run "Rscript -e \"library(rix);rix('4.4.2', r_pkgs = c('dplyr', 'S4Vectors'), system_pkgs = c('quarto', 'git'), tex_pkgs = c('amsmath', 'orcidlink'), project_path = '.', overwrite = TRUE)\""
+          nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix('4.4.2', r_pkgs = c('dplyr', 'S4Vectors'), system_pkgs = c('quarto', 'git'), tex_pkgs = c('amsmath', 'orcidlink'), project_path = '.', overwrite = TRUE)\""
 
       - name: Check generated default.nix
         run: cat default.nix
