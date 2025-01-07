@@ -63,6 +63,124 @@ rix(
 
 This will generate the following `default.nix`:
 
+```
+let
+ pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/6a25f33c843a45b8d67ba782b6782973a7265774.tar.gz") {};
+  
+    httr2 = (pkgs.rPackages.buildRPackage {
+      name = "httr2";
+      src = pkgs.fetchgit {
+        url = "https://github.com/r-lib/httr2";
+        rev = "HEAD";
+        sha256 = "sha256-UgJCFPO47mgUt3esRRPhXjr0oNDRrR9XAAIxMhZYbFc=";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages) 
+          cli
+          curl
+          glue
+          lifecycle
+          magrittr
+          openssl
+          R6
+          rappdirs
+          rlang
+          vctrs
+          withr;
+      };
+    });
+
+    gh = (pkgs.rPackages.buildRPackage {
+      name = "gh";
+      src = pkgs.fetchgit {
+        url = "https://github.com/gaborcsardi/gh";
+        rev = "HEAD";
+        sha256 = "sha256-VpxFIfUEk0PudytQ3boMhEJhT0AnelWkSU++WD/HAyo=";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages) 
+          cli
+          gitcreds
+          glue
+          ini
+          jsonlite
+          lifecycle
+          rlang;
+      } ++ [ httr2 ];
+    });
+
+
+    highlite = (pkgs.rPackages.buildRPackage {
+      name = "highlite";
+      src = pkgs.fetchgit {
+        url = "https://github.com/jimhester/highlite";
+        rev = "HEAD";
+        sha256 = "sha256-lkWMlAi75MYxiBUYnLwxLK9ApXkWanA4Mt7g4qtLpxM=";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages) 
+          Rcpp
+          BH;
+      };
+    });
+
+
+    memoise = (pkgs.rPackages.buildRPackage {
+      name = "memoise";
+      src = pkgs.fetchgit {
+        url = "https://github.com/hadley/memoise";
+        rev = "HEAD";
+        sha256 = "sha256-FDMNgrgctzkN8dXKRoWsOKe3tXxmm8Cqdu/Sh6WKx/Q=";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages) 
+          rlang
+          cachem;
+      };
+    });
+
+    lookup = (pkgs.rPackages.buildRPackage {
+      name = "lookup";
+      src = pkgs.fetchgit {
+        url = "https://github.com/jimhester/lookup/";
+        rev = "eba63db477dd2f20153b75e2949eb333a36cccfc";
+        sha256 = "sha256-arl7LVxL8xGUW3LhuDCSUjcfswX0rdofL/7v8Klw8FM=";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages) 
+          Rcpp
+          codetools
+          crayon
+          rex
+          jsonlite
+          rstudioapi
+          withr
+          httr;
+      } ++ [ highlite gh memoise ];
+    });
+    
+  system_packages = builtins.attrValues {
+    inherit (pkgs) 
+      glibcLocales
+      nix
+      R;
+  };
+  
+in
+
+pkgs.mkShell {
+  LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
+  LANG = "en_US.UTF-8";
+   LC_ALL = "en_US.UTF-8";
+   LC_TIME = "en_US.UTF-8";
+   LC_MONETARY = "en_US.UTF-8";
+   LC_PAPER = "en_US.UTF-8";
+   LC_MEASUREMENT = "en_US.UTF-8";
+
+  buildInputs = [ lookup   system_packages   ];
+  
+}
+```
 
 
 as you can see, several other packages hosted on Github were added
@@ -89,23 +207,121 @@ these packages, or if you should instead include the released CRAN version. Depe
 on what you want to do, going for the CRAN release of the packages might be advisable.
 For example here, trying to build this expression will not work:
 
-This is because `{httr2}` is a package that needs to be compiled from source and will
-not benefit from the Nix-specific fixes that it needs to compile successfully. Change 
-your `default.nix` from:
+This is because `{httr2}` is a package that needs to be compiled from source and
+will not benefit from the Nix-specific fixes that need to be applied to its
+source code for it to build successfully. In order to install the version of
+`{httr2}` from CRAN which will build successfully, change the `default.nix`
+manually to this (essentially remove the definition of `{httr2}` and put it
+as a `propagatedBuildInput` to `{gh}`):
 
-to:
+```
+let
+ pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/6a25f33c843a45b8d67ba782b6782973a7265774.tar.gz") {};
 
-and then trying to build it will work. In the second, manually edited
-expression, `{httr2}` will now build successfully because Nix is instructed to
-build the CRAN version by applying [this
+    gh = (pkgs.rPackages.buildRPackage {
+      name = "gh";
+      src = pkgs.fetchgit {
+        url = "https://github.com/gaborcsardi/gh";
+        rev = "HEAD";
+        sha256 = "sha256-VpxFIfUEk0PudytQ3boMhEJhT0AnelWkSU++WD/HAyo=";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages)
+          cli
+          gitcreds
+          glue
+          httr2 # <- httr2 is now declared here, so it's the CRAN version
+          ini
+          jsonlite
+          lifecycle
+          rlang;
+      };
+    });
+
+
+    highlite = (pkgs.rPackages.buildRPackage {
+      name = "highlite";
+      src = pkgs.fetchgit {
+        url = "https://github.com/jimhester/highlite";
+        rev = "HEAD";
+        sha256 = "sha256-lkWMlAi75MYxiBUYnLwxLK9ApXkWanA4Mt7g4qtLpxM=";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages) 
+          Rcpp
+          BH;
+      };
+    });
+
+
+    memoise = (pkgs.rPackages.buildRPackage {
+      name = "memoise";
+      src = pkgs.fetchgit {
+        url = "https://github.com/hadley/memoise";
+        rev = "HEAD";
+        sha256 = "sha256-FDMNgrgctzkN8dXKRoWsOKe3tXxmm8Cqdu/Sh6WKx/Q=";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages)
+          rlang
+          cachem;
+      };
+    });
+
+    lookup = (pkgs.rPackages.buildRPackage {
+      name = "lookup";
+      src = pkgs.fetchgit {
+        url = "https://github.com/jimhester/lookup/";
+        rev = "eba63db477dd2f20153b75e2949eb333a36cccfc";
+        sha256 = "sha256-arl7LVxL8xGUW3LhuDCSUjcfswX0rdofL/7v8Klw8FM=";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages)
+          Rcpp
+          codetools
+          crayon
+          rex
+          jsonlite
+          rstudioapi
+          withr
+          httr;
+      } ++ [ highlite gh memoise ];
+    });
+
+  system_packages = builtins.attrValues {
+    inherit (pkgs)
+      glibcLocales
+      nix
+      R;
+  };
+
+in
+
+pkgs.mkShell {
+  LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
+  LANG = "en_US.UTF-8";
+   LC_ALL = "en_US.UTF-8";
+   LC_TIME = "en_US.UTF-8";
+   LC_MONETARY = "en_US.UTF-8";
+   LC_PAPER = "en_US.UTF-8";
+   LC_MEASUREMENT = "en_US.UTF-8";
+
+  buildInputs = [ lookup   system_packages   ];
+  
+}
+```
+
+and then try to build it will work. In the second, manually edited expression,
+`{httr2}` will now build successfully because Nix is instructed to build the
+CRAN version by applying [this
 fix](https://github.com/NixOS/nixpkgs/blob/7b87fced8bc525d466c7258a042bd12ea336a3c6/pkgs/development/r-modules/default.nix#L1817)
 which was added there by packagers and maintainers of the R programming language
-for `nixpkgs` (it is exactly the same if you tried to install `{httr2}` from Github
-on Windows: you would need to build it from source and thus make
-sure that you have the required system-level dependencies to build it. Instead, it is
+for `nixpkgs` (it is exactly the same if you tried to install `{httr2}` from
+Github on Windows: you would need to build it from source and thus make sure
+that you have the required system-level dependencies to build it. Instead, it is
 easier to install a pre-compiled binary from CRAN).
 
-Another important point to address is that if remote dependincies are listed in 
+Another important point to address is that if remote dependencies are listed in
 a `DESCRIPTION` file like this:
 
 ```
@@ -115,8 +331,8 @@ Remotes:
     hadley/memoise
 ```
 
-`{rix}` will automatically use the latest commit from these repositories as the revision.
-If instead the remotes are listed like this:
+`{rix}` will automatically use the latest commit from these repositories as the
+revision. If instead the remotes are listed like this:
 
 ```
 Remotes:
