@@ -1,0 +1,44 @@
+# Integration tests for installing git packages
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: test-rix-git_pkgs
+
+permissions:
+  contents: read
+
+jobs:
+  devtools:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - uses: cachix/cachix-action@v15
+        with:
+          name: rstats-on-nix
+          # If you chose signing key for write access
+          # signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+          # If you chose API tokens for write access OR if you have a private cache
+          authToken: '${{ secrets.CACHIX_AUTH }}'
+
+      - name: Build default.nix with 2 local packages
+        run: |
+          nix-shell default.nix --run "Rscript -e \"library(rix);rix('4.4.2', git_pkgs = list(list(package_name = 'lookup', repo_url = 'https://github.com/jimhester/highlite/', commit = '767b122ef47a60a01e1707e4093cf3635a99c86b'), project_path = '.', overwrite = TRUE)\""
+
+      - name: Check generated default.nix
+        run: cat default.nix
+
+      - name: Build default.nix
+        run: nix-build
