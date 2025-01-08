@@ -361,25 +361,6 @@ rix(
   overwrite = TRUE,
   project_path = path_env_stringr
 )
-
-list.files(path = path_env_stringr, all.files = TRUE)
-```
-
-```{r, include = F}
-library("rix")
-
-path_env_stringr <- file.path(tempdir(), "_env_stringr_1.4.1")
-
-rix(
-  r_ver = "4.3.1",
-  r_pkgs = "stringr@1.4.1",
-  overwrite = TRUE,
-  project_path = path_env_stringr
-)
-```
-
-```{r, echo = F}
-list.files(path = path_env_stringr, all.files = TRUE)
 ```
 
 We can now run the code in the subshell
