@@ -5,7 +5,7 @@
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
 #'      at a given deterministic git commit ID (SHA-1)
-#' - `deps`: string with R package dependencies separarated by space.
+#' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
 nix_hash <- function(repo_url, commit) {
   if (grepl("(github)|(gitlab)", repo_url)) {
@@ -27,7 +27,7 @@ nix_hash <- function(repo_url, commit) {
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
 #'      at a given deterministic git commit ID (SHA-1)
-#' - `deps`: string with R package dependencies separarated by space.
+#' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
 hash_url <- function(url) {
   tdir <- tempdir()
@@ -195,7 +195,7 @@ hash_cran <- function(repo_url) {
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
 #'      at a given deterministic git commit ID (SHA-1)
-#' - `deps`: string with R package dependencies separarated by space.
+#' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
 hash_git <- function(repo_url, commit) {
   trailing_slash <- grepl("/$", repo_url)
@@ -226,7 +226,7 @@ hash_git <- function(repo_url, commit) {
 #' sake, NULL for archived CRAN packages.
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
-#' - `deps`: string with R package dependencies separarated by space.
+#' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
 nix_hash_online <- function(repo_url, commit) {
   # handle to get error for status code 404
@@ -269,7 +269,7 @@ nix_hash_online <- function(repo_url, commit) {
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
 #'      at a given deterministic git commit ID (SHA-1)
-#' - `deps`: string with R package dependencies separarated by space.
+#' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
 get_sri_hash_deps <- function(repo_url, commit) {
   # if no `options(rix.sri_hash=)` is set, default is `"check_nix"`

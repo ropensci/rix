@@ -12,13 +12,56 @@ fetchgit <- function(git_pkg) {
 
   output <- get_sri_hash_deps(repo_url, commit)
   sri_hash <- output$sri_hash
-  imports <- output$deps
-  imports <- unlist(strsplit(imports, split = " "))
+  # If package has no remote dependencies
+
+  imports <- output$deps$imports
   imports <- paste(c("", imports), collapse = "\n          ")
+
+  remotes <- output$deps$remotes
+
+  main_package_expression <- generate_git_nix_expression(
+    package_name,
+    repo_url,
+    commit,
+    sri_hash,
+    imports,
+    remotes
+  )
+
+  if (is.null(remotes)) { # if no remote dependencies
+
+    output <- main_package_expression
+  } else { # if there are remote dependencies, start over
+    remote_packages_expressions <- fetchgits(remotes)
+
+    output <- paste0(remote_packages_expressions,
+      main_package_expression,
+      collapse = "\n"
+    )
+  }
+
+  output
+}
+
+
+generate_git_nix_expression <- function(package_name,
+                                        repo_url,
+                                        commit,
+                                        sri_hash,
+                                        imports,
+                                        remote_deps = NULL) {
+  # If there are remote dependencies, pass this string
+  flag_remote_deps <- if (is.null(remote_deps)) {
+    ""
+  } else {
+    # Extract package names
+    remote_pkgs_names <- sapply(remote_deps, function(x) x$package_name)
+    paste0(" ++ [ ", paste0(remote_pkgs_names, collapse = " "), " ]")
+  }
 
   sprintf(
     '
-    (pkgs.rPackages.buildRPackage {
+    %s = (pkgs.rPackages.buildRPackage {
       name = \"%s\";
       src = pkgs.fetchgit {
         url = \"%s\";
@@ -27,14 +70,16 @@ fetchgit <- function(git_pkg) {
       };
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) %s;
-      };
-    })
+      }%s;
+    });
 ',
+    package_name,
     package_name,
     repo_url,
     commit,
     sri_hash,
-    imports
+    imports,
+    flag_remote_deps
   )
 }
 
@@ -60,8 +105,7 @@ fetchzip <- function(archive_pkg, sri_hash = NULL) {
   if (is.null(sri_hash)) {
     output <- get_sri_hash_deps(repo_url, commit = NULL)
     sri_hash <- output$sri_hash
-    imports <- output$deps
-    imports <- unlist(strsplit(imports, split = " "))
+    imports <- output$deps$imports
     imports <- paste(c("", imports), collapse = "\n          ")
   } else {
     sri_hash <- sri_hash
@@ -70,7 +114,7 @@ fetchzip <- function(archive_pkg, sri_hash = NULL) {
 
   sprintf(
     '
-    (pkgs.rPackages.buildRPackage {
+    %s = (pkgs.rPackages.buildRPackage {
       name = \"%s\";
       src = pkgs.fetchzip {
        url = \"%s\";
@@ -79,8 +123,9 @@ fetchzip <- function(archive_pkg, sri_hash = NULL) {
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) %s;
       };
-    })
+    }),
 ',
+    package_name,
     package_name,
     repo_url,
     sri_hash,
@@ -105,7 +150,7 @@ remove_base <- function(list_imports) {
     list_imports
   )
 
-  paste(na.omit(imports_nobase), collapse = " ")
+  na.omit(imports_nobase)
 }
 
 
@@ -145,11 +190,59 @@ get_imports <- function(path) {
 
   columns_of_interest <- c("Depends", "Imports", "LinkingTo")
 
-  imports <- as.data.frame(read.dcf(desc_path))
+  imports_df <- as.data.frame(read.dcf(desc_path))
 
-  existing_columns <- intersect(columns_of_interest, colnames(imports))
+  existing_columns <- intersect(columns_of_interest, colnames(imports_df))
 
-  imports <- imports[, existing_columns, drop = FALSE]
+  imports <- imports_df[, existing_columns, drop = FALSE]
+
+  existing_remotes <- intersect("Remotes", colnames(imports_df))
+
+  if (!identical(existing_remotes, character(0))) {
+    remotes <- imports_df[, existing_remotes, drop = FALSE]
+    # remotes are of the form username/packagename so we need
+    # to only keep packagename
+    remotes <- gsub("\n", "", x = unlist(strsplit(remotes$Remotes, ",")))
+    # Get user names
+    remote_pkgs_usernames <- strsplit(remotes, "/") |>
+      sapply(function(x) x[[1]])
+
+    # Now remove user name and
+    # split at "@" or "#" character to get name and commit or PR separated
+    remote_pkgs_names_and_refs <- sub(".*?/", "", remotes)
+    remote_pkgs_names_and_refs <- strsplit(remote_pkgs_names_and_refs, "(@|#)")
+
+    remote_pkgs_names <- remote_pkgs_names_and_refs |>
+      sapply(function(x) x[[1]])
+
+    # Check if we have a list of lists of two elements: a package name
+    # and a ref. If not, add "HEAD" to it.
+    remote_pkgs_refs <- lapply(remote_pkgs_names_and_refs, function(sublist) {
+      if (length(sublist) == 1) {
+        c(sublist, "HEAD")
+      } else {
+        sublist
+      }
+    }) |>
+      sapply(function(x) x[[2]])
+
+    urls <- paste0(
+      "https://github.com/",
+      remote_pkgs_usernames, "/",
+      remote_pkgs_names
+    )
+
+    remote_pkgs <- lapply(seq_along(remote_pkgs_names), function(i) {
+      list(
+        "package_name" = remote_pkgs_names[i],
+        "repo_url" = urls[i],
+        "commit" = remote_pkgs_refs[i]
+      )
+    })
+  } else {
+    remote_pkgs_names <- character(0)
+    remote_pkgs <- NULL
+  }
 
   if (!is.null(imports) && length(imports) > 0) {
     output <- unname(trimws(unlist(strsplit(unlist(imports), split = ","))))
@@ -165,7 +258,17 @@ get_imports <- function(path) {
 
   output <- remove_base(unique(output))
 
-  gsub("\\.", "_", output)
+  output <- gsub("\\.", "_", output)
+
+  # Remote packages are included in imports, so we need
+  # remove remotes from imports
+  output_imports <- setdiff(output, remote_pkgs_names)
+
+  list(
+    "package" = imports_df$Package,
+    "imports" = output_imports,
+    "remotes" = remote_pkgs
+  )
 }
 
 
@@ -282,18 +385,39 @@ fetchzips <- function(archive_pkgs) {
   }
 }
 
-#' fetchpkgs Downloads and installs packages hosted in the CRAN archives or
-#' Github.
-#' @param git_pkgs A list of three elements: "package_name", the name of the
-#' package, "repo_url", the repository's url and "commit", the commit hash of
-#' interest. This argument can also be a list of lists of these four elements.
-#' @param archive_pkgs A character, or an atomic vector of characters.
-#' @return A character. The Nix definition to download and build the R package
-#' from the CRAN archives.
+#' fetchpkgs Downloads and installs packages from CRAN archives or Github
+#' @param git_pkgs List of Git packages with name, url and commit
+#' @param archive_pkgs Vector of CRAN archive package names
+#' @return Nix definition string for building the packages
 #' @noRd
 fetchpkgs <- function(git_pkgs, archive_pkgs) {
-  paste(fetchgits(git_pkgs),
+  # Only include git packages that aren't already remote dependencies
+  if (all(sapply(git_pkgs, is.list))) {
+    all_remotes <- unique(unlist(lapply(git_pkgs, get_remote)))
+    git_pkgs <- git_pkgs[!sapply(git_pkgs, function(pkg) {
+      pkg$package_name %in% all_remotes
+    })]
+  }
+
+  # Combine git and archive package definitions
+  paste(
+    fetchgits(git_pkgs),
     fetchzips(archive_pkgs),
     collapse = "\n"
   )
+}
+
+#' get_remote Retrieves the names of remote dependencies for a given Git package
+#' @param git_pkg A list of three elements: "package_name", the name of the
+#'   package, "repo_url", the repository's URL, and "commit", the commit hash of
+#'   interest.
+#' @return A character vector containing the names of remote dependencies.
+#' @noRd
+get_remote <- function(git_pkg) {
+  repo_url <- git_pkg$repo_url
+  commit <- git_pkg$commit
+  output <- get_sri_hash_deps(repo_url, commit)
+  remotes <- output$deps$remotes
+  remote_package_names <- sapply(remotes, `[[`, "package_name")
+  return(remote_package_names)
 }

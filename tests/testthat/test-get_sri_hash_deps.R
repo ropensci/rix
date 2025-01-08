@@ -6,7 +6,14 @@ testthat::test_that("get_sri_hash_deps returns correct sri hash and dependencies
     ),
     list(
       "sri_hash" = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=",
-      "deps" = "dplyr ggplot2 janitor purrr readxl rlang rvest stringr tidyr"
+      "deps" = list(
+        "package" = "housing",
+        "imports" = c(
+          "dplyr", "ggplot2", "janitor", "purrr",
+          "readxl", "rlang", "rvest", "stringr", "tidyr"
+        ),
+        "remotes" = NULL
+      )
     )
   )
 })

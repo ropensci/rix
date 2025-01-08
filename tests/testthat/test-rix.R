@@ -464,9 +464,9 @@ testthat::test_that("rix(), only one Github package", {
       r_pkgs = NULL,
       system_pkgs = NULL,
       git_pkgs = list(
-        package_name = "lookup",
-        repo_url = "https://github.com/jimhester/lookup/",
-        commit = "eba63db477dd2f20153b75e2949eb333a36cccfc"
+        package_name = "housing",
+        repo_url = "https://github.com/rap4all/housing/",
+        commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"
       ),
       ide = "other",
       project_path = path_default_nix,
