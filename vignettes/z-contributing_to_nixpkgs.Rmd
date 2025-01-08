@@ -481,7 +481,7 @@ the `rWrapper`, but `radian` is pretty neat, give it a go!)
 
 You can test if the package works, try some examples and so on. You can then also check the fix itself:
 do you understand how the fix works? Would you have done it differently? You can make suggestions to the 
-committer if you have any. If not, you can also approve the PR from Github’s interface:
+committer if you have any. If not, you can also approve the PR from GitHub’s interface:
 
-![You can leave your review on Github’s interface](images/pr_review.png)
+![You can leave your review on GitHub’s interface](images/pr_review.png)
 

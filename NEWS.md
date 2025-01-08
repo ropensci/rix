@@ -14,7 +14,7 @@
 # rix 0.14.0 (2024-12-31)
 
 - This is a major release of `{rix}`:
-  * We have forked the Nixpkgs Github repository to include more R packages in
+  * We have forked the Nixpkgs GitHub repository to include more R packages in
   Nix, and have backported many fixes, which should improve the user experience
   on Apple Silicon devices.
   * We also set up a binary cache on Cachix (many thanks to Cachix for
@@ -52,7 +52,7 @@
 # rix 0.13.2 (2024-11-20)
 
 - `renv2nix()`: switch from RemoteType to RemoteHost in `renv.lock` files to
-  detect packages to be added from Github or Gitlab
+  detect packages to be added from GitHub or Gitlab
 
 # rix 0.13.1 (2024-11-19)
 
@@ -196,7 +196,7 @@
 
 ## Chores
 
-- Github Actions: we now use rhub2 for checking the package
+- GitHub Actions: we now use rhub2 for checking the package
 - `rix::rix()` docs: explain `options(rix.sri_hash)`.
 - Source code now follows tidyverse style guide thanks to `{styler}`
 - Readme: added section explain comparing {rix} and Nix to other package
@@ -262,7 +262,7 @@
 - update with `glibcLocales` patch
 -`with_nix()` needs patch for R <= 4.2.0; `glibcLocalesUtf8` -> `gibcLocales`
 - Implement `with_nix()` to valuate function in R or shell command via `nix-shell` environment
-- Added `tar_nix_ga()`, a function to run targets pipelines on Github Actions using a Nix expression
+- Added `tar_nix_ga()`, a function to run targets pipelines on GitHub Actions using a Nix expression
 
 
 # rix 0.6.0 (2024-02-02)
@@ -373,7 +373,7 @@
   a specific nix-R session. This feature is useful to test dependencies and
   specific setups of software in controlled environments.
 
-- Added `tar_nix_ga()`, a function to run targets pipelines on Github Actions
+- Added `tar_nix_ga()`, a function to run targets pipelines on GitHub Actions
   using a Nix expression.
 
 

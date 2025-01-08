@@ -1,11 +1,11 @@
-#' ga_cachix Build an environment on Github Actions and cache it on Cachix
+#' ga_cachix Build an environment on GitHub Actions and cache it on Cachix
 #' @details This function puts a `.yaml` file inside the `.github/workflows/`
 #'   folders on the root of your project. This workflow file will use the
 #'   projects `default.nix` file to generate the development environment on
-#'   Github Actions and will then cache the created binaries in Cachix. Create a
+#'   GitHub Actions and will then cache the created binaries in Cachix. Create a
 #'   free account on Cachix to use this action. Refer to
 #'   `vignette("z-binary_cache")` for detailed instructions. Make sure to give
-#'   read and write permissions to the Github Actions bot.
+#'   read and write permissions to the GitHub Actions bot.
 #' @param cache_name String, name of your cache.
 #' @param path_default String, relative path (from the root directory of your project)
 #'   to the `default.nix` to build.

@@ -84,9 +84,9 @@ unlink(path_default_nix, recursive = TRUE, force = TRUE)
 The environment that gets built from this `default.nix` file contains R version
 4.2.2, the `{targets}` and `{tarchetypes}` packages, as well as the `{housing}`
 packages, which is a package that is hosted on GitHub only with some data and
-useful functions for the project. Because it is on Github, it gets installed
+useful functions for the project. Because it is on GitHub, it gets installed
 using the `buildRPackage` function from Nix. You can use this environment to
-work on you project, or to launch a `{targets}` pipeline. [This Github
+work on you project, or to launch a `{targets}` pipeline. [This GitHub
 repository](https://github.com/b-rodrigues/nix_targets_pipeline/tree/master)
 contains the finalized project.
 
@@ -123,7 +123,7 @@ Now, each time you drop into the Nix shell for that project using `nix-shell`,
 the pipeline gets automatically executed. `{rix}` also features a function
 called `tar_nix_ga()` that adds a GitHub Actions workflow file to make the
 pipeline run automatically on GitHub Actions. The GitHub repository linked above
-has such a file, so each time changes get pushed, the pipeline runs on Github
+has such a file, so each time changes get pushed, the pipeline runs on GitHub
 Actions and the results are automatically pushed to a branch called
 `targets-runs`. See the workflow file
 [here](https://github.com/b-rodrigues/nix_targets_pipeline/blob/master/.github/workflows/run-pipeline.yaml).

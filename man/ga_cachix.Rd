@@ -2,7 +2,7 @@
 % Please edit documentation in R/ga_cachix.R
 \name{ga_cachix}
 \alias{ga_cachix}
-\title{ga_cachix Build an environment on Github Actions and cache it on Cachix}
+\title{ga_cachix Build an environment on GitHub Actions and cache it on Cachix}
 \usage{
 ga_cachix(cache_name, path_default)
 }
@@ -16,16 +16,16 @@ to the \code{default.nix} to build.}
 Nothing, copies file to a directory.
 }
 \description{
-ga_cachix Build an environment on Github Actions and cache it on Cachix
+ga_cachix Build an environment on GitHub Actions and cache it on Cachix
 }
 \details{
 This function puts a \code{.yaml} file inside the \verb{.github/workflows/}
 folders on the root of your project. This workflow file will use the
 projects \code{default.nix} file to generate the development environment on
-Github Actions and will then cache the created binaries in Cachix. Create a
+GitHub Actions and will then cache the created binaries in Cachix. Create a
 free account on Cachix to use this action. Refer to
 \code{vignette("z-binary_cache")} for detailed instructions. Make sure to give
-read and write permissions to the Github Actions bot.
+read and write permissions to the GitHub Actions bot.
 }
 \examples{
 \dontrun{

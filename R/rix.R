@@ -82,7 +82,7 @@
 #'   argument to `"other"`. We recommend reading the
 #'   `vignette("e-interactive-use")` for more details.
 #'
-#'   Packages to install from Github or Gitlab must be provided in a list of 3
+#'   Packages to install from GitHub or Gitlab must be provided in a list of 3
 #'   elements: "package_name", "repo_url" and "commit". To install several
 #'   packages, provide a list of lists of these 3 elements, one per package to
 #'   install. It is also possible to install old versions of packages by
@@ -96,7 +96,7 @@
 #'   the Nix revision closest to that date, by setting `r_ver = "3.1.0"`, which
 #'   was the version of R current at the time. This ensures that Nix builds a
 #'   completely coherent environment. For security purposes, users that wish to
-#'   install packages from Github/Gitlab or from the CRAN archives must provide
+#'   install packages from GitHub/Gitlab or from the CRAN archives must provide
 #'   a security hash for each package. `{rix}` automatically precomputes this
 #'   hash for the source directory of R packages from GitHub/Gitlab or from the
 #'   CRAN archives, to make sure the expected trusted sources that match the
@@ -112,7 +112,7 @@
 #'   Note that installing packages from Git or old versions using the `"@"`
 #'   notation or local packages, does not leverage Nix's capabilities for
 #'   dependency solving. As such, you might have trouble installing these
-#'   packages. If that is the case, open an issue on `{rix}`'s Github
+#'   packages. If that is the case, open an issue on `{rix}`'s GitHub
 #'   repository.
 #'
 #'   By default, the Nix shell will be configured with `"en_US.UTF-8"` for the

@@ -25,7 +25,7 @@ Bioconductor, but not on GitHub. However, there are many packages available on
 GitHub that never get published on CRAN, and some of these packages may even
 depend on other packages that are also only available on GitHub. `{rix}` makes
 it possible to install packages from GitHub and if these packages have
-dependencies that are also on Github, these also get correctly added to the
+dependencies that are also on GitHub, these also get correctly added to the
 generated `default.nix`.
 
 There are however certain caveats you should be aware of.
@@ -182,7 +182,7 @@ pkgs.mkShell {
 }
 ```
 
-as you can see, several other packages hosted on Github were added
+as you can see, several other packages hosted on GitHub were added
 automatically. This is because these were listed as remote dependencies in
 `{lookup}`'s `DESCRIPTION` file:
 

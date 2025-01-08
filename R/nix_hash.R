@@ -3,7 +3,7 @@
 #' @param repo_url URL to Git repository
 #' @param commit Commit hash (SHA-1)
 #' @return list with following elements:
-#' - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
+#' - `sri_hash`: string with SRI hash of the NAR serialization of a GitHub repo
 #'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
@@ -14,8 +14,8 @@ nix_hash <- function(repo_url, commit) {
     hash_cran(repo_url = repo_url)
   } else {
     stop(
-      "repo_url argument is wrong. Please provide an url to a Github repo",
-      "to install a package from Github, or to the CRAN Archive to install a",
+      "repo_url argument is wrong. Please provide an url to a GitHub repo",
+      "to install a package from GitHub, or to the CRAN Archive to install a",
       "package from the CRAN archive."
     )
   }
@@ -25,7 +25,7 @@ nix_hash <- function(repo_url, commit) {
 #' Return the SRI hash of an URL with .tar.gz
 #' @param url String with URL ending with `.tar.gz`
 #' @return list with following elements:
-#' - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
+#' - `sri_hash`: string with SRI hash of the NAR serialization of a GitHub repo
 #'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
@@ -66,7 +66,7 @@ hash_url <- function(url) {
   # extra diagnostics
   extra_diagnostics <-
     c(
-      "\nIf it's a Github repo, check the url and commit.\n",
+      "\nIf it's a GitHub repo, check the url and commit.\n",
       "Are these correct? If it's an archived CRAN package, check the name\n",
       "of the package and the version number."
     )
@@ -193,7 +193,7 @@ hash_cran <- function(repo_url) {
 #' @param repo_url URL to GitHub repository
 #' @param commit Commit hash
 #' @return list with following elements:
-#' - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
+#' - `sri_hash`: string with SRI hash of the NAR serialization of a GitHub repo
 #'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
@@ -218,14 +218,14 @@ hash_git <- function(repo_url, commit) {
 }
 
 
-#' Get the SRI hash of the NAR serialization of a Github repo, if nix is not
+#' Get the SRI hash of the NAR serialization of a GitHub repo, if nix is not
 #' available locally
-#' @param repo_url A character. The URL to the package's Github repository or to
+#' @param repo_url A character. The URL to the package's GitHub repository or to
 #' the `.tar.gz` package hosted on CRAN.
 #' @param commit A character. The commit hash of interest, for reproducibility's
 #' sake, NULL for archived CRAN packages.
 #' @return list with following elements:
-#' - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
+#' - `sri_hash`: string with SRI hash of the NAR serialization of a GitHub repo
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
 nix_hash_online <- function(repo_url, commit) {
@@ -240,7 +240,7 @@ nix_hash_online <- function(repo_url, commit) {
   # extra diagnostics
   extra_diagnostics <-
     c(
-      "\nIf it's a Github repo, check the url and commit.\n",
+      "\nIf it's a GitHub repo, check the url and commit.\n",
       "Are these correct? If it's an archived CRAN package, check the name\n",
       "of the package and the version number."
     )
@@ -262,12 +262,12 @@ nix_hash_online <- function(repo_url, commit) {
 #' Return the sri hash of a path using `nix-hash --type sha256 --sri <path>`
 #' with local Nix, or using an online API service (equivalent
 #' `nix hash path --sri <path>`) if Nix is not available
-#' @param repo_url A character. The URL to the package's Github repository or to
+#' @param repo_url A character. The URL to the package's GitHub repository or to
 #' the `.tar.gz` package hosted on CRAN.
 #' @param commit A character. The commit hash of interest, for reproducibility's
 #' sake, NULL for archived CRAN packages.
 #' @return list with following elements:
-#' - `sri_hash`: string with SRI hash of the NAR serialization of a Github repo
+#' - `sri_hash`: string with SRI hash of the NAR serialization of a GitHub repo
 #'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd

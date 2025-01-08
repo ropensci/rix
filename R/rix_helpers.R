@@ -231,10 +231,10 @@ generate_system_pkgs <- function(system_pkgs, r_pkgs) {
 
 #' generate_git_archived_pkgs Internal function that generates the string
 #' containing the correct Nix expression to get system packages.
-#' @param git_pkgs Character, list of R packages to install from Github.
+#' @param git_pkgs Character, list of R packages to install from GitHub.
 #' @param archive_pkgs Character, list of R packages to install from the CRAN
 #' archives.
-#' @param flag_git_archive Character, are there R packages from Github at all?
+#' @param flag_git_archive Character, are there R packages from GitHub at all?
 #' @noRd
 generate_git_archived_pkgs <- function(git_pkgs,
                                        archive_pkgs,
@@ -294,7 +294,7 @@ generate_locale_variables <- function() {
 #'   other editors, use "other". This has been tested with RStudio, VS Code and
 #'   Emacs. If other editors don't work, please open an issue.
 #' @param attrib Character, set the correct wrapper for the Nix expression.
-#' @param flag_git_archive Character, are there R packages from Github at all?
+#' @param flag_git_archive Character, are there R packages from GitHub at all?
 #' @param flag_rpkgs Character, are there any R packages at all?
 #' @param flag_local_r_pkgs Character, are there any local R packages at all?
 #' @noRd
@@ -325,7 +325,7 @@ generate_wrapped_pkgs <- function(ide,
 
 #' generate_wrapped_pkgs Internal function that generates the string containing
 #' the correct Nix expression to get wrapped packages.
-#' @param flag_git_archive Character, are there R packages from Github at all?
+#' @param flag_git_archive Character, are there R packages from GitHub at all?
 #' @param flag_rpkgs Character, are there any R packages at all?
 #' @param flag_tex_pkgs Character, are there any LaTex packages at all?
 #' @param flag_local_r_pkgs Character, are there any wrapped packages at all?

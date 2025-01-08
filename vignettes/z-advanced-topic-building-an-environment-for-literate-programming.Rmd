@@ -309,13 +309,13 @@ export HOME=$PWD/home
 (`$PWD` —Print Working Directory— is a shell variable referring to the current
 working directory.)
 
-Now, we need to install the template that we cloned from Github. For this we can
+Now, we need to install the template that we cloned from GitHub. For this we can
 use `quarto add` just as before, but instead of installing it directly from
-Github, we install it from the repository that we cloned. We also add the
+GitHub, we install it from the repository that we cloned. We also add the
 `--no-prompt` flag so that the template gets installed without asking us for
 confirmation. This is similar to how when building a Docker image, we don't want
 any interactive prompt to show up, or else the process will get stuck. `$src`
-refers to the path of our downloaded Github repository. Finally we can compile
+refers to the path of our downloaded GitHub repository. Finally we can compile
 the document:
 
 ```

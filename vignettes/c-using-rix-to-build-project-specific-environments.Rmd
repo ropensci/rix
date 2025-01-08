@@ -339,7 +339,7 @@ installed will be the versions available in that date as well. This means that R
 versions and package versions are always coupled when using Nix. However, if you
 need a specific version of R, but also a specific version of a package that is
 not available in that particular Nix revision, one solution is to install that
-package from Github or from the CRAN archives. Read the vignette
+package from GitHub or from the CRAN archives. Read the vignette
 `vignette("d1-installing-r-packages-in-a-nix-environment")` to know more about
 this.
 

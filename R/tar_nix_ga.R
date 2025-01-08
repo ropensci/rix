@@ -1,9 +1,9 @@
-#' tar_nix_ga Run a \{targets\}  pipeline on Github Actions.
+#' tar_nix_ga Run a \{targets\}  pipeline on GitHub Actions.
 #' @details This function puts a `.yaml` file inside the `.github/workflows/`
 #' folders on the root of your project. This workflow file will use the
 #' projects `default.nix` file to generate the development environment on
-#' Github Actions and will then run the projects \{targets\} pipeline. Make
-#' sure to give read and write permissions to the Github Actions bot.
+#' GitHub Actions and will then run the projects \{targets\} pipeline. Make
+#' sure to give read and write permissions to the GitHub Actions bot.
 #' @return Nothing, copies file to a directory.
 #' @export
 #' @examples

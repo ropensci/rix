@@ -30,7 +30,7 @@ It is important at this stage to understand that you should not call
 `install.packages()` from a running Nix environment. Doing so will raise an
 error to avoid issues. If you want to add packages while analyzing data, you
 need to add it the `default.nix` expression and rebuild the environment. The
-same goes for installing packages from Github; use the method described in this
+same goes for installing packages from GitHub; use the method described in this
 vignette instead of using something like `remotes::install_github()`.
 
 We recommend you create a script called `create_env.R` or similar, and add the call to `rix()` there:
@@ -175,9 +175,9 @@ packages that don't require compilation, this should be fine, but packages that
 require compilation will likely fail to compile successfully. We are working on
 handling this better for future versions of `{rix}`.
 
-## Installing packages from Github
+## Installing packages from GitHub
 
-It is also possible to install packages from Github:
+It is also possible to install packages from GitHub:
 
 ```{r, eval = F}
 path_default_nix <- tempdir()
@@ -303,7 +303,7 @@ rix(
 #> }
 ```
 
-This will install two packages from Github: the `{housing}` package and more
+This will install two packages from GitHub: the `{housing}` package and more
 specifically the code as it is in the `fusen` branch; however the branch name is
 not required, as the commit is enough to pin the exact version of the code
 needed. The `{fusen}` package is also installed, as of commit `d617172447d`.
@@ -326,7 +326,7 @@ This assumes that both `chronicler_0.2.1.tar.gz` and `knitr_1.43.tar.gz` have
 been downloaded beforehand. If you want to include a local package that you are
 developing, make sure to first build it using `devtools::build()` to build the
 `.tar.gz` archive, but if you can, consider uploading the source code to your
-package on Github and installing it from Github instead.
+package on GitHub and installing it from GitHub instead.
 
 ## Converting from an renv.lock file
 

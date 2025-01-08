@@ -3,7 +3,7 @@
 #'   package, "repo_url", the repository's url, "commit", the commit hash of
 #'   interest.
 #' @return A character. The Nix definition to download and build the R package
-#'   from Github.
+#'   from GitHub.
 #' @noRd
 fetchgit <- function(git_pkg) {
   package_name <- git_pkg$package_name
@@ -341,7 +341,7 @@ fetchlocals <- function(local_r_pkgs) {
 #' package, "repo_url", the repository's url and "commit", the commit hash of
 #' interest. This argument can also be a list of lists of these three elements.
 #' @return A character. The Nix definition to download and build the R package
-#' from Github.
+#' from GitHub.
 #' @noRd
 fetchgits <- function(git_pkgs) {
   if (!all(vapply(git_pkgs, is.list, logical(1)))) {
@@ -385,7 +385,7 @@ fetchzips <- function(archive_pkgs) {
   }
 }
 
-#' fetchpkgs Downloads and installs packages from CRAN archives or Github
+#' fetchpkgs Downloads and installs packages from CRAN archives or GitHub
 #' @param git_pkgs List of Git packages with name, url and commit
 #' @param archive_pkgs Vector of CRAN archive package names
 #' @return Nix definition string for building the packages

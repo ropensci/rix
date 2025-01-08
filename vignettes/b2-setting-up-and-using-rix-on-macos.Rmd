@@ -179,8 +179,8 @@ on macOS. When you try to generate an expression with `ide =
   These other editors don't need to be installed through `nixpkgs` to use Nix 
   environments, unlike RStudio;
 - if you're working on a pipeline with the `{targets}` package, you could run it
-  on Github Actions. This means you could work on the code on RStudio outside
-  of the Nix environment, as the code will only be executed on Github Actions 
+  on GitHub Actions. This means you could work on the code on RStudio outside
+  of the Nix environment, as the code will only be executed on GitHub Actions 
   runners. See this vignette 
   `vignette("z-advanced-topic-reproducible-analytical-pipelines-with-nix")` for
   further details;

@@ -22,7 +22,7 @@ library(rix)
 
 More than 100'000 pieces of software are available through the Nix package
 manager. Nix's repository of packages is called `nixpkgs` and it includes the
-entirety of CRAN and Bioconductor. `nixpkgs` is actually "just" a Github
+entirety of CRAN and Bioconductor. `nixpkgs` is actually "just" a GitHub
 repository containing thousands upon thousands of Nix expressions. When
 installing a package, these expressions get evaluated, and the package in
 question gets installed. What "installed" means can vary: sometimes the package
@@ -33,7 +33,7 @@ For example,
 [here](https://github.com/NixOS/nixpkgs/blob/dce218f4f35440622d2056f93ddc335351763bb4/pkgs/development/libraries/quarto/default.nix)
 is the Nix expression that downloads and installs [Quarto](https://quarto.org/).
 This is an example of an expression that downloads the pre-compiled
-binary from Quarto’s own Github repository, and then installs it. The
+binary from Quarto’s own GitHub repository, and then installs it. The
 installation process in this case is essentially making sure that Quarto is able
 to find its dependencies, which also get installed from Nix, and some R and
 Python packages to make Quarto work well with both languages also get installed.

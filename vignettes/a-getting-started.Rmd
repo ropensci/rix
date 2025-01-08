@@ -188,7 +188,7 @@ error if you try to use it.
 - the R version you need for your project or a snapshot date;
 - a list of R packages that your project needs;
 - an optional list of additional software (for example a Python interpreter, or Quarto);
-- an optional list with packages to install from Github;
+- an optional list with packages to install from GitHub;
 - an optional list of local packages in `.tar.gz` format to install;
 - an optional list of LaTeX packages;
 - whether you want to use RStudio as an IDE for your project (or VS Code, or another environment);
