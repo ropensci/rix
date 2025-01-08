@@ -14,10 +14,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r, include=FALSE}
-library(rix)
-```
-
 ## Introduction
 
 Isolated environments are great to run pipelines in a safe and reproducible
@@ -25,33 +21,11 @@ manner. This vignette details how to build a reproducible analytical pipeline
 using an environment built with Nix that contains the right version of R and
 packages.
 
-
 ## An example of a reproducible analytical pipeline using Nix
 
 Suppose that you've used `{targets}` to build a pipeline for a project and that
 you did so using a tailor-made Nix environment. Here is the call to `rix()` that
 you could have used to build that environment:
-
-```{r, include = F}
-path_default_nix <- paste0(
-  tempdir(), "repo",
-  paste0(sample(letters, 5), collapse = "")
-)
-
-rix(
-  r_ver = "4.2.2",
-  r_pkgs = c("targets", "tarchetypes", "rmarkdown"),
-  system_pkgs = NULL,
-  git_pkgs = list(
-    package_name = "housing",
-    repo_url = "https://github.com/rap4all/housing/",
-    commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"
-  ),
-  ide = "other",
-  project_path = path_default_nix,
-  overwrite = TRUE
-)
-```
 
 ```{r, eval = F}
 path_default_nix <- tempdir()
@@ -73,12 +47,59 @@ rix(
 
 This call to `rix()` generates the following `default.nix` file:
 
-```{r parsermd-chunk-2, echo = F}
-cat(readLines(paste0(path_default_nix, "/default.nix")), sep = "\n")
 ```
+let
+ pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2023-02-13.tar.gz") {};
+ 
+  rpkgs = builtins.attrValues {
+    inherit (pkgs.rPackages) 
+      rmarkdown
+      tarchetypes
+      targets;
+  };
+ 
+    housing = (pkgs.rPackages.buildRPackage {
+      name = "housing";
+      src = pkgs.fetchgit {
+        url = "https://github.com/rap4all/housing/";
+        rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";
+        sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages) 
+          dplyr
+          ggplot2
+          janitor
+          purrr
+          readxl
+          rlang
+          rvest
+          stringr
+          tidyr;
+      };
+    });
+    
+  system_packages = builtins.attrValues {
+    inherit (pkgs) 
+      glibcLocales
+      nix
+      R;
+  };
+  
+in
 
-```{r, include = FALSE}
-unlink(path_default_nix, recursive = TRUE, force = TRUE)
+pkgs.mkShell {
+  LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
+  LANG = "en_US.UTF-8";
+   LC_ALL = "en_US.UTF-8";
+   LC_TIME = "en_US.UTF-8";
+   LC_MONETARY = "en_US.UTF-8";
+   LC_PAPER = "en_US.UTF-8";
+   LC_MEASUREMENT = "en_US.UTF-8";
+
+  buildInputs = [ housing rpkgs  system_packages   ];
+  
+}
 ```
 
 The environment that gets built from this `default.nix` file contains R version
