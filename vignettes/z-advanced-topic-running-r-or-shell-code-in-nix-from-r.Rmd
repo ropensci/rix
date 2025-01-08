@@ -14,10 +14,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r, include=FALSE}
-library(rix)
-```
-
 ## **Testing code in evolving software dependency environments with confidence**
 
 Adhering to sound versioning practices is crucial for ensuring the
@@ -98,7 +94,7 @@ rix(
 The following expression is written to default.nix in the subfolder
 `./_env_1_R-4-1-3/`.
 
-```{r parsermd-chunk-4}
+```
 let
  pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2022-04-19.tar.gz") {};
      
@@ -308,10 +304,6 @@ R 4.1.3 vs. R 4.2.0 environments controlled by Nix.
 ```{r parsermd-chunk-15, eval = FALSE}
 identical(out_nix_1, out_nix_1_2)
 # yields FALSE
-```
-
-```{r, include = FALSE}
-unlink(path_env_1_2, recursive = TRUE, force = TRUE)
 ```
 
 ## **Case study 2: Breaking changes in {stringr} 1.5.0**

@@ -14,10 +14,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r, include=FALSE}
-library(rix)
-```
-
 ## Introduction
 
 If you want to help us make the R ecosystem better on Nix by fixing packages,
