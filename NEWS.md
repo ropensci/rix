@@ -1,9 +1,14 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.14.3 (2025-01-08)
+
+- `rix()`: packages hosted on GitHub which have dependencies also hosted on GitHub
+  are correctly handled.
+
 # rix 0.14.2 (2025-01-01)
 
 - `rix()`: it is now possible to generate expressions pointing to the development
-  version of R and Bioconductor by using `rix(r_ver = "r-devel")` 
+  version of R and Bioconductor by using `rix(r_ver = "r-devel")`
   and `rix(r_ver = "r-devel-bioc-devel)`.
 
 # rix 0.14.1 (2025-01-01)
