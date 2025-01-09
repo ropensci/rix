@@ -46,9 +46,11 @@ including system-level dependencies.
 While Nix has a steep learning curve, `{rix}`
 
 1. simplifies creating Nix expressions, which define reproducible environments,
+   also from `renv.lock` files;
 2. lets you work interactively in IDEs like RStudio or VS Code, or use Nix in
-   CI/CD workflows,
-3. provides helpers that make it easy to build those environments, evaluate the
+   CI/CD workflows;
+3. makes it easy to create Docker images with the right packages;
+4. provides helpers that make it easy to build those environments, evaluate the
    same code in different development environments, and finally to deploy
    software environments in production.
 
@@ -201,9 +203,8 @@ The table below illustrates this all the different types of environment you can 
 </table>
 ```
 
-
 If you want to benefit from relatively fresh packages and have a stable environment
-that for production purposes, using a date for `r_ver` is your best option.
+for production purposes, using a date for `r_ver` is likely your best option.
 
 ## Quick-start for returning users
 
