@@ -28,9 +28,8 @@ fetchgit <- function(git_pkg) {
     remotes
   )
 
-  if (is.null(remotes) | (is.list(remotes) & length(remotes) == 0)) {
-    # if no remote dependencies: can be NULL if nix_hash runs locally
-    # but will be empty list if nix_hash runs on the api
+  if (is.list(remotes) & length(remotes) == 0) {
+    # if no remote dependencies
 
     output <- main_package_expression
   } else { # if there are remote dependencies, start over
@@ -45,15 +44,24 @@ fetchgit <- function(git_pkg) {
   output
 }
 
-
+#' generate_git_nix_expression Generate Nix expression for fetchgit()
+#' @param package_name A character, Git package name.
+#' @param repo_url A character, Git repo url.
+#' @param commit A character, Git commit.
+#' @param sri_hash A character, hash of Git repo.
+#' @param imports A list of pcakages, can be empty list
+#' @param remotes A list of remotes dependencies, can be empty list
+#' @return A character. Part of the Nix definition to download and build the R package
+#' from the CRAN archives.
+#' @noRd
 generate_git_nix_expression <- function(package_name,
                                         repo_url,
                                         commit,
                                         sri_hash,
                                         imports,
-                                        remote_deps = NULL) {
+                                        remotes = NULL) {
   # If there are remote dependencies, pass this string
-  flag_remote_deps <- if (is.null(remote_deps)) {
+  flag_remote_deps <- if (is.list(remotes) & length(remotes) == 0) {
     ""
   } else {
     # Extract package names
