@@ -320,8 +320,8 @@ to use `{rix}` to set up an environment with R and Python packages for
 example).
 
 Take a look at <https://devenv.sh/> and
-\[<https://prefix.dev/>\](<https://prefix.dev/>\*\* if you want to
-explore other tools that make using Nix easier!
+[https://prefix.dev/](https://prefix.dev) if you want to explore other
+tools that make using Nix easier!
 
 ## What’s the recommended workflow?
 
