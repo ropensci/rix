@@ -72,7 +72,7 @@ let
           zoo
           Formula;
       };
-    }),
+    });
  
   tex = (pkgs.texlive.combine {
     inherit (pkgs.texlive) 
