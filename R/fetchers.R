@@ -133,7 +133,7 @@ fetchzip <- function(archive_pkg, sri_hash = NULL) {
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) %s;
       };
-    }),
+    });
 ',
     package_name,
     package_name,
