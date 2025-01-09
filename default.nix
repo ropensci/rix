@@ -15,7 +15,8 @@ let
       rmarkdown
       styler
       sys
-      testthat;
+      testthat
+      urlchecker;
   };
   
   tex = (pkgs.texlive.combine {

@@ -327,8 +327,6 @@ that make using Nix easier!
 
 ## What's the recommended workflow?
 
-*If you prefer to watch a video, [click here]()*
-
 Ideally, you shouldn't be using a system-wide installation of R, and instead
 use dedicated Nix environments for each of your projects.
 
@@ -340,10 +338,10 @@ library(rix)
 path_default_nix <- "."
 
 rix(
-  r_ver = "4.3.3",                       # Change to whatever R version you need
-  r_pkgs = c("dplyr", "ggplot2", "rix"), # Change to whatever packages you need, it might
-  system_pkgs = NULL,                    # be a good idea to include rix as well if you need 
-  git_pkgs = NULL,                       # to re-generate the expression later on
+  r_ver = "4.3.3",                # Change to whatever R version you need
+  r_pkgs = c("dplyr", "ggplot2")  # Change to whatever packages you need
+  system_pkgs = NULL
+  git_pkgs = NULL,
   ide = "code",
   project_path = path_default_nix,
   overwrite = TRUE,
