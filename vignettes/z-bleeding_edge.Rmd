@@ -70,7 +70,7 @@ illustrates this more clearly:
 <table border="1">
   <thead>
     <tr>
-      <th>r_ver</th>
+      <th>r_ver or date</th>
       <th>Intended use</th>
       <th>State of R version</th>
       <th>State of CRAN packages</th>
@@ -80,7 +80,7 @@ illustrates this more clearly:
   </thead>
   <tbody>
     <tr>
-      <td>"latest-upstream"</td>
+      <td>r_ver = "latest-upstream"</td>
       <td>Start of new project where versions don’t matter</td>
       <td>Current or previous</td>
       <td>Outdated (up to 6 months)</td>
@@ -88,23 +88,23 @@ illustrates this more clearly:
       <td>Current at time of generation</td>
     </tr>
     <tr>
-      <td>"4.4.2" (or other)</td>
+      <td>r_ver = "4.4.2" (or other)</td>
       <td>Reproducing old project or starting a new project where versions don’t matter</td>
-      <td>Same as in `r_ver`</td>
+      <td>Same as in `r_ver`, check `available_r()`</td>
       <td>Outdated (up to 2 months if using latest release)</td>
       <td>Outdated (up to 2 months if using latest release)</td>
       <td>Potentially outdated (up to 12 months)</td>
     </tr>
     <tr>
-      <td>"2024-12-14" (date)</td>
+      <td>date = "2024-12-14"</td>
       <td>Reproducing old project or starting a new project using the most recent date</td>
-      <td>Current at that date</td>
-      <td>Current at that date</td>
-      <td>Current at that date</td>
+      <td>Current at that date, check `available_dates()`</td>
+      <td>Current at that date, check `available_dates()`</td>
+      <td>Current at that date, check `available_dates()`</td>
       <td>Potentially outdated (up to 12 months)</td>
     </tr>
     <tr>
-      <td>"bleeding-edge"</td>
+      <td>r_ver = "bleeding-edge"</td>
       <td>To develop against the latest release of CRAN</td>
       <td>Always current</td>
       <td>Always current</td>
@@ -112,7 +112,7 @@ illustrates this more clearly:
       <td>Always current</td>
     </tr>
     <tr>
-      <td>"frozen-edge"</td>
+      <td>r_ver = "frozen-edge"</td>
       <td>To develop against the latest release of CRAN, but manually manage updates</td>
       <td>Current at time of generation</td>
       <td>Current at time of generation</td>
@@ -120,7 +120,7 @@ illustrates this more clearly:
       <td>Current at time of generation</td>
     </tr>
     <tr>
-      <td>"r-devel"</td>
+      <td>r_ver = "r-devel"</td>
       <td>To develop/test against the development version of R</td>
       <td>Development version</td>
       <td>Always current</td>
@@ -128,7 +128,7 @@ illustrates this more clearly:
       <td>Always current</td>
     </tr>
     <tr>
-      <td>"r-devel-bioc-devel"</td>
+      <td>r_ver = "r-devel-bioc-devel"</td>
       <td>To develop/test against the development version of R and Bioconductor</td>
       <td>Development version</td>
       <td>Always current</td>
@@ -136,7 +136,7 @@ illustrates this more clearly:
       <td>Always current</td>
     </tr>
     <tr>
-      <td>"bioc-devel"</td>
+      <td>r_ver = "bioc-devel"</td>
       <td>To develop/test against the development version of Bioconductor</td>
       <td>Always current</td>
       <td>Always current</td>

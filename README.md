@@ -38,10 +38,11 @@ snapshot, including system-level dependencies.
 While Nix has a steep learning curve, `{rix}`
 
 1.  simplifies creating Nix expressions, which define reproducible
-    environments,
+    environments, also from `renv.lock` files;
 2.  lets you work interactively in IDEs like RStudio or VS Code, or use
-    Nix in CI/CD workflows,
-3.  provides helpers that make it easy to build those environments,
+    Nix in CI/CD workflows;
+3.  makes it easy to create Docker images with the right packages;
+4.  provides helpers that make it easy to build those environments,
     evaluate the same code in different development environments, and
     finally to deploy software environments in production.
 
@@ -119,7 +120,7 @@ you can generate:
 <table border="1">
   <thead>
     <tr>
-      <th>r_ver</th>
+      <th>r_ver or date</th>
       <th>Intended use</th>
       <th>State of R version</th>
       <th>State of CRAN packages</th>
@@ -129,7 +130,7 @@ you can generate:
   </thead>
   <tbody>
     <tr>
-      <td>"latest-upstream"</td>
+      <td>r_ver = "latest-upstream"</td>
       <td>Start of new project where versions don’t matter</td>
       <td>Current or previous</td>
       <td>Outdated (up to 6 months)</td>
@@ -137,23 +138,23 @@ you can generate:
       <td>Current at time of generation</td>
     </tr>
     <tr>
-      <td>"4.4.2" (or other)</td>
+      <td>r_ver = "4.4.2" (or other)</td>
       <td>Reproducing old project or starting a new project where versions don’t matter</td>
-      <td>Same as in `r_ver`</td>
+      <td>Same as in `r_ver`, check `available_r()`</td>
       <td>Outdated (up to 2 months if using latest release)</td>
       <td>Outdated (up to 2 months if using latest release)</td>
       <td>Potentially outdated (up to 12 months)</td>
     </tr>
     <tr>
-      <td>"2024-12-14" (date)</td>
+      <td>date = "2024-12-14"</td>
       <td>Reproducing old project or starting a new project using the most recent date</td>
-      <td>Current at that date</td>
-      <td>Current at that date</td>
-      <td>Current at that date</td>
+      <td>Current at that date, check `available_dates()`</td>
+      <td>Current at that date, check `available_dates()`</td>
+      <td>Current at that date, check `available_dates()`</td>
       <td>Potentially outdated (up to 12 months)</td>
     </tr>
     <tr>
-      <td>"bleeding-edge"</td>
+      <td>r_ver = "bleeding-edge"</td>
       <td>To develop against the latest release of CRAN</td>
       <td>Always current</td>
       <td>Always current</td>
@@ -161,7 +162,7 @@ you can generate:
       <td>Always current</td>
     </tr>
     <tr>
-      <td>"frozen-edge"</td>
+      <td>r_ver = "frozen-edge"</td>
       <td>To develop against the latest release of CRAN, but manually manage updates</td>
       <td>Current at time of generation</td>
       <td>Current at time of generation</td>
@@ -169,7 +170,7 @@ you can generate:
       <td>Current at time of generation</td>
     </tr>
     <tr>
-      <td>"r-devel"</td>
+      <td>r_ver = "r-devel"</td>
       <td>To develop/test against the development version of R</td>
       <td>Development version</td>
       <td>Always current</td>
@@ -177,7 +178,7 @@ you can generate:
       <td>Always current</td>
     </tr>
     <tr>
-      <td>"r-devel-bioc-devel"</td>
+      <td>r_ver = "r-devel-bioc-devel"</td>
       <td>To develop/test against the development version of R and Bioconductor</td>
       <td>Development version</td>
       <td>Always current</td>
@@ -185,7 +186,7 @@ you can generate:
       <td>Always current</td>
     </tr>
     <tr>
-      <td>"bioc-devel"</td>
+      <td>r_ver = "bioc-devel"</td>
       <td>To develop/test against the development version of Bioconductor</td>
       <td>Always current</td>
       <td>Always current</td>
@@ -196,7 +197,7 @@ you can generate:
 </table>
 
 If you want to benefit from relatively fresh packages and have a stable
-environment that for production purposes, using a date for `r_ver` is
+environment for production purposes, using a date for `r_ver` is likely
 your best option.
 
 ## Quick-start for returning users
