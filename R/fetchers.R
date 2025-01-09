@@ -28,7 +28,9 @@ fetchgit <- function(git_pkg) {
     remotes
   )
 
-  if (is.null(remotes)) { # if no remote dependencies
+  if (is.null(remotes) | (is.list(remotes) & length(remotes) == 0)) {
+    # if no remote dependencies: can be NULL if nix_hash runs locally
+    # but will be empty list if nix_hash runs on the api
 
     output <- main_package_expression
   } else { # if there are remote dependencies, start over
