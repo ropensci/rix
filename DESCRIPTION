@@ -2,26 +2,26 @@ Package: rix
 Title: Reproducible Data Science Environments with 'Nix'
 Version: 0.14.3
 Authors@R: c(
-    person("Bruno", "Rodrigues", , "bruno@brodrigues.co", role = c("aut", "cre"),
+    person(given = "Bruno", family = "Rodrigues", email = "bruno@brodrigues.co", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3211-3689")),
-    person("Philipp", "Baumann", , "baumann-philipp@protonmail.com", role = "aut",
+    person(given = "Philipp", family = "Baumann", email = "baumann-philipp@protonmail.com", role = "aut",
            comment = c(ORCID = "0000-0002-3194-8975")),
-    person("David", "Watkins", , "wwatkins@usgs.gov", role = "rev",
+    person(given = "David", family = "Watkins", email = "wwatkins@usgs.gov", role = "rev",
            comment = c("David reviewed the package (v. 0.9.1) for rOpenSci,
                         see <https://github.com/ropensci/software-review/issues/625>")),
-    person("Jacob", "Wujiciak-Jens", , "jacob@wujciak.de", role = "rev",
+    person(given = "Jacob", family = "Wujiciak-Jens", , "jacob@wujciak.de", role = "rev",
            comment = c(ORCID = "0000-0002-7281-3989", "Jacob reviewed the
                        package (v. 0.9.1) for rOpenSci,
                        see <https://github.com/ropensci/software-review/issues/625>")),
-    person("Richard J.", "Acton", , "actonr@babraham.ac.uk", role = "ctb",
+    person(given = "Richard J.", family = "Acton", email = "actonr@babraham.ac.uk", role = "ctb",
            comment = c(ORCID = "0000-0002-2574-9611")),
-    person("Jordi", "Rosell", , "jroselln@gmail.com", role = "ctb",
+    person(given = "Jordi", family = "Rosell", email = "jroselln@gmail.com", role = "ctb",
            comment = c(ORCID = "0000-0002-4349-1458")),
-    person("Elio", "Campitelli", , "eliocampitelli@gmail.com", role = "ctb",
+    person(given = "Elio", family = "Campitelli", email = "eliocampitelli@gmail.com", role = "ctb",
            comment = c(ORCID = "0000-0002-7742-9230")),
-    person("László", "Kupcsik", , "koopac@gmail.com", role = "ctb",
-           comment = c(ORCID = "0000-0003-3535-5496)")),
-    person("Michael", "Heming", , "mhem@mailbox.org", role = "ctb",
+    person(given = "László", family = "Kupcsik", email = "koopac@gmail.com", role = "ctb",
+           comment = c(ORCID = "0000-0003-3535-5496")),
+    person(given = "Michael", family = "Heming", email = "mhem@mailbox.org", role = "ctb",
            comment = c(ORCID = "0000-0002-9568-2790"))
   )
 Description: Simplifies the creation of reproducible data science environments
