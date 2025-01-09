@@ -65,7 +65,7 @@ generate_git_nix_expression <- function(package_name,
     ""
   } else {
     # Extract package names
-    remote_pkgs_names <- sapply(remote_deps, function(x) x$package_name)
+    remote_pkgs_names <- sapply(remotes, function(x) x$package_name)
     paste0(" ++ [ ", paste0(remote_pkgs_names, collapse = " "), " ]")
   }
 
