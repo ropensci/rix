@@ -243,7 +243,7 @@ get_imports <- function(path) {
     })
   } else {
     remote_pkgs_names <- character(0)
-    remote_pkgs <- NULL
+    remote_pkgs <- list()
   }
 
   if (!is.null(imports) && length(imports) > 0) {
