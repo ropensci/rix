@@ -35,7 +35,7 @@ jobs:
 
       - name: Build default.nix with 2 git packages
         run: |
-          nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix('4.4.2', git_pkgs = list(list(package_name = 'highlite', repo_url = 'https://github.com/jimhester/highlite/', commit = '767b122ef47a60a01e1707e4093cf3635a99c86b'), list(package_name = 'housing', repo_url = 'https://github.com/rap4all/housing/', commit = '1c860959310b80e67c41f7bbdc3e84cef00df18e')), project_path = '.', overwrite = TRUE)\""
+          nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix('4.4.2', git_pkgs = list(list(package_name = 'scMisc', repo_url = 'https://github.com/mihem/scMisc/', commit = 'e2ebddcb779b935551f14216514c0429616fc91d'), list(package_name = 'housing', repo_url = 'https://github.com/rap4all/housing/', commit = '1c860959310b80e67c41f7bbdc3e84cef00df18e')), project_path = '.', overwrite = TRUE)\""
 
       - name: Check generated default.nix
         run: cat default.nix
