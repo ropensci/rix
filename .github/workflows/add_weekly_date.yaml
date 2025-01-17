@@ -14,7 +14,7 @@ jobs:
     env:
      GH_TOKEN: ${{ github.token }}
      GITHUB_PAT: ${{ secrets.UPDATE_AVAILABLE_CSV }}
-     branch_date=$(date '+%Y-%m-%d')
+     branch_date: $(date '+%Y-%m-%d')
 
     steps:
       - name: Clone nixpkgs repository
