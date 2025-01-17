@@ -13,9 +13,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout current repository
-        uses: actions/checkout@v4
-
       - name: Clone nixpkgs repository
         run: |
           branch_date=$(date '+%Y-%m-%d')
@@ -53,9 +50,14 @@ jobs:
             };
             await runStatus();
 
+      - name: Remove repo
+        run: rm -rf nixpkgs
+
+      - name: Checkout current repository
+        uses: actions/checkout@v4
+
       - name: Update available_df.csv
         run: |
-          cd $GITHUB_WORKSPACE
           date_today=$(date '+%Y-%m-%d')
           echo "\"2024\",\"4.4.2\",\"3.20\",\"$date_today\",\"supported\",\"supported\",\"might work\"" >> inst/extdata/available_df.csv
 
