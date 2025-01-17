@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
      GH_TOKEN: ${{ github.token }}
-     GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+     GITHUB_PAT: ${{ secrets.UPDATE_AVAILABLE_CSV }}
 
     steps:
       - name: Clone nixpkgs repository
@@ -32,8 +32,8 @@ jobs:
         run: |
           cd nixpkgs
           branch_date=$(date '+%Y-%m-%d')
-          git config --global user.email "ga-ci@no-reply.com"
-          git config --global user.name "CI Robot"
+          git config --global user.email "bruno@brodrigues.co"
+          git config --global user.name "b-rodrigues"
           git add .
           git commit -m "Update trigger_build.yml for $branch_date"
           git push origin "$branch_date"
@@ -68,8 +68,8 @@ jobs:
 
       - name: Commit and create PR
         run: |
-          git config --global user.email "ga-ci@no-reply.com"
-          git config --global user.name "CI Robot"
+          git config --global user.email "bruno@brodrigues.co"
+          git config --global user.name "b-rodrigues"
           git checkout -b "update-available-$date_today"
           git add inst/extdata/available_df.csv
           git commit -m "Update available_df.csv for $date_today"
