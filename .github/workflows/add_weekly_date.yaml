@@ -39,34 +39,42 @@ jobs:
           git push origin "$branch_date"
 
       - name: Wait for build_tree action
+        id: wait_build
         uses: actions/github-script@v6
         with:
           script: |
             const owner = 'rstats-on-nix';
             const repo = 'build_tree';
-            const workflow = 'build_tree.yml';
-            const runStatus = async () => {
-              const { data: { workflow_runs } } = await github.rest.actions.listWorkflowRuns({ owner, repo, workflow_id: workflow, per_page: 1 });
-              if (workflow_runs.length === 0 || workflow_runs[0].status !== 'completed') {
-                core.setFailed('build_tree action did not complete successfully.');
-              } else if (workflow_runs[0].conclusion !== 'success') {
-                core.setFailed('build_tree action failed.');
-              }
-            };
-            await runStatus();
+            const workflow = 'build.yml';
+            const { data: { workflow_runs } } = await github.rest.actions.listWorkflowRuns({
+              owner,
+              repo,
+              workflow_id: workflow,
+              per_page: 1
+            });
+            if (workflow_runs.length === 0 || workflow_runs[0].status !== 'completed') {
+              core.setFailed('build_tree action did not complete successfully.');
+            } else if (workflow_runs[0].conclusion !== 'success') {
+              core.setFailed('build_tree action failed.');
+            }
+            return workflow_runs[0].conclusion === 'success';
 
       - name: Remove repo
+        if: steps.wait_build.conclusion == 'success'
         run: rm -rf nixpkgs
 
       - name: Checkout current repository
+        if: steps.wait_build.conclusion == 'success'
         uses: actions/checkout@v4
 
       - name: Update available_df.csv
+        if: steps.wait_build.conclusion == 'success'
         run: |
           date_today=$(date '+%Y-%m-%d')
           echo "\"2024\",\"4.4.2\",\"3.20\",\"$date_today\",\"supported\",\"supported\",\"might work\"" >> inst/extdata/available_df.csv
 
       - name: Commit and create PR
+        if: steps.wait_build.conclusion == 'success'
         run: |
           git config --global user.email "bruno@brodrigues.co"
           git config --global user.name "b-rodrigues"
