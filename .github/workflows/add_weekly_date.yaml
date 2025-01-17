@@ -11,6 +11,9 @@ jobs:
   update-and-trigger:
     name: Update and Trigger Build
     runs-on: ubuntu-latest
+    env:
+     GH_TOKEN: ${{ github.token }}
+     GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Clone nixpkgs repository
