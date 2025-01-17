@@ -14,12 +14,15 @@ jobs:
     env:
      GH_TOKEN: ${{ github.token }}
      GITHUB_PAT: ${{ secrets.UPDATE_AVAILABLE_CSV }}
+     branch_date=$(date '+%Y-%m-%d')
 
     steps:
       - name: Clone nixpkgs repository
-        run: |
-          branch_date=$(date '+%Y-%m-%d')
-          git clone --branch "$branch_date" git@github.com:rstats-on-nix/nixpkgs.git
+        uses: actions/checkout@v4
+        with:
+          repository: rstats-on-nix/nixpkgs
+          ref: env.branch_date
+          token: env.GITHUB_PAT
 
       - name: Update trigger_build.yml
         run: |
