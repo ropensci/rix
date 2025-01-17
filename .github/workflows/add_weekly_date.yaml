@@ -1,0 +1,71 @@
+name: Trigger and Update Build
+
+on:
+  schedule:
+    - cron: '0 23 * * 1'
+  push:
+    branches:
+      - main
+
+jobs:
+  update-and-trigger:
+    name: Update and Trigger Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout current repository
+        uses: actions/checkout@v4
+
+      - name: Clone nixpkgs repository
+        run: |
+          branch_date=$(date '+%Y-%m-%d')
+          git clone --branch "$branch_date" https://github.com/rstats-on-nix/nixpkgs.git
+
+      - name: Update trigger_build.yml
+        run: |
+          branch_date=$(date '+%Y-%m-%d')
+          curl -O https://raw.githubusercontent.com/rstats-on-nix/nixpkgs/refs/heads/2025-01-14/.github/workflows/trigger_build.yml
+          sed -i "s/2025-01-14/$branch_date/" trigger_build.yml
+          mv trigger_build.yml .github/workflows/trigger_build.yml
+
+      - name: Commit and push changes
+        run: |
+          cd nixpkgs
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add .
+          git commit -m "Update trigger_build.yml for $branch_date"
+          git push origin "$branch_date"
+
+      - name: Wait for build_tree action
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const owner = 'rstats-on-nix';
+            const repo = 'build_tree';
+            const workflow = 'build_tree.yml';
+            const runStatus = async () => {
+              const { data: { workflow_runs } } = await github.rest.actions.listWorkflowRuns({ owner, repo, workflow_id: workflow, per_page: 1 });
+              if (workflow_runs.length === 0 || workflow_runs[0].status !== 'completed') {
+                core.setFailed('build_tree action did not complete successfully.');
+              } else if (workflow_runs[0].conclusion !== 'success') {
+                core.setFailed('build_tree action failed.');
+              }
+            };
+            await runStatus();
+
+      - name: Update available_df.csv
+        run: |
+          cd $GITHUB_WORKSPACE
+          date_today=$(date '+%Y-%m-%d')
+          echo "\"2024\",\"4.4.2\",\"3.20\",\"$date_today\",\"supported\",\"supported\",\"might work\"" >> inst/extdata/available_df.csv
+
+      - name: Commit and create PR
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git checkout -b "update-available-$date_today"
+          git add inst/extdata/available_df.csv
+          git commit -m "Update available_df.csv for $date_today"
+          git push origin "update-available-$date_today"
+          gh pr create --title "Update available_df.csv for $date_today" --body "This PR adds the entry for $date_today."
