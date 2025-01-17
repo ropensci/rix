@@ -29,8 +29,8 @@ jobs:
         run: |
           cd nixpkgs
           branch_date=$(date '+%Y-%m-%d')
-          git config user.name "github-actions"
-          git config user.email "github-actions@users.noreply.github.com"
+          git config --global user.email "ga-ci@no-reply.com"
+          git config --global user.name "CI Robot"
           git add .
           git commit -m "Update trigger_build.yml for $branch_date"
           git push origin "$branch_date"
@@ -65,8 +65,8 @@ jobs:
 
       - name: Commit and create PR
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@users.noreply.github.com"
+          git config --global user.email "ga-ci@no-reply.com"
+          git config --global user.name "CI Robot"
           git checkout -b "update-available-$date_today"
           git add inst/extdata/available_df.csv
           git commit -m "Update available_df.csv for $date_today"
