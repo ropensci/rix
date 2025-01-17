@@ -19,7 +19,7 @@ jobs:
       - name: Clone nixpkgs repository
         run: |
           branch_date=$(date '+%Y-%m-%d')
-          git clone --branch "$branch_date" https://github.com/rstats-on-nix/nixpkgs.git
+          git clone --branch "$branch_date" git@github.com:rstats-on-nix/nixpkgs.git
 
       - name: Update trigger_build.yml
         run: |
