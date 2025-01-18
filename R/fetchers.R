@@ -449,7 +449,7 @@ get_remote <- function(git_pkg) {
 }
 
 #' get_commit_date Retrieves the date of a commit from a Git repository
-#' @param repo The GitHub repository's URL
+#' @param repo The GitHub repository (e.g. "r-lib/usethis")
 #' @param  commit_sha The commit hash of interest
 #' @return A character. The date of the commit.
 #' @importFrom jsonlite fromJSON
@@ -458,4 +458,40 @@ get_commit_date <- function(repo, commit_sha) {
   url <- paste0("https://api.github.com/repos/", repo, "/commits/", commit_sha)
   commit_data <- fromJSON(url)
   return(commit_data$commit$committer$date)
+}
+
+#' download_all_commits Downloads all commits from a GitHub repository
+#' @param repo The GitHub repository (e.g. "r-lib/usethis")
+#' @return A data.frame with commit SHAs and dates
+#' @importFrom jsonlite fromJSON
+#' @noRd
+download_all_commits <- function(repo) {
+  base_url <- paste0("https://api.github.com/repos/", repo, "/commits")
+  per_page <- 100
+  page <- 1
+  all_commits <- list()
+
+  while (TRUE) {
+    # Construct paginated URL
+    url <- paste0(base_url, "?per_page=", per_page, "&page=", page)
+
+    # Fetch and parse the JSON response
+    commits <- fromJSON(url, simplifyVector = FALSE)
+    
+    # Break the loop if no more commits
+    if (length(commits) == 0) break
+    
+    # Append to the results
+    all_commits <- c(all_commits, commits)
+    
+    # Increment page number
+    page <- page + 1
+  }
+
+  # Convert results to a data.frame
+  commits_df <- data.frame(
+    sha = sapply(all_commits, function(x) x$sha),
+    date = as.POSIXct(sapply(all_commits, function(x) x$commit$committer$date), format = "%Y-%m-%dT%H:%M:%OSZ")
+  )
+  return(commits_df)
 }
