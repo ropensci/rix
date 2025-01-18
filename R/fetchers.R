@@ -11,7 +11,6 @@ fetchgit <- function(git_pkg) {
   commit <- git_pkg$commit
   repo_url_short <- paste(unlist(strsplit(repo_url, "/"))[4:5], collapse = "/")
 
-  commit_date <- get_commit_date(repo_url_short, git_pkg$commit)
   output <- get_sri_hash_deps(repo_url, commit)
   sri_hash <- output$sri_hash
   # If package has no remote dependencies
@@ -176,10 +175,11 @@ remove_base <- function(list_imports) {
 
 #' Finds dependencies of a package from the DESCRIPTION file
 #' @param path path to package
+#' @param commit_date date of commit
 #' @importFrom utils untar
 #' @return Atomic vector of packages
 #' @noRd
-get_imports <- function(path) {
+get_imports <- function(path, commit_date = NULL) {
   tmpdir <- tempdir()
 
   tmp_dir <- tempfile(pattern = "file", tmpdir = tmpdir, fileext = "")
@@ -228,17 +228,10 @@ get_imports <- function(path) {
 
     remote_pkgs_names <- sapply(remote_pkgs_names_and_refs, function(x) x[[1]])
 
-    # Check if we have a list of lists of two elements: a package name
-    # and a ref. If not, add "HEAD" to it.
-    out <- lapply(remote_pkgs_names_and_refs, function(sublist) {
-      if (length(sublist) == 1) {
-        c(sublist, "HEAD")
-      } else {
-        sublist
-      }
+    # try to get commit hash for each package if not already provided
+    remote_pkgs_refs <- lapply(remote_pkgs_names_and_refs, function(x) {
+      resolve_package_commit(x, commit_date)
     })
-
-    remote_pkgs_refs <- sapply(out, function(x) x[[2]])
 
     urls <- paste0(
       "https://github.com/",
