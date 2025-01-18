@@ -462,7 +462,7 @@ get_commit_date <- function(repo, commit_sha) {
 
 #' download_all_commits Downloads all commits from a GitHub repository
 #' @param repo The GitHub repository (e.g. "r-lib/usethis")
-#' @return A data.frame with commit SHAs and dates
+#' @return A data frame with commit SHAs and dates
 #' @importFrom jsonlite fromJSON
 #' @noRd
 download_all_commits <- function(repo) {
@@ -494,4 +494,26 @@ download_all_commits <- function(repo) {
     date = as.POSIXct(sapply(all_commits, function(x) x$commit$committer$date), format = "%Y-%m-%dT%H:%M:%OSZ")
   )
   return(commits_df)
+}
+
+#' get_closest_commit Finds the closest commit to a specific date
+#' @param commits_df A data frame with commit SHAs and dates
+#' @param target_date The target date to find the closest commit
+#' @return A data frame with the closest commit SHA and date
+#' @noRd
+get_closest_commit <- function(commits_df, target_date) {
+  # Convert target_date to POSIXct format
+  target_date <- as.POSIXct(target_date, format = "%Y-%m-%dT%H:%M:%OSZ")
+  
+  # Filter commits before or on the target date
+  filtered_commits <- commits_df[commits_df$date <= target_date, ]
+  
+  # If no commits found, raise an error
+  if (nrow(filtered_commits) == 0) {
+    stop("No commits found before or on the target date.")
+  }
+
+  # Find the closest commit by selecting the maximum date
+  closest_commit <- filtered_commits[which.max(filtered_commits$date), ]
+  return(closest_commit)
 }
