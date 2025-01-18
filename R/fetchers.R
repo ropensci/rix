@@ -514,28 +514,28 @@ get_closest_commit <- function(commits_df, target_date) {
 }
 
 #' resolve_package_commit Resolves the commit SHA for a package based on a date
-#' @param remote_pkgs_names_and_refs A list containing the package name and optionally a ref
+#' @param remote_pkg_name_and_ref A list containing the package name and optionally a ref
 #' @param date The target date to find the closest commit
 #' @param remotes A character vector of remotes
 #' @return A character. The commit SHA of the closest commit to the target date or "HEAD" if API fails
 #' @noRd
-resolve_package_commit <- function(remote_pkgs_names_and_refs, date, remotes) {
+resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes) {
   # Check if remote is a list with a package name and a ref
-  if (is.list(remote_pkgs_names_and_refs)) {
+  if (is.list(remote_pkg_name_and_ref)) {
     # Keep existing ref if present
-    return(remote_pkgs_names_and_refs[[2]])
+    return(remote_pkg_name_and_ref[[2]])
   } else {
     # For packages without ref, try to find closest one by date
     # fallback to HEAD if API fails
     result <- tryCatch({
-      remotes_fetch <- remotes[grepl(remote_pkgs_names_and_refs, remotes)]
+      remotes_fetch <- remotes[grepl(remote_pkg_name_and_ref, remotes)]
       all_commits <- download_all_commits(remotes_fetch)
       closest_commit <- get_closest_commit(all_commits, date)
       closest_commit$sha
     },
     error = function(e) {
       warning(sprintf("Failed to get commit for %s: %s\nFalling back to HEAD", 
-                     remote_pkgs_names_and_refs, 
+                     remote_pkg_name_and_ref, 
                      e$message))
       return("HEAD")
     })
