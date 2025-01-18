@@ -230,7 +230,7 @@ get_imports <- function(path, commit_date = NULL) {
 
     # try to get commit hash for each package if not already provided
     remote_pkgs_refs <- lapply(remote_pkgs_names_and_refs, function(x) {
-      resolve_package_commit(x, commit_date)
+      resolve_package_commit(x, commit_date, remotes)
     })
 
     urls <- paste0(
