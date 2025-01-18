@@ -447,3 +447,15 @@ get_remote <- function(git_pkg) {
   remote_package_names <- sapply(remotes, `[[`, "package_name")
   return(remote_package_names)
 }
+
+#' get_commit_date Retrieves the date of a commit from a Git repository
+#' @param repo The GitHub repository's URL
+#' @param  commit_sha The commit hash of interest
+#' @return A character. The date of the commit.
+#' @importFrom jsonlite fromJSON
+#' @noRd
+get_commit_date <- function(repo, commit_sha) {
+  url <- paste0("https://api.github.com/repos/", repo, "/commits/", commit_sha)
+  commit_data <- fromJSON(url)
+  return(commit_data$commit$committer$date)
+}
