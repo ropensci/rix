@@ -519,3 +519,23 @@ get_closest_commit <- function(commits_df, target_date) {
   closest_commit <- filtered_commits[which.max(filtered_commits$date), ]
   return(closest_commit)
 }
+
+#' resolve_package_commit Resolves the commit SHA for a package based on a date
+#' @param remote_pkgs_names_and_refs A list containing the package name and optionally a ref
+#' @param date The target date to find the closest commit
+#' @param remotes A character vector of remotes
+#' @return A character. The commit SHA of the closest commit to the target date
+#' @noRd
+resolve_package_commit <- function(remote_pkgs_names_and_refs, date, remotes) {
+  # Check if remote is a list with a package name and a ref
+  if (is.list(remote_pkgs_names_and_refs)) {
+    # Keep existing ref if present
+    return(remote_pkgs_names_and_refs[[2]])
+  } else {
+    # For packages without ref, try to find closest one by date
+    remotes_fetch <- remotes[grepl(remote, remotes)]
+    all_commits <- download_all_commits(remotes_fetch)
+    closest_commit <- get_closest_commit(all_commits, date)
+    return(closest_commit$sha)
+  }
+}
