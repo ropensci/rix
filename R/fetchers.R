@@ -9,7 +9,9 @@ fetchgit <- function(git_pkg) {
   package_name <- git_pkg$package_name
   repo_url <- git_pkg$repo_url
   commit <- git_pkg$commit
+  repo_url_short <- paste(unlist(strsplit(repo_url, "/"))[4:5], collapse = "/")
 
+  date <- get_commit_date(repo_url_short, git_pkg$commit)
   output <- get_sri_hash_deps(repo_url, commit)
   sri_hash <- output$sri_hash
   # If package has no remote dependencies
