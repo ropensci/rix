@@ -455,7 +455,7 @@ get_commit_date <- function(repo, commit_sha) {
   return(commit_data$commit$committer$date)
 }
 
-#' download_all_commits Downloads all commits from a GitHub repository
+#' download_all_commits Downloads up to 300 most recent commits from a GitHub repository
 #' @param repo The GitHub repository (e.g. "r-lib/usethis")
 #' @return A data frame with commit SHAs and dates
 #' @importFrom jsonlite fromJSON
@@ -463,30 +463,21 @@ get_commit_date <- function(repo, commit_sha) {
 download_all_commits <- function(repo) {
   base_url <- paste0("https://api.github.com/repos/", repo, "/commits")
   per_page <- 100
-  page <- 1
+  max_pages <- 3  # Limit to 3 pages of 100 commits each
   all_commits <- list()
 
-  while (TRUE) {
-    # Construct paginated URL
+  for (page in 1:max_pages) {
     url <- paste0(base_url, "?per_page=", per_page, "&page=", page)
-
-    # Fetch and parse the JSON response
     commits <- fromJSON(url, simplifyVector = FALSE)
     
-    # Break the loop if no more commits
     if (length(commits) == 0) break
-    
-    # Append to the results
     all_commits <- c(all_commits, commits)
-    
-    # Increment page number
-    page <- page + 1
   }
 
-  # Convert results to a data.frame
   commits_df <- data.frame(
     sha = sapply(all_commits, function(x) x$sha),
-    date = as.POSIXct(sapply(all_commits, function(x) x$commit$committer$date), format = "%Y-%m-%dT%H:%M:%OSZ")
+    date = as.POSIXct(sapply(all_commits, function(x) x$commit$committer$date), 
+                      format = "%Y-%m-%dT%H:%M:%OSZ")
   )
   return(commits_df)
 }
