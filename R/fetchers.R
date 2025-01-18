@@ -451,7 +451,7 @@ get_remote <- function(git_pkg) {
 #' @noRd
 get_commit_date <- function(repo, commit_sha) {
   url <- paste0("https://api.github.com/repos/", repo, "/commits/", commit_sha)
-  commit_data <- github_api_request(url)
+  commit_data <- fromJSON(url)
   return(commit_data$commit$committer$date)
 }
 
@@ -468,7 +468,7 @@ download_all_commits <- function(repo) {
 
   for (page in 1:max_pages) {
     url <- paste0(base_url, "?per_page=", per_page, "&page=", page)
-    commits <- github_api_request(url)
+    commits <- fromJSON(url, simplifyVector = FALSE)
     
     if (length(commits) == 0) break
     all_commits <- c(all_commits, commits)
@@ -532,26 +532,4 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes) {
     })
     return(result)
   }
-}
-
-#' Get GitHub Personal Access Token from environment
-#' @return GitHub PAT or NULL if not found
-#' @noRd
-get_github_pat <- function() {
-  Sys.getenv("GITHUB_PAT", "")
-}
-
-#' Make authenticated GitHub API request
-#' @param url API endpoint URL
-#' @return JSON response
-#' @importFrom jsonlite fromJSON
-#' @noRd
-github_api_request <- function(url) {
-  pat <- get_github_pat()
-  headers <- if (pat != "") {
-    c(Authorization = paste("token", pat))
-  } else {
-    NULL
-  }
-  fromJSON(url, simplifyVector = FALSE, headers = headers)
 }
