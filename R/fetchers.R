@@ -526,7 +526,7 @@ resolve_package_commit <- function(remote_pkgs_names_and_refs, date, remotes) {
     return(remote_pkgs_names_and_refs[[2]])
   } else {
     # For packages without ref, try to find closest one by date
-    remotes_fetch <- remotes[grepl(remote, remotes)]
+    remotes_fetch <- remotes[grepl(remote_pkgs_names_and_refs, remotes)]
     all_commits <- download_all_commits(remotes_fetch)
     closest_commit <- get_closest_commit(all_commits, date)
     return(closest_commit$sha)
