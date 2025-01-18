@@ -21,7 +21,7 @@ jobs:
 
       - name: Update available_df.csv
         run: |
-          echo "\"2024\",\"4.4.2\",\"3.20\",\"$github.event.client_payload.branch_date\",\"supported\",\"supported\",\"might work\"" >> inst/extdata/available_df.csv
+          echo "\"2024\",\"4.4.2\",\"3.20\",\"${{ github.event.client_payload.branch_date }}\",\"supported\",\"supported\",\"might work\"" >> inst/extdata/available_df.csv
 
       - name: Push changes to update_default.nix branch
         run: |
