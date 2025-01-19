@@ -91,7 +91,7 @@ hash_url <- function(url) {
   error = function(e) {
     warning(paste0("Failed to get commit date for ", commit, ": ", e$message, 
                   "\nFalling back to today"))
-    return(NULL)
+    return(Sys.Date())
   })
 
   deps <- get_imports(desc_path, commit_date)
