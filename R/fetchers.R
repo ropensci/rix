@@ -238,7 +238,7 @@ get_imports <- function(path, commit_date = NULL) {
 
     # try to get commit hash for each package if not already provided
     remote_pkgs_refs <- lapply(remote_pkgs_names_and_refs, function(x) {
-      resolve_package_commit(x, commit_date, repo_url_short)
+      resolve_package_commit(x, commit_date, remotes)
     })
 
     urls <- paste0(
@@ -515,19 +515,19 @@ get_closest_commit <- function(commits_df, target_date) {
 #' resolve_package_commit Resolves the commit SHA for a package based on a date
 #' @param remote_pkg_name_and_ref A list containing the package name and optionally a ref
 #' @param date The target date to find the closest commit
-#' @param repo_url_short A character vector of the form "username/packagename"
+#' @param remotess A character vector of remotes
 #' @return A character. The commit SHA of the closest commit to the target date or "HEAD" if API fails
 #' @noRd
-resolve_package_commit <- function(remote_pkg_name_and_ref, date, repo_url_short) {
+resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes) {
   # Check if remote is a list with a package name and a ref
-  if (is.list(remote_pkg_name_and_ref)) {
+  if (length(remote_pkg_name_and_ref) == 2) {
     # Keep existing ref if present
     return(remote_pkg_name_and_ref[[2]])
-  } else {
+  } else if (length(remote_pkg_name_and_ref) == 1) {
     # For packages without ref, try to find closest one by date
     # fallback to HEAD if API fails
     result <- tryCatch({
-      remotes_fetch <- repo_url_short[grepl(remote_pkg_name_and_ref, repo_url_short)]
+      remotes_fetch <- remotes[grepl(remote_pkg_name_and_ref, remotes)]
       all_commits <- download_all_commits(remotes_fetch)
       closest_commit <- get_closest_commit(all_commits, date)
       closest_commit$sha
@@ -538,5 +538,7 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, repo_url_short
       return("HEAD")
     })
     return(result)
+  } else {
+    stop("remote_pkg_name_and_ref must be a list of length 1 or 2")
   }
 }
