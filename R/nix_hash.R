@@ -84,7 +84,16 @@ hash_url <- function(url) {
 
   repo_url_short <- paste(unlist(strsplit(url, "/"))[4:5], collapse = "/")
   commit <- gsub(x = basename(url), pattern = ".tar.gz", replacement = "")
-  commit_date <- get_commit_date(repo_url_short, commit)
+
+  commit_date <- tryCatch({
+    get_commit_date(repo_url_short, commit)
+  },
+  error = function(e) {
+    warning(paste0("Failed to get commit date for ", commit, ": ", e$message, 
+                  "\nFalling back to today"))
+    return(NULL)
+  })
+
   deps <- get_imports(desc_path, commit_date)
 
   return(
