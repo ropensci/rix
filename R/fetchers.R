@@ -454,37 +454,41 @@ get_remote <- function(git_pkg) {
 #' @param repo The GitHub repository (e.g. "r-lib/usethis")
 #' @param  commit_sha The commit hash of interest
 #' @return A character. The date of the commit.
-#' @importFrom jsonlite fromJSON
+#' @importFrom gh gh
 #' @noRd
 get_commit_date <- function(repo, commit_sha) {
-  url <- paste0("https://api.github.com/repos/", repo, "/commits/", commit_sha)
-  commit_data <- fromJSON(url)
+  commit_data <- gh(
+    "GET /repos/{owner}/{repo}/commits/{commit_sha}",
+    owner = strsplit(repo, "/")[[1]][1],
+    repo = strsplit(repo, "/")[[1]][2],
+    commit_sha = commit_sha
+  )
   return(commit_data$commit$committer$date)
 }
 
 #' download_all_commits Downloads up to 300 most recent commits from a GitHub repository
 #' @param repo The GitHub repository (e.g. "r-lib/usethis")
 #' @return A data frame with commit SHAs and dates
-#' @importFrom jsonlite fromJSON
+#' @importFrom gh gh
 #' @noRd
 download_all_commits <- function(repo) {
-  base_url <- paste0("https://api.github.com/repos/", repo, "/commits")
-  per_page <- 100
-  max_pages <- 3  # Limit to 3 pages of 100 commits each
-  all_commits <- list()
-
-  for (page in 1:max_pages) {
-    url <- paste0(base_url, "?per_page=", per_page, "&page=", page)
-    commits <- fromJSON(url, simplifyVector = FALSE)
-    
-    if (length(commits) == 0) break
-    all_commits <- c(all_commits, commits)
-  }
-
+  owner <- strsplit(repo, "/")[[1]][1]
+  repo_name <- strsplit(repo, "/")[[1]][2]
+  
+  all_commits <- gh(
+    "GET /repos/{owner}/{repo}/commits",
+    owner = owner,
+    repo = repo_name,
+    per_page = 100,
+    .limit = 300  # Limit to 300 commits total
+  )
+  
   commits_df <- data.frame(
-    sha = sapply(all_commits, function(x) x$sha),
-    date = as.POSIXct(sapply(all_commits, function(x) x$commit$committer$date), 
-                      format = "%Y-%m-%dT%H:%M:%OSZ")
+    sha = vapply(all_commits, function(x) x$sha, character(1)),
+    date = as.POSIXct(
+      vapply(all_commits, function(x) x$commit$committer$date, character(1)),
+      format = "%Y-%m-%dT%H:%M:%OSZ"
+    )
   )
   return(commits_df)
 }
