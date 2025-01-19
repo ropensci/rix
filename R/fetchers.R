@@ -170,7 +170,7 @@ remove_base <- function(list_imports) {
 #' @importFrom utils untar
 #' @return Atomic vector of packages
 #' @noRd
-get_imports <- function(path, commit_date = NULL) {
+get_imports <- function(path, commit_date) {
   tmpdir <- tempdir()
   on.exit(unlink(tmpdir, recursive = TRUE, force = TRUE), add = TRUE)
 
