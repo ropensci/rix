@@ -19,30 +19,30 @@ jobs:
       run: |
           echo "Date: ${{ github.event.client_payload.branch_date }}"
 
-      - name: Update available_df.csv
-        run: |
+    - name: Update available_df.csv
+      run: |
           echo "\"2024\",\"4.4.2\",\"3.20\",\"${{ github.event.client_payload.branch_date }}\",\"supported\",\"supported\",\"might work\"" >> inst/extdata/available_df.csv
 
-      - name: Push changes to update_default.nix branch
-        run: |
+    - name: Push changes to update_default.nix branch
+      run: |
           git config --global user.email "ga-ci@no-reply.com"
           git config --global user.name "CI Robot"
           git add .
           git commit -m "Updated available dates"
           git push origin main:available_dates --force
 
-      - name: Check if PR exists
-        id: check_pr
-        run: |
+    - name: Check if PR exists
+      id: check_pr
+      run: |
           PR=$(gh pr list -S 'Update available dates' --json number --jq '.[0].number')
           echo "PR_NUMBER=$PR" >> $GITHUB_ENV
 
-      - name: Create Pull Request
-        if: env.PR_NUMBER == ''
-        uses: peter-evans/create-pull-request@v6
-        with:
-          branch: available_dates
-          title: 'Update available dates'
-          body: 'Automated PR to update available dates'
-          base: main
-          branch-suffix: ''
+    - name: Create Pull Request
+      if: env.PR_NUMBER == ''
+      uses: peter-evans/create-pull-request@v6
+      with:
+        branch: available_dates
+        title: 'Update available dates'
+        body: 'Automated PR to update available dates'
+        base: main
+        branch-suffix: ''
