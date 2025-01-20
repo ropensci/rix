@@ -35,7 +35,7 @@ jobs:
 
       - name: Build default.nix with system and tex packages
         run: |
-          nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix('4.4.2', r_pkgs = c('dplyr', 'S4Vectors'), system_pkgs = c('quarto', 'git'), tex_pkgs = c('amsmath', 'orcidlink'), project_path = '.', overwrite = TRUE)\""
+          nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix('2025-01-14', r_pkgs = c('dplyr', 'S4Vectors'), system_pkgs = c('quarto', 'git'), tex_pkgs = c('amsmath', 'orcidlink'), project_path = '.', overwrite = TRUE)\""
 
       - name: Check generated default.nix
         run: cat default.nix
