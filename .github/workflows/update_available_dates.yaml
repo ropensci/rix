@@ -24,7 +24,7 @@ jobs:
       run: echo "branch_date=$(date '+%Y-%m-%d')" >> $GITHUB_ENV
 
     - name: Access Payload Data
-      run: echo "Date: ${{ env.branch_date }}"
+      run: echo "${{ env.branch_date }}"
 
     - name: Update available_df.csv
       run: |
