@@ -19,13 +19,16 @@ jobs:
     - uses: DeterminateSystems/nix-installer-action@main
     - uses: DeterminateSystems/magic-nix-cache-action@main
 
+    - name: Set branch_date as today
+      id: set_date
+      run: echo "branch_date=$(date '+%Y-%m-%d')" >> $GITHUB_ENV
+
     - name: Access Payload Data
-      run: |
-          echo "Date: ${{ github.event.client_payload.branch_date }}"
+      run: echo "Date: ${{ env.branch_date }}"
 
     - name: Update available_df.csv
       run: |
-          echo "\"2024\",\"4.4.2\",\"3.20\",\"${{ github.event.client_payload.branch_date }}\",\"supported\",\"supported\",\"might work\"" >> inst/extdata/available_df.csv
+          echo "\"2024\",\"4.4.2\",\"3.20\",\"${{ env.branch_date }}\",\"supported\",\"supported\",\"might work\"" >> inst/extdata/available_df.csv
 
     - name: Push changes to update_default.nix branch
       run: |
