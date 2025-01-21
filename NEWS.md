@@ -1,5 +1,9 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.14.6 (2025-01-21)
+
+- `rix()`: fixed a bug where local packages were not being handled correctly
+
 # rix 0.14.5 (2025-01-21)
 
 - `rix()`: remote of remote dependencies could sometimes be defined twice in
