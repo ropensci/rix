@@ -1,5 +1,11 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.14.5 (2025-01-21)
+
+- `rix()`: remote of remote dependencies could sometimes be defined twice in
+  generated `default.nix`. This is now solved (see
+  https://github.com/ropensci/rix/pull/388)
+
 # rix 0.14.4 (2025-01-21)
 
 - `renv2nix()`: it is now possible to override a date instead of an R version.
