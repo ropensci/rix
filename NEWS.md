@@ -1,5 +1,9 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.14.4 (2025-01-21)
+
+- `renv2nix()`: it is now possible to override a date instead of an R version.
+
 # rix 0.14.3 (2025-01-08)
 
 - `rix()`: packages hosted on GitHub which have dependencies also hosted on GitHub

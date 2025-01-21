@@ -229,7 +229,7 @@ testthat::test_that("testing renv_helpers", {
         "testdata/renv-samples/renv_datathin.lock",
         path_env_nix,
         "/default_datathin.nix",
-        override_r_ver = "4.4.2",
+        override_r_ver = "2024-12-14",
       ),
       name = "default_datathin.nix"
     )

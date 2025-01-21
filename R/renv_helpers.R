@@ -191,13 +191,29 @@ renv2nix <- function(
     if (length(remote_pkgs) > 0) {
       git_pkgs <- renv_remote_pkgs(remote_pkgs)
     }
-    rix_call <- call("rix",
-      r_ver = renv_lock_r_ver(renv_lock = renv_lock, override_r_ver = override_r_ver),
-      r_pkgs = names(repo_pkgs),
-      git_pkgs = git_pkgs,
-      project_path = project_path
-      # local_r_pkgs = local_r_pkgs
+    r_version <- renv_lock_r_ver(
+      renv_lock = renv_lock,
+      override_r_ver = override_r_ver
     )
+    if(grepl("^\\d{4}-\\d{2}-\\d{2}$", r_version)){
+      rix_call <- call(
+        "rix",
+        date = r_version,
+        r_pkgs = names(repo_pkgs),
+        git_pkgs = git_pkgs,
+        project_path = project_path
+        # local_r_pkgs = local_r_pkgs
+      )
+    } else {
+      rix_call <- call(
+        "rix",
+        r_ver = r_version,
+        r_pkgs = names(repo_pkgs),
+        git_pkgs = git_pkgs,
+        project_path = project_path
+        # local_r_pkgs = local_r_pkgs
+      )
+    }
     dots <- list(...)
     for (arg in names(dots)) {
       rix_call[[arg]] <- dots[[arg]]
@@ -222,6 +238,7 @@ renv2nix <- function(
 #' @param override_r_ver Character, override the R version defined in the
 #'   `renv.lock` file with another version. This is especially useful if
 #'   the `renv.lock` file lists a version of R not (yet) available through Nix.
+#'   Can also be a date.
 #'
 #' @return a length 1 character vector with the version of R recorded in
 #'  renv.lock
