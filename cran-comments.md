@@ -1,3 +1,11 @@
+## 21-01-2025 Submission, version 0.14.4
+
+R CMD check using R-devel with win-builder:
+
+0 errors | 0 warnings | 0 note
+
+same on other platforms.
+
 ## 10-01-2025 Submission, version 0.14.3
 
 R CMD check using R-devel with win-builder:

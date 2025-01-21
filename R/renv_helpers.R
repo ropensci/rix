@@ -127,7 +127,8 @@ renv_remote_pkgs <- function(
 #'   defined in the `renv.lock` file with another version. This is especially
 #'   useful if the `renv.lock` file lists a version of R not (yet) available
 #'   through Nix, or if the R version included in the `renv.lock` is too old
-#'   compared to the package versions.
+#'   compared to the package versions. Can also be a date, check
+#'   `available_dates()`.
 #' @inheritDotParams rix system_pkgs local_r_pkgs:shell_hook
 #'
 #' @return Nothing, this function is called for its side effects only, unless
