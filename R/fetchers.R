@@ -474,11 +474,7 @@ get_commit_date <- function(repo, commit_sha) {
   }
   
   curl_download(url, json_file, handle = h)
-  
-  if (!file.exists(json_file) || file.size(json_file) == 0) {
-    stop("Failed to download commit data or received empty response")
-  }
-  
+
   commit_data <- fromJSON(json_file)
   if (is.null(commit_data$commit$committer$date)) {
     stop("Invalid response format: missing commit date")
@@ -495,15 +491,12 @@ get_commit_date <- function(repo, commit_sha) {
 #' @noRd
 download_all_commits <- function(repo) {
   base_url <- paste0("https://api.github.com/repos/", repo, "/commits")
-  h <- curl::new_handle()
+  h <- new_handle()
   json_file <- file.path(tempdir(), "all_commits.json")
+  on.exit(unlink(json_file, force = TRUE), add = TRUE)
 
   token <- Sys.getenv("GITHUB_PAT")
   token_pattern <- "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$"
-
-  per_page <- 100
-  max_pages <- 3 # Limit to 3 pages of 100 commits each
-  all_commits <- list()
 
   if (grepl(token_pattern, token)) {
     handle_setheaders(h, Authorization = paste("token", token))
@@ -511,12 +504,30 @@ download_all_commits <- function(repo) {
     warning("No GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request.")
   }
 
+  per_page <- 100
+  max_pages <- 3 # Limit to 3 pages of 100 commits each
+  all_commits <- list()
+
   for (page in 1:max_pages) {
     url <- paste0(base_url, "?per_page=", per_page, "&page=", page)
     curl_download(url, json_file, handle = h)
     
+    if (!file.exists(json_file) || file.size(json_file) == 0) {
+      stop("Failed to download commit data or received empty response")
+    }
+    
     commits <- fromJSON(json_file)
-    if (length(commits) == 0) break
+    if (!is.list(commits) || length(commits) == 0) {
+      break  # No more commits available
+    }
+    
+    # Validate commit structure
+    if (!all(vapply(commits, function(x) {
+      !is.null(x$sha) && !is.null(x$commit$committer$date)
+    }, logical(1)))) {
+      stop("Invalid commit data structure in response")
+    }
+    
     all_commits <- c(all_commits, commits)
   }
 
