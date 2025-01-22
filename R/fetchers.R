@@ -220,9 +220,11 @@ get_imports <- function(path, commit_date) {
 
     # Now remove user name and
     # split at "@" or "#" character to get name and commit or PR separated
+    remote_pkgs_names_and_refs <- sub(".*?/", "", remotes)
+    remote_pkgs_names_and_refs <- strsplit(remote_pkgs_names_and_refs, "(@|#)")
+
     remote_pkgs_names <- remote_pkgs_names_and_refs |>
       sapply(function(x) x[[1]])
-  
     # try to get commit hash for each package if not already provided
     remote_pkgs_refs <- lapply(remote_pkgs_names_and_refs, function(x) {
       resolve_package_commit(x, commit_date, remotes)
