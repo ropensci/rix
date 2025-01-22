@@ -222,6 +222,7 @@ get_imports <- function(path, commit_date) {
 
     # Now remove user name and
     # split at "@" or "#" character to get name and commit or PR separated
+
     remote_pkgs_names_and_refs <- sub(".*?/", "", remotes)
     remote_pkgs_names_and_refs <- strsplit(remote_pkgs_names_and_refs, "(@|#)")
 
@@ -461,24 +462,29 @@ get_commit_date <- function(repo, commit_sha) {
   url <- paste0("https://api.github.com/repos/", repo, "/commits/", commit_sha)
   h <- new_handle()
   json_file <- file.path(tempdir(), "commit_data.json")
+  on.exit(unlink(json_file, force = TRUE), add = TRUE)
 
   token <- Sys.getenv("GITHUB_PAT")
   token_pattern <- "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$"
 
   if (grepl(token_pattern, token)) {
-  handle_setheaders(h, Authorization = paste("token", token))
-  curl_download(url, json_file, handle = h)
+    handle_setheaders(h, Authorization = paste("token", token))
   } else {
     warning("No GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request.")
-    curl_download(url, json_file)
   }
   
-  if (file.exists(json_file)) {
-    commit_data <- fromJSON(json_file)
-    return(commit_data$commit$committer$date)
-  } else {
-    stop("Failed to fetch commit data.")
+  curl_download(url, json_file, handle = h)
+  
+  if (!file.exists(json_file) || file.size(json_file) == 0) {
+    stop("Failed to download commit data or received empty response")
   }
+  
+  commit_data <- fromJSON(json_file)
+  if (is.null(commit_data$commit$committer$date)) {
+    stop("Invalid response format: missing commit date")
+  }
+  
+  return(commit_data$commit$committer$date)
 }
 
 #' download_all_commits Downloads up to 300 most recent commits from a GitHub repository
