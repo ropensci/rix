@@ -472,14 +472,18 @@ get_commit_date <- function(repo, commit_sha) {
   } else {
     warning("No GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request.")
   }
-  
+
   curl_download(url, json_file, handle = h)
+
+  if (!file.exists(json_file) || file.size(json_file) == 0) {
+    stop("Failed to download commit data or received empty response")
+  }
 
   commit_data <- fromJSON(json_file)
   if (is.null(commit_data$commit$committer$date)) {
     stop("Invalid response format: missing commit date")
   }
-  
+
   return(commit_data$commit$committer$date)
 }
 
