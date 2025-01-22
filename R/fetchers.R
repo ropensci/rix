@@ -521,10 +521,8 @@ download_all_commits <- function(repo) {
       break  # No more commits available
     }
     
-    # Validate commit structure
-    if (!all(vapply(commits, function(x) {
-      !is.null(x$sha) && !is.null(x$commit$committer$date)
-    }, logical(1)))) {
+    
+    if (!all(!is.null(commits$sha)) && !all(!is.null(commits$commit$committer$date))) {
       stop("Invalid commit data structure in response")
     }
     
