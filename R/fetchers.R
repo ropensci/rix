@@ -537,14 +537,14 @@ download_all_commits <- function(repo) {
     stop("No commits found for repository ", repo)
   }
 
-  commits_df <- data.frame(
-    sha = vapply(all_commits, function(x) x$sha, character(1)),
+  all_commits <- data.frame(
+    sha = all_commits$sha,
     date = as.POSIXct(
-      vapply(all_commits, function(x) x$commit$committer$date, character(1)),
+      all_commits$commit$committer$date,
       format = "%Y-%m-%dT%H:%M:%OSZ"
     )
-  )
-  return(commits_df)
+)
+  return(all_commits)
 }
 
 #' get_closest_commit Finds the closest commit to a specific date
