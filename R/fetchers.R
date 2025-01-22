@@ -468,7 +468,7 @@ get_commit_date <- function(repo, commit_sha) {
   if (grepl(token_pattern, token)) {
     handle_setheaders(h, Authorization = paste("token", token))
   } else {
-    warning("No GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request.")
+    message("No GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request.")
   }
 
   tryCatch({
@@ -502,7 +502,7 @@ download_all_commits <- function(repo) {
   if (grepl(token_pattern, token)) {
     handle_setheaders(h, Authorization = paste("token", token))
   } else {
-    warning("No GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request.")
+    message("No GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request.")
   }
 
   per_page <- 100

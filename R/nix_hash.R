@@ -89,7 +89,7 @@ hash_url <- function(url) {
     get_commit_date(repo_url_short, commit)
   },
   error = function(e) {
-    warning(paste0("Failed to get commit date for ", commit, ": ", e$message, 
+    message(paste0("Failed to get commit date for ", commit, ": ", e$message, 
                   "\nFalling back to today"))
     return(Sys.Date())
   })
