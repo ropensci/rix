@@ -455,7 +455,7 @@ get_remote <- function(git_pkg) {
 #' @param repo The GitHub repository (e.g. "r-lib/usethis")
 #' @param  commit_sha The commit hash of interest
 #' @return A character. The date of the commit.
-#' @importFrom curl new_header handle_setheaders curl_download
+#' @importFrom curl new_header handle_setheaders curl_fetch_disk
 #' @importFrom jsonlite fromJSON
 #' @noRd
 get_commit_date <- function(repo, commit_sha) {
@@ -473,7 +473,11 @@ get_commit_date <- function(repo, commit_sha) {
     warning("No GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request.")
   }
 
-  curl_download(url, json_file, handle = h)
+  tryCatch({
+    curl_fetch_disk(url, json_file, handle = h)
+  }, error = function(e) {
+    stop("Failed to download commit data: ", e$message)
+  })
 
   if (!file.exists(json_file) || file.size(json_file) == 0) {
     stop("Failed to download commit data or received empty response")
@@ -490,7 +494,7 @@ get_commit_date <- function(repo, commit_sha) {
 #' download_all_commits Downloads up to 300 most recent commits from a GitHub repository
 #' @param repo The GitHub repository (e.g. "r-lib/usethis")
 #' @return A data frame with commit SHAs and dates
-#' @importFrom curl new_header handle_setheaders curl_download
+#' @importFrom curl new_header handle_setheaders curl_fetch_disk
 #' @importFrom jsonlite fromJSON
 #' @noRd
 download_all_commits <- function(repo) {
@@ -514,22 +518,25 @@ download_all_commits <- function(repo) {
 
   for (page in 1:max_pages) {
     url <- paste0(base_url, "?per_page=", per_page, "&page=", page)
-    curl_download(url, json_file, handle = h)
-    
+    tryCatch({
+      curl_fetch_disk(url, json_file, handle = h)
+    }, error = function(e) {
+      stop("Failed to download commit data: ", e$message)
+    })
+
     if (!file.exists(json_file) || file.size(json_file) == 0) {
       stop("Failed to download commit data or received empty response")
     }
-    
+
     commits <- fromJSON(json_file)
     if (!is.list(commits) || length(commits) == 0) {
       break  # No more commits available
     }
-    
-    
+
     if (!all(!is.null(commits$sha)) && !all(!is.null(commits$commit$committer$date))) {
       stop("Invalid commit data structure in response")
     }
-    
+
     all_commits <- c(all_commits, commits)
   }
 
@@ -543,7 +550,7 @@ download_all_commits <- function(repo) {
       all_commits$commit$committer$date,
       format = "%Y-%m-%dT%H:%M:%OSZ"
     )
-)
+  )
   return(all_commits)
 }
 
