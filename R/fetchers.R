@@ -484,20 +484,40 @@ get_commit_date <- function(repo, commit_sha) {
 #' download_all_commits Downloads up to 300 most recent commits from a GitHub repository
 #' @param repo The GitHub repository (e.g. "r-lib/usethis")
 #' @return A data frame with commit SHAs and dates
-#' @importFrom gh gh
+#' @importFrom curl new_header handle_setheaders curl_download
+#' @importFrom jsonlite fromJSON
 #' @noRd
 download_all_commits <- function(repo) {
-  owner <- strsplit(repo, "/")[[1]][1]
-  repo_name <- strsplit(repo, "/")[[1]][2]
-  
-  all_commits <- gh(
-    "GET /repos/{owner}/{repo}/commits",
-    owner = owner,
-    repo = repo_name,
-    per_page = 100,
-    .limit = 300  # Limit to 300 commits total
-  )
-  
+  base_url <- paste0("https://api.github.com/repos/", repo, "/commits")
+  h <- curl::new_handle()
+  json_file <- file.path(tempdir(), "all_commits.json")
+
+  token <- Sys.getenv("GITHUB_PAT")
+  token_pattern <- "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$"
+
+  per_page <- 100
+  max_pages <- 3 # Limit to 3 pages of 100 commits each
+  all_commits <- list()
+
+  if (grepl(token_pattern, token)) {
+    handle_setheaders(h, Authorization = paste("token", token))
+  } else {
+    warning("No GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request.")
+  }
+
+  for (page in 1:max_pages) {
+    url <- paste0(base_url, "?per_page=", per_page, "&page=", page)
+    curl_download(url, json_file, handle = h)
+    
+    commits <- fromJSON(json_file)
+    if (length(commits) == 0) break
+    all_commits <- c(all_commits, commits)
+  }
+
+  if (length(all_commits) == 0) {
+    stop("No commits found for repository ", repo)
+  }
+
   commits_df <- data.frame(
     sha = vapply(all_commits, function(x) x$sha, character(1)),
     date = as.POSIXct(
