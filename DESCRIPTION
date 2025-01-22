@@ -40,7 +40,6 @@ Depends:
 Imports:
     codetools,
     curl,
-    gh,
     jsonlite,
     sys,
     utils
