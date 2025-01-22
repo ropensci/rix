@@ -455,14 +455,12 @@ get_remote <- function(git_pkg) {
 #' @param repo The GitHub repository (e.g. "r-lib/usethis")
 #' @param  commit_sha The commit hash of interest
 #' @return A character. The date of the commit.
-#' @importFrom curl new_header handle_setheaders curl_fetch_disk
+#' @importFrom curl new_handle handle_setheaders curl_fetch_memory
 #' @importFrom jsonlite fromJSON
 #' @noRd
 get_commit_date <- function(repo, commit_sha) {
   url <- paste0("https://api.github.com/repos/", repo, "/commits/", commit_sha)
   h <- new_handle()
-  json_file <- file.path(tempdir(), "commit_data.json")
-  on.exit(unlink(json_file, force = TRUE), add = TRUE)
 
   token <- Sys.getenv("GITHUB_PAT")
   token_pattern <- "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$"
@@ -474,34 +472,29 @@ get_commit_date <- function(repo, commit_sha) {
   }
 
   tryCatch({
-    curl_fetch_disk(url, json_file, handle = h)
+    response <- curl_fetch_memory(url, handle = h)
+    if (response$status_code != 200) {
+      stop("API request failed with status code: ", response$status_code)
+    }
+    commit_data <- fromJSON(rawToChar(response$content))
+    if (is.null(commit_data$commit$committer$date)) {
+      stop("Invalid response format: missing commit date")
+    }
+    commit_data$commit$committer$date
   }, error = function(e) {
-    stop("Failed to download commit data: ", e$message)
+    stop("Failed to get commit date for ", commit_sha, ": ", e$message)
   })
-
-  if (!file.exists(json_file) || file.size(json_file) == 0) {
-    stop("Failed to download commit data or received empty response")
-  }
-
-  commit_data <- fromJSON(json_file)
-  if (is.null(commit_data$commit$committer$date)) {
-    stop("Invalid response format: missing commit date")
-  }
-
-  return(commit_data$commit$committer$date)
 }
 
 #' download_all_commits Downloads up to 300 most recent commits from a GitHub repository
 #' @param repo The GitHub repository (e.g. "r-lib/usethis")
 #' @return A data frame with commit SHAs and dates
-#' @importFrom curl new_header handle_setheaders curl_fetch_disk
+#' @importFrom curl new_header handle_setheaders curl_fetch_memory
 #' @importFrom jsonlite fromJSON
 #' @noRd
 download_all_commits <- function(repo) {
   base_url <- paste0("https://api.github.com/repos/", repo, "/commits")
   h <- new_handle()
-  json_file <- file.path(tempdir(), "all_commits.json")
-  on.exit(unlink(json_file, force = TRUE), add = TRUE)
 
   token <- Sys.getenv("GITHUB_PAT")
   token_pattern <- "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$"
@@ -519,25 +512,21 @@ download_all_commits <- function(repo) {
   for (page in 1:max_pages) {
     url <- paste0(base_url, "?per_page=", per_page, "&page=", page)
     tryCatch({
-      curl_fetch_disk(url, json_file, handle = h)
+      response <- curl_fetch_memory(url, handle = h)
+      if (response$status_code != 200) {
+        stop("API request failed with status code: ", response$status_code)
+      }
+      commits <- fromJSON(rawToChar(response$content))
+      if (!is.list(commits) || length(commits) == 0) {
+        break  # No more commits available
+      }
+      if (!all(!is.null(commits$sha)) && !all(!is.null(commits$commit$committer$date))) {
+        stop("Invalid commit data structure in response")
+      }
+      all_commits <- c(all_commits, commits)
     }, error = function(e) {
       stop("Failed to download commit data: ", e$message)
     })
-
-    if (!file.exists(json_file) || file.size(json_file) == 0) {
-      stop("Failed to download commit data or received empty response")
-    }
-
-    commits <- fromJSON(json_file)
-    if (!is.list(commits) || length(commits) == 0) {
-      break  # No more commits available
-    }
-
-    if (!all(!is.null(commits$sha)) && !all(!is.null(commits$commit$committer$date))) {
-      stop("Invalid commit data structure in response")
-    }
-
-    all_commits <- c(all_commits, commits)
   }
 
   if (length(all_commits) == 0) {
