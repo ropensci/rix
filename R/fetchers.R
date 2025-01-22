@@ -454,16 +454,31 @@ get_remote <- function(git_pkg) {
 #' @param repo The GitHub repository (e.g. "r-lib/usethis")
 #' @param  commit_sha The commit hash of interest
 #' @return A character. The date of the commit.
-#' @importFrom gh gh
+#' @importFrom curl new_header handle_setheaders curl_download
+#' @importFrom jsonlite fromJSON
 #' @noRd
 get_commit_date <- function(repo, commit_sha) {
-  commit_data <- gh(
-    "GET /repos/{owner}/{repo}/commits/{commit_sha}",
-    owner = strsplit(repo, "/")[[1]][1],
-    repo = strsplit(repo, "/")[[1]][2],
-    commit_sha = commit_sha
-  )
-  return(commit_data$commit$committer$date)
+  url <- paste0("https://api.github.com/repos/", repo, "/commits/", commit_sha)
+  h <- new_handle()
+  json_file <- file.path(tempdir(), "commit_data.json")
+
+  token <- Sys.getenv("GITHUB_PAT")
+  token_pattern <- "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$"
+
+  if (grepl(token_pattern, token)) {
+  handle_setheaders(h, Authorization = paste("token", token))
+  curl_download(url, json_file, handle = h)
+  } else {
+    warning("No GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request.")
+    curl_download(url, json_file)
+  }
+  
+  if (file.exists(json_file)) {
+    commit_data <- fromJSON(json_file)
+    return(commit_data$commit$committer$date)
+  } else {
+    stop("Failed to fetch commit data.")
+  }
 }
 
 #' download_all_commits Downloads up to 300 most recent commits from a GitHub repository
