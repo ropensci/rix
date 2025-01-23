@@ -24,6 +24,7 @@ create_dev_env.R
 ^data-raw$
 ^.envrc$
 ^.direnv$
+video_thumbnail.png
 
 # flint files
 ^flint$

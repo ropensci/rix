@@ -47,11 +47,13 @@ While Nix has a steep learning curve, `{rix}`
     finally to deploy software environments in production.
 
 <p>
-If you want to watch a 5-Minute video introduction click
-<a href="https://youtu.be/OOu6gjQ310c?si=qQ5lUhAg5U-WT2W1" target="_blank">here</a>.
+If you want to watch a 5-Minute video introduction, click the image
+below:
 </p>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/OOu6gjQ310c?si=LAT4ArMKekwiypWc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
-</iframe>
+
+<a href="https://youtu.be/OOu6gjQ310c?si=MRX0afStyQdVHLiV" target="_blank">
+<img src="video_thumbnail.png" alt="Video Thumbnail" style="width:100%; max-width:560px; height:auto; display:block; margin:0 auto;">
+</a>
 
 Nix includes nearly all CRAN and Bioconductor packages, with the ability
 to install specific package versions or GitHub snapshots. Nix also
