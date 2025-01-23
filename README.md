@@ -46,8 +46,12 @@ While Nix has a steep learning curve, `{rix}`
     evaluate the same code in different development environments, and
     finally to deploy software environments in production.
 
+<p>
 If you want to watch a 5-Minute video introduction click
-[here](https://youtu.be/OOu6gjQ310c?si=qQ5lUhAg5U-WT2W1).
+<a href="https://youtu.be/OOu6gjQ310c?si=qQ5lUhAg5U-WT2W1" target="_blank">here</a>.
+</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/OOu6gjQ310c?si=LAT4ArMKekwiypWc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+</iframe>
 
 Nix includes nearly all CRAN and Bioconductor packages, with the ability
 to install specific package versions or GitHub snapshots. Nix also
@@ -58,19 +62,26 @@ which provides improved compatibility for older versions of R and R
 packages, especially for Apple Silicon computers.
 
 If you have R installed, you can start straight away from your R session
-by first installing `{rix}`:
+by first installing `{rix}` from CRAN:
+
+``` r
+install.packages("rix")
+```
+
+or the development version from R-universe (development versions will
+generally have fixes and newer features):
 
 ``` r
 install.packages("rix", repos = c(
-  "https://ropensci.r-universe.dev",
-  "https://cloud.r-project.org"
+  "https://ropensci.r-universe.dev"
 ))
-library("rix")
 ```
 
 Now try to generate an expression using `rix()`:
 
 ``` r
+library("rix")
+
 # Choose the path to your project
 # This will create two files: .Rprofile and default.nix
 path_default_nix <- "."
@@ -271,7 +282,11 @@ nix_build(project_path = ".")
 
 If you don’t have R installed, but have the Nix package manager
 installed, you can run a temporary terminal session which includes R and
-the development version of `{rix}`:
+the released version of `{rix}`:
+
+    nix-shell -p R rPackages.rix
+
+or if you prefer the development version of `{rix}`:
 
     nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/ropensci/rix/main/inst/extdata/default.nix)"
 
