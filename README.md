@@ -52,7 +52,7 @@ below:
 </p>
 
 <a href="https://youtu.be/OOu6gjQ310c?si=MRX0afStyQdVHLiV" target="_blank" rel="noopener noreferrer">
-<img src="video_thumbnail.png" alt="Video Thumbnail" style="width:100%; max-width:560px; height:auto; display:block; margin:0 auto;">
+<img src="https://raw.githubusercontent.com/ropensci/rix/refs/heads/main/video_thumbnail.png" alt="Video Thumbnail" style="width:100%; max-width:560px; height:auto; display:block; margin:0 auto;">
 </a>
 
 Nix includes nearly all CRAN and Bioconductor packages, with the ability
