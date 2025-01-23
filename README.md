@@ -51,7 +51,7 @@ If you want to watch a 5-Minute video introduction, click the image
 below:
 </p>
 
-<a href="https://youtu.be/OOu6gjQ310c?si=MRX0afStyQdVHLiV" target="_blank">
+<a href="https://youtu.be/OOu6gjQ310c?si=MRX0afStyQdVHLiV" target="_blank" rel="noopener noreferrer">
 <img src="video_thumbnail.png" alt="Video Thumbnail" style="width:100%; max-width:560px; height:auto; display:block; margin:0 auto;">
 </a>
 
