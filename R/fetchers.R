@@ -178,7 +178,7 @@ remove_base <- function(list_imports) {
 #' @return Atomic vector of packages
 #' @noRd
 get_imports <- function(path) {
-  tmpdir <- tempdir(), "rix_tmp")
+  tmpdir <- file.path(tempdir(), "rix_tmp")
   on.exit(unlink(tmpdir, recursive = TRUE, force = TRUE), add = TRUE)
 
   tmp_dir <- tempfile(pattern = "file", tmpdir = tmpdir, fileext = "")
