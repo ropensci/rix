@@ -30,12 +30,15 @@ nix_hash <- function(repo_url, commit) {
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
 hash_url <- function(url) {
-  tdir <- tempdir()
+  # Create a specific subdirectory for our package's temp files
+  # this avoids removing existing tmp files
+  tdir <- file.path(tempdir(), "rix_tmp")
   on.exit(unlink(tdir, recursive = TRUE, force = TRUE), add = TRUE)
   tmpdir <- paste0(
-    tdir, "_repo_hash_url_",
+    tdir, "/repo_hash_url_",
     paste0(sample(letters, 5), collapse = "")
   )
+  dir.create(tmpdir, recursive = TRUE)
   on.exit(unlink(tmpdir, recursive = TRUE, force = TRUE), add = TRUE)
 
   path_to_folder <- tempfile(pattern = "file", tmpdir = tmpdir, fileext = "")
