@@ -209,4 +209,3 @@ testthat::test_that("get_commit_date fails when no GitHub token is found", {
     "No GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request."
   )
 })
->>>>>>> 3b0320e (add test for get_commit_date for no Github token)
