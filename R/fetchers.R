@@ -507,40 +507,46 @@ download_all_commits <- function(repo) {
 
   per_page <- 100
   max_pages <- 3 # Limit to 3 pages of 100 commits each
-  all_commits <- list()
+  max_commits <- per_page * max_pages
 
+  # Pre-allocate results data frame
+  all_commits <- data.frame(
+    sha = character(max_commits),
+    date = as.POSIXct(rep(NA, max_commits))
+  )
+  commit_count <- 0
+  
   for (page in 1:max_pages) {
     url <- paste0(base_url, "?per_page=", per_page, "&page=", page)
+    
     tryCatch({
       response <- curl_fetch_memory(url, handle = h)
       if (response$status_code != 200) {
         stop("API request failed with status code: ", response$status_code)
       }
+      
       commits <- fromJSON(rawToChar(response$content))
-      if (!is.list(commits) || length(commits) == 0) {
-        break  # No more commits available
-      }
-      if (!all(!is.null(commits$sha)) && !all(!is.null(commits$commit$committer$date))) {
-        stop("Invalid commit data structure in response")
-      }
-      all_commits <- c(all_commits, commits)
+      if (!is.list(commits) || length(commits) == 0) break
+      
+      n_commits <- length(commits$sha)
+      if (n_commits == 0) break
+      
+      idx <- (commit_count + 1):(commit_count + n_commits)
+      all_commits$sha[idx] <- commits$sha
+      all_commits$date[idx] <- as.POSIXct(
+        commits$commit$committer$date,
+        format = "%Y-%m-%dT%H:%M:%OSZ"
+      )
+      
+      commit_count <- commit_count + n_commits
+      
     }, error = function(e) {
       stop("Failed to download commit data: ", e$message)
     })
   }
-
-  if (length(all_commits) == 0) {
-    stop("No commits found for repository ", repo)
-  }
-
-  all_commits <- data.frame(
-    sha = all_commits$sha,
-    date = as.POSIXct(
-      all_commits$commit$committer$date,
-      format = "%Y-%m-%dT%H:%M:%OSZ"
-    )
-  )
-  return(all_commits)
+  
+  # Return only the rows with actual data
+  all_commits[1:commit_count, ]
 }
 
 #' get_closest_commit Finds the closest commit to a specific date
