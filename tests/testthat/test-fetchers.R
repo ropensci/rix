@@ -209,3 +209,84 @@ testthat::test_that("get_commit_date fails when no GitHub token is found", {
     "No GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request."
   )
 })
+
+testthat::test_that("Test download_all_commits works with valid repo", {
+  testthat::skip_on_cran()
+  commits <- download_all_commits("ropensci/rix")
+  
+  # Check structure
+  testthat::expect_true(is.data.frame(commits))
+  testthat::expect_named(commits, c("sha", "date"))
+  
+  # Check content
+  testthat::expect_true(nrow(commits) == 300)
+  testthat::expect_true(all(!is.na(commits$sha)))
+  testthat::expect_true(all(!is.na(commits$date)))
+  
+  # Verify date format
+  testthat::expect_true(all(class(commits$date) %in% c("POSIXct", "POSIXt")))
+})
+
+testthat::test_that("Test download_all_commits fails with invalid repo", {
+  testthat::skip_on_cran()
+  testthat::expect_error(
+    download_all_commits("nonexistent/repo"),
+    "Failed to download commit data"
+  )
+})
+
+testthat::test_that("Test download_all_commits works without GitHub token", {
+  testthat::skip_on_cran()
+  # Temporarily unset GITHUB_PAT if it exists
+  old_pat <- Sys.getenv("GITHUB_PAT")
+  Sys.unsetenv("GITHUB_PAT")
+  on.exit(Sys.setenv(GITHUB_PAT = old_pat))
+  
+  testthat::expect_message(
+    commits <- download_all_commits("ropensci/rix"),
+    "No GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request."
+  )
+  
+  # Basic validation that we still got data
+  testthat::expect_true(is.data.frame(commits))
+  testthat::expect_true(nrow(commits) > 0)
+})
+
+testthat::test_that("resolve_package_commit works with different input cases", {
+  testthat::skip_on_cran()
+  
+  # Test case 1: When ref is provided
+  pkg_with_ref <- c("schex", "031320d")
+  remotes <- c("welch-lab/liger", "SaskiaFreytag/schex@031320d")
+  target_date <- "2024-04-04T14:16:11Z"
+  testthat::expect_equal(
+    resolve_package_commit(remote_pkg_name_and_ref = pkg_with_ref, date = target_date, remotes = remotes),
+    "031320d"
+  )
+  
+  # Test case 2: When no ref is provided find the closest commit
+  pkg_without_ref <- c("liger")
+  remotes <- c("welch-lab/liger", "hms-dbmi/conos")
+  target_date <- "2024-04-04T14:16:11Z"
+  testthat::expect_equal(
+    resolve_package_commit(remote_pkg_name_and_ref = pkg_without_ref, date = target_date, remotes = remotes),
+    "43fccb96b986f9da2c3a4320fe58693ca660193b"
+  )
+  
+  # Test case 3: When input is invalid
+  testthat::expect_error(
+    resolve_package_commit(c(), date, remotes),
+    "remote_pkg_name_and_ref must be a list of length 1 or 2"
+  )
+
+# Test case 4: resolve_package_commit falls back to HEAD when API fails
+  pkg_name <- c("nonexistent")
+  remotes <- c("user/nonexistent")
+  target_date <- "2024-04-04T14:16:11Z"
+  
+  testthat::expect_message(
+    result <- resolve_package_commit(pkg_name, target_date, remotes),
+    "Failed to get commit for nonexistent: Failed to download commit data"
+  )
+  testthat::expect_equal(result, "HEAD")
+})
