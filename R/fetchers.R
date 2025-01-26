@@ -486,7 +486,7 @@ get_commit_date <- function(repo, commit_sha) {
   })
 }
 
-#' download_all_commits Downloads up to 300 most recent commits from a GitHub repository
+#' download_all_commits Downloads commits (maximum 1000) from a GitHub repository
 #' @param repo The GitHub repository (e.g. "r-lib/usethis")
 #' @param date The target date to find the closest commit
 #' @return A data frame with commit SHAs and dates
