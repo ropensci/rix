@@ -162,3 +162,35 @@ testthat::test_that("Test fetchgit works even if there are not `importfrom` in N
     )
   )
 })
+
+testthat::test_that("get_commit_date works with valid repo and commit", {
+  testthat::skip_on_cran()
+  date <- get_commit_date(
+    "ropensci/rix",
+    "cd7a53f7c670bd5106a94b48573d5f824174170f"
+  )
+  testthat::expect_match(date, "2025-01-10T07:05:02Z")
+})
+
+testthat::test_that("get_commit_date fails with invalid repo", {
+  testthat::skip_on_cran()
+  testthat::expect_error(
+    get_commit_date(
+      "nonexistent/repo",
+      "cd7a53f7c670bd5106a94b48573d5f824174170f"
+    ),
+    "Failed to get commit date for cd7a53f7c670bd5106a94b48573d5f824174170f"
+  )
+})
+
+testthat::test_that("get_commit_date fails with invalid commit", {
+  testthat::skip_on_cran()
+  testthat::expect_error(
+    get_commit_date(
+      "ropensci/rix",
+      "ad7a53f7c670bd5106a94b48573d5f824174170f"
+    ),
+    "Failed to get commit date for ad7a53f7c670bd5106a94b48573d5f824174170f"
+  )
+})
+>>>>>>> e9e5b04 (write test for get_commit_date)
