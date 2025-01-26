@@ -182,3 +182,45 @@ testthat::test_that("get_commit_date fails when no GitHub token is found", {
     "No GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request."
   )
 })
+
+testthat::test_that("Test download_all_commits works with valid repo", {
+  testthat::skip_on_cran()
+  commits <- download_all_commits("ropensci/rix")
+  
+  # Check structure
+  testthat::expect_true(is.data.frame(commits))
+  testthat::expect_named(commits, c("sha", "date"))
+  
+  # Check content
+  testthat::expect_true(nrow(commits) == 300)
+  testthat::expect_true(all(!is.na(commits$sha)))
+  testthat::expect_true(all(!is.na(commits$date)))
+  
+  # Verify date format
+  testthat::expect_true(all(class(commits$date) %in% c("POSIXct", "POSIXt")))
+})
+
+testthat::test_that("Test download_all_commits fails with invalid repo", {
+  testthat::skip_on_cran()
+  testthat::expect_error(
+    download_all_commits("nonexistent/repo"),
+    "Failed to download commit data"
+  )
+})
+
+testthat::test_that("Test download_all_commits works without GitHub token", {
+  testthat::skip_on_cran()
+  # Temporarily unset GITHUB_PAT if it exists
+  old_pat <- Sys.getenv("GITHUB_PAT")
+  Sys.unsetenv("GITHUB_PAT")
+  on.exit(Sys.setenv(GITHUB_PAT = old_pat))
+  
+  testthat::expect_message(
+    commits <- download_all_commits("ropensci/rix"),
+    "No GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request."
+  )
+  
+  # Basic validation that we still got data
+  testthat::expect_true(is.data.frame(commits))
+  testthat::expect_true(nrow(commits) > 0)
+})
