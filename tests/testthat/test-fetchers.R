@@ -194,7 +194,7 @@ testthat::test_that("get_commit_date fails with invalid commit", {
   )
 })
 
-testthat::test_that("get_commit_date fails when no GitHub token is found", {
+testthat::test_that("get_commit_date tells you when no GitHub token is found, but still works", {
   testthat::skip_on_cran()
   # Temporarily unset GITHUB_PAT if it exists
   old_pat <- Sys.getenv("GITHUB_PAT")
@@ -202,12 +202,13 @@ testthat::test_that("get_commit_date fails when no GitHub token is found", {
   on.exit(Sys.setenv(GITHUB_PAT = old_pat))
   
   testthat::expect_message(
-    get_commit_date(
+    date <- get_commit_date(
       "ropensci/rix",
       "cd7a53f7c670bd5106a94b48573d5f824174170f"
     ),
     "No GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request."
   )
+  testthat::expect_match(date, "2025-01-10T07:05:02Z")
 })
 
 testthat::test_that("Test download_all_commits works with valid repo", {
