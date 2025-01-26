@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.14.7 (2025-01-26)
+
+- `rix()`: fixed a bug where temp files necessary to VS Code were being removed 
+   (see https://github.com/ropensci/rix/pull/396)
+
 # rix 0.14.6 (2025-01-21)
 
 - `rix()`: fixed a bug where local packages were not being handled correctly
