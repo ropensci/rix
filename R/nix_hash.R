@@ -21,7 +21,6 @@ nix_hash <- function(repo_url, commit) {
   }
 }
 
-
 #' Return the SRI hash of an URL with .tar.gz
 #' @param url String with URL ending with `.tar.gz`
 #' @return list with following elements:
@@ -94,7 +93,25 @@ hash_url <- function(url) {
   paths <- list.files(path_to_src, full.names = TRUE, recursive = TRUE)
   desc_path <- grep(file.path(list.files(path_to_src), "DESCRIPTION"), paths, value = TRUE)
 
-  deps <- get_imports(desc_path)
+if (grepl("github", url)) {
+  repo_url_short <- paste(unlist(strsplit(url, "/"))[4:5], collapse = "/")
+  commit <- gsub(x = basename(url), pattern = ".tar.gz", replacement = "")
+  commit_date <- tryCatch(
+    {
+      get_commit_date(repo_url_short, commit)
+    },
+    error = function(e) {
+      message(paste0(
+        "Failed to get commit date for ", commit, ": ", e$message,
+        "\nFalling back to today"
+      ))
+      return(Sys.Date())
+    }
+  )
+}
+
+deps <- get_imports(desc_path, commit_date)
+
 
   return(
     list(

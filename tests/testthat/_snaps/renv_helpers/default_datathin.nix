@@ -347,7 +347,7 @@ let
       name = "datathin";
       src = pkgs.fetchgit {
         url = "https://github.com/anna-neufeld/datathin";
-        rev = "HEAD";
+        rev = "58eb154609365fa7301ea0fa397fbf04dd8c28ed";
         sha256 = "sha256-rtRpwFI+JggX8SwnfH4SPDaMPK2yLhJFTgzvWT+Zll4=";
       };
       propagatedBuildInputs = builtins.attrValues {
