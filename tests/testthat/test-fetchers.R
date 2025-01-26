@@ -243,7 +243,7 @@ testthat::test_that("Test download_all_commits works without GitHub token", {
   on.exit(Sys.setenv(GITHUB_PAT = old_pat))
   
   testthat::expect_message(
-    commits <- download_all_commits("ropensci/rix"),
+    commits <- download_all_commits("ropensci/rix", "2025-01-10T07:05:02Z"),
     "No GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request."
   )
   
