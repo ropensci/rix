@@ -212,14 +212,14 @@ testthat::test_that("get_commit_date fails when no GitHub token is found", {
 
 testthat::test_that("Test download_all_commits works with valid repo", {
   testthat::skip_on_cran()
-  commits <- download_all_commits("ropensci/rix")
+  commits <- download_all_commits("ropensci/rix", "2025-01-10T07:05:02Z")
   
   # Check structure
   testthat::expect_true(is.data.frame(commits))
   testthat::expect_named(commits, c("sha", "date"))
   
   # Check content
-  testthat::expect_true(nrow(commits) == 300)
+  testthat::expect_true(nrow(commits) > 0)
   testthat::expect_true(all(!is.na(commits$sha)))
   testthat::expect_true(all(!is.na(commits$date)))
   

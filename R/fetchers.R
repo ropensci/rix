@@ -488,11 +488,12 @@ get_commit_date <- function(repo, commit_sha) {
 
 #' download_all_commits Downloads up to 300 most recent commits from a GitHub repository
 #' @param repo The GitHub repository (e.g. "r-lib/usethis")
+#' @param date The target date to find the closest commit
 #' @return A data frame with commit SHAs and dates
 #' @importFrom curl new_header handle_setheaders curl_fetch_memory
 #' @importFrom jsonlite fromJSON
 #' @noRd
-download_all_commits <- function(repo) {
+download_all_commits <- function(repo, date) {
   base_url <- paste0("https://api.github.com/repos/", repo, "/commits")
   h <- new_handle()
 
@@ -505,8 +506,9 @@ download_all_commits <- function(repo) {
     message("No GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request.")
   }
 
+  # Limit to 10 pages of 100 commits each, so 1000 commits in total
   per_page <- 100
-  max_pages <- 3 # Limit to 3 pages of 100 commits each
+  max_pages <- 10
   max_commits <- per_page * max_pages
 
   # Pre-allocate results data frame
@@ -515,36 +517,44 @@ download_all_commits <- function(repo) {
     date = as.POSIXct(rep(NA, max_commits))
   )
   commit_count <- 0
-  
+
   for (page in 1:max_pages) {
     url <- paste0(base_url, "?per_page=", per_page, "&page=", page)
-    
-    tryCatch({
-      response <- curl_fetch_memory(url, handle = h)
-      if (response$status_code != 200) {
-        stop("API request failed with status code: ", response$status_code)
+
+    tryCatch(
+      {
+        response <- curl_fetch_memory(url, handle = h)
+        if (response$status_code != 200) {
+          stop("API request failed with status code: ", response$status_code)
+        }
+
+        commits <- fromJSON(rawToChar(response$content))
+        if (!is.list(commits) || length(commits) == 0) break
+
+        # if no commits are found, break the loop
+        n_commits <- length(commits$sha)
+        if (n_commits == 0) break
+
+
+        idx <- (commit_count + 1):(commit_count + n_commits)
+        all_commits$sha[idx] <- commits$sha
+        all_commits$date[idx] <- as.POSIXct(
+          commits$commit$committer$date,
+          format = "%Y-%m-%dT%H:%M:%OSZ"
+        )
+
+        commit_count <- commit_count + n_commits
+
+        # if the date of the last commit is before the target date, break the loop
+        if (min(all_commits$date, na.rm = TRUE) < date) break
+
+      },
+      error = function(e) {
+        stop("Failed to download commit data: ", e$message)
       }
-      
-      commits <- fromJSON(rawToChar(response$content))
-      if (!is.list(commits) || length(commits) == 0) break
-      
-      n_commits <- length(commits$sha)
-      if (n_commits == 0) break
-      
-      idx <- (commit_count + 1):(commit_count + n_commits)
-      all_commits$sha[idx] <- commits$sha
-      all_commits$date[idx] <- as.POSIXct(
-        commits$commit$committer$date,
-        format = "%Y-%m-%dT%H:%M:%OSZ"
-      )
-      
-      commit_count <- commit_count + n_commits
-      
-    }, error = function(e) {
-      stop("Failed to download commit data: ", e$message)
-    })
+    )
   }
-  
+
   # Return only the rows with actual data
   all_commits[1:commit_count, ]
 }
@@ -587,7 +597,7 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes) {
     # fallback to HEAD if API fails
     result <- tryCatch({
       remotes_fetch <- remotes[grepl(remote_pkg_name_and_ref, remotes)]
-      all_commits <- download_all_commits(remotes_fetch)
+      all_commits <- download_all_commits(remotes_fetch, date)
       closest_commit <- get_closest_commit(all_commits, date)
       closest_commit$sha
     },
