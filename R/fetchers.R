@@ -278,10 +278,15 @@ get_imports <- function(path) {
   namespace_path <- gsub("DESCRIPTION", "NAMESPACE", desc_path)
   namespace_raw <- readLines(namespace_path)
   namespace_imports <- namespace_raw[grepl("importFrom", namespace_raw)]
-  namespace_imports_pkgs <- gsub("importFrom\\(([^,]+).*", "\\1", namespace_imports)
 
-  if (length(namespace_imports_pkgs) > 0) {
+  if (length(namespace_imports) > 0) {
+    # Get package names from `importFrom` statements
+    namespace_imports_pkgs <- gsub("importFrom\\(([^,]+).*", "\\1", namespace_imports)
+    # Remove quotes, which is sometimes necessary
+    # example: https://github.com/cran/AER/blob/master/NAMESPACE
+    namespace_imports_pkgs <- gsub("[\"']", "", namespace_imports_pkgs)
     namespace_imports_pkgs <- unique(namespace_imports_pkgs)
+    # combine imports from DESCRIPTION and NAMESPACE
     output <- union(output, namespace_imports_pkgs)
   }
 
