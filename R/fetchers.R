@@ -274,6 +274,17 @@ get_imports <- function(path) {
   # Remove minimum package version for example 'packagename ( > 1.0.0)'
   output <- trimws(gsub("\\(.*?\\)", "", output))
 
+  # Get imports from NAMESPACE
+  namespace_path <- gsub("DESCRIPTION", "NAMESPACE", desc_path)
+  namespace_raw <- readLines(namespace_path)
+  namespace_imports <- namespace_raw[grepl("importFrom", namespace_raw)]
+  namespace_imports_pkgs <- gsub("importFrom\\(([^,]+).*", "\\1", namespace_imports)
+
+  if (length(namespace_imports_pkgs) > 0) {
+    namespace_imports_pkgs <- unique(namespace_imports_pkgs)
+    output <- union(output, namespace_imports_pkgs)
+  }
+
   output <- remove_base(unique(output))
 
   output <- gsub("\\.", "_", output)
