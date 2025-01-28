@@ -135,3 +135,30 @@ testthat::test_that("Test fetchgit gets a package with several remote deps and c
     "\n    httr2 = (pkgs.rPackages.buildRPackage {\n      name = \"httr2\";\n      src = pkgs.fetchgit {\n        url = \"https://github.com/b-rodrigues/httr2\";\n        rev = \"HEAD\";\n        sha256 = \"sha256-ny4J2WqUL4LPLWRKS8rgVqwvgMOQ2Rm/lbBWtF+99PE=\";\n      };\n      propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.rPackages) \n          cli\n          curl\n          glue\n          lifecycle\n          magrittr\n          openssl\n          R6\n          rappdirs\n          rlang\n          vctrs\n          withr;\n      };\n    });\n\n    gh = (pkgs.rPackages.buildRPackage {\n      name = \"gh\";\n      src = pkgs.fetchgit {\n        url = \"https://github.com/b-rodrigues/gh\";\n        rev = \"HEAD\";\n        sha256 = \"sha256-POXEMZv8kqHokAxK8LoWkS0qYrcIcVdQi5xyGD992KU=\";\n      };\n      propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.rPackages) \n          cli\n          gitcreds\n          glue\n          ini\n          jsonlite\n          lifecycle\n          rlang;\n      } ++ [ httr2 ];\n    });\n\n\n    highlite = (pkgs.rPackages.buildRPackage {\n      name = \"highlite\";\n      src = pkgs.fetchgit {\n        url = \"https://github.com/jimhester/highlite\";\n        rev = \"HEAD\";\n        sha256 = \"sha256-lkWMlAi75MYxiBUYnLwxLK9ApXkWanA4Mt7g4qtLpxM=\";\n      };\n      propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.rPackages) \n          Rcpp\n          BH;\n      };\n    });\n\n\n    memoise = (pkgs.rPackages.buildRPackage {\n      name = \"memoise\";\n      src = pkgs.fetchgit {\n        url = \"https://github.com/b-rodrigues/memoise\";\n        rev = \"74d62c8\";\n        sha256 = \"sha256-fsdop66VglkOIYrJ0LKZKikIZmzQ2gqEATLy9tTJ/B8=\";\n      };\n      propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.rPackages) \n          digest;\n      };\n    });\n\n    lookup = (pkgs.rPackages.buildRPackage {\n      name = \"lookup\";\n      src = pkgs.fetchgit {\n        url = \"https://github.com/b-rodrigues/lookup/\";\n        rev = \"ee5505c817b19b59d37236ed35a81a65aa376124\";\n        sha256 = \"sha256-jiSBuC1vzJbN6OckgVX0E+XuMCeZS5LKsldIVL7DNgo=\";\n      };\n      propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.rPackages) \n          Rcpp\n          codetools\n          crayon\n          rex\n          jsonlite\n          rstudioapi\n          withr\n          httr;\n      } ++ [ highlite gh memoise ];\n    });\n"
   )
 })
+
+testthat::test_that("Test fetchgit gets a package that is not listed in DESCRIPTION, only in NAMESPACE", {
+  testthat::skip_on_cran()
+  testthat::expect_equal(
+    fetchgit(
+      list(
+        package_name = "seurat-data",
+        repo_url = "https://github.com/satijalab/seurat-data",
+        commit = "4dc08e022f51c324bc7bf785b1b5771d2742701d"
+      )
+    ),
+    "\n    seurat-data = (pkgs.rPackages.buildRPackage {\n      name = \"seurat-data\";\n      src = pkgs.fetchgit {\n        url = \"https://github.com/satijalab/seurat-data\";\n        rev = \"4dc08e022f51c324bc7bf785b1b5771d2742701d\";\n        sha256 = \"sha256-dyv8ttrVaGwd5tPle2+wDHMa8lVjozZnVMsKArEMTPE=\";\n      };\n      propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.rPackages) \n          cli\n          crayon\n          rappdirs\n          SeuratObject\n          Matrix\n          Seurat;\n      };\n    });\n"
+  )
+})
+
+testthat::test_that("Test fetchgit works even if there are not `importfrom` in NAMESPACE", {
+  testthat::skip_on_cran()
+  testthat::expect_no_error(
+    fetchgit(
+      list(
+        package_name = "CSFAtlasTools",
+        repo_url = "https://github.com/mihem/CSFAtlasTools",
+        commit = "ac4a34d39812e8b8fa5746b63df4cf321a13b7a7"
+      )
+    )
+  )
+})
