@@ -138,9 +138,10 @@ rix_init <- function(project_path,
   # first create the call, deparse it, and write it to .Rprofile
   rprofile_quoted <- nix_rprofile()
   rprofile_deparsed <- deparse_chr1(expr = rprofile_quoted, collapse = "\n")
+  rprofile_cleaned <- gsub(pattern = "^\\{|\\}$", replacement = "", x = rprofile_deparsed)
   rprofile_file <- file.path(project_path, ".Rprofile")
 
-  rprofile_text <- get_rprofile_text(rprofile_deparsed)
+  rprofile_text <- get_rprofile_text(rprofile_cleaned)
 
   # This function creates the connection, write the text
   # and closes the connection
@@ -418,7 +419,7 @@ set_nix_path <- function() {
 #' @noRd
 nix_rprofile <- function() {
   # nolint start: object_name_linter
-  quote(
+  quote({
     is_rstudio <- Sys.getenv("RSTUDIO") == "1"
     is_nix_r <- nzchar(Sys.getenv("NIX_STORE"))
     is_code <- Sys.getenv("TERM_PROGRAM") == "vscode"
@@ -483,10 +484,10 @@ nix_rprofile <- function() {
       rm(current_paths, userlib_paths, user_dir, new_paths)
     }
 
-    rm(is_rstudio, is_nix_r)
     if (isTRUE(is_code) && interactive() && isFALSE(is_rstudio)) {
         source(file.path(Sys.getenv(if (.Platform$OS.type == "windows") "USERPROFILE" else "HOME"), ".vscode-R", "init.R"))
     }
-  )
+    rm(is_rstudio, is_nix_r, is_code)
+  })
   # nolint end: object_name
 }
