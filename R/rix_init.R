@@ -418,9 +418,10 @@ set_nix_path <- function() {
 #' @noRd
 nix_rprofile <- function() {
   # nolint start: object_name_linter
-  quote({
+  quote(
     is_rstudio <- Sys.getenv("RSTUDIO") == "1"
     is_nix_r <- nzchar(Sys.getenv("NIX_STORE"))
+    is_code <- Sys.getenv("TERM_PROGRAM") == "vscode"
     if (isFALSE(is_nix_r) && isTRUE(is_rstudio)) {
       # Currently, RStudio does not propagate environmental variables defined in
       # `$HOME/.zshrc`, `$HOME/.bashrc` and alike. This is workaround to
@@ -483,6 +484,9 @@ nix_rprofile <- function() {
     }
 
     rm(is_rstudio, is_nix_r)
-  })
+    if (isTRUE(is_code) && interactive() && isFALSE(is_rstudio)) {
+        source(file.path(Sys.getenv(if (.Platform$OS.type == "windows") "USERPROFILE" else "HOME"), ".vscode-R", "init.R"))
+    }
+  )
   # nolint end: object_name
 }
