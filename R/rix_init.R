@@ -138,10 +138,9 @@ rix_init <- function(project_path,
   # first create the call, deparse it, and write it to .Rprofile
   rprofile_quoted <- nix_rprofile()
   rprofile_deparsed <- deparse_chr1(expr = rprofile_quoted, collapse = "\n")
-  rprofile_cleaned <- gsub(pattern = "^\\{|\\}$", replacement = "", x = rprofile_deparsed)
   rprofile_file <- file.path(project_path, ".Rprofile")
 
-  rprofile_text <- get_rprofile_text(rprofile_cleaned)
+  rprofile_text <- get_rprofile_text(rprofile_deparsed)
 
   # This function creates the connection, write the text
   # and closes the connection
@@ -423,6 +422,7 @@ nix_rprofile <- function() {
     is_rstudio <- Sys.getenv("RSTUDIO") == "1"
     is_nix_r <- nzchar(Sys.getenv("NIX_STORE"))
     is_code <- Sys.getenv("TERM_PROGRAM") == "vscode"
+    is_positron <- Sys.getenv("POSITRON") == "1"
     if (isFALSE(is_nix_r) && isTRUE(is_rstudio)) {
       # Currently, RStudio does not propagate environmental variables defined in
       # `$HOME/.zshrc`, `$HOME/.bashrc` and alike. This is workaround to
@@ -483,11 +483,11 @@ nix_rprofile <- function() {
       .libPaths(new_paths)
       rm(current_paths, userlib_paths, user_dir, new_paths)
     }
-
-    if (isTRUE(is_code) && interactive() && isFALSE(is_rstudio)) {
+      # source vscode-R init.R file for vscode-R
+    if (isTRUE(is_code) && interactive() && isFALSE(is_rstudio) && isFALSE(is_positron)) {
         source(file.path(Sys.getenv(if (.Platform$OS.type == "windows") "USERPROFILE" else "HOME"), ".vscode-R", "init.R"))
     }
-    rm(is_rstudio, is_nix_r, is_code)
+    rm(is_rstudio, is_nix_r, is_code, is_positron)
   })
   # nolint end: object_name
 }
