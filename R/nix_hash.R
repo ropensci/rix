@@ -31,34 +31,23 @@ nix_hash <- function(repo_url, commit) {
 #' @noRd
 hash_url <- function(url) {
   tdir <- tempdir()
-  on.exit(unlink(tdir, recursive = TRUE, force = TRUE), add = TRUE)
+
   tmpdir <- paste0(
     tdir, "_repo_hash_url_",
     paste0(sample(letters, 5), collapse = "")
   )
-  on.exit(unlink(tmpdir, recursive = TRUE, force = TRUE), add = TRUE)
 
   path_to_folder <- tempfile(pattern = "file", tmpdir = tmpdir, fileext = "")
   dir.create(path_to_folder, recursive = TRUE)
-  on.exit(
-    unlink(path_to_folder, recursive = TRUE, force = TRUE),
-    add = TRUE
-  )
 
   path_to_tarfile <- paste0(path_to_folder, "/package_tar_gz")
   path_to_src <- paste0(path_to_folder, "/package_src")
 
   dir.create(path_to_src, recursive = TRUE)
   path_to_src <- normalizePath(path_to_src)
-  on.exit(
-    unlink(path_to_src, recursive = TRUE, force = TRUE),
-    add = TRUE
-  )
+
   dir.create(path_to_tarfile, recursive = TRUE)
-  on.exit(
-    unlink(path_to_tarfile, recursive = TRUE, force = TRUE),
-    add = TRUE
-  )
+
   path_to_tarfile <- normalizePath(path_to_tarfile)
 
   h <- curl::new_handle(failonerror = TRUE, followlocation = TRUE)

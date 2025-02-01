@@ -179,16 +179,11 @@ remove_base <- function(list_imports) {
 #' @noRd
 get_imports <- function(path) {
   tmpdir <- tempdir()
-  on.exit(unlink(tmpdir, recursive = TRUE, force = TRUE), add = TRUE)
 
   tmp_dir <- tempfile(pattern = "file", tmpdir = tmpdir, fileext = "")
   if (!dir.exists(tmp_dir)) {
     dir.create(tmp_dir, recursive = TRUE)
   }
-  on.exit(
-    unlink(tmp_dir, recursive = TRUE, force = TRUE),
-    add = TRUE
-  )
 
   # Some packages have a Description file in the testthat folder
   # (see jimhester/lookup) so we need to get rid of that
