@@ -198,8 +198,7 @@ generate_tex_pkgs <- function(tex_pkgs) {
 #' @noRd
 get_system_pkgs <- function(system_pkgs, r_pkgs) {
   # We always need these packages
-  system_pkgs <- c(system_pkgs, "R", "glibcLocales", "nix") |>
-    sort()
+  system_pkgs <- sort(c(system_pkgs, "R", "glibcLocales", "nix"))
 
   # If the user wants the R {quarto} package, then the quarto software needs to
   # be installed

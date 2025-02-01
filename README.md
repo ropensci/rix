@@ -404,9 +404,9 @@ for creating `{rix}`’s logo!
 - [NixOS’s website](https://nixos.org/)
 - [Nixpkgs’s GitHub repository](https://github.com/NixOS/nixpkgs)
 - [Nix for R series from Bruno’s
-  blog](https://www.brodrigues.co/tags/nix/). Or, in case you like video
-  tutorials, watch [this one on Reproducible R development environments
-  with Nix](https://www.youtube.com/watch?v=c1LhgeTTxaI)
+  blog](https://brodrigues.co/index.html#category=nix). Or, in case you
+  like video tutorials, watch [this one on Reproducible R development
+  environments with Nix](https://www.youtube.com/watch?v=c1LhgeTTxaI)
 - [nix.dev
   tutorials](https://nix.dev/tutorials/first-steps/towards-reproducibility-pinning-nixpkgs#pinning-nixpkgs)
 - [INRIA’s Nix
