@@ -217,27 +217,26 @@ get_imports <- function(path) {
     # to only keep packagename
     remotes <- gsub("\n", "", x = unlist(strsplit(remotes$Remotes, ",")))
     # Get user names
-    remote_pkgs_usernames <- strsplit(remotes, "/") |>
-      sapply(function(x) x[[1]])
+    remote_pkgs_usernames <- sapply(strsplit(remotes, "/"), function(x) x[[1]])
 
     # Now remove user name and
     # split at "@" or "#" character to get name and commit or PR separated
     remote_pkgs_names_and_refs <- sub(".*?/", "", remotes)
     remote_pkgs_names_and_refs <- strsplit(remote_pkgs_names_and_refs, "(@|#)")
 
-    remote_pkgs_names <- remote_pkgs_names_and_refs |>
-      sapply(function(x) x[[1]])
+    remote_pkgs_names <- sapply(remote_pkgs_names_and_refs, function(x) x[[1]])
 
     # Check if we have a list of lists of two elements: a package name
     # and a ref. If not, add "HEAD" to it.
-    remote_pkgs_refs <- lapply(remote_pkgs_names_and_refs, function(sublist) {
+    out <- lapply(remote_pkgs_names_and_refs, function(sublist) {
       if (length(sublist) == 1) {
         c(sublist, "HEAD")
       } else {
         sublist
       }
-    }) |>
-      sapply(function(x) x[[2]])
+    })
+
+    remote_pkgs_refs <- sapply(out, function(x) x[[2]])
 
     urls <- paste0(
       "https://github.com/",
