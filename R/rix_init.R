@@ -491,7 +491,7 @@ nix_rprofile <- function() {
         message("No .vscode-R/init.R file found. If you want to use VSCode-R, you need to source it in your .Rprofile or start vscode from within nix-shell")
       }
     }
+    rm(is_rstudio, is_nix_r, is_code, is_positron)
+    # nolint end: object_name
   })
-  rm(is_rstudio, is_nix_r, is_code, is_positron)
-  # nolint end: object_name
 }
