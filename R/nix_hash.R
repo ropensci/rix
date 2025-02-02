@@ -91,7 +91,6 @@ if (grepl("github", url)) {
     },
     error = function(e) {
       message(paste0(
-        "Failed to get commit date for ", commit, ": ", e$message,
         "\nFalling back to today"
       ))
       return(Sys.Date())
