@@ -389,7 +389,6 @@ is_rstudio_session <- function(message_type = c("simple", "quiet", "verbose")) {
   return(is_rstudio)
 }
 
-
 #' If not yet present, add the Nix default path of the system-wide profile to
 #' `PATH` environment variable inside R session.
 #'
@@ -483,11 +482,16 @@ nix_rprofile <- function() {
       .libPaths(new_paths)
       rm(current_paths, userlib_paths, user_dir, new_paths)
     }
-      # source vscode-R init.R file for vscode-R
+    # source vscode-R init.R file for vscode-R
     if (isTRUE(is_code) && interactive() && isFALSE(is_rstudio) && isFALSE(is_positron)) {
-        source(file.path(Sys.getenv(if (.Platform$OS.type == "windows") "USERPROFILE" else "HOME"), ".vscode-R", "init.R"))
+      vscode_r_init <- file.path(Sys.getenv(if (.Platform$OS.type == "windows") "USERPROFILE" else "HOME"), ".vscode-R", "init.R")
+      if (file.exists(vscode_r_init)) {
+        source(vscode_r_init)
+      } else {
+        message("No .vscode-R/init.R file found. If you want to use VSCode-R, you need to source it in your .Rprofile or start vscode from within nix-shell")
+      }
     }
-    rm(is_rstudio, is_nix_r, is_code, is_positron)
   })
+  rm(is_rstudio, is_nix_r, is_code, is_positron)
   # nolint end: object_name
 }
