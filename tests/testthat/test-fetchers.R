@@ -271,7 +271,7 @@ testthat::test_that("resolve_package_commit works with different input cases", {
   
   testthat::expect_message(
     result <- resolve_package_commit(pkg_name, target_date, remotes),
-    "Failed to get commit for nonexistent: Failed to download commit data"
+    "Failed to get closest commit for user/nonexistent:"
   )
   testthat::expect_equal(result, "HEAD")
 })
