@@ -490,10 +490,17 @@ get_commit_date <- function(repo, commit_sha) {
       commit_data$commit$committer$date
     },
     error = function(e) {
-      message(paste0(
-        "Failed to get commit date for <<< ", repo, " >>> : ", e$message,
-        ". Falling back to today."
-      ))
+      message(
+        paste0(
+          "Failed to get commit date for <<< ",
+          repo,
+          " >>> : ",
+          e$message,
+          ". Falling back to <<< ",
+          Sys.Date(),
+          " >>>."
+        )
+      )
       return(Sys.Date())
     }
   )
