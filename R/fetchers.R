@@ -472,7 +472,7 @@ get_commit_date <- function(repo, commit_sha) {
       paste0(
         "When fetching the commit date from GitHub from <<< ",
         repo,
-        " >>>, no GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request."
+        " >>>, no GitHub Personal Access Token found.\nPlease set GITHUB_PAT in your environment.\nFalling back to unauthenticated API request.\n"
       )
     )
   }
@@ -498,7 +498,7 @@ get_commit_date <- function(repo, commit_sha) {
           e$message,
           ". Falling back to <<< ",
           Sys.Date(),
-          " >>>."
+          " >>>.\n"
         )
       )
       return(Sys.Date())
@@ -523,7 +523,7 @@ download_all_commits <- function(repo, date) {
   if (grepl(token_pattern, token)) {
     handle_setheaders(h, Authorization = paste("token", token))
   } else {
-    message("When downloading commits, no GitHub Personal Access Token was found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request.")
+    message("When downloading commits, no GitHub Personal Access Token was found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request.\n")
   }
 
   # Limit to 10 pages of 100 commits each, so 1000 commits in total
