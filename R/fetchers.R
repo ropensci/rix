@@ -492,11 +492,11 @@ get_commit_date <- function(repo, commit_sha) {
     error = function(e) {
       message(
         paste0(
-          "Failed to get commit date for <<< ",
+          "Failed to get commit date from <<< ",
           repo,
           " >>> : ",
           e$message,
-          ". Falling back to <<< ",
+          ".\nFalling back to <<< ",
           Sys.Date(),
           " >>>.\n"
         )
@@ -523,9 +523,14 @@ download_all_commits <- function(repo, date) {
   if (grepl(token_pattern, token)) {
     handle_setheaders(h, Authorization = paste("token", token))
   } else {
-    message("When downloading commits, no GitHub Personal Access Token was found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request.\n")
+    message(
+      paste0(
+        "When downloading commits from <<< ",
+        repo,
+        " >>>, no GitHub Personal Access Token found.\nPlease set GITHUB_PAT in your environment.\nFalling back to unauthenticated API request.\n"
+      )
+    )
   }
-
   # Limit to 10 pages of 100 commits each, so 1000 commits in total
   per_page <- 100
   max_pages <- 10
@@ -567,7 +572,6 @@ download_all_commits <- function(repo, date) {
 
         # if the date of the last commit is before the target date, break the loop
         if (min(all_commits$date, na.rm = TRUE) < date) break
-
       },
       error = function(e) {
         stop("Failed to download commit data: ", e$message)
