@@ -228,9 +228,17 @@ get_imports <- function(path, commit_date = NULL) {
 
     remote_pkgs_names <- sapply(remote_pkgs_names_and_refs, function(x) x[[1]])
 
+    # contruct repo short url in the form username/packagename
+    # don't use remotes because it may contain @ or # parts
+    repo_url_short <- paste0(
+      remote_pkgs_usernames,
+      "/",
+      remote_pkgs_names
+    )
+
     # try to get commit hash for each package if not already provided
     remote_pkgs_refs <- lapply(remote_pkgs_names_and_refs, function(x) {
-      resolve_package_commit(x, commit_date, remotes)
+      resolve_package_commit(x, commit_date, repo_url_short)
     })
 
     urls <- paste0(
@@ -507,10 +515,10 @@ get_closest_commit <- function(commits_df, target_date) {
 #' resolve_package_commit Resolves the commit SHA for a package based on a date
 #' @param remote_pkg_name_and_ref A list containing the package name and optionally a ref
 #' @param date The target date to find the closest commit
-#' @param remotes A character vector of remotes
+#' @param repo_url_short A character vector of the form "username/packagename"
 #' @return A character. The commit SHA of the closest commit to the target date or "HEAD" if API fails
 #' @noRd
-resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes) {
+resolve_package_commit <- function(remote_pkg_name_and_ref, date, repo_url_short) {
   # Check if remote is a list with a package name and a ref
   if (is.list(remote_pkg_name_and_ref)) {
     # Keep existing ref if present
@@ -519,7 +527,7 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes) {
     # For packages without ref, try to find closest one by date
     # fallback to HEAD if API fails
     result <- tryCatch({
-      remotes_fetch <- remotes[grepl(remote_pkg_name_and_ref, remotes)]
+      remotes_fetch <- repo_url_short[grepl(remote_pkg_name_and_ref, repo_url_short)]
       all_commits <- download_all_commits(remotes_fetch)
       closest_commit <- get_closest_commit(all_commits, date)
       closest_commit$sha
