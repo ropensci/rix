@@ -610,7 +610,7 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes) {
     },
     error = function(e) {
       message(paste0("Failed to get commit for ", remotes, 
-            ": ", e$message, "\nFalling back to HEAD\n"))
+            ": ", e$message, ". Falling back to HEAD\n"))
       return("HEAD")
     })
     return(result)
