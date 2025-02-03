@@ -172,26 +172,28 @@ testthat::test_that("get_commit_date works with valid repo and commit", {
   testthat::expect_match(date, "2025-01-10T07:05:02Z")
 })
 
-testthat::test_that("get_commit_date fails with invalid repo", {
+testthat::test_that("get_commit_date tells you when it cannot get commit date and then uses the current date", {
   testthat::skip_on_cran()
-  testthat::expect_error(
-    get_commit_date(
+  testthat::expect_message(
+    date <- get_commit_date(
       "nonexistent/repo",
       "cd7a53f7c670bd5106a94b48573d5f824174170f"
     ),
-    "Failed to get commit date for cd7a53f7c670bd5106a94b48573d5f824174170f"
+    "Failed to get commit date from <<< nonexistent/repo >>> : API request failed with status code: 404"
   )
+  testthat::expect_equal(date, Sys.Date())
 })
 
 testthat::test_that("get_commit_date fails with invalid commit", {
   testthat::skip_on_cran()
-  testthat::expect_error(
-    get_commit_date(
+  testthat::expect_message(
+    date <- get_commit_date(
       "ropensci/rix",
       "ad7a53f7c670bd5106a94b48573d5f824174170f"
     ),
-    "Failed to get commit date for ad7a53f7c670bd5106a94b48573d5f824174170f"
+    "Failed to get commit date from <<< ropensci/rix >>>"
   )
+  testthat::expect_equal(date, Sys.Date())
 })
 
 testthat::test_that("get_commit_date tells you when no GitHub token is found, but still works", {
