@@ -85,21 +85,10 @@ hash_url <- function(url) {
 if (grepl("github", url)) {
   repo_url_short <- paste(unlist(strsplit(url, "/"))[4:5], collapse = "/")
   commit <- gsub(x = basename(url), pattern = ".tar.gz", replacement = "")
-  commit_date <- tryCatch(
-    {
-      get_commit_date(repo_url_short, commit)
-    },
-    error = function(e) {
-      message(paste0(
-        "\nFalling back to today"
-      ))
-      return(Sys.Date())
-    }
-  )
+  commit_date <- get_commit_date(repo_url_short, commit)
 }
 
 deps <- get_imports(desc_path, commit_date)
-
 
   return(
     list(

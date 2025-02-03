@@ -471,21 +471,26 @@ get_commit_date <- function(repo, commit_sha) {
     message("When fetching the commit date from GitHub, no GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request.")
   }
 
-  tryCatch({
-    response <- curl_fetch_memory(url, handle = h)
-    if (response$status_code != 200) {
-      stop("API request failed with status code: ", response$status_code)
-    }
-    commit_data <- fromJSON(rawToChar(response$content))
-    if (is.null(commit_data$commit$committer$date)) {
-      stop("Invalid response format: missing commit date")
-    }
-    commit_data$commit$committer$date
-  }, error = function(e) {
-    stop("Failed to get commit date for ", repo, ": ", e$message,
+  tryCatch(
+    {
+      response <- curl_fetch_memory(url, handle = h)
+      if (response$status_code != 200) {
+        stop("API request failed with status code: ", response$status_code)
+      }
+      commit_data <- fromJSON(rawToChar(response$content))
+      if (is.null(commit_data$commit$committer$date)) {
+        stop("Invalid response format: missing commit date")
+      }
+      commit_data$commit$committer$date
+    },
+    error = function(e) {
+      stop(
+        "Failed to get commit date for ", repo, ": ", e$message,
         "\nFalling back to today"
-    )
-  })
+      )
+      return(Sys.Date())
+    }
+  )
 }
 
 #' download_all_commits Downloads commits (maximum 1000) from a GitHub repository
