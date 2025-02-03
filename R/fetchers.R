@@ -609,7 +609,7 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes) {
       closest_commit$sha
     },
     error = function(e) {
-      message(paste0("Failed to get commit for ", remotes, 
+      message(paste0("Failed to get closest commit for ", remotes, 
             ": ", e$message, ". Falling back to HEAD\n"))
       return("HEAD")
     })
