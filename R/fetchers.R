@@ -619,17 +619,26 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes) {
   } else if (length(remote_pkg_name_and_ref) == 1) {
     # For packages without ref, try to find closest one by date
     # fallback to HEAD if API fails
-    result <- tryCatch({
-      remotes_fetch <- remotes[grepl(remote_pkg_name_and_ref, remotes)]
-      all_commits <- download_all_commits(remotes_fetch, date)
-      closest_commit <- get_closest_commit(all_commits, date)
-      closest_commit$sha
-    },
-    error = function(e) {
-      message(paste0("Failed to get closest commit for ", remotes_fetch, 
-            ": ", e$message, ". Falling back to HEAD\n"))
-      return("HEAD")
-    })
+    result <- tryCatch(
+      {
+        remotes_fetch <- remotes[grepl(remote_pkg_name_and_ref, remotes)]
+        all_commits <- download_all_commits(remotes_fetch, date)
+        closest_commit <- get_closest_commit(all_commits, date)
+        closest_commit$sha
+      },
+      error = function(e) {
+        message(
+          paste0(
+            "Failed to get closest commit for ",
+            remotes_fetch,
+            ": ",
+            e$message,
+            ".\nFalling back to <<< HEAD >>>\n"
+          )
+        )
+        return("HEAD")
+      }
+    )
     return(result)
   } else {
     stop("remote_pkg_name_and_ref must be a list of length 1 or 2")
