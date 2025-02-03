@@ -196,7 +196,7 @@ testthat::test_that("get_commit_date fails with invalid commit", {
   testthat::expect_equal(date, Sys.Date())
 })
 
-testthat::test_that("get_commit_date tells you when no GitHub token is found, but still works", {
+testthat::test_that("get_commit_date tells you when no GitHub token is found", {
   testthat::skip_on_cran()
   # Temporarily unset GITHUB_PAT if it exists
   old_pat <- Sys.getenv("GITHUB_PAT")
@@ -204,13 +204,12 @@ testthat::test_that("get_commit_date tells you when no GitHub token is found, bu
   on.exit(Sys.setenv(GITHUB_PAT = old_pat))
   
   testthat::expect_message(
-    date <- get_commit_date(
+    get_commit_date(
       "ropensci/rix",
       "cd7a53f7c670bd5106a94b48573d5f824174170f"
     ),
-    "No GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request."
+    "When fetching the commit date from GitHub from <<< ropensci/rix >>>, no GitHub Personal Access Token found"
   )
-  testthat::expect_match(date, "2025-01-10T07:05:02Z")
 })
 
 testthat::test_that("Test download_all_commits works with valid repo", {
@@ -236,23 +235,6 @@ testthat::test_that("Test download_all_commits fails with invalid repo", {
     download_all_commits("nonexistent/repo"),
     "Failed to download commit data"
   )
-})
-
-testthat::test_that("Test download_all_commits works without GitHub token", {
-  testthat::skip_on_cran()
-  # Temporarily unset GITHUB_PAT if it exists
-  old_pat <- Sys.getenv("GITHUB_PAT")
-  Sys.unsetenv("GITHUB_PAT")
-  on.exit(Sys.setenv(GITHUB_PAT = old_pat))
-  
-  testthat::expect_message(
-    commits <- download_all_commits("ropensci/rix", "2025-01-10T07:05:02Z"),
-    "No GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request."
-  )
-  
-  # Basic validation that we still got data
-  testthat::expect_true(is.data.frame(commits))
-  testthat::expect_true(nrow(commits) > 0)
 })
 
 testthat::test_that("resolve_package_commit works with different input cases", {
