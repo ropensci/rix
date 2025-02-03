@@ -468,7 +468,13 @@ get_commit_date <- function(repo, commit_sha) {
   if (grepl(token_pattern, token)) {
     handle_setheaders(h, Authorization = paste("token", token))
   } else {
-    message("When fetching the commit date from GitHub, no GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request.")
+    message(
+      paste0(
+        "When fetching the commit date from GitHub from <<< ",
+        repo,
+        " >>>, no GitHub Personal Access Token found. Please set GITHUB_PAT in your environment. Falling back to unauthenticated API request."
+      )
+    )
   }
 
   tryCatch(
@@ -485,7 +491,7 @@ get_commit_date <- function(repo, commit_sha) {
     },
     error = function(e) {
       message(paste0(
-        "Failed to get commit date for ", repo, ": ", e$message,
+        "Failed to get commit date for <<< ", repo, " >>> : ", e$message,
         ". Falling back to today."
       ))
       return(Sys.Date())
