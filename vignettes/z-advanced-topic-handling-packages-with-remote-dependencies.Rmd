@@ -209,7 +209,7 @@ Falling back to unauthenticated API request.
 This should still work until you hit the API limit, in which case you will see
 messages, such as this one:
 
-````
+```
 Failed to get commit date from <<< satijalab/seurat-wrappers >>> API request failed with status code 403.
 Falling back to <<< HEAD >>>
 ```
