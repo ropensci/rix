@@ -1,5 +1,16 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.14.7 (2025-02-05)
+
+- `rix()`: remote dependencies of remote packages are now better handled,
+  `rix()` attempts to use a commit hash instead of `HEAD` (see
+  https://github.com/ropensci/rix/pull/389)
+- `rix()`: dependencies now also get pulled from `NAMESPACE` files
+  for remote packages that don't correctly list them all in `DESCRIPTION` (see
+  https://github.com/ropensci/rix/pull/398)
+- `rix_init()`: better handling of VS Code as an editor (see
+  https://github.com/ropensci/rix/pull/399)
+
 # rix 0.14.6 (2025-01-21)
 
 - `rix()`: fixed a bug where local packages were not being handled correctly
