@@ -210,7 +210,8 @@ This should still work until you hit the API limit, in which case you will see
 messages, such as this one:
 
 ````
-Failed to get commit date from <<< satijalab/seurat-wrappers >>> API request failed with status code 403
+Failed to get commit date from <<< satijalab/seurat-wrappers >>> API request failed with status code 403.
+Falling back to <<< HEAD >>>
 ```
 
 The status code 403 tells you that there is a credentials error (e.g., because you hit the API limit).
