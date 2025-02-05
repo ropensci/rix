@@ -174,10 +174,11 @@ remove_base <- function(list_imports) {
 
 #' Finds dependencies of a package from the DESCRIPTION file
 #' @param path path to package
+#' @param commit_date date of commit
 #' @importFrom utils untar
 #' @return Atomic vector of packages
 #' @noRd
-get_imports <- function(path) {
+get_imports <- function(path, commit_date) {
   tmpdir <- tempdir()
 
   tmp_dir <- tempfile(pattern = "file", tmpdir = tmpdir, fileext = "")
@@ -221,22 +222,24 @@ get_imports <- function(path) {
 
     # Now remove user name and
     # split at "@" or "#" character to get name and commit or PR separated
+
     remote_pkgs_names_and_refs <- sub(".*?/", "", remotes)
     remote_pkgs_names_and_refs <- strsplit(remote_pkgs_names_and_refs, "(@|#)")
 
     remote_pkgs_names <- sapply(remote_pkgs_names_and_refs, function(x) x[[1]])
 
-    # Check if we have a list of lists of two elements: a package name
-    # and a ref. If not, add "HEAD" to it.
-    out <- lapply(remote_pkgs_names_and_refs, function(sublist) {
-      if (length(sublist) == 1) {
-        c(sublist, "HEAD")
-      } else {
-        sublist
-      }
-    })
+    # contruct repo short url in the form username/packagename
+    # don't use remotes because it may contain @ or # parts
+    repo_url_short <- paste0(
+      remote_pkgs_usernames,
+      "/",
+      remote_pkgs_names
+    )
 
-    remote_pkgs_refs <- sapply(out, function(x) x[[2]])
+    # try to get commit hash for each package if not already provided
+    remote_pkgs_refs <- lapply(remote_pkgs_names_and_refs, function(x) {
+      resolve_package_commit(x, commit_date, remotes)
+    })
 
     urls <- paste0(
       "https://github.com/",
@@ -446,4 +449,198 @@ get_remote <- function(git_pkg) {
   remotes <- output$deps$remotes
   remote_package_names <- sapply(remotes, `[[`, "package_name")
   return(remote_package_names)
+}
+
+#' get_commit_date Retrieves the date of a commit from a Git repository
+#' @param repo The GitHub repository (e.g. "r-lib/usethis")
+#' @param  commit_sha The commit hash of interest
+#' @return A character. The date of the commit.
+#' @importFrom curl new_handle handle_setheaders curl_fetch_memory
+#' @importFrom jsonlite fromJSON
+#' @noRd
+get_commit_date <- function(repo, commit_sha) {
+  url <- paste0("https://api.github.com/repos/", repo, "/commits/", commit_sha)
+  h <- new_handle()
+
+  token <- Sys.getenv("GITHUB_PAT")
+  token_pattern <- "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$"
+
+  if (grepl(token_pattern, token)) {
+    handle_setheaders(h, Authorization = paste("token", token))
+  } else {
+    message(
+      paste0(
+        "When fetching the commit date from GitHub from <<< ",
+        repo,
+        " >>>, no GitHub Personal Access Token found.\nPlease set GITHUB_PAT in your environment.\nFalling back to unauthenticated API request.\n"
+      )
+    )
+  }
+
+  tryCatch(
+    {
+      response <- curl_fetch_memory(url, handle = h)
+      if (response$status_code != 200) {
+        stop("API request failed with status code: ", response$status_code)
+      }
+      commit_data <- fromJSON(rawToChar(response$content))
+      if (is.null(commit_data$commit$committer$date)) {
+        stop("Invalid response format: missing commit date")
+      }
+      commit_data$commit$committer$date
+    },
+    error = function(e) {
+      message(
+        paste0(
+          "Failed to get commit date from <<< ",
+          repo,
+          " >>> : ",
+          e$message,
+          ".\nFalling back to <<< ",
+          Sys.Date(),
+          " >>>.\n"
+        )
+      )
+      return(Sys.Date())
+    }
+  )
+}
+
+#' download_all_commits Downloads commits (maximum 1000) from a GitHub repository
+#' @param repo The GitHub repository (e.g. "r-lib/usethis")
+#' @param date The target date to find the closest commit
+#' @return A data frame with commit SHAs and dates
+#' @importFrom curl new_header handle_setheaders curl_fetch_memory
+#' @importFrom jsonlite fromJSON
+#' @noRd
+download_all_commits <- function(repo, date) {
+  base_url <- paste0("https://api.github.com/repos/", repo, "/commits")
+  h <- new_handle()
+
+  token <- Sys.getenv("GITHUB_PAT")
+  token_pattern <- "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$"
+
+  if (grepl(token_pattern, token)) {
+    handle_setheaders(h, Authorization = paste("token", token))
+  } else {
+    message(
+      paste0(
+        "When downloading commits from <<< ",
+        repo,
+        " >>>, no GitHub Personal Access Token found.\nPlease set GITHUB_PAT in your environment.\nFalling back to unauthenticated API request.\n"
+      )
+    )
+  }
+  # Limit to 10 pages of 100 commits each, so 1000 commits in total
+  per_page <- 100
+  max_pages <- 10
+  max_commits <- per_page * max_pages
+
+  # Pre-allocate results data frame
+  all_commits <- data.frame(
+    sha = character(max_commits),
+    date = as.POSIXct(rep(NA, max_commits))
+  )
+  commit_count <- 0
+
+  for (page in 1:max_pages) {
+    url <- paste0(base_url, "?per_page=", per_page, "&page=", page)
+
+    tryCatch(
+      {
+        response <- curl_fetch_memory(url, handle = h)
+        if (response$status_code != 200) {
+          stop("API request failed with status code: ", response$status_code)
+        }
+
+        commits <- fromJSON(rawToChar(response$content))
+        if (!is.list(commits) || length(commits) == 0) break
+
+        # if no commits are found, break the loop
+        n_commits <- length(commits$sha)
+        if (n_commits == 0) break
+
+
+        idx <- (commit_count + 1):(commit_count + n_commits)
+        all_commits$sha[idx] <- commits$sha
+        all_commits$date[idx] <- as.POSIXct(
+          commits$commit$committer$date,
+          format = "%Y-%m-%dT%H:%M:%OSZ"
+        )
+
+        commit_count <- commit_count + n_commits
+
+        # if the date of the last commit is before the target date, break the loop
+        if (min(all_commits$date, na.rm = TRUE) < date) break
+      },
+      error = function(e) {
+        stop("Failed to download commit data: ", e$message)
+      }
+    )
+  }
+
+  # Return only the rows with actual data
+  all_commits[1:commit_count, ]
+}
+
+#' get_closest_commit Finds the closest commit to a specific date
+#' @param commits_df A data frame with commit SHAs and dates
+#' @param target_date The target date to find the closest commit
+#' @return A data frame with the closest commit SHA and date
+#' @noRd
+get_closest_commit <- function(commits_df, target_date) {
+  # Convert target_date to POSIXct format
+  target_date <- as.POSIXct(target_date, format = "%Y-%m-%dT%H:%M:%OSZ")
+  
+  # Filter commits before or on the target date
+  filtered_commits <- commits_df[commits_df$date <= target_date, ]
+  
+  # If no commits found, raise an error
+  if (nrow(filtered_commits) == 0) {
+    stop("No commits found before or on the target date.")
+  }
+
+  # Find the closest commit by selecting the maximum date
+  closest_commit <- filtered_commits[which.max(filtered_commits$date), ]
+  return(closest_commit)
+}
+
+#' resolve_package_commit Resolves the commit SHA for a package based on a date
+#' @param remote_pkg_name_and_ref A list containing the package name and optionally a ref
+#' @param date The target date to find the closest commit
+#' @param remotess A character vector of remotes
+#' @return A character. The commit SHA of the closest commit to the target date or "HEAD" if API fails
+#' @noRd
+resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes) {
+  # Check if remote is a list with a package name and a ref
+  if (length(remote_pkg_name_and_ref) == 2) {
+    # Keep existing ref if present
+    return(remote_pkg_name_and_ref[[2]])
+  } else if (length(remote_pkg_name_and_ref) == 1) {
+    # For packages without ref, try to find closest one by date
+    # fallback to HEAD if API fails
+    result <- tryCatch(
+      {
+        remotes_fetch <- remotes[grepl(remote_pkg_name_and_ref, remotes)]
+        all_commits <- download_all_commits(remotes_fetch, date)
+        closest_commit <- get_closest_commit(all_commits, date)
+        closest_commit$sha
+      },
+      error = function(e) {
+        message(
+          paste0(
+            "Failed to get closest commit for ",
+            remotes_fetch,
+            ": ",
+            e$message,
+            ".\nFalling back to <<< HEAD >>>\n"
+          )
+        )
+        return("HEAD")
+      }
+    )
+    return(result)
+  } else {
+    stop("remote_pkg_name_and_ref must be a list of length 1 or 2")
+  }
 }
