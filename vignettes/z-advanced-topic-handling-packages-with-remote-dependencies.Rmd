@@ -203,7 +203,7 @@ provided by the user. If you don't have a Github Personal Acccess Token set up, 
 ```
 When fetching the commit date from GitHub from <<< ropensci/rix >>>, no GitHub Personal Access Token found.
 Please set GITHUB_PAT in your environment.
-Falling back to unauthenticated API request
+Falling back to unauthenticated API request.
 ```
 
 This should still work until you hit the API limit, in which case you will see
