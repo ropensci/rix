@@ -65,17 +65,17 @@ This will generate the following `default.nix`:
 
 ```
 let
- pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/6a25f33c843a45b8d67ba782b6782973a7265774.tar.gz") {};
-
+ pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/ceea3d99cd55e2b343295eea205b19ecc47fe888.tar.gz") {};
+  
     httr2 = (pkgs.rPackages.buildRPackage {
       name = "httr2";
       src = pkgs.fetchgit {
         url = "https://github.com/r-lib/httr2";
-        rev = "HEAD";
-        sha256 = "sha256-UgJCFPO47mgUt3esRRPhXjr0oNDRrR9XAAIxMhZYbFc=";
+        rev = "c249b90d5c72d91ad5fab0660904710c56fd4568";
+        sha256 = "sha256-x/q2oOqseencAFro73Dxoa2CuyiXnm5NNT1K77HgmLE=";
       };
       propagatedBuildInputs = builtins.attrValues {
-        inherit (pkgs.rPackages)
+        inherit (pkgs.rPackages) 
           cli
           curl
           glue
@@ -95,7 +95,7 @@ let
       src = pkgs.fetchgit {
         url = "https://github.com/gaborcsardi/gh";
         rev = "HEAD";
-        sha256 = "sha256-VpxFIfUEk0PudytQ3boMhEJhT0AnelWkSU++WD/HAyo=";
+        sha256 = "sha256-0ah0s9vvrJQcnOt6Be4oKIo+qD6OAiTTBZ7Upv7Vh9M=";
       };
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) 
@@ -114,7 +114,7 @@ let
       name = "highlite";
       src = pkgs.fetchgit {
         url = "https://github.com/jimhester/highlite";
-        rev = "HEAD";
+        rev = "767b122ef47a60a01e1707e4093cf3635a99c86b";
         sha256 = "sha256-lkWMlAi75MYxiBUYnLwxLK9ApXkWanA4Mt7g4qtLpxM=";
       };
       propagatedBuildInputs = builtins.attrValues {
@@ -129,13 +129,12 @@ let
       name = "memoise";
       src = pkgs.fetchgit {
         url = "https://github.com/hadley/memoise";
-        rev = "HEAD";
-        sha256 = "sha256-FDMNgrgctzkN8dXKRoWsOKe3tXxmm8Cqdu/Sh6WKx/Q=";
+        rev = "58d39726de141fefd235557a33e6478f76b0ad7f";
+        sha256 = "sha256-y3UGutqIFFZn3z5dJzkzs/Fcdwc/+h+5iWofUP5NYic=";
       };
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) 
-          rlang
-          cachem;
+          digest;
       };
     });
 
@@ -158,14 +157,14 @@ let
           httr;
       } ++ [ highlite gh memoise ];
     });
-
+    
   system_packages = builtins.attrValues {
-    inherit (pkgs)
+    inherit (pkgs) 
       glibcLocales
       nix
       R;
   };
-
+  
 in
 
 pkgs.mkShell {
@@ -178,7 +177,7 @@ pkgs.mkShell {
    LC_MEASUREMENT = "en_US.UTF-8";
 
   buildInputs = [ lookup   system_packages   ];
- 
+  
 }
 ```
 
@@ -195,17 +194,129 @@ Remotes:
 
 ## Caveats
 
+### Authenticating to GitHub
+
+You will see messages such as this one:
+
+```
+When fetching the commit date from GitHub from <<< jimhester/lookup >>>, no GitHub Personal Access Token found.
+Please set GITHUB_PAT in your environment.
+Falling back to unauthenticated API request.
+```
+
+`{rix}` uses the GitHub API to fetch the commits of these remote packages and
+will attempt to select the closest commit in time for these remote packages
+to the commit provided by the user. However, this can sometimes fail, and
+when this does, the following message will be shown:
+
+```
+Failed to get closest commit for gaborcsardi/gh: Failed to download commit data: Argument 'url' must be string..
+Falling back to <<< HEAD >>>
+```
+
+This is why we highly recommend that you set up a GitHub Personal Access Token:
+this will allow `{rix}` to perform authenticated calls to the API, meaning that
+`{rix}` will be able to get up to 5000 API calls per hour, instead of 60,
+dramatically improving the odds of success. To set a GitHub PAT for the current
+session, simply run:
+
+```
+Sys.setenv(GITHUB_PAT="YOUR_TOKEN")
+```
+
+Of course, you first need to create a [GitHub PAT
+first](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic).
+If don't want to always have to set the `GITHUB_PAT` environment variable, you
+can also use a more [long term solution](https://gitcreds.r-lib.org/index.html).
+
+However, you might still be getting the following message, even after 
+configuring a GitHub PAT:
+
+```
+Failed to get closest commit for gaborcsardi/gh: Failed to download commit data: Argument 'url' must be string..
+Falling back to <<< HEAD >>>
+```
+
+In this particular case, it might be due to the fact that the url
+`https://github.com/gaborcsardi/gh` now points to `https://github.com/r-lib/gh`.
+In instances like this, we recommend to manually change the url and the revision
+from `"HEAD"` to an actual commit. If you don't do this, this means that if
+these repositories are being actively worked on, rebuilding these environments
+will actually pull another version of these packages. So we very highly recommend
+to edit the `default.nix`, and replace mentions of `HEAD` with an
+actual commit. For example, edit this:
+
+```
+gh = (pkgs.rPackages.buildRPackage {
+  name = "gh";
+  src = pkgs.fetchgit {
+    url = "https://github.com/gaborcsardi/gh";
+    rev = "HEAD";
+    sha256 = "sha256-0ah0s9vvrJQcnOt6Be4oKIo+qD6OAiTTBZ7Upv7Vh9M=";
+  };
+  propagatedBuildInputs = builtins.attrValues {
+    inherit (pkgs.rPackages) 
+      cli
+      gitcreds
+      glue
+      ini
+      jsonlite
+      lifecycle
+      rlang;
+  } ++ [ httr2 ];
+});
+```
+
+to this:
+
+```
+gh = (pkgs.rPackages.buildRPackage {
+  name = "gh";
+  src = pkgs.fetchgit {
+    url = "https://github.com/gaborcsardi/gh";
+    rev = "27db16cf363dc";
+    sha256 = ""; # <- You will need to try to build the expression once, and then
+  };             # <- put the sha256 that nix-build returns
+  propagatedBuildInputs = builtins.attrValues {
+    inherit (pkgs.rPackages)
+      cli
+      gitcreds
+      glue
+      ini
+      jsonlite
+      lifecycle
+      rlang;
+  } ++ [ httr2 ];
+});
+```
+
+However, if instead the remotes are listed like this:
+
+```
+Remotes:
+    jimhester/highlite@abc123,
+    gaborcsardi/gh@def123,
+    hadley/memoise@ghi123
+```
+
+then the listed commits will be used, which will make sure that the build
+process is reproducible. Only commits can be used, anything else listed there
+(such as pull request numbers or release tags) will not work with `{rix}`.
+
+### Consider using dependencies that made it to CRAN
+
 `{highlite}` is a dependency of [{lookup}](https://github.com/jimhester/lookup)
 that is only available on GitHub. `{gh}` and `{memoise}` are also listed as
-remote dependencies, however, they are also available on CRAN. What likely
-happened here was that `{gh}` and `{memoise}` were not yet available on CRAN at
-the time when `{lookup}` was written (which was more than 6 years ago as of
-2025). Because they are listed as remote dependencies, they will also be built
-from GitHub instead of CRAN. Here, it is up to you to decide if you want to keep
-the GitHub version of these packages, or if you should instead include the
-released CRAN version. Depending on what you want to do, going for the CRAN
-release of the packages might be advisable. For example in this case, trying to
-build this expression will not work.
+remote dependencies, however, they are also available on CRAN now. This was not
+the case at the time when `{lookup}` was written (which was more than 6 years
+ago as of 2025). Because they are listed as remote dependencies, they will also
+be built from GitHub instead of CRAN.
+
+Here, it is up to you to decide if you want to keep the GitHub version of these
+packages, or if you should instead include the released CRAN version. Depending
+on what you want to do, going for the CRAN release of the packages might be
+advisable. For example in this case, trying to build this expression will not
+work.
 
 This is because `{httr2}` is a package that needs to be compiled from source and
 which needs some Nix-specific fixes applied to its source code for it to build
@@ -242,11 +353,11 @@ let
       name = "highlite";
       src = pkgs.fetchgit {
         url = "https://github.com/jimhester/highlite";
-        rev = "HEAD";
+        rev = "767b122ef47a60a01e1707e4093cf3635a99c86b";
         sha256 = "sha256-lkWMlAi75MYxiBUYnLwxLK9ApXkWanA4Mt7g4qtLpxM=";
       };
       propagatedBuildInputs = builtins.attrValues {
-        inherit (pkgs.rPackages) 
+        inherit (pkgs.rPackages)
           Rcpp
           BH;
       };
@@ -256,13 +367,12 @@ let
       name = "memoise";
       src = pkgs.fetchgit {
         url = "https://github.com/hadley/memoise";
-        rev = "HEAD";
-        sha256 = "sha256-FDMNgrgctzkN8dXKRoWsOKe3tXxmm8Cqdu/Sh6WKx/Q=";
+        rev = "58d39726de141fefd235557a33e6478f76b0ad7f";
+        sha256 = "sha256-y3UGutqIFFZn3z5dJzkzs/Fcdwc/+h+5iWofUP5NYic=";
       };
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages)
-          rlang
-          cachem;
+          digest;
       };
     });
 
@@ -318,85 +428,14 @@ GitHub on Windows: you would need to build it from source and thus make sure
 that you have the required system-level dependencies to build it. Instead, it is
 easier to install a pre-compiled binary from CRAN).
 
-Another important point to address is that if remote dependencies are listed in
-a `DESCRIPTION` file like this:
+## Conclusion
 
-```
-Remotes:
-    jimhester/highlite,
-    gaborcsardi/gh,
-    hadley/memoise
-```
-
-`{rix}` will automatically use the latest commit from these repositories as the
-revision. This also means that if these repositories are being actively worked on,
-rebuilding these environments will actually pull another version of these packages.
-Instead, it is advisable to edit the `default.nix` yet again, and replace mentions
-of `HEAD` with an actual commit. For example, edit this:
-
-```
-    gh = (pkgs.rPackages.buildRPackage {
-      name = "gh";
-      src = pkgs.fetchgit {
-        url = "https://github.com/gaborcsardi/gh";
-        rev = "HEAD";
-        sha256 = "sha256-VpxFIfUEk0PudytQ3boMhEJhT0AnelWkSU++WD/HAyo=";
-      };
-      propagatedBuildInputs = builtins.attrValues {
-        inherit (pkgs.rPackages) 
-          cli
-          gitcreds
-          glue
-          ini
-          jsonlite
-          lifecycle
-          rlang;
-      } ++ [ httr2 ];
-    });
-```
-
-to this:
-
-```
-    gh = (pkgs.rPackages.buildRPackage {
-      name = "gh";
-      src = pkgs.fetchgit {
-        url = "https://github.com/gaborcsardi/gh";
-        rev = "27db16cf363dc";
-        sha256 = ""; # <- You will need to try to build the expression once, and then
-      };             # <- put the sha256 that nix-build returns
-      propagatedBuildInputs = builtins.attrValues {
-        inherit (pkgs.rPackages)
-          cli
-          gitcreds
-          glue
-          ini
-          jsonlite
-          lifecycle
-          rlang;
-      } ++ [ httr2 ];
-    });
-```
-
-
-However, if instead the remotes are listed like this:
-
-```
-Remotes:
-    jimhester/highlite@abc123,
-    gaborcsardi/gh@def123,
-    hadley/memoise@ghi123
-```
-
-then the listed commits will be used, which will make sure that the build
-process is reproducible. Only commits can be used, anything else listed there
-(such as pull request numbers or release tags) will not work with `{rix}`.
-
-In conclusion, `{rix}` makes it easier to build packages from GitHub which
-have themselves dependencies hosted on GitHub, you should however make sure
-that the expression that is generated uses fixed commits instead of `HEAD`
-for the packages being built from GitHub, and you should also decide if you
-want to use the version of a packages hosted on GitHub instead of the CRAN
-release. These are decisions that `{rix}` cannot take for you.
+In conclusion, `{rix}` makes it easier to build packages from GitHub which have
+themselves dependencies hosted on GitHub, you should however make sure that the
+expression that is generated uses fixed commits instead of `HEAD` for the
+packages being built from GitHub (if `{rix}` wasn't able to automatically fetch
+the right commit for you), and you should also decide if you want to use the
+version of a packages hosted on GitHub instead of the CRAN release. These are
+decisions that `{rix}` cannot take for you.
 
 
