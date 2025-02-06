@@ -197,8 +197,9 @@ Remotes:
 ### Authenticating to GitHub
 
 `{rix}` uses the GitHub API to fetch the commits of these remote packages and
-will attempt to select the commit of the remote packages, whose date is closest to (always before, never after) the date  of the commit
-provided by the user. If you don't have a Github Personal Acccess Token set up, it will show:
+will attempt to select the commit of the remote packages, whose date is closest
+to (always before, never after) the date of the commit provided by the user. If
+you don't have a Github Personal Acccess Token set up, it will show:
 
 ```
 When fetching the commit date from GitHub from <<< ropensci/rix >>>, no GitHub Personal Access Token found.
@@ -214,27 +215,28 @@ Failed to get commit date from <<< satijalab/seurat-wrappers >>> API request fai
 Falling back to <<< HEAD >>>
 ```
 
-The status code 403 tells you that there is a credentials error (e.g., because you hit the API limit).
-This is why we highly recommend that you set up a GitHub Personal Access Token:
-this will allow `{rix}` to perform authenticated calls to the API, meaning that
-`{rix}` will be able to get up to 5000 API calls per hour, instead of 60,
-dramatically improving the odds of success. To set a GitHub PAT for the current
-session, simply run:
+The status code 403 tells you that there is a credentials error (e.g., because
+you hit the API limit). This is why we highly recommend that you set up a GitHub
+Personal Access Token: this will allow `{rix}` to perform authenticated calls to
+the API, meaning that `{rix}` will be able to get up to 5000 API calls per hour,
+instead of 60, dramatically improving the odds of success. To set a GitHub PAT
+for the current session, simply run:
 
 ```
 Sys.setenv(GITHUB_PAT="YOUR_TOKEN")
 ```
 
-Of course, you first need to create a [GitHub PAT
+Of course, you need to create a [GitHub PAT
 first](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic).
 If don't want to always have to set the `GITHUB_PAT` environment variable, you
 can also use a more [long term solution](https://gitcreds.r-lib.org/index.html).
 
-However, you might still be getting the following message, even after 
+However, you might still be getting the following message, even after
 configuring a GitHub PAT:
 
 ```
-Failed to get closest commit for gaborcsardi/gh: Failed to download commit data: Argument 'url' must be string..
+Failed to get closest commit for gaborcsardi/gh: Failed to download commit data
+Argument 'url' must be string..
 Falling back to <<< HEAD >>>
 ```
 
@@ -243,9 +245,9 @@ In this particular case, it might be due to the fact that the url
 In instances like this, we recommend to manually change the url and the revision
 from `"HEAD"` to an actual commit. If you don't do this, this means that if
 these repositories are being actively worked on, rebuilding these environments
-will actually pull another version of these packages. So we very highly recommend
-to edit the `default.nix`, and replace mentions of `HEAD` with an
-actual commit. For example, edit this:
+will actually pull another version of these packages. So we very highly
+recommend to edit the `default.nix`, and replace mentions of `HEAD` (if any)
+with an actual commit. For example, edit this:
 
 ```
 gh = (pkgs.rPackages.buildRPackage {
@@ -256,7 +258,7 @@ gh = (pkgs.rPackages.buildRPackage {
     sha256 = "sha256-0ah0s9vvrJQcnOt6Be4oKIo+qD6OAiTTBZ7Upv7Vh9M=";
   };
   propagatedBuildInputs = builtins.attrValues {
-    inherit (pkgs.rPackages) 
+    inherit (pkgs.rPackages)
       cli
       gitcreds
       glue
@@ -291,7 +293,7 @@ gh = (pkgs.rPackages.buildRPackage {
 });
 ```
 
-However, if instead the remotes are listed like this:
+Finally, and if instead the remotes are listed like this:
 
 ```
 Remotes:
