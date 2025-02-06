@@ -196,24 +196,25 @@ Remotes:
 
 ### Authenticating to GitHub
 
-You will see messages such as this one:
+`{rix}` uses the GitHub API to fetch the commits of these remote packages and
+will attempt to select the commit of the remote packages, whose date is closest to (always before, never after) the date  of the commit
+provided by the user. If you don't have a Github Personal Acccess Token set up, it will show:
 
 ```
-When fetching the commit date from GitHub from <<< jimhester/lookup >>>, no GitHub Personal Access Token found.
+When fetching the commit date from GitHub from <<< ropensci/rix >>>, no GitHub Personal Access Token found.
 Please set GITHUB_PAT in your environment.
 Falling back to unauthenticated API request.
 ```
 
-`{rix}` uses the GitHub API to fetch the commits of these remote packages and
-will attempt to select the closest commit in time for these remote packages
-to the commit provided by the user. However, this can sometimes fail, and
-when this does, the following message will be shown:
+This should still work until you hit the API limit, in which case you will see
+messages, such as this one:
 
 ```
-Failed to get closest commit for gaborcsardi/gh: Failed to download commit data: Argument 'url' must be string..
+Failed to get commit date from <<< satijalab/seurat-wrappers >>> API request failed with status code 403.
 Falling back to <<< HEAD >>>
 ```
 
+The status code 403 tells you that there is a credentials error (e.g., because you hit the API limit).
 This is why we highly recommend that you set up a GitHub Personal Access Token:
 this will allow `{rix}` to perform authenticated calls to the API, meaning that
 `{rix}` will be able to get up to 5000 API calls per hour, instead of 60,
