@@ -27,7 +27,7 @@ The ideal workflow when using `{rix}` is to create a new, separate environment
 at the start of a project. Let's say that you wish to analyse some data set, and
 need `{dplyr}` and `{ggplot2}`. Let's also suppose that you use VS Code as your
 IDE (there will be more discussion on editors in the vignette
-`vignette("e-interactive-use")` but for now, let’s assume that you use VS Code).
+`vignette("e-configuring-ide")` but for now, let’s assume that you use VS Code).
 With the `rix::rix()` function, you can easily generate the right `default.nix`
 file. You need to provide the following inputs to `rix()`:
 
@@ -45,7 +45,7 @@ file. You need to provide the following inputs to `rix()`:
 - `git_pkgs`: list of git packages to add (more on this in the vignette
   `vignette("d1-installing-r-packages-in-a-nix-environment")`);
 - `ide`: the integrated development editor to use (more on this in the vignette
-  `vignette("e-interactive-use")`)
+  `vignette("e-configuring-ide")`)
 - `path`: the path where to save the `default.nix` file.
 - `overwrite`: whether to overwrite the `default.nix` file or not.
 - `print`: whether to print the `default.nix` file to the console or not.
@@ -124,7 +124,7 @@ nix-shell
 This will activate the environment. If you have VS Code installed you can start
 it from this environment and VS Code will use this specific R version library of
 packages. We will explore this in greater detail in the vignette
-`vignette("e-interactive-use")`.
+`vignette("e-configuring-ide")`.
 
 ## Which `r_ver` should you choose?
 
@@ -230,7 +230,7 @@ rix(
   r_pkgs = c("dplyr", "janitor"),
   system_pkgs = c("quarto"),
   git_pkgs = NULL,
-  ide = "other",
+  ide = "none",
   project_path = path_default_nix,
   overwrite = TRUE
 )

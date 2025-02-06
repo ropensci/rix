@@ -200,17 +200,17 @@ For example:
 rix(
   r_ver = "latest-upstream",
   r_pkgs = c("dplyr", "chronicler"),
-  ide = "other"
+  ide = "none"
 )
 ```
 
 The call above writes a `default.nix` file in the current working directory.
 This `default.nix` can in turn be used by Nix to build an environment containing
-the latest version of R included in the upstream `nixpkgs`, 
-with the `{dplyr}` and `{chronicler}` packages. 
+the latest version of R included in the upstream `nixpkgs`, with the `{dplyr}`
+and `{chronicler}` packages.
 
-Take note of the `ide = "other"` argument: this argument, and the values it
-can take, are further discussed in the vignette `vignette("e-interactive-use")`
+Take note of the `ide = "none"` argument: this argument, and the values it
+can take, are further discussed in the vignette `vignette("e-configuring-ide")`
 but continue reading this vignette and then vignettes numbered by a "d".
 
 You can instead provide a specific R version:
@@ -219,7 +219,7 @@ You can instead provide a specific R version:
 rix(
   r_ver = "4.4.1",
   r_pkgs = c("dplyr", "chronicler"),
-  ide = "other"
+  ide = "none"
 )
 ```
 
@@ -229,7 +229,7 @@ or a date:
 rix(
   date = "2024-12-14",
   r_pkgs = c("dplyr", "chronicler"),
-  ide = "other"
+  ide = "none"
 )
 ```
 

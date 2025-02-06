@@ -56,7 +56,7 @@ rix(
   r_pkgs = c("quarto"),
   system_pkgs = c("quarto", "git"),
   git_pkgs = NULL,
-  ide = "other",
+  ide = "none",
   project_path = path_default_nix,
   overwrite = TRUE
 )
@@ -70,7 +70,7 @@ rix(
 #> #  > system_pkgs = c("quarto",
 #> #  > "git"),
 #> #  > git_pkgs = NULL,
-#> #  > ide = "other",
+#> #  > ide = "none",
 #> #  > project_path = path_default_nix,
 #> #  > overwrite = TRUE)
 #> # It uses nixpkgs' revision 12a9c0004bc987afb1ff511ebb97b67497a68e22 for reproducibility purposes
@@ -131,7 +131,7 @@ rix(
   r_pkgs = c("quarto"),
   system_pkgs = "quarto",
   tex_pkgs = c("amsmath"),
-  ide = "other",
+  ide = "none",
   project_path = path_default_nix,
   overwrite = TRUE,
   print = TRUE
@@ -142,7 +142,7 @@ rix(
 #> #  > r_pkgs = c("quarto"),
 #> #  > system_pkgs = "quarto",
 #> #  > tex_pkgs = c("amsmath"),
-#> #  > ide = "other",
+#> #  > ide = "none",
 #> #  > project_path = path_default_nix,
 #> #  > overwrite = TRUE,
 #> #  > print = TRUE)
@@ -197,5 +197,5 @@ environments for literate programming, refer to the vignette
 Environments built with Nix are not completely cut off from the rest of your
 system, and as such, you should be able to use your usual IDE to interact with
 Nix environments. The only exception is RStudio. Everything will be explained in
-greater detail in the vignette `vignette("e-interactive-use")`.
+greater detail in the vignette `vignette("e-configuring-ide")`.
 

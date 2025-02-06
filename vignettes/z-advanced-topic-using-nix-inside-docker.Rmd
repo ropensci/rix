@@ -83,7 +83,7 @@ library(rix)
 rix(
   r_ver = "4.3.1",
   r_pkgs = c("dplyr", "ggplot2"),
-  ide = "other",
+  ide = "none",
   project_path = ".",
   overwrite = TRUE
 )
@@ -154,7 +154,7 @@ library(rix)
 rix(
   r_ver = "4.2.2",
   r_pkgs = "shiny",
-  ide = "other",
+  ide = "none",
   project_path = ".",
   overwrite = TRUE
 )

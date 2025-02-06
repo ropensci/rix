@@ -40,7 +40,8 @@ implemented.}
 defined in the \code{renv.lock} file with another version. This is especially
 useful if the \code{renv.lock} file lists a version of R not (yet) available
 through Nix, or if the R version included in the \code{renv.lock} is too old
-compared to the package versions.}
+compared to the package versions. Can also be a date, check
+\code{available_dates()}.}
 
 \item{...}{
   Arguments passed on to \code{\link[=rix]{rix}}
@@ -48,33 +49,43 @@ compared to the package versions.}
     \item{\code{system_pkgs}}{Vector of characters. List further software you wish to
 install that are not R packages such as command line applications for
 example. You can look for available software on the NixOS website
-\url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=} # nolint}
+\url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=}}
     \item{\code{local_r_pkgs}}{List. A list of local packages to install. These packages
 need to be in the \code{.tar.gz} or \code{.zip} formats and must be in the same
 folder as the generated "default.nix" file.}
     \item{\code{tex_pkgs}}{Vector of characters. A set of TeX packages to install. Use
 this if you need to compile \code{.tex} documents, or build PDF documents using
 Quarto. If you don't know which package to add, start by adding "amsmath".
-See the Vignette "Authoring LaTeX documents" for more details.}
-    \item{\code{ide}}{Character, defaults to "other". If you wish to use RStudio to work
+See the
+\code{vignette("d2- installing-system-tools-and-texlive-packages-in-a-nix-environment")}
+for more details.}
+    \item{\code{ide}}{Character, defaults to "none". If you wish to use RStudio to work
 interactively use "rstudio" or "rserver" for the server version. Use "code"
-for Visual Studio Code. You can also use "radian", an interactive REPL. For
-other editors, use "other". This has been tested with RStudio, VS Code and
-Emacs. If other editors don't work, please open an issue.}
+for Visual Studio Code or "codium" for Codium, or "positron" for Positron.
+You can also use "radian", an interactive REPL. This will install a
+project-specific version of the chosen editor which will be differrent than
+the one already present in your system (if any). For other editors or if
+you want to use an editor already installed on your system (which will
+require some configuration to make it work seamlessly with Nix shells see
+the \code{vignette("e-configuring-ide")} for configuration examples), use
+"none". Please be aware that VS Code and Positron are not free software. To
+facilitate their installation, \code{rix()} automatically enables a required
+setting without prompting the user for confirmation. See the "Details"
+section below for more information.}
     \item{\code{overwrite}}{Logical, defaults to FALSE. If TRUE, overwrite the
 \code{default.nix} file in the specified path.}
     \item{\code{print}}{Logical, defaults to FALSE. If TRUE, print \code{default.nix} to
 console.}
     \item{\code{message_type}}{Character. Message type, defaults to \code{"simple"}, which
-gives minimal but sufficient feedback. Other values are currently \verb{"quiet},
-which generates the files without message, and \code{"verbose"}, displays all
-the messages.}
+gives minimal but sufficient feedback. Other values are currently
+\verb{"quiet}, which generates the files without message, and \code{"verbose"},
+displays all the messages.}
     \item{\code{shell_hook}}{Character of length 1, defaults to \code{NULL}. Commands added
 to the \code{shellHook} variable are executed when the Nix shell starts. So by
 default, using \verb{nix-shell default.nix} will start a specific program,
 possibly with flags (separated by space), and/or do shell actions. You can
-for example use \code{shell_hook = R}, if you want to directly enter the declared
-Nix R session when dropping into the Nix shell.}
+for example use \code{shell_hook = R}, if you want to directly enter the
+declared Nix R session when dropping into the Nix shell.}
   }}
 }
 \value{

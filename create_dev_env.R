@@ -1,7 +1,7 @@
 library(rix)
 
 rix(
-  r_ver = "latest",
+  date = "2025-01-14",
   r_pkgs = c(
     "devtools", "diffviewer", "fledge", "lintr", "styler",
     "codetools", "jsonlite", "httr", "sys", "testthat", "knitr",
@@ -9,7 +9,7 @@ rix(
   ),
   system_pkgs = c("R", "glibcLocalesUtf8", "pandoc", "nix"),
   tex_pkgs = c("inconsolata"),
-  ide = "other",
+  ide = "none",
   project_path = ".",
   overwrite = TRUE,
   print = FALSE,

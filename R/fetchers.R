@@ -510,7 +510,7 @@ get_commit_date <- function(repo, commit_sha) {
 #' @param repo The GitHub repository (e.g. "r-lib/usethis")
 #' @param date The target date to find the closest commit
 #' @return A data frame with commit SHAs and dates
-#' @importFrom curl new_header handle_setheaders curl_fetch_memory
+#' @importFrom curl handle_setheaders curl_fetch_memory
 #' @importFrom jsonlite fromJSON
 #' @noRd
 download_all_commits <- function(repo, date) {

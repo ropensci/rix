@@ -39,7 +39,7 @@ rix(
     repo_url = "https://github.com/rap4all/housing/",
     commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"
   ),
-  ide = "other",
+  ide = "none",
   project_path = path_default_nix,
   overwrite = TRUE
 )
@@ -133,7 +133,7 @@ rix(
     repo_url = "https://github.com/rap4all/housing/",
     commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"
   ),
-  ide = "other",
+  ide = "none",
   shell_hook = "Rscript -e 'targets::tar_make()'",
   project_path = path_default_nix,
   overwrite = TRUE
