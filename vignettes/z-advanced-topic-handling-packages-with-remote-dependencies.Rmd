@@ -240,9 +240,11 @@ Of course, you need to create a [GitHub PAT
 first](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic).
 If don't want to always have to set the `GITHUB_PAT` environment variable, you
 can also use a more [long term solution](https://gitcreds.r-lib.org/index.html).
+For more information on GitHub Tokens, please also refer to [Happy Git and GitHub for the useR](https://happygitwithr.com/https-pat). For permanent storage, also refer
+to [this stackoverflow question](https://stackoverflow.com/a/5343146/21417317).
 
-Note: If you use `{gitcreds}`, you still need to set the `GITHUB_PAT` variable explicitly
-for each session before calling `{rix}`. To not expose your PAT in your code, you can use:
+Note: If you use `{gitcreds}`, you still need to set the `GITHUB_PAT` variable explicitly for each session before calling `{rix}`.
+To avoid exposing your PAT in your code, you could use:
 
 ```
 my_token <- gitcreds::gitcreds_get()$password
