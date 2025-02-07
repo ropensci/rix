@@ -231,8 +231,16 @@ first](https://docs.github.com/en/authentication/keeping-your-account-and-data-s
 If don't want to always have to set the `GITHUB_PAT` environment variable, you
 can also use a more [long term solution](https://gitcreds.r-lib.org/index.html).
 
+Note: If you use `{gitcreds}`, you still need to set the `GITHUB_PAT` variable explicitly
+for each session before calling `{rix}`. To not expose your PAT in your code, you can use:
+
+```
+my_token <- gitcreds::gitcreds_get()$password
+Sys.setenv(GITHUB_PAT = my_token)
+```
+
 However, you might still be getting the following message, even after
-configuring a GitHub PAT:
+correctly configuring a GitHub PAT:
 
 ```
 Failed to get closest commit for gaborcsardi/gh: Failed to download commit data
