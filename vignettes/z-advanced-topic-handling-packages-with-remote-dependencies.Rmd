@@ -198,8 +198,18 @@ Remotes:
 
 `{rix}` uses the GitHub API to fetch the commits of these remote packages and
 will attempt to select the commit of the remote packages, whose date is closest
-to (always before, never after) the date of the commit provided by the user. If
-you don't have a Github Personal Acccess Token set up, it will show:
+to (always before, never after) the date of the commit provided by the user.
+Note: `{rix}` will only be able to fetch a maximum of 1000 commits. That means
+if the commit you provided is rather old or if the package has many commits, this
+will fail and fallback to the `HEAD` of the repository. We have not observed this
+in practice yet, but if this happens you should see a message like this:
+
+```
+Failed to get commit date for <<< satijalab/seurat-wrappers >>> No commits found before or on the target date
+Falling back to <<< HEAD >>>
+```
+
+If you don't have a Github Personal Acccess Token set up, it will show:
 
 ```
 When fetching the commit date from GitHub from <<< ropensci/rix >>>, no GitHub Personal Access Token found.
@@ -211,7 +221,7 @@ This should still work until you hit the API limit, in which case you will see
 messages, such as this one:
 
 ```
-Failed to get commit date from <<< satijalab/seurat-wrappers >>> API request failed with status code 403.
+Failed to get commit date for <<< satijalab/seurat-wrappers >>> API request failed with status code 403.
 Falling back to <<< HEAD >>>
 ```
 
