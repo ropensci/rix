@@ -59,7 +59,7 @@ We recommend to use an editor you can install directly on Windows and configure
 to interact nicely with WSL, and it turns out that this is mostly only VS Code
 (or Codium). There are ways to configure Positron to interact with WSL, but it
 requires significant effort and this is not discussed here. See
-[this section](#configuring-native-vs-code-codium-on-your-operating-system)
+[this section](#configuring-native-vs-codecodium-on-your-operating-system)
 to learn how to configure VS Code (or Codium).
 
 If you want to use RStudio or Positron, this is also possible but:
@@ -105,7 +105,7 @@ macOS](https://github.com/NixOS/nixpkgs/pull/362637) though. As soon as this PR
 is merged, it will become possible to use RStudio on macOS with Nix shells. In
 the meantime, you might consider using [Positron](#positron).
 
-### RStudio Linux or Windows
+### RStudio on Linux or Windows
 
 To use RStudio on Linux or Windows simply use `ide = "rstudio"`. Then, build the
 environment using `nix-build` and drop into the shell using `nix-shell`. Then,
