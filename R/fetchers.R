@@ -28,7 +28,7 @@ fetchgit <- function(git_pkg) {
     remotes
   )
 
-  if (is.list(remotes) & length(remotes) == 0) {
+  if (is.list(remotes) && length(remotes) == 0) {
     # if no remote dependencies
 
     output <- main_package_expression
@@ -69,7 +69,7 @@ generate_git_nix_expression <- function(package_name,
                                         imports,
                                         remotes = NULL) {
   # If there are remote dependencies, pass this string
-  flag_remote_deps <- if (is.list(remotes) & length(remotes) == 0) {
+  flag_remote_deps <- if (is.list(remotes) && length(remotes) == 0) {
     ""
   } else {
     # Extract package names
