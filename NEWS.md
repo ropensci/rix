@@ -1,5 +1,14 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.15.0 (2025-02-11)
+
+- `rix()`: IDEs are now handled more consistently: if the user sets `ide = ` to one
+  of the available options, that IDE gets also installed by Nix. If instead users
+  wish to use an IDE they have installed on their machine already, they have to set
+  `ide =` to `"none"`. The `"other"` option has been deprecated. (see
+  https://github.com/ropensci/rix/pull/411)
+
+
 # rix 0.14.7 (2025-02-05)
 
 - `rix()`: remote dependencies of remote packages are now better handled,
