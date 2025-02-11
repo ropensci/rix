@@ -201,12 +201,14 @@ rix <- function(r_ver = NULL,
     choices = c("quiet", "simple", "verbose")
   )
 
-  if(ide == "other"){
+  if (ide == "other") {
     stop("ide = 'other' has been deprecated in favour of ide = 'none' as of version 0.15.0.")
-  } else if (ide == "code"){
+  } else if (ide == "code") {
     warning("The behaviour of the 'ide' argument changed since version 0.15.0; we highly recommend reading this vignette: https://docs.ropensci.org/rix/articles/e-configuring-ide.html if you want to use VS Code.")
-  } else if (!(ide %in% c("none", "code", "codium", "positron",
-                          "radian", "rstudio", "rserver"))){
+  } else if (!(ide %in% c(
+    "none", "code", "codium", "positron",
+    "radian", "rstudio", "rserver"
+  ))) {
     stop("'ide' must be one of 'none', 'code', 'codium', 'positron', 'radian', 'rstudio', 'rserver'")
   }
 
@@ -226,14 +228,14 @@ rix <- function(r_ver = NULL,
 
   if (
     !(message_type %in% c("simple", "quiet")) &&
-    r_ver %in% c("bleeding-edge", "frozen-edge", "r-devel", "bioc-devel", "r-devel-bioc-devel")
+      r_ver %in% c("bleeding-edge", "frozen-edge", "r-devel", "bioc-devel", "r-devel-bioc-devel")
   ) {
     warning(
       "You chose 'bleeding-edge', 'frozen-edge', 'r-devel', 'bioc-devel' or 'r-devel-bioc-devel'
 as the value for `r_ver`. Please read the vignette
 https://docs.ropensci.org/rix/articles/z-bleeding-edge.html
 before continuing."
-)
+    )
   }
 
   if (

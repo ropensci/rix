@@ -196,7 +196,7 @@ renv2nix <- function(
       renv_lock = renv_lock,
       override_r_ver = override_r_ver
     )
-    if(grepl("^\\d{4}-\\d{2}-\\d{2}$", r_version)){
+    if (grepl("^\\d{4}-\\d{2}-\\d{2}$", r_version)) {
       rix_call <- call(
         "rix",
         date = r_version,

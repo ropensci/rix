@@ -167,7 +167,7 @@ generate environments by setting `ide = "none"`:
 ```{r, eval = FALSE}
 rix(
   date = ...,
-  r_pkgs = c(...)
+  r_pkgs = c(...),
   ide = "none",
   ...
 )
@@ -242,7 +242,7 @@ like this:
 ```{r, eval = FALSE}
 rix(
   date = ...,
-  r_pkgs = c("languageserver", ...) # languageserver is needed
+  r_pkgs = c("languageserver", ...), # languageserver is needed
   ide = "code", # or "codium"
   ...
 )
@@ -253,7 +253,7 @@ Or if you prefer to use the Code you have installed system-wide, then:
 ```{r, eval = FALSE}
 rix(
   date = ...,
-  r_pkgs = c("languageserver", ...) # languageserver is needed
+  r_pkgs = c("languageserver", ...), # languageserver is needed
   ide = "none",
   ...
 )

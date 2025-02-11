@@ -83,13 +83,13 @@ hash_url <- function(url) {
   paths <- list.files(path_to_src, full.names = TRUE, recursive = TRUE)
   desc_path <- grep(file.path(list.files(path_to_src), "DESCRIPTION"), paths, value = TRUE)
 
-if (grepl("github", url)) {
-  repo_url_short <- paste(unlist(strsplit(url, "/"))[4:5], collapse = "/")
-  commit <- gsub(x = basename(url), pattern = ".tar.gz", replacement = "")
-  commit_date <- get_commit_date(repo_url_short, commit)
-}
+  if (grepl("github", url)) {
+    repo_url_short <- paste(unlist(strsplit(url, "/"))[4:5], collapse = "/")
+    commit <- gsub(x = basename(url), pattern = ".tar.gz", replacement = "")
+    commit_date <- get_commit_date(repo_url_short, commit)
+  }
 
-deps <- get_imports(desc_path, commit_date)
+  deps <- get_imports(desc_path, commit_date)
 
   return(
     list(

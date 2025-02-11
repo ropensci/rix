@@ -11,11 +11,10 @@ generate_header <- function(nix_repo,
                             r_version,
                             rix_call,
                             ide) {
-
-  if (ide %in% c("code", "positron")){
-    allow_unfree = " config.allowUnfree = true; "
+  if (ide %in% c("code", "positron")) {
+    allow_unfree <- " config.allowUnfree = true; "
   } else {
-    allow_unfree = ""
+    allow_unfree <- ""
   }
   if (identical(Sys.getenv("TESTTHAT"), "true")) {
     sprintf(
@@ -214,10 +213,11 @@ get_system_pkgs <- function(system_pkgs, r_pkgs, ide) {
   # We always need these packages
 
   which_ide <- switch(ide,
-                      "code" = "vscode-fhs",
-                      "codium" = "vscodium-fhs",
-                      "positron" = "positron-bin",
-                      NULL)
+    "code" = "vscode-fhs",
+    "codium" = "vscodium-fhs",
+    "positron" = "positron-bin",
+    NULL
+  )
 
   system_pkgs <- sort(c(system_pkgs, which_ide, "R", "glibcLocales", "nix"))
 

@@ -125,7 +125,7 @@ testthat::test_that("rix(), ide is 'none' or 'code'", {
       path_default_nix
     ),
     name = "code_default.nix"
-    )
+  )
 
   testthat::announce_snapshot_file("rix/codium_default.nix")
 
@@ -135,7 +135,7 @@ testthat::test_that("rix(), ide is 'none' or 'code'", {
       path_default_nix
     ),
     name = "codium_default.nix"
-    )
+  )
 
   testthat::announce_snapshot_file("rix/positron_default.nix")
 

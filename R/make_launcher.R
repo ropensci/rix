@@ -20,7 +20,6 @@
 #' @examples
 #' available_dates()
 make_launcher <- function(editor, project_path) {
-
   editor <- trimws(editor)
 
   stopifnot("'editor' argument must be a single word" = grepl("^[A-Za-z]+$", editor))

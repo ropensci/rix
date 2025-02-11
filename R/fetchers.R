@@ -591,10 +591,10 @@ download_all_commits <- function(repo, date) {
 get_closest_commit <- function(commits_df, target_date) {
   # Convert target_date to POSIXct format
   target_date <- as.POSIXct(target_date, format = "%Y-%m-%dT%H:%M:%OSZ")
-  
+
   # Filter commits before or on the target date
   filtered_commits <- commits_df[commits_df$date <= target_date, ]
-  
+
   # If no commits found, raise an error
   if (nrow(filtered_commits) == 0) {
     stop("No commits found before or on the target date.")
