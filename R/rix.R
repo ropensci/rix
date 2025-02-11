@@ -191,7 +191,7 @@ rix <- function(r_ver = NULL,
                 git_pkgs = NULL,
                 local_r_pkgs = NULL,
                 tex_pkgs = NULL,
-                ide = c("none", "code", "codium", "positron", "radian", "rstudio", "rserver"),
+                ide = "none",
                 project_path,
                 overwrite = FALSE,
                 print = FALSE,
@@ -201,10 +201,14 @@ rix <- function(r_ver = NULL,
     choices = c("quiet", "simple", "verbose")
   )
 
-  ide <- match.arg(ide,
-    choices = c("none", "code", "codium", "positron",
-                "radian", "rstudio", "rserver")
-  )
+  if(ide == "other"){
+    stop("ide = 'other' has been deprecated in favour of ide = 'none' as of version 0.15.0.")
+  } else if (ide == "code"){
+    warning("The behaviour of the 'ide' argument changed since version 0.15.0; we highly recommend reading this vignette: https://docs.ropensci.org/rix/articles/e-configuring-ide.html if you want to use VS Code.")
+  } else if (!(ide %in% c("none", "code", "codium", "positron",
+                          "radian", "rstudio", "rserver"))){
+    stop("'ide' must be one of 'none', 'code', 'codium', 'positron', 'radian', 'rstudio', 'rserver'")
+  }
 
   if (!is.null(date) && !(date %in% available_dates())) {
     # nolint start: line_length_linter
