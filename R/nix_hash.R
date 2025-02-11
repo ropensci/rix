@@ -56,7 +56,8 @@ hash_url <- function(url) {
     c(
       "\nIf it's a GitHub repo, check the url and commit.\n",
       "Are these correct? If it's an archived CRAN package, check the name\n",
-      "of the package and the version number."
+      "of the package and the version number.\n",
+      paste0("Failing repo: ", url)
     )
 
   tar_file <- file.path(path_to_tarfile, "package.tar.gz")
@@ -236,7 +237,8 @@ nix_hash_online <- function(repo_url, commit) {
     c(
       "\nIf it's a GitHub repo, check the url and commit.\n",
       "Are these correct? If it's an archived CRAN package, check the name\n",
-      "of the package and the version number."
+      "of the package and the version number.\n",
+      paste0("Failing repo: ", repo_url)
     )
 
   req <- try_get_request(
