@@ -11,7 +11,8 @@ renv_lock_r_ver(renv_lock, override_r_ver = NULL)
 
 \item{override_r_ver}{Character, override the R version defined in the
 \code{renv.lock} file with another version. This is especially useful if
-the \code{renv.lock} file lists a version of R not (yet) available through Nix.}
+the \code{renv.lock} file lists a version of R not (yet) available through Nix.
+Can also be a date.}
 }
 \value{
 a length 1 character vector with the version of R recorded in

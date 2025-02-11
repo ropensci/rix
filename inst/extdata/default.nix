@@ -3,7 +3,7 @@
 # >rix(date = "2025-01-27",
 #  > git_pkgs = list(package_name = "rix",
 #  > repo_url = "https://github.com/ropensci/rix/",
-#  > commit = "cc97014ac5937a059e9982c14e390fef8d59045b"),
+#  > commit = "fe3c4f8bdbe4c6789f888709aa64cc048ee9b509"),
 #  > ide = "other",
 #  > project_path = "inst/extdata",
 #  > overwrite = TRUE,

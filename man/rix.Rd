@@ -12,7 +12,7 @@ rix(
   git_pkgs = NULL,
   local_r_pkgs = NULL,
   tex_pkgs = NULL,
-  ide = c("other", "code", "radian", "rstudio", "rserver"),
+  ide = c("none", "code", "codium", "positron", "radian", "rstudio", "rserver"),
   project_path,
   overwrite = FALSE,
   print = FALSE,
@@ -21,22 +21,21 @@ rix(
 )
 }
 \arguments{
-\item{r_ver}{Character. The required R version, for
-example "4.0.0". You can check which R versions are available using
-\code{available_r()}, and for more details check \code{available_df()}.
-For reproducibility purposes, you can also provide a
-\code{nixpkgs} revision directly. For older versions of R, \code{nix-build} might
-fail with an error stating 'this derivation is not meant to be built'. In
-this case, simply drop into the shell with \code{nix-shell} instead of building
-it first. It is also possible to provide either "bleeding-edge" or
-"frozen-edge" if you need an environment with bleeding edge packages. Read
-more in the "Details" section below.}
+\item{r_ver}{Character. The required R version, for example "4.0.0". You can
+check which R versions are available using \code{available_r()}, and for more
+details check \code{available_df()}. For reproducibility purposes, you can also
+provide a \code{nixpkgs} revision directly. For older versions of R, \code{nix-build}
+might fail with an error stating 'this derivation is not meant to be
+built'. In this case, simply drop into the shell with \code{nix-shell} instead
+of building it first. It is also possible to provide either "bleeding-edge"
+or "frozen-edge" if you need an environment with bleeding edge packages.
+Read more in the "Details" section below.}
 
-\item{date}{Character. Instead of providing \code{r_ver}, it is also possible
-to provide a date. This will build an environment containing R and R
-packages (and other dependencies) as of that date. You can check which
-dates are available with \code{available_dates()}. For more details about versions
-check \code{available_df()}.}
+\item{date}{Character. Instead of providing \code{r_ver}, it is also possible to
+provide a date. This will build an environment containing R and R packages
+(and other dependencies) as of that date. You can check which dates are
+available with \code{available_dates()}. For more details about versions check
+\code{available_df()}.}
 
 \item{r_pkgs}{Vector of characters. List the required R packages for your
 analysis here.}
@@ -44,7 +43,7 @@ analysis here.}
 \item{system_pkgs}{Vector of characters. List further software you wish to
 install that are not R packages such as command line applications for
 example. You can look for available software on the NixOS website
-\url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=} # nolint}
+\url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=}}
 
 \item{git_pkgs}{List. A list of packages to install from Git. See details for
 more information.}
@@ -56,13 +55,23 @@ folder as the generated "default.nix" file.}
 \item{tex_pkgs}{Vector of characters. A set of TeX packages to install. Use
 this if you need to compile \code{.tex} documents, or build PDF documents using
 Quarto. If you don't know which package to add, start by adding "amsmath".
-See the Vignette "Authoring LaTeX documents" for more details.}
+See the
+\code{vignette("d2- installing-system-tools-and-texlive-packages-in-a-nix-environment")}
+for more details.}
 
-\item{ide}{Character, defaults to "other". If you wish to use RStudio to work
+\item{ide}{Character, defaults to "none". If you wish to use RStudio to work
 interactively use "rstudio" or "rserver" for the server version. Use "code"
-for Visual Studio Code. You can also use "radian", an interactive REPL. For
-other editors, use "other". This has been tested with RStudio, VS Code and
-Emacs. If other editors don't work, please open an issue.}
+for Visual Studio Code or "codium" for Codium, or "positron" for Positron.
+You can also use "radian", an interactive REPL. This will install a
+project-specific version of the chosen editor which will be differrent than
+the one already present in your system (if any). For other editors or if
+you want to use an editor already installed on your system (which will
+require some configuration to make it work seamlessly with Nix shells see
+the \code{vignette("e-configuring-ide")} for configuration examples), use
+"none". Please be aware that VS Code and Positron are not free software. To
+facilitate their installation, \code{rix()} automatically enables a required
+setting without prompting the user for confirmation. See the "Details"
+section below for more information.}
 
 \item{project_path}{Character, where to write \code{default.nix}, for example
 "/home/path/to/project". The file will thus be written to the file
@@ -76,16 +85,16 @@ be created.}
 console.}
 
 \item{message_type}{Character. Message type, defaults to \code{"simple"}, which
-gives minimal but sufficient feedback. Other values are currently \verb{"quiet},
-which generates the files without message, and \code{"verbose"}, displays all
-the messages.}
+gives minimal but sufficient feedback. Other values are currently
+\verb{"quiet}, which generates the files without message, and \code{"verbose"},
+displays all the messages.}
 
 \item{shell_hook}{Character of length 1, defaults to \code{NULL}. Commands added
 to the \code{shellHook} variable are executed when the Nix shell starts. So by
 default, using \verb{nix-shell default.nix} will start a specific program,
 possibly with flags (separated by space), and/or do shell actions. You can
-for example use \code{shell_hook = R}, if you want to directly enter the declared
-Nix R session when dropping into the Nix shell.}
+for example use \code{shell_hook = R}, if you want to directly enter the
+declared Nix R session when dropping into the Nix shell.}
 }
 \value{
 Nothing, this function only has the side-effect of writing two files:
@@ -113,14 +122,22 @@ from the terminal, or using an interface such as RStudio. If you want to
 use RStudio, set the \code{ide} argument to \code{"rstudio"}. Please be aware that
 RStudio is not available for macOS through Nix. As such, you may want to
 use another editor on macOS. To use Visual Studio Code (or Codium), set the
-\code{ide} argument to \code{"code"}, which will add the \code{{languageserver}} R package
-to the list of R packages to be installed by Nix in that environment. You
-can use the version of Visual Studio Code or Codium you already use, or
-also install it using Nix (by adding "vscode" or "vscodium" to the list of
-\code{system_pkgs}). For non-interactive use, or to use the environment from the
-command line, or from another editor (such as Emacs or Vim), set the \code{ide}
-argument to \code{"other"}. We recommend reading the
-\code{vignette("e-interactive-use")} for more details.
+\code{ide} argument to \code{"code"} or \code{"codium"} respectively, which will add the
+\code{{languageserver}} R package to the list of R packages to be installed by
+Nix in that environment. It is also possible to use Positron by setting the
+\code{ide} argument to \code{"positron"}. Setting the \code{ide} argument to an editor
+will install it from Nix, meaning that each of your projects can have a
+dedicated IDE (or IDE version). \code{"radian"} and \code{"rserver"} are also
+options.
+
+Instead of using Nix to install an IDE, you can also simply use the one you
+have already installed system-wide, with the exception of RStudio which
+must be managed by Nix to "see" Nix environments. Positron must also be
+heavily configured to work with Nix shells, so we recommend installing it
+using Nix, which makes using Positron with Nix shells very easy. To use an
+editor that you already have installed on your system, set \code{ide = "none"}
+and refer to the \code{vignette("e-configuring-ide")} for more details on how to
+set up your editor to work with Nix shells.
 
 Packages to install from GitHub or Gitlab must be provided in a list of 3
 elements: "package_name", "repo_url" and "commit". To install several
@@ -153,6 +170,12 @@ notation or local packages, does not leverage Nix's capabilities for
 dependency solving. As such, you might have trouble installing these
 packages. If that is the case, open an issue on \code{{rix}}'s GitHub
 repository.
+
+If GitHub packages have dependencies on GitHub as well, \code{{rix}} will
+attempt to generate the correct expression, but we highly recommend you
+read the
+\code{vignette("z-advanced-topic-handling-packages-with-remote-dependencies")}
+Vignette.
 
 By default, the Nix shell will be configured with \code{"en_US.UTF-8"} for the
 relevant locale variables (\code{LANG}, \code{LC_ALL}, \code{LC_TIME}, \code{LC_MONETARY},

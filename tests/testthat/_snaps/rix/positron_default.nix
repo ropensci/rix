@@ -6,7 +6,6 @@ let
     inherit (pkgs.rPackages) 
       data_table
       janitor
-      languageserver
       quarto;
   };
  
@@ -86,7 +85,7 @@ let
       R
       glibcLocales
       nix
-      vscode-fhs
+      positron-bin
       quarto;
   };
   
