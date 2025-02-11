@@ -114,8 +114,8 @@ which should be the case on the latest versions of Windows. If you wish, you can
 even put the `rstudio` command in the shell hook to start it immediately as you
 run `nix-shell`.
 
-On Linux, depending on your desktop environment, you might see the following
-error message when trying to launch RStudio:
+On Linux and WSL, depending on your desktop environment, you might see the
+following error message when trying to launch RStudio:
 
 ```
 qt.glx: qglx_findConfig: Failed to finding matching FBConfig for QSurfaceFormat(version 2.0, options QFlags<QSurfaceFormat::FormatOption>(), depthBufferSize -1, redBufferSize 1, greenBufferSize 1, blueBufferSize 1, alphaBufferSize -1, stencilBufferSize -1, samples -1, swapBehavior QSurfaceFormat::SingleBuffer, swapInterval 1, colorSpace QSurfaceFormat::DefaultColorSpace, profile  QSurfaceFormat::NoProfile)
