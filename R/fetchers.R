@@ -580,7 +580,10 @@ download_all_commits <- function(repo, date) {
   }
 
   # Return only the rows with actual data
-  all_commits[1:commit_count, ]
+  all_commits <- all_commits[1:commit_count, ]
+
+  # Remove rows where PRs are listed instead of commits
+  all_commits[nchar(all_commits$sha) != 40, ]
 }
 
 #' get_closest_commit Finds the closest commit to a specific date
