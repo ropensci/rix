@@ -110,6 +110,38 @@ testthat::test_that("Test fetchgits works when PR is provided in a remote packag
   testthat::expect_true(grepl("mlr3extralearners = \\(pkgs.rPackages.buildRPackage", result))
 })
 
+testthat::test_that("Test fetchgits works with tags", {
+  testthat::skip_on_cran()
+  pkg_list <- list(
+    list(
+      package_name = "rix",
+      repo_url = "https://github.com/ropensci/rix/",
+      commit = "v0.8.0"
+    )
+  )
+  expected_output <- paste0(
+    "\n    rix = (pkgs.rPackages.buildRPackage {\n",
+    "      name = \"rix\";\n",
+    "      src = pkgs.fetchgit {\n",
+    "        url = \"https://github.com/ropensci/rix/\";\n",
+    "        rev = \"v0.8.0\";\n",
+    "        sha256 = \"sha256-E4WYQeQRPuIKPZY7TEudcSW9AxNc0KDKs7+QV2U7sjI=\";\n",
+    "      };\n",
+    "      propagatedBuildInputs = builtins.attrValues {\n",
+    "        inherit (pkgs.rPackages) \n",
+    "          codetools\n",
+    "          curl\n",
+    "          jsonlite\n",
+    "          sys;\n",
+    "      };\n",
+    "    });\n"
+  )
+  testthat::expect_equal(
+    fetchgits(pkg_list),
+    expected_output
+  )
+})
+
 testthat::test_that("Test fetchzips works", {
   testthat::skip_on_cran()
   testthat::expect_equal(
