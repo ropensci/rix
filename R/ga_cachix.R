@@ -43,7 +43,11 @@ ga_cachix <- function(cache_name, path_default) {
   )
 
   file.copy(source, path, overwrite = TRUE)
-  message("GitHub Actions workflow file saved to: ", path)
+
+  if (identical(Sys.getenv("TESTTHAT"), "false")) {
+    message("GitHub Actions workflow file saved to: ", path)
+  }
+
 
   # The sed command for Darwin is of the form "sed -i '' s/foo/bar"
   # while on Linux it's "sed -i s/foo/bar"

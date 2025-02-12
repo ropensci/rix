@@ -32,7 +32,11 @@ make_launcher <- function(editor, project_path) {
   script_text <- sprintf("#!/usr/bin/env nix-shell\n#!nix-shell default.nix -i bash\n%s", editor)
   script_path <- file.path(project_path, paste0("start-", editor, ".sh"))
   writeLines(script_text, script_path)
-  message("Wrote launcher successfully!")
+
+  # Hide messages when testing
+  if (identical(Sys.getenv("TESTTHAT"), "false")) {
+    message("Wrote launcher successfully!")
+  }
 
   if (identical(Sys.getenv("TESTTHAT"), "true")) {
     file.path(script_path)

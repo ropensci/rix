@@ -112,7 +112,7 @@ rix_init <- function(project_path,
       is.character(project_path) && length(project_path) == 1L
   )
 
-  if (isFALSE(is_quiet)) {
+  if (isFALSE(is_quiet) && identical(Sys.getenv("TESTTHAT"), "false")) {
     cat(
       "\n### Bootstrapping isolated, project-specific, and runtime-pure",
       "R setup via Nix ###\n\n"
@@ -121,12 +121,12 @@ rix_init <- function(project_path,
   if (isFALSE(dir.exists(project_path))) {
     dir.create(path = project_path, recursive = TRUE)
     project_path <- normalizePath(path = project_path)
-    if (isFALSE(is_quiet)) {
+    if (isFALSE(is_quiet) && identical(Sys.getenv("TESTTHAT"), "false")) {
       cat("==> Created isolated nix-R project folder:\n", project_path, "\n")
     }
   } else {
     project_path <- normalizePath(path = project_path)
-    if (isFALSE(is_quiet)) {
+    if (isFALSE(is_quiet) && identical(Sys.getenv("TESTTHAT"), "false")) {
       cat(
         "==> Existing isolated nix-R project folder:\n", project_path,
         "\n"
@@ -196,7 +196,7 @@ rix_init <- function(project_path,
       if (isTRUE(rprofile_exists)) {
         file.copy(from = rprofile_file, to = rprofile_backup)
         write_rprofile(rprofile_text, rprofile_file = rprofile_file, mode = "wb")
-        if (isFALSE(is_quiet)) {
+        if (isFALSE(is_quiet) && identical(Sys.getenv("TESTTHAT"), "false")) {
           cat(
             "\n==> Backed up existing `.Rprofile` in file:\n", rprofile_backup,
             "\n"
@@ -207,7 +207,7 @@ rix_init <- function(project_path,
           )
         }
 
-        if (message_type == "verbose") {
+        if (message_type == "verbose" && identical(Sys.getenv("TESTTHAT"), "false")) {
           cat("\n* Current lines of local `.Rprofile` are\n:")
           cat(readLines(con = rprofile_file), sep = "\n")
         }
@@ -241,7 +241,7 @@ rix_init <- function(project_path,
     }
   )
 
-  if (message_type == "verbose") {
+  if (message_type == "verbose" && identical(Sys.getenv("TESTTHAT"), "false")) {
     cat("\n\n* Current lines of local `.Rprofile` are:\n\n")
     cat(readLines(con = rprofile_file), sep = "\n")
   }
@@ -283,7 +283,10 @@ message_rprofile <- function(action_string = "Added",
     "environmental variable for new R sessions on host/docker RStudio:\n",
     "/nix/var/nix/profiles/default/bin"
   )
-  cat(msg)
+
+  if(identical(Sys.getenv("TESTTHAT"), "false")){
+    cat(msg)
+  }
 }
 
 #' Get current `PATH` entries, report and modify to include default Nix profile
@@ -301,11 +304,11 @@ set_message_session_PATH <- function(message_type =
   message_type <- match.arg(message_type,
     choices = c("simple", "quiet", "verbose")
   )
-  if (message_type == "verbose") {
+  if (message_type == "verbose" && identical(Sys.getenv("TESTTHAT"), "false")) {
     cat("\n\n* Current `PATH` variable set in R session is:\n\n")
     cat(Sys.getenv("PATH"))
   }
-  if (message_type != "quiet") {
+  if (message_type != "quiet" && identical(Sys.getenv("TESTTHAT"), "false")) {
     cat(
       "\n\n==> Also adjusting `PATH` via `Sys.setenv()`, so that",
       "system commands can invoke key Nix commands like `nix-build` in this",
@@ -313,7 +316,7 @@ set_message_session_PATH <- function(message_type =
     )
   }
   PATH <- set_nix_path()
-  if (message_type == "verbose") {
+  if (message_type == "verbose" && identical(Sys.getenv("TESTTHAT"), "false")) {
     cat("\n\n* Updated `PATH` variable is:\n\n", PATH)
   }
 }
