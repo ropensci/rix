@@ -110,20 +110,20 @@ testthat::test_that("Test fetchgits works when PR is provided in a remote packag
   testthat::expect_true(grepl("mlr3extralearners = \\(pkgs.rPackages.buildRPackage", result))
 })
 
-testthat::test_that("Test fetchgits works with tags", {
+testthat::test_that("Test fetchgits works when tag is provided in a remote package", {
   testthat::skip_on_cran()
   pkg_list <- list(
     list(
-      package_name = "rix",
-      repo_url = "https://github.com/ropensci/rix/",
-      commit = "v0.8.0"
+      package_name = "rixTest",
+      repo_url = "https://github.com/mihem/rixTest",
+      commit = "25da90697895b006934a70bbd003aab5c5206c8b"
     )
   )
   expected_output <- paste0(
     "\n    rix = (pkgs.rPackages.buildRPackage {\n",
     "      name = \"rix\";\n",
     "      src = pkgs.fetchgit {\n",
-    "        url = \"https://github.com/ropensci/rix/\";\n",
+    "        url = \"https://github.com/ropensci/rix\";\n",
     "        rev = \"v0.8.0\";\n",
     "        sha256 = \"sha256-E4WYQeQRPuIKPZY7TEudcSW9AxNc0KDKs7+QV2U7sjI=\";\n",
     "      };\n",
@@ -134,6 +134,17 @@ testthat::test_that("Test fetchgits works with tags", {
     "          jsonlite\n",
     "          sys;\n",
     "      };\n",
+    "    });\n\n",
+    "    rixTest = (pkgs.rPackages.buildRPackage {\n",
+    "      name = \"rixTest\";\n",
+    "      src = pkgs.fetchgit {\n",
+    "        url = \"https://github.com/mihem/rixTest\";\n",
+    "        rev = \"25da90697895b006934a70bbd003aab5c5206c8b\";\n",
+    "        sha256 = \"sha256-+EP74d5nWjGbniQ0iEzDyKUky94L8FpvkyxFNfokJKM=\";\n",
+    "      };\n",
+    "      propagatedBuildInputs = builtins.attrValues {\n",
+    "        inherit (pkgs.rPackages) ;\n",
+    "      } ++ [ rix ];\n",
     "    });\n"
   )
   testthat::expect_equal(
