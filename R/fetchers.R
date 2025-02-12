@@ -216,12 +216,12 @@ get_imports <- function(path, commit_date) {
     remotes <- imports_df[, existing_remotes, drop = FALSE]
     # remotes are of the form username/packagename
     remotes <- gsub("\n", "", x = unlist(strsplit(remotes$Remotes, ",")))
+    # Remove PR if present because this is difficult to handle
+    remotes <- sub("#.*$", "", remotes)
     # Get user names
     remote_pkgs_usernames <- sapply(strsplit(remotes, "/"), function(x) x[[1]])
     # Remove user names
     remote_pkgs_names_and_refs <- sub(".*?/", "", remotes)
-    # Remove PR if present because this is difficult to handle
-    remote_pkgs_names_and_refs <- sub("#.*$", "", remotes)
     # Get tag or commit using "@" character 
     remote_pkgs_names_and_refs <- strsplit(remote_pkgs_names_and_refs, "@")
     # Get package names 
