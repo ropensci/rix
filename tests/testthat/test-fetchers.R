@@ -90,7 +90,9 @@ testthat::test_that("Test fetchgits", {
   )
 })
 
-testthat::test_that("Test fetchgits works when PR is provided", {
+testthat::test_that("Test fetchgits works when PR is provided in a remote package", {
+  # The PR is not provided in the commit, but in the DESCRIPTION file
+  # see https://github.com/mlr-org/mlr3proba/commit/c5bec7b9b0b73d3611e61882e7556404a6d9fb2e
   # This should not fail, however it will not use the PR
   testthat::skip_on_cran()
   result <- fetchgits(
