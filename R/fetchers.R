@@ -214,18 +214,17 @@ get_imports <- function(path, commit_date) {
 
   if (!identical(existing_remotes, character(0))) {
     remotes <- imports_df[, existing_remotes, drop = FALSE]
-    # remotes are of the form username/packagename so we need
-    # to only keep packagename
+    # remotes are of the form username/packagename
     remotes <- gsub("\n", "", x = unlist(strsplit(remotes$Remotes, ",")))
     # Get user names
     remote_pkgs_usernames <- sapply(strsplit(remotes, "/"), function(x) x[[1]])
-
-    # Now remove user name and
-    # split at "@" or "#" character to get name and commit or PR separated
-
+    # Remove user names
     remote_pkgs_names_and_refs <- sub(".*?/", "", remotes)
-    remote_pkgs_names_and_refs <- strsplit(remote_pkgs_names_and_refs, "(@|#)")
-
+    # Remove PR if present because this is difficult to handle
+    remote_pkgs_names_and_refs <- sub("#.*$", "", remotes)
+    # Get tag or commit using "@" character 
+    remote_pkgs_names_and_refs <- strsplit(remote_pkgs_names_and_refs, "@")
+    # Get package names 
     remote_pkgs_names <- sapply(remote_pkgs_names_and_refs, function(x) x[[1]])
 
     # contruct repo short url in the form username/packagename
