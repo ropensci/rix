@@ -651,13 +651,8 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes) {
 #' that there are duplicated entries in the generated `default.nix` files.
 #' This function removes duplicated blocks.
 #' @param default.nix_path Character, path to generated default.nix
-#' @param flag_git_archive Character, are there R packages from GitHub at all?
-#' @param force_processing Logical, defaults to FALSE. Should post-processing be
-#'        forced?
 #' @noRd
-remove_duplicate_entries <- function(default.nix_path,
-                                     flag_git_archive,
-                                     force_processing = FALSE) {
+remove_duplicate_entries <- function(default.nix_path) {
 
     # nolint start: object_name_linter
     #default.nix_path <- file.path(default.nix_path)
@@ -707,9 +702,11 @@ remove_duplicate_entries <- function(default.nix_path,
             out_lines <- c(out_lines, block_lines)
             seen <- c(seen, block_name)
           } else {
-            message(sprintf("Duplicate block for '%s' already removed, skipping.",
-                            block_name))
-            removed <- c(removed, block_name)
+            if (identical(Sys.getenv("TESTTHAT"), "false")) {
+              message(sprintf("Duplicate block for '%s' already removed, skipping.",
+                              block_name))
+              removed <- c(removed, block_name)
+            }
           }
           # Reset block tracking variables
           in_block <- FALSE
@@ -720,8 +717,7 @@ remove_duplicate_entries <- function(default.nix_path,
     }
 
     # Write the new contents back to the file.
-    writeLines(enc2utf8(lines), default.nix_path, useBytes = TRUE)
-
+    writeLines(enc2utf8(out_lines), default.nix_path, useBytes = TRUE)
 
   # Hide messages when testing
   if (identical(Sys.getenv("TESTTHAT"), "false")) {
