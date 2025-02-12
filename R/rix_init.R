@@ -345,7 +345,7 @@ message_r_session_nix_rstudio <- function(is_nix_r,
     choices = c("simple", "quiet", "verbose")
   )
 
-  if (isTRUE(is_nix_r)) {
+  if (isTRUE(is_nix_r) && identical(Sys.getenv("TESTTHAT"), "false")) {
     nix_r_msg <-
       "\n* current R session running inside Nix environment"
   } else {
@@ -353,7 +353,7 @@ message_r_session_nix_rstudio <- function(is_nix_r,
       "\n* current R session running outside Nix environment"
   }
 
-  if (isTRUE(is_rstudio)) {
+  if (isTRUE(is_rstudio) && identical(Sys.getenv("TESTTHAT"), "false")) {
     rstudio_msg <- "from RStudio\n"
   } else {
     rstudio_msg <- "not from RStudio\n"

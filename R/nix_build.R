@@ -90,10 +90,12 @@ nix_build <- function(project_path = getwd(),
     args <- c("--max-jobs", as.character(max_jobs), nix_dir)
   }
 
-  cat(paste0(
-    "Running `", paste0(cmd, " ", args, collapse = " "), "`",
-    " ...\n"
-  ))
+  if (identical(Sys.getenv("TESTTHAT"), "false")) {
+    cat(paste0(
+      "Running `", paste0(cmd, " ", args, collapse = " "), "`",
+      " ...\n"
+    ))
+  }
 
   proc <- sys::exec_background(cmd = cmd, args = args)
 
