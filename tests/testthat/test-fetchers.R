@@ -90,6 +90,24 @@ testthat::test_that("Test fetchgits", {
   )
 })
 
+testthat::test_that("Test fetchgits works when PR is provided", {
+  # This should not fail, however it will not use the PR
+  testthat::skip_on_cran()
+  result <- fetchgits(
+    list(
+      list(
+        package_name = "mlr3extralearners",
+        repo_url = "https://github.com/mlr-org/mlr3proba/",
+        commit = "c5bec7b9b0b73d3611e61882e7556404a6d9fb2e"
+      )
+    )
+  )
+  
+  # Test that output is a character string and contains essential elements
+  testthat::expect_type(result, "character")
+  testthat::expect_true(grepl("mlr3extralearners = \\(pkgs.rPackages.buildRPackage", result))
+})
+
 testthat::test_that("Test fetchzips works", {
   testthat::skip_on_cran()
   testthat::expect_equal(
