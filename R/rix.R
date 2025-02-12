@@ -380,6 +380,18 @@ for more details."
     collapse = "\n"
   )
 
+  # Remove potential duplicates
+  do_processing <- if (flag_git_archive == "") {
+                     FALSE
+                   } else {
+                     TRUE
+                   }
+
+  # only do post processing if there are git packages
+  if (any(c(do_processing, force_post_processing))){
+    default.nix <- remove_duplicate_entries(default.nix)
+  }
+
   if (print) {
     cat(default.nix, sep = "\n")
   }
@@ -390,6 +402,7 @@ for more details."
     }
     con <- file(default.nix_path, open = "wb", encoding = "native.enc")
     on.exit(close(con))
+
 
     writeLines(enc2utf8(default.nix), con = con, useBytes = TRUE)
 
@@ -448,16 +461,5 @@ for more details."
 
   on.exit(close(con))
 
-  # Remove potential duplicates
-  do_processing <- if (flag_git_archive == "") {
-    FALSE
-  } else {
-    TRUE
-  }
-
-  # only do post processing if there are git packages
-  if (any(c(do_processing, force_post_processing))){
-      remove_duplicate_entries(default.nix_path)
-  }
 
 }

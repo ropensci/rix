@@ -650,15 +650,15 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes) {
 #' files. When remote packages have remote dependencies, it can happen
 #' that there are duplicated entries in the generated `default.nix` files.
 #' This function removes duplicated blocks.
-#' @param default.nix_path Character, path to generated default.nix
+#' @param default.nix Character, default.nix lines.
 #' @noRd
-remove_duplicate_entries <- function(default.nix_path) {
+remove_duplicate_entries <- function(default.nix) {
 
     # nolint start: object_name_linter
     #default.nix_path <- file.path(default.nix_path)
     # nolint end
 
-    lines <- readLines(default.nix_path)
+    lines <- default.nix
 
     # To store output lines
     out_lines <- character(0)
@@ -716,9 +716,6 @@ remove_duplicate_entries <- function(default.nix_path) {
       }
     }
 
-    # Write the new contents back to the file.
-    writeLines(enc2utf8(out_lines), default.nix_path, useBytes = TRUE)
-
   # Hide messages when testing
   if (identical(Sys.getenv("TESTTHAT"), "false")) {
       # At the end, print a message listing all removed packages (unique names)
@@ -731,7 +728,7 @@ remove_duplicate_entries <- function(default.nix_path) {
       }
     }
 
-    invisible(NULL)
+    out_lines
 
 }
 

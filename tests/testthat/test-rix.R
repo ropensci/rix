@@ -751,7 +751,9 @@ testthat::test_that("remove_duplicate_entries(), correctly remove duplicates", {
 
   removed_dups <- function(destination_file) {
 
-    remove_duplicate_entries(destination_file)
+    out <- remove_duplicate_entries(readLines(destination_file))
+
+    writeLines(out, destination_file)
 
     file.path(destination_file)
   }
