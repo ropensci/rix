@@ -523,13 +523,19 @@ testthat::test_that("rix(), conclusion message", {
   )
 
   save_default_nix_test <- function(path_default_nix) {
-    rix(
-      r_ver = "4.3.1",
-      ide = "none",
-      project_path = path_default_nix,
-      message_type = "simple",
-      overwrite = TRUE
-    )
+    local({
+      # need to do this because messages are silenced
+      # if testing
+      Sys.setenv("TESTTHAT" = "false")
+
+      rix(
+        r_ver = "4.3.1",
+        ide = "none",
+        project_path = path_default_nix,
+        message_type = "simple",
+        overwrite = TRUE
+      )
+    })
 
     file.path(path_default_nix, "default.nix")
   }
