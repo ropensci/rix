@@ -67,9 +67,11 @@
 #'   possibly with flags (separated by space), and/or do shell actions. You can
 #'   for example use `shell_hook = R`, if you want to directly enter the
 #'   declared Nix R session when dropping into the Nix shell.
-#' @param force_post_processing Logical, defaults to FALSE. Should post-processing be
-#'   forced? This is automatically set to TRUE if there are any Git packages
-#'   listed. This should not be a setting you should have to change.
+#' @param skip_post_processing Logical, defaults to FALSE. Should post-processing be
+#'   skipped? By default, if there are GitHub packages, the generated `default.nix`
+#'   is post-processed to eliminate potential duplicate definitions of packages,
+#'   which may happen if these packages have recursive remote dependencies. Set
+#'   to TRUE to skip post processing, which might be useful for debugging.
 #'
 #' @details This function will write a `default.nix` and an `.Rprofile` in the
 #'   chosen path. Using the Nix package manager, it is then possible to build a
@@ -184,7 +186,8 @@
 #'   overwrite = TRUE,
 #'   print = TRUE,
 #'   message_type = "simple",
-#'   shell_hook = NULL
+#'   shell_hook = NULL,
+#'   skip_post_processing = FALSE
 #' )
 #' }
 rix <- function(r_ver = NULL,
@@ -200,7 +203,7 @@ rix <- function(r_ver = NULL,
                 print = FALSE,
                 message_type = "simple",
                 shell_hook = NULL,
-                force_post_processing = FALSE) {
+                skip_post_processing = FALSE) {
   message_type <- match.arg(message_type,
     choices = c("quiet", "simple", "verbose")
   )
@@ -359,26 +362,33 @@ for more details."
     ""
   }
 
+  stub_default.nix <- getOption("TESTTHAT_DEFAULT.NIX", default = NULL)
+
+  if(!is.null(stub_default.nix)){
+    default.nix <- readLines(stub_default.nix)
+  } else {
+    default.nix <- paste(
+      generate_header(
+        nix_repo,
+        r_ver,
+        rix_call,
+        ide
+      ),
+      generate_rpkgs(cran_pkgs$rPackages, flag_rpkgs),
+      generate_git_archived_pkgs(git_pkgs, cran_pkgs$archive_pkgs, flag_git_archive),
+      generate_tex_pkgs(tex_pkgs),
+      generate_local_r_pkgs(local_r_pkgs, flag_local_r_pkgs),
+      generate_system_pkgs(system_pkgs, r_pkgs, ide),
+      generate_wrapped_pkgs(ide, attrib, flag_git_archive, flag_rpkgs, flag_local_r_pkgs),
+      generate_shell(
+        flag_git_archive, flag_rpkgs, flag_tex_pkgs,
+        flag_local_r_pkgs, flag_wrapper, shell_hook
+      ),
+      collapse = "\n"
+    )
+  }
+
   # Generate default.nix file # nolint next: object_name_linter
-  default.nix <- paste(
-    generate_header(
-      nix_repo,
-      r_ver,
-      rix_call,
-      ide
-    ),
-    generate_rpkgs(cran_pkgs$rPackages, flag_rpkgs),
-    generate_git_archived_pkgs(git_pkgs, cran_pkgs$archive_pkgs, flag_git_archive),
-    generate_tex_pkgs(tex_pkgs),
-    generate_local_r_pkgs(local_r_pkgs, flag_local_r_pkgs),
-    generate_system_pkgs(system_pkgs, r_pkgs, ide),
-    generate_wrapped_pkgs(ide, attrib, flag_git_archive, flag_rpkgs, flag_local_r_pkgs),
-    generate_shell(
-      flag_git_archive, flag_rpkgs, flag_tex_pkgs,
-      flag_local_r_pkgs, flag_wrapper, shell_hook
-    ),
-    collapse = "\n"
-  )
 
   # Remove potential duplicates
   do_processing <- if (flag_git_archive == "") {
@@ -388,7 +398,8 @@ for more details."
                    }
 
   # only do post processing if there are git packages
-  if (any(c(do_processing, force_post_processing))){
+  # or if skip_post_processing is TRUE
+  if (all(c(do_processing, !skip_post_processing))){
     default.nix <- remove_duplicate_entries(default.nix)
   }
 
