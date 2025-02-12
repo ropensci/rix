@@ -67,6 +67,9 @@
 #'   possibly with flags (separated by space), and/or do shell actions. You can
 #'   for example use `shell_hook = R`, if you want to directly enter the
 #'   declared Nix R session when dropping into the Nix shell.
+#' @param force_processing Logical, defaults to FALSE. Should post-processing be
+#'   forced? This is automatically set to TRUE if there are any Git packages
+#'   listed. This should not be a setting you should have to change.
 #'
 #' @details This function will write a `default.nix` and an `.Rprofile` in the
 #'   chosen path. Using the Nix package manager, it is then possible to build a
@@ -196,7 +199,8 @@ rix <- function(r_ver = NULL,
                 overwrite = FALSE,
                 print = FALSE,
                 message_type = "simple",
-                shell_hook = NULL) {
+                shell_hook = NULL,
+                force_processing = FALSE) {
   message_type <- match.arg(message_type,
     choices = c("quiet", "simple", "verbose")
   )
@@ -443,4 +447,19 @@ for more details."
   }
 
   on.exit(close(con))
+
+  # Remove potential duplicates
+  do_processing <- if (flag_git_archive == "") {
+    FALSE
+  } else {
+    TRUE
+  }
+
+  # only do post processing if there are git packages
+  if (any(c(do_processing, force_processing))){
+    remove_duplicate_entries(default.nix_path,
+                             flag_git_archive,
+                             force_processing)
+  }
+
 }
