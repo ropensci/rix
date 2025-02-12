@@ -102,54 +102,8 @@ let
     });
 
 
-    set6 = (pkgs.rPackages.buildRPackage {
-      name = "set6";
-      src = pkgs.fetchgit {
-        url = "https://github.com/xoopR/set6";
-        rev = "HEAD";
-        sha256 = "sha256-3iDxFyGqSp4msc2BzIFx62nQtO0OsWI8gYhyod4un4A=";
-      };
-      propagatedBuildInputs = builtins.attrValues {
-        inherit (pkgs.rPackages) 
-          checkmate
-          ooplah
-          Rcpp
-          R6;
-      };
-    });
 
-    param6 = (pkgs.rPackages.buildRPackage {
-      name = "param6";
-      src = pkgs.fetchgit {
-        url = "https://github.com/xoopR/param6";
-        rev = "HEAD";
-        sha256 = "sha256-6mfOzx0DPGnKyXJPFm1V1qhsLCIHC26XW8q5jZ2gpAg=";
-      };
-      propagatedBuildInputs = builtins.attrValues {
-        inherit (pkgs.rPackages) 
-          checkmate
-          data_table
-          dictionar6
-          R6;
-      } ++ [ set6 ];
-    });
 
-    distr6 = (pkgs.rPackages.buildRPackage {
-      name = "distr6";
-      src = pkgs.fetchgit {
-        url = "https://github.com/xoopR/distr6";
-        rev = "HEAD";
-        sha256 = "sha256-1PQ2ptGbDumsG5OmAGRqgvoLHu7YinrIupDW1uu8wVA=";
-      };
-      propagatedBuildInputs = builtins.attrValues {
-        inherit (pkgs.rPackages) 
-          checkmate
-          data_table
-          ooplah
-          R6
-          Rcpp;
-      } ++ [ set6 param6 ];
-    });
 
     survivalmodels = (pkgs.rPackages.buildRPackage {
       name = "survivalmodels";

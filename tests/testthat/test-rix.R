@@ -734,3 +734,30 @@ testthat::test_that("rix(), r-devel-bioc-devel", {
     name = "r-devel-bioc-devel_default.nix",
   )
 })
+
+
+testthat::test_that("remove_duplicate_entries(), correctly remove duplicates", {
+
+  dups_entries_default.nix <- paste0(testthat::test_path(),
+    "/testdata/default-nix_samples/dups-entries_default.nix")
+  tmpdir <- tempdir()
+  destination_file <- file.path(tempdir(), basename(dups_entries_default.nix))
+  file.copy(dups_entries_default.nix, destination_file, overwrite = TRUE)
+
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+
+  removed_dups <- function(destination_file) {
+
+    remove_duplicate_entries(destination_file)
+
+    file.path(destination_file)
+  }
+
+  testthat::expect_snapshot_file(
+    path = removed_dups(destination_file),
+    name = "dups-entries_default.nix",
+  )
+})
