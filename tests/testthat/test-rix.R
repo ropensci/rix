@@ -766,7 +766,6 @@ testthat::test_that("remove_duplicate_entries(), correctly remove duplicates", {
 
 testthat::test_that("remove_duplicate_entries(), don't remove duplicates if skip", {
 
-  testthat::skip()
 
   dups_entries_default.nix <- paste0(testthat::test_path(),
     "/testdata/default-nix_samples/dups-entries_default.nix")
@@ -781,17 +780,17 @@ testthat::test_that("remove_duplicate_entries(), don't remove duplicates if skip
 
   removed_dups <- function(destination_file) {
 
-    local({
-      options("TESTTHAT_DEFAULT.NIX" = destination_file)
+    op <- options("TESTTHAT_DEFAULT.NIX" = destination_file)
+    on.exit(options(op), add = TRUE, after = FALSE)
 
-      out <- rix(
-        date = "2025-02-10",
-        project_path = tmpdir,
-        overwrite = TRUE,
-        skip_post_processing = TRUE)
-    })
-      file.path(destination_file)
+    out <- rix(
+      date = "2025-02-10",
+      project_path = tmpdir,
+      overwrite = TRUE,
+      skip_post_processing = TRUE)
+    file.path(destination_file)
   }
+
 
   testthat::expect_snapshot_file(
     path = removed_dups(destination_file),
