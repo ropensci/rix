@@ -36,7 +36,7 @@ jobs:
 
       - name: Build default.nix with 2 packages
         run: |
-          nix-shell default.nix --run "Rscript -e \"devtools::load_all();renv2nix(renv_lock_path = 'renv_datathin.lock', override_r_ver = '4.4.2',  project_path = '.', message_type = 'quiet', overwrite = TRUE)\""
+          nix-shell default.nix --run "Rscript -e \"devtools::load_all();fetchgit(package_name = "rixTest", repo_url = "https://github.com/mihem/rixTest", commit = "b56829f7771d131e02fc58c546f9af6ee13b857e")\""
 
       - name: Check generated default.nix
         run: cat default.nix
