@@ -218,13 +218,26 @@ get_imports <- function(path, commit_date) {
     remotes <- gsub("\n", "", x = unlist(strsplit(remotes$Remotes, ",")))
     # Remove PR if present because this is difficult to handle
     remotes <- sub("#.*$", "", remotes)
+    # Only keep @ part if it is a commit sha
+    remotes <- unname(sapply(remotes, function(x) {
+      parts <- strsplit(x, "@")[[1]]
+      if (length(parts) == 1) {
+        return(parts[1])
+      }
+      ref <- parts[2]
+      # Keep only if it looks like a SHA (7-40 hex chars)
+      if (grepl("^[0-9a-f]{7,40}$", ref)) {
+        return(x)
+      }
+      return(parts[1])
+    }))
     # Get user names
     remote_pkgs_usernames <- sapply(strsplit(remotes, "/"), function(x) x[[1]])
     # Remove user names
     remote_pkgs_names_and_refs <- sub(".*?/", "", remotes)
-    # Get tag or commit using "@" character 
+    # Get tag or commit using "@" character
     remote_pkgs_names_and_refs <- strsplit(remote_pkgs_names_and_refs, "@")
-    # Get package names 
+    # Get package names
     remote_pkgs_names <- sapply(remote_pkgs_names_and_refs, function(x) x[[1]])
 
     # contruct repo short url in the form username/packagename
