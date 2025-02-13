@@ -5,7 +5,7 @@
 - [Quick start for returning users](#quick-start-for-returning-users)
 - [Getting started for new users](#getting-started-for-new-users)
   - [Docker](#docker)
-- [Why Nix? Comparison with Docker+renv/Conda/Guix](#why-nix-comparison)
+- [Why Nix? Comparison with Docker+renv/Conda/Guix](#how-is-nix-different-from-dockerrenvgroundhogranganaminicondaguix-or-why-nix)
 - [Contributing](#contributing)
 - [Thanks](#thanks)
 - [Recommended reading](#recommended-reading)
