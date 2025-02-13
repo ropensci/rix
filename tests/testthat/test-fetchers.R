@@ -90,10 +90,10 @@ testthat::test_that("Test fetchgits", {
   )
 })
 
-testthat::test_that("Test fetchgits works when PR is provided in a remote package", {
-  # The PR is not provided in the commit, but in the DESCRIPTION file
-  # see https://github.com/mlr-org/mlr3proba/commit/c5bec7b9b0b73d3611e61882e7556404a6d9fb2e
-  # This should not fail, however it will not use the PR
+testthat::test_that("Test fetchgits works when PR is provided in a remote package, but does not use it", {
+  # The PR provided in the DESCRIPTION file
+  # see https://github.com/mihem/rixTest/commit/b56829f7771d131e02fc58c546f9af6ee13b857e
+  # This should not fail, however it will not use the PR and instead fetch the closest commit using GitHub API
   testthat::skip_on_cran()
   pkg_list <- list(
     package_name = "rixTest",
@@ -134,7 +134,10 @@ testthat::test_that("Test fetchgits works when PR is provided in a remote packag
   )
 })
 
-testthat::test_that("Test fetchgits works when tag is provided in a remote package", {
+testthat::test_that("Test fetchgits works when tag is provided in a remote package, but does not use it", {
+  # The tag is provided in the DESCRIPTION file
+  # https://github.com/mihem/rixTest/commit/25da90697895b006934a70bbd003aab5c5206c8b
+  # This should not fail, however it will not use the tag and instead fetch the closest commit using GitHub API
   testthat::skip_on_cran()
   pkg_list <- list(
     list(
@@ -148,8 +151,8 @@ testthat::test_that("Test fetchgits works when tag is provided in a remote packa
     "      name = \"rix\";\n",
     "      src = pkgs.fetchgit {\n",
     "        url = \"https://github.com/ropensci/rix\";\n",
-    "        rev = \"v0.8.0\";\n",
-    "        sha256 = \"sha256-E4WYQeQRPuIKPZY7TEudcSW9AxNc0KDKs7+QV2U7sjI=\";\n",
+    "        rev = \"47f5121e1b9495f9478cfeb67827bd96042616c0\";\n",
+    "        sha256 = \"sha256-e/VbnH96sxMSWNIyWKAWs8JNV5RfzM9PznoscrKYo08=\";\n",
     "      };\n",
     "      propagatedBuildInputs = builtins.attrValues {\n",
     "        inherit (pkgs.rPackages) \n",
