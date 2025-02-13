@@ -240,14 +240,6 @@ get_imports <- function(path, commit_date) {
     # Get package names
     remote_pkgs_names <- sapply(remote_pkgs_names_and_refs, function(x) x[[1]])
 
-    # contruct repo short url in the form username/packagename
-    # don't use remotes because it may contain @ or # parts
-    repo_url_short <- paste0(
-      remote_pkgs_usernames,
-      "/",
-      remote_pkgs_names
-    )
-
     # try to get commit hash for each package if not already provided
     remote_pkgs_refs <- lapply(remote_pkgs_names_and_refs, function(x) {
       resolve_package_commit(x, commit_date, remotes)
