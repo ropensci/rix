@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [main, master]
 
-name: test-fetch-tag
+name: test-fetch-commit-short
 
 permissions:
   contents: read
@@ -30,7 +30,7 @@ jobs:
           # If you chose API tokens for write access OR if you have a private cache
           authToken: '${{ secrets.CACHIX_AUTH }}'
 
-      - name: Download test default.nix with a tag
+      - name: Download test default.nix with a fixed short commit hash
         run: |
           wget -O default.nix https://raw.githubusercontent.com/mihem/rix/refs/heads/handle_github_tag_pr/tests/testthat/testdata/remote-pkgs/fetch_commit_short_default.nix
 
