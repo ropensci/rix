@@ -5,7 +5,7 @@
 #  > system_pkgs = NULL,
 #  > git_pkgs = list(package_name = "rixTest",
 #  > repo_url = "https://github.com/mihem/rixTest",
-#  > commit = "25da90697895b006934a70bbd003aab5c5206c8b"),
+#  > commit = "e2fc06592877bde459855364f9e7115e0cd6d409"),
 #  > ide = "none",
 #  > project_path = ".",
 #  > overwrite = TRUE,
@@ -22,8 +22,8 @@ let
       name = "rix";
       src = pkgs.fetchgit {
         url = "https://github.com/ropensci/rix";
-        rev = "v0.8.0";
-        sha256 = "sha256-E4WYQeQRPuIKPZY7TEudcSW9AxNc0KDKs7+QV2U7sjI=";
+        rev = "88bb24f";
+        sha256 = "sha256-zIaGjHvgEiDkBBu8hfRSFnZvtq3qH75uTug9Qcqn+iQ=";
       };
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) 
@@ -38,8 +38,8 @@ let
       name = "rixTest";
       src = pkgs.fetchgit {
         url = "https://github.com/mihem/rixTest";
-        rev = "25da90697895b006934a70bbd003aab5c5206c8b";
-        sha256 = "sha256-+EP74d5nWjGbniQ0iEzDyKUky94L8FpvkyxFNfokJKM=";
+        rev = "e2fc06592877bde459855364f9e7115e0cd6d409";
+        sha256 = "sha256-enFNI3+dH7JpGj2QkDmJuJZuKJyGXTE/vb1FvcQ7fRw=";
       };
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) ;
