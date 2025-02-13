@@ -192,13 +192,22 @@ Remotes:
     hadley/memoise
 ```
 
-## Caveats
-
-### Authenticating to GitHub
-
 `{rix}` uses the GitHub API to fetch the commits of these remote packages and
 will attempt to select the commit of the remote packages, whose date is closest
 to (always before, never after) the date of the commit provided by the user.
+
+## Caveats
+
+### Fixed commits
+
+`{rix}` is able to fetch a fixed commit specified in DESCRIPTION files using a 
+commit hash. This also works in a short form. For example `ropensci/rix@88bb24f`
+in `Remotes` in the DESCRIPTION file will work.
+However, if a branch name (e.g. `ropensci/rix@available_dates`), tag (e.g. `ropensci/rix@v.0.8.0`), or pull request number
+(e.g. `ropensci/rix#100`) is specified, `{rix}` will ignore this and will try to fetch the closest commit (see above).
+
+### Authenticating to GitHub
+
 Note: `{rix}` will only be able to fetch a maximum of 1000 commits. That means
 if the commit you provided is rather old or if the package has many commits, this
 will fail and fallback to the `HEAD` of the repository. We have not observed this
