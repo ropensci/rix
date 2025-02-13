@@ -95,19 +95,43 @@ testthat::test_that("Test fetchgits works when PR is provided in a remote packag
   # see https://github.com/mlr-org/mlr3proba/commit/c5bec7b9b0b73d3611e61882e7556404a6d9fb2e
   # This should not fail, however it will not use the PR
   testthat::skip_on_cran()
-  result <- fetchgits(
-    list(
-      list(
-        package_name = "mlr3extralearners",
-        repo_url = "https://github.com/mlr-org/mlr3proba/",
-        commit = "c5bec7b9b0b73d3611e61882e7556404a6d9fb2e"
-      )
-    )
+  pkg_list <- list(
+    package_name = "rixTest",
+    repo_url = "https://github.com/mihem/rixTest",
+    commit = "b56829f7771d131e02fc58c546f9af6ee13b857e"
   )
-  
-  # Test that output is a character string and contains essential elements
-  testthat::expect_type(result, "character")
-  testthat::expect_true(grepl("mlr3extralearners = \\(pkgs.rPackages.buildRPackage", result))
+  expected_output <- paste0(
+    "\n    rix = (pkgs.rPackages.buildRPackage {\n",
+    "      name = \"rix\";\n",
+    "      src = pkgs.fetchgit {\n",
+    "        url = \"https://github.com/ropensci/rix\";\n",
+    "        rev = \"88bb24fe7a9adba2bd1dfedf143a3b250df94658\";\n",
+    "        sha256 = \"sha256-zIaGjHvgEiDkBBu8hfRSFnZvtq3qH75uTug9Qcqn+iQ=\";\n",
+    "      };\n",
+    "      propagatedBuildInputs = builtins.attrValues {\n",
+    "        inherit (pkgs.rPackages) \n",
+    "          codetools\n",
+    "          curl\n",
+    "          jsonlite\n",
+    "          sys;\n",
+    "      };\n",
+    "    });\n\n",
+    "    rixTest = (pkgs.rPackages.buildRPackage {\n",
+    "      name = \"rixTest\";\n",
+    "      src = pkgs.fetchgit {\n",
+    "        url = \"https://github.com/mihem/rixTest\";\n",
+    "        rev = \"b56829f7771d131e02fc58c546f9af6ee13b857e\";\n",
+    "        sha256 = \"sha256-s+zvH3bGkv9X0v3RI7R1HzmbX9KzdKs8vyRZj9WwV7Y=\";\n",
+    "      };\n",
+    "      propagatedBuildInputs = builtins.attrValues {\n",
+    "        inherit (pkgs.rPackages) ;\n",
+    "      } ++ [ rix ];\n",
+    "    });\n"
+  )
+  testthat::expect_equal(
+    fetchgits(pkg_list),
+    expected_output
+  )
 })
 
 testthat::test_that("Test fetchgits works when tag is provided in a remote package", {
