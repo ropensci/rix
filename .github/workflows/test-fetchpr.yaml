@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [main, master]
 
-name: test-renv2nix
+name: test-fetch-pr
 
 permissions:
   contents: read
