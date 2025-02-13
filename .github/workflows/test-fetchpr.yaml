@@ -1,0 +1,48 @@
+# Integration tests for installing packages
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: test-renv2nix
+
+permissions:
+  contents: read
+
+jobs:
+  devtools:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - uses: cachix/cachix-action@v15
+        with:
+          name: rstats-on-nix
+          # If you chose signing key for write access
+          # signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+          # If you chose API tokens for write access OR if you have a private cache
+          authToken: '${{ secrets.CACHIX_AUTH }}'
+
+      - name: Download test packages
+        run: |
+          wget https://raw.githubusercontent.com/mihem/rix/refs/heads/handle_github_tag_pr/tests/testthat/testdata/remote-pkgs/fetch_pr_default.nix
+
+      - name: Build default.nix with 2 packages
+        run: |
+          nix-shell default.nix --run "Rscript -e \"devtools::load_all();renv2nix(renv_lock_path = 'renv_datathin.lock', override_r_ver = '4.4.2',  project_path = '.', message_type = 'quiet', overwrite = TRUE)\""
+
+      - name: Check generated default.nix
+        run: cat default.nix
+
+      - name: Build default.nix
+        run: nix-build
+
+      - name: Try running the shell
+        run: nix-shell --run "echo OK"
