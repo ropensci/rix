@@ -362,46 +362,30 @@ for more details."
     ""
   }
 
-  stub_default.nix <- getOption("TESTTHAT_DEFAULT.NIX", default = NULL)
-
-  if(!is.null(stub_default.nix)){
-    default.nix <- readLines(stub_default.nix)
-  } else {
-    default.nix <- paste(
-      generate_header(
-        nix_repo,
-        r_ver,
-        rix_call,
-        ide
-      ),
-      generate_rpkgs(cran_pkgs$rPackages, flag_rpkgs),
-      generate_git_archived_pkgs(git_pkgs, cran_pkgs$archive_pkgs, flag_git_archive),
-      generate_tex_pkgs(tex_pkgs),
-      generate_local_r_pkgs(local_r_pkgs, flag_local_r_pkgs),
-      generate_system_pkgs(system_pkgs, r_pkgs, ide),
-      generate_wrapped_pkgs(ide, attrib, flag_git_archive, flag_rpkgs, flag_local_r_pkgs),
-      generate_shell(
-        flag_git_archive, flag_rpkgs, flag_tex_pkgs,
-        flag_local_r_pkgs, flag_wrapper, shell_hook
-      ),
-      collapse = "\n"
-    )
-  }
+  default.nix <- paste(
+    generate_header(
+      nix_repo,
+      r_ver,
+      rix_call,
+      ide
+    ),
+    generate_rpkgs(cran_pkgs$rPackages, flag_rpkgs),
+    generate_git_archived_pkgs(git_pkgs, cran_pkgs$archive_pkgs, flag_git_archive),
+    generate_tex_pkgs(tex_pkgs),
+    generate_local_r_pkgs(local_r_pkgs, flag_local_r_pkgs),
+    generate_system_pkgs(system_pkgs, r_pkgs, ide),
+    generate_wrapped_pkgs(ide, attrib, flag_git_archive, flag_rpkgs, flag_local_r_pkgs),
+    generate_shell(
+      flag_git_archive, flag_rpkgs, flag_tex_pkgs,
+      flag_local_r_pkgs, flag_wrapper, shell_hook
+    ),
+    collapse = "\n"
+  )
 
   # Generate default.nix file # nolint next: object_name_linter
 
   # Remove potential duplicates
-  do_processing <- if (flag_git_archive == "") {
-                     FALSE
-                   } else {
-                     TRUE
-                   }
-
-  # only do post processing if there are git packages
-  # or if skip_post_processing is TRUE
-  if (all(c(do_processing, !skip_post_processing))){
-    default.nix <- remove_duplicate_entries(default.nix)
-  }
+  default.nix <- post_processing(default.nix, flag_git_archive, skip_post_processing)
 
   if (print) {
     cat(default.nix, sep = "\n")
@@ -473,4 +457,24 @@ for more details."
   on.exit(close(con))
 
 
+}
+
+
+#' @noRd
+post_processing <- function(default.nix, flag_git_archive, skip_post_processing){
+
+  # Remove potential duplicates
+  do_processing <- if (flag_git_archive == "") {
+                     FALSE
+                   } else {
+                     TRUE
+                   }
+
+  # only do post processing if there are git packages
+  # or if skip_post_processing is TRUE
+  if (all(c(do_processing, !skip_post_processing))){
+    remove_duplicate_entries(default.nix)
+  } else {
+    default.nix
+  }
 }
