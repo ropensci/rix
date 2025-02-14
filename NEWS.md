@@ -1,5 +1,13 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.15.1 (2025-02-14)
+
+- `rix()`: a new internal post-processing function is introduced to remove remaining
+  duplicate entries when generating an expression with recursive remote dependencies
+  (See https://github.com/ropensci/rix/pull/419)
+  Remote dependencies that point to a branch or pull request are now correctly
+  ignored (see https://github.com/ropensci/rix/pull/420)
+
 # rix 0.15.0 (2025-02-11)
 
 - `rix()`: IDEs are now handled more consistently: if the user sets `ide = ` to one

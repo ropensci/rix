@@ -1,6 +1,6 @@
 Package: rix
 Title: Reproducible Data Science Environments with 'Nix'
-Version: 0.15.0
+Version: 0.15.1
 Authors@R: c(
     person(given = "Bruno", family = "Rodrigues", email = "bruno@brodrigues.co", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3211-3689")),
