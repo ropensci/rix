@@ -32,7 +32,7 @@ jobs:
 
       - name: Download test default.nix with a fixed short commit hash
         run: |
-          wget -O default.nix https://raw.githubusercontent.com/mihem/rix/refs/heads/handle_github_tag_pr/tests/testthat/testdata/remote-pkgs/fetch_commit_short_default.nix
+          wget -O default.nix https://raw.githubusercontent.com/ropensci/rix/refs/heads/handle_github_tag_pr/tests/testthat/testdata/remote-pkgs/fetch_commit_short_default.nix
 
       - name: Check generated default.nix
         run: cat default.nix
