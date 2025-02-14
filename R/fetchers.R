@@ -214,27 +214,31 @@ get_imports <- function(path, commit_date) {
 
   if (!identical(existing_remotes, character(0))) {
     remotes <- imports_df[, existing_remotes, drop = FALSE]
-    # remotes are of the form username/packagename so we need
-    # to only keep packagename
+    # remotes are of the form username/packagename
     remotes <- gsub("\n", "", x = unlist(strsplit(remotes$Remotes, ",")))
+    # Remove PR if present because this is difficult to handle
+    remotes <- sub("#.*$", "", remotes)
+    # Only keep @ part if it is a commit sha
+    remotes <- unname(sapply(remotes, function(x) {
+      parts <- strsplit(x, "@")[[1]]
+      if (length(parts) == 1) {
+        return(parts[1])
+      }
+      ref <- parts[2]
+      # Keep only if it looks like a SHA (7-40 hex chars)
+      if (grepl("^[0-9a-f]{7,40}$", ref)) {
+        return(x)
+      }
+      return(parts[1])
+    }))
     # Get user names
     remote_pkgs_usernames <- sapply(strsplit(remotes, "/"), function(x) x[[1]])
-
-    # Now remove user name and
-    # split at "@" or "#" character to get name and commit or PR separated
-
+    # Remove user names
     remote_pkgs_names_and_refs <- sub(".*?/", "", remotes)
-    remote_pkgs_names_and_refs <- strsplit(remote_pkgs_names_and_refs, "(@|#)")
-
+    # Get tag or commit using "@" character
+    remote_pkgs_names_and_refs <- strsplit(remote_pkgs_names_and_refs, "@")
+    # Get package names
     remote_pkgs_names <- sapply(remote_pkgs_names_and_refs, function(x) x[[1]])
-
-    # contruct repo short url in the form username/packagename
-    # don't use remotes because it may contain @ or # parts
-    repo_url_short <- paste0(
-      remote_pkgs_usernames,
-      "/",
-      remote_pkgs_names
-    )
 
     # try to get commit hash for each package if not already provided
     remote_pkgs_refs <- lapply(remote_pkgs_names_and_refs, function(x) {

@@ -90,6 +90,96 @@ testthat::test_that("Test fetchgits", {
   )
 })
 
+testthat::test_that("Test fetchgits works when PR is provided in a remote package, but does not use it", {
+  # The PR provided in the DESCRIPTION file
+  # see https://github.com/mihem/rixTest/commit/b56829f7771d131e02fc58c546f9af6ee13b857e
+  # This should not fail, however it will not use the PR and instead fetch the closest commit using GitHub API
+  testthat::skip_on_cran()
+  pkg_list <- list(
+    package_name = "rixTest",
+    repo_url = "https://github.com/mihem/rixTest",
+    commit = "b56829f7771d131e02fc58c546f9af6ee13b857e"
+  )
+  expected_output <- paste0(
+    "\n    rix = (pkgs.rPackages.buildRPackage {\n",
+    "      name = \"rix\";\n",
+    "      src = pkgs.fetchgit {\n",
+    "        url = \"https://github.com/ropensci/rix\";\n",
+    "        rev = \"88bb24fe7a9adba2bd1dfedf143a3b250df94658\";\n",
+    "        sha256 = \"sha256-zIaGjHvgEiDkBBu8hfRSFnZvtq3qH75uTug9Qcqn+iQ=\";\n",
+    "      };\n",
+    "      propagatedBuildInputs = builtins.attrValues {\n",
+    "        inherit (pkgs.rPackages) \n",
+    "          codetools\n",
+    "          curl\n",
+    "          jsonlite\n",
+    "          sys;\n",
+    "      };\n",
+    "    });\n\n",
+    "    rixTest = (pkgs.rPackages.buildRPackage {\n",
+    "      name = \"rixTest\";\n",
+    "      src = pkgs.fetchgit {\n",
+    "        url = \"https://github.com/mihem/rixTest\";\n",
+    "        rev = \"b56829f7771d131e02fc58c546f9af6ee13b857e\";\n",
+    "        sha256 = \"sha256-s+zvH3bGkv9X0v3RI7R1HzmbX9KzdKs8vyRZj9WwV7Y=\";\n",
+    "      };\n",
+    "      propagatedBuildInputs = builtins.attrValues {\n",
+    "        inherit (pkgs.rPackages) ;\n",
+    "      } ++ [ rix ];\n",
+    "    });\n"
+  )
+  testthat::expect_equal(
+    fetchgits(pkg_list),
+    expected_output
+  )
+})
+
+testthat::test_that("Test fetchgits works when tag is provided in a remote package, but does not use it", {
+  # The tag is provided in the DESCRIPTION file
+  # https://github.com/mihem/rixTest/commit/25da90697895b006934a70bbd003aab5c5206c8b
+  # This should not fail, however it will not use the tag and instead fetch the closest commit using GitHub API
+  testthat::skip_on_cran()
+  pkg_list <- list(
+    list(
+      package_name = "rixTest",
+      repo_url = "https://github.com/mihem/rixTest",
+      commit = "25da90697895b006934a70bbd003aab5c5206c8b"
+    )
+  )
+  expected_output <- paste0(
+    "\n    rix = (pkgs.rPackages.buildRPackage {\n",
+    "      name = \"rix\";\n",
+    "      src = pkgs.fetchgit {\n",
+    "        url = \"https://github.com/ropensci/rix\";\n",
+    "        rev = \"47f5121e1b9495f9478cfeb67827bd96042616c0\";\n",
+    "        sha256 = \"sha256-e/VbnH96sxMSWNIyWKAWs8JNV5RfzM9PznoscrKYo08=\";\n",
+    "      };\n",
+    "      propagatedBuildInputs = builtins.attrValues {\n",
+    "        inherit (pkgs.rPackages) \n",
+    "          codetools\n",
+    "          curl\n",
+    "          jsonlite\n",
+    "          sys;\n",
+    "      };\n",
+    "    });\n\n",
+    "    rixTest = (pkgs.rPackages.buildRPackage {\n",
+    "      name = \"rixTest\";\n",
+    "      src = pkgs.fetchgit {\n",
+    "        url = \"https://github.com/mihem/rixTest\";\n",
+    "        rev = \"25da90697895b006934a70bbd003aab5c5206c8b\";\n",
+    "        sha256 = \"sha256-+EP74d5nWjGbniQ0iEzDyKUky94L8FpvkyxFNfokJKM=\";\n",
+    "      };\n",
+    "      propagatedBuildInputs = builtins.attrValues {\n",
+    "        inherit (pkgs.rPackages) ;\n",
+    "      } ++ [ rix ];\n",
+    "    });\n"
+  )
+  testthat::expect_equal(
+    fetchgits(pkg_list),
+    expected_output
+  )
+})
+
 testthat::test_that("Test fetchzips works", {
   testthat::skip_on_cran()
   testthat::expect_equal(
