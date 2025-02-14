@@ -73,7 +73,7 @@ poll_sys_proc_blocking <- function(cmd, proc,
   is_quiet <- message_type == "quiet"
 
   status <- proc$status
-  if (isFALSE(is_quiet)) {
+  if (isFALSE(is_quiet) && identical(Sys.getenv("TESTTHAT"), "false")) {
     if (status == 0L) {
       cat(paste0("\n==> ", sys::as_text(proc$stdout)))
       cat(paste0("\n==> `", what, "` succeeded!", "\n"))

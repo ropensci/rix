@@ -54,7 +54,10 @@ add_new_nix_conf_file <- function(nix_conf_path) {
   )
 
   file.copy(source, nix_conf_path)
-  message("New Nix user config file saved to: ", nix_conf_path)
+
+  if (identical(Sys.getenv("TESTTHAT"), "true")) {
+    message("New Nix user config file saved to: ", nix_conf_path)
+  }
 }
 
 #' @noRd
@@ -69,7 +72,7 @@ add_to_existing_nix_conf_file <- function(nix_conf_path) {
     stop("rstats-on-nix cache already configured!")
   } else {
     if (identical(Sys.getenv("TESTTHAT"), "true")) {
-      cat("this is running in a test, no backup performed")
+      NULL
     } else {
       timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")
       nix_conf_backup <- paste0(nix_conf_file, "_backup_", timestamp)
@@ -95,7 +98,9 @@ add_to_existing_nix_conf_file <- function(nix_conf_path) {
     )
 
     writeLines(enc2utf8(nix_conf_content), nix_conf_file, useBytes = TRUE)
-    message("Added rstats-on-nix as a substituter to ", nix_conf_file)
+    if (identical(Sys.getenv("TESTTHAT"), "false")) {
+      message("Added rstats-on-nix as a substituter to ", nix_conf_file)
+    }
     invisible(nix_conf_file)
   }
 }

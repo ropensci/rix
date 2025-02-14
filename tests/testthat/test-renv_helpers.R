@@ -173,6 +173,7 @@ testthat::test_that("testing renv_helpers", {
         project_path = path_env_nix,
         message_type = "quiet",
         overwrite = TRUE,
+        skip_post_processing = FALSE,
         ...
       )
 
@@ -195,42 +196,44 @@ testthat::test_that("testing renv_helpers", {
     )
 
     testthat::expect_snapshot_file(
-      path = save_renv2nix_test(
+      path = suppressWarnings(save_renv2nix_test(
         "testdata/renv-samples/renv_v0-15-5.lock",
         path_env_nix,
         "/default_v0-15-5.nix"
-      ),
+      )),
       name = "default_v0-15-5.nix"
     )
 
     testthat::expect_snapshot_file(
-      path = save_renv2nix_test(
+      path = suppressWarnings(save_renv2nix_test(
         "testdata/renv-samples/renv_v0-17-3.lock",
         path_env_nix,
         "/default_v0-17-3.nix"
-      ),
+      )),
       name = "default_v0-17-3.nix"
-    )
+      )
 
     testthat::expect_snapshot_file(
-      path = save_renv2nix_test(
+      # suprressWarning about incomplete final line
+      path = suppressWarnings(save_renv2nix_test(
         "testdata/renv-samples/renv_v1-0-7.lock",
         path_env_nix,
         "/default_v1-0-7.nix",
         override_r_ver = "4.3.3",
-      ),
+      )),
       name = "default_v1-0-7.nix"
     )
 
     # This should not get datathin twice in the generated
     # default.nix
     testthat::expect_snapshot_file(
-      path = save_renv2nix_test(
+      # suprressWarning about incomplete final line
+      path = suppressWarnings(save_renv2nix_test(
         "testdata/renv-samples/renv_datathin.lock",
         path_env_nix,
         "/default_datathin.nix",
         override_r_ver = "2024-12-14",
-      ),
+      )),
       name = "default_datathin.nix"
     )
 

@@ -523,13 +523,19 @@ testthat::test_that("rix(), conclusion message", {
   )
 
   save_default_nix_test <- function(path_default_nix) {
-    rix(
-      r_ver = "4.3.1",
-      ide = "none",
-      project_path = path_default_nix,
-      message_type = "simple",
-      overwrite = TRUE
-    )
+    local({
+      # need to do this because messages are silenced
+      # if testing
+      Sys.setenv("TESTTHAT" = "false")
+
+      rix(
+        r_ver = "4.3.1",
+        ide = "none",
+        project_path = path_default_nix,
+        message_type = "simple",
+        overwrite = TRUE
+      )
+    })
 
     file.path(path_default_nix, "default.nix")
   }
@@ -726,5 +732,62 @@ testthat::test_that("rix(), r-devel-bioc-devel", {
   testthat::expect_snapshot_file(
     path = save_default_nix_test(ide = "none", path_default_nix),
     name = "r-devel-bioc-devel_default.nix",
+  )
+})
+
+
+testthat::test_that("remove_duplicate_entries(), correctly remove duplicates", {
+
+  dups_entries_default.nix <- paste0(testthat::test_path(),
+    "/testdata/default-nix_samples/dups-entries_default.nix")
+  tmpdir <- tempdir()
+  destination_file <- file.path(tempdir(), basename(dups_entries_default.nix))
+  file.copy(dups_entries_default.nix, destination_file, overwrite = TRUE)
+
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+
+  removed_dups <- function(destination_file) {
+
+    out <- remove_duplicate_entries(readLines(destination_file))
+
+    writeLines(out, destination_file)
+
+    file.path(destination_file)
+  }
+
+  testthat::expect_snapshot_file(
+    path = removed_dups(destination_file),
+    name = "dups-entries_default.nix",
+  )
+})
+
+testthat::test_that("remove_duplicate_entries(), don't remove duplicates if skip", {
+
+
+  dups_entries_default.nix <- paste0(testthat::test_path(),
+    "/testdata/default-nix_samples/dups-entries_default.nix")
+  tmpdir <- tempdir()
+  destination_file <- file.path(tempdir(), basename(dups_entries_default.nix))
+  file.copy(dups_entries_default.nix, destination_file, overwrite = TRUE)
+
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+
+  removed_dups <- function(destination_file) {
+
+    out <- post_processing(destination_file, flag_git_archive = "", skip_post_processing = TRUE)
+
+    file.path(destination_file)
+  }
+
+
+  testthat::expect_snapshot_file(
+    path = removed_dups(destination_file),
+    name = "skip-dups-entries_default.nix",
   )
 })

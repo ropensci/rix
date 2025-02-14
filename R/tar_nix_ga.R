@@ -36,6 +36,10 @@ tar_nix_ga <- function() {
   )
 
   file.copy(source, path, overwrite = TRUE)
-  message("GitHub Actions workflow file saved to: ", path)
+
+  if (identical(Sys.getenv("TESTTHAT"), "false")) {
+    message("GitHub Actions workflow file saved to: ", path)
+  }
+
   if (identical(Sys.getenv("TESTTHAT"), "true")) paste0(path, "/run-pipeline.yaml")
 }
