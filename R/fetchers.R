@@ -370,12 +370,23 @@ fetchlocals <- function(local_r_pkgs) {
 #' from GitHub.
 #' @noRd
 fetchgits <- function(git_pkgs) {
+  # Initialize global seen variable if it doesn't exist
+  if (!exists(".seen_packages", envir = .GlobalEnv)) {
+    assign(".seen_packages", character(0), envir = .GlobalEnv)
+  }
+  
   if (!all(vapply(git_pkgs, is.list, logical(1)))) {
+    if (git_pkgs$package_name %in% .seen_packages) {
+      return("")
+    }
+    assign(".seen_packages", c(.seen_packages, git_pkgs$package_name), envir = .GlobalEnv)
     fetchgit(git_pkgs)
   } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
     # Re-order list of git packages by "package name"
     git_pkgs <- git_pkgs[order(sapply(git_pkgs, "[[", "package_name"))]
-
+    # Filter out already processed packages
+    git_pkgs <- git_pkgs[!sapply(git_pkgs, function(x) x$package_name %in% .seen_packages)]
+    assign(".seen_packages", c(.seen_packages, sapply(git_pkgs, "[[", "package_name")), envir = .GlobalEnv)
     paste(lapply(git_pkgs, fetchgit), collapse = "\n")
   } else {
     stop(
@@ -417,7 +428,9 @@ fetchzips <- function(archive_pkgs) {
 #' @return Nix definition string for building the packages
 #' @noRd
 fetchpkgs <- function(git_pkgs, archive_pkgs) {
-
+  # Reset seen packages at start
+  assign(".seen_packages", character(0), envir = .GlobalEnv)
+  
   # Combine git and archive package definitions
   paste(
     fetchgits(git_pkgs),
