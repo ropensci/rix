@@ -41,5 +41,8 @@ jobs:
       - name: Remove lines starting with # from generated expression
         run: sed -i '/^#/d' default.nix
 
+      - name: Remove empty last line in dups-entries_default.nix
+        run: sed -i '${/^$/d;}' dups-entries_default.nix
+
       - name: Compare lines
         run: diff -q default.nix dups-entries_default.nix || exit 1
