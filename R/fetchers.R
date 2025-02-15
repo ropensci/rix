@@ -33,13 +33,6 @@ fetchgit <- function(git_pkg) {
 
     output <- main_package_expression
   } else { # if there are remote dependencies, start over
-    # don't include remote dependencies twice
-    # this can happen if a remote dependency of a remote dependency
-    # is already present as a remote dependency
-    remotes_remotes <- unique(unlist(lapply(remotes, get_remote)))
-    remotes <- remotes[!sapply(remotes, function(pkg) {
-      pkg$package_name %in% remotes_remotes
-    })]
 
     remote_packages_expressions <- fetchgits(remotes)
 
