@@ -417,13 +417,6 @@ fetchzips <- function(archive_pkgs) {
 #' @return Nix definition string for building the packages
 #' @noRd
 fetchpkgs <- function(git_pkgs, archive_pkgs) {
-  # Only include git packages that aren't already remote dependencies
-  if (all(sapply(git_pkgs, is.list))) {
-    all_remotes <- unique(unlist(lapply(git_pkgs, get_remote)))
-    git_pkgs <- git_pkgs[!sapply(git_pkgs, function(pkg) {
-      pkg$package_name %in% all_remotes
-    })]
-  }
 
   # Combine git and archive package definitions
   paste(
@@ -431,21 +424,6 @@ fetchpkgs <- function(git_pkgs, archive_pkgs) {
     fetchzips(archive_pkgs),
     collapse = "\n"
   )
-}
-
-#' get_remote Retrieves the names of remote dependencies for a given Git package
-#' @param git_pkg A list of three elements: "package_name", the name of the
-#'   package, "repo_url", the repository's URL, and "commit", the commit hash of
-#'   interest.
-#' @return A character vector containing the names of remote dependencies.
-#' @noRd
-get_remote <- function(git_pkg) {
-  repo_url <- git_pkg$repo_url
-  commit <- git_pkg$commit
-  output <- get_sri_hash_deps(repo_url, commit)
-  remotes <- output$deps$remotes
-  remote_package_names <- sapply(remotes, `[[`, "package_name")
-  return(remote_package_names)
 }
 
 #' get_commit_date Retrieves the date of a commit from a Git repository
