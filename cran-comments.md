@@ -1,3 +1,18 @@
+## 15-02-2025 Submission, version 0.15.2
+
+R CMD check using R-devel with win-builder:
+
+```
+0 errors | 0 warnings | 1 note
+
+same on other platforms.
+
+Possibly misspelled words in DESCRIPTION:
+  Dolstra (29:5)
+```
+
+This is not a misspelling.
+
 ## 21-01-2025 Submission, version 0.14.4
 
 R CMD check using R-devel with win-builder:
