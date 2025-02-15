@@ -390,7 +390,7 @@ for more details."
   default.nix <- post_processing(default.nix, flag_git_archive, skip_post_processing)
 
   if (print) {
-    cat(default.nix, "\n")
+    print(default.nix)
   }
 
   if (!file.exists(default.nix_path) || overwrite) {
