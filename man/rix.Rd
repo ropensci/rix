@@ -17,7 +17,8 @@ rix(
   overwrite = FALSE,
   print = FALSE,
   message_type = "simple",
-  shell_hook = NULL
+  shell_hook = NULL,
+  skip_post_processing = FALSE
 )
 }
 \arguments{
@@ -95,6 +96,12 @@ default, using \verb{nix-shell default.nix} will start a specific program,
 possibly with flags (separated by space), and/or do shell actions. You can
 for example use \code{shell_hook = R}, if you want to directly enter the
 declared Nix R session when dropping into the Nix shell.}
+
+\item{skip_post_processing}{Logical, defaults to FALSE. Should post-processing be
+skipped? By default, if there are GitHub packages, the generated \code{default.nix}
+is post-processed to eliminate potential duplicate definitions of packages,
+which may happen if these packages have recursive remote dependencies. Set
+to TRUE to skip post processing, which might be useful for debugging.}
 }
 \value{
 Nothing, this function only has the side-effect of writing two files:
@@ -219,7 +226,8 @@ rix(
   overwrite = TRUE,
   print = TRUE,
   message_type = "simple",
-  shell_hook = NULL
+  shell_hook = NULL,
+  skip_post_processing = FALSE
 )
 }
 }
