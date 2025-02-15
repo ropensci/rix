@@ -465,3 +465,15 @@ remove_duplicate_entries <- function(default.nix) {
     out_lines
 
 }
+
+
+#' remove_empty_lines Internal function to post-processes `default.nix`
+#' files. Remove 2+ consecutive empty lines, only leaving one.
+#' @param default.nix Character, default.nix lines.
+#' @noRd
+remove_empty_lines <- function(default.nix) {
+
+  keep <- !(default.nix == "" & c(FALSE, head(default.nix, -1) == ""))
+
+  default.nix[keep]
+}

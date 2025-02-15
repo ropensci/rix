@@ -475,7 +475,8 @@ post_processing <- function(default.nix, flag_git_archive, skip_post_processing)
   # only do post processing if there are git packages
   # or if skip_post_processing is TRUE
   if (all(c(do_processing, !skip_post_processing))){
-    out <- remove_duplicate_entries(default.nix)
+    out <- remove_duplicate_entries(default.nix) |>
+      remove_empty_lines()
   } else {
     out <-default.nix
   }

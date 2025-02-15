@@ -29,7 +29,6 @@ let
       };
     });
 
-
     set6 = (pkgs.rPackages.buildRPackage {
       name = "set6";
       src = pkgs.fetchgit {
@@ -101,10 +100,6 @@ let
           survivalmodels;
       } ++ [ distr6 param6 set6 ];
     });
-
-
-
-
 
     survivalmodels = (pkgs.rPackages.buildRPackage {
       name = "survivalmodels";
