@@ -600,37 +600,54 @@ get_closest_commit <- function(commits_df, target_date) {
 #' @return A character. The commit SHA of the closest commit to the target date or "HEAD" if API fails
 #' @noRd
 resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes) {
-  # Check if remote is a list with a package name and a ref
-  if (length(remote_pkg_name_and_ref) == 2) {
-    # Keep existing ref if present
-    return(remote_pkg_name_and_ref[[2]])
+  # Initialize commit cache if it doesn't exist
+  if (!exists(".commit_cache", envir = .GlobalEnv)) {
+    assign(".commit_cache", new.env(), envir = .GlobalEnv)
+  }
+  
+  pkg_name <- remote_pkg_name_and_ref[[1]]
+  
+  # First check if we have any cached commit for this package name
+  pkg_cache_keys <- ls(envir = .commit_cache)
+  pkg_matches <- grep(paste0("^", pkg_name, "@"), pkg_cache_keys)
+  
+  if (length(pkg_matches) > 0) {
+    # Return the first cached commit for this package
+    cached_key <- pkg_cache_keys[pkg_matches[1]]
+    return(get(cached_key, envir = .commit_cache))
+  }
+  
+  # If no cache exists, proceed with commit resolution
+  cache_key <- if (length(remote_pkg_name_and_ref) == 2) {
+    paste0(pkg_name, "@", remote_pkg_name_and_ref[[2]])
+  } else {
+    pkg_name  # We'll update this with commit once resolved
+  }
+  
+  commit <- if (length(remote_pkg_name_and_ref) == 2) {
+    remote_pkg_name_and_ref[[2]]  # Keep existing ref if present
   } else if (length(remote_pkg_name_and_ref) == 1) {
     # For packages without ref, try to find closest one by date
     # fallback to HEAD if API fails
-    result <- tryCatch(
-      {
-        remotes_fetch <- remotes[grepl(remote_pkg_name_and_ref, remotes)]
-        all_commits <- download_all_commits(remotes_fetch, date)
-        closest_commit <- get_closest_commit(all_commits, date)
-        closest_commit$sha
-      },
-      error = function(e) {
-        message(
-          paste0(
-            "Failed to get closest commit for ",
-            remotes_fetch,
-            ": ",
-            e$message,
-            ".\nFalling back to <<< HEAD >>>\n"
-          )
-        )
-        return("HEAD")
-      }
-    )
-    return(result)
+    tryCatch({
+      remotes_fetch <- remotes[grepl(remote_pkg_name_and_ref, remotes)]
+      all_commits <- download_all_commits(remotes_fetch, date)
+      closest_commit <- get_closest_commit(all_commits, date)
+      commit <- closest_commit$sha
+      # Update cache key to include resolved commit
+      cache_key <- paste0(pkg_name, "@", commit)
+      commit
+    }, error = function(e) {
+      message(paste0("Failed to get closest commit for ", remotes_fetch, 
+                    ": ", e$message, ".\nFalling back to <<< HEAD >>>\n"))
+      "HEAD"
+    })
   } else {
     stop("remote_pkg_name_and_ref must be a list of length 1 or 2")
   }
+  
+  # Cache the result
+  assign(cache_key, commit, envir = .commit_cache)
+  
+  return(commit)
 }
-
-
