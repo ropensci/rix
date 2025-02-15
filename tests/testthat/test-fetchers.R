@@ -147,32 +147,7 @@ testthat::test_that("Test fetchgits works when tag is provided in a remote packa
     )
   )
   expected_output <- paste0(
-    "\n    rix = (pkgs.rPackages.buildRPackage {\n",
-    "      name = \"rix\";\n",
-    "      src = pkgs.fetchgit {\n",
-    "        url = \"https://github.com/ropensci/rix\";\n",
-    "        rev = \"3cb6e6db13d0bab1761dd70f29344edb07853fd8\";\n",
-    "        sha256 = \"sha256-7l9DGe+wTc0718fBRWTZl7OKlT34vWWdooyOR3ZAAaM=\";",
-    "      };\n",
-    "      propagatedBuildInputs = builtins.attrValues {\n",
-    "        inherit (pkgs.rPackages) \n",
-    "          codetools\n",
-    "          curl\n",
-    "          jsonlite\n",
-    "          sys;\n",
-    "      };\n",
-    "    });\n\n",
-    "    rixTest = (pkgs.rPackages.buildRPackage {\n",
-    "      name = \"rixTest\";\n",
-    "      src = pkgs.fetchgit {\n",
-    "        url = \"https://github.com/mihem/rixTest\";\n",
-    "        rev = \"25da90697895b006934a70bbd003aab5c5206c8b\";\n",
-    "        sha256 = \"sha256-+EP74d5nWjGbniQ0iEzDyKUky94L8FpvkyxFNfokJKM=\";\n",
-    "      };\n",
-    "      propagatedBuildInputs = builtins.attrValues {\n",
-    "        inherit (pkgs.rPackages) ;\n",
-    "      } ++ [ rix ];\n",
-    "    });\n"
+    "\n    rix = (pkgs.rPackages.buildRPackage {\n      name = \"rix\";\n      src = pkgs.fetchgit {\n        url = \"https://github.com/ropensci/rix\";\n        rev = \"3cb6e6db13d0bab1761dd70f29344edb07853fd8\";\n        sha256 = \"sha256-7l9DGe+wTc0718fBRWTZl7OKlT34vWWdooyOR3ZAAaM=\";\n      };\n      propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.rPackages) \n          codetools\n          curl\n          jsonlite\n          sys;\n      };\n    });\n\n    rixTest = (pkgs.rPackages.buildRPackage {\n      name = \"rixTest\";\n      src = pkgs.fetchgit {\n        url = \"https://github.com/mihem/rixTest\";\n        rev = \"25da90697895b006934a70bbd003aab5c5206c8b\";\n        sha256 = \"sha256-+EP74d5nWjGbniQ0iEzDyKUky94L8FpvkyxFNfokJKM=\";\n      };\n      propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.rPackages) ;\n      } ++ [ rix ];\n    });\n"
   )
   testthat::expect_equal(
     fetchgits(pkg_list),

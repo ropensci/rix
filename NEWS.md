@@ -1,5 +1,9 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.15.2 (2025-02-15)
+
+- `rix()`: duplicate entries were not correctly being removed, this is now fixed.
+
 # rix 0.15.1 (2025-02-14)
 
 - `rix()`: a new internal post-processing function is introduced to remove remaining
