@@ -1,0 +1,45 @@
+# Integration tests for removing duplicates
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: test-renv2nix
+
+permissions:
+  contents: read
+
+jobs:
+  devtools:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - uses: cachix/cachix-action@v15
+        with:
+          name: rstats-on-nix
+          # If you chose signing key for write access
+          # signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+          # If you chose API tokens for write access OR if you have a private cache
+          authToken: '${{ secrets.CACHIX_AUTH }}'
+
+      - name: Build default.nix that results in duplicates
+        run: |
+          nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = r_pkgs = c('tidyverse', 'mlr3', 'qs', 'matrixStats', 'prospectr', 'Cubist', 'checkmate', 'mlr3misc', 'paradox'), git_pkgs = list(package_name = 'mlr3extralearners', repo_url = 'https://github.com/mlr-org/mlr3extralearners/', commit = '6e2af9ef9ecd420d2be44e9aa2488772bb9f7080'), ide = 'none', project_path = '.', overwrite = TRUE, print = FALSE)\""
+
+      - name: Download test default.nix without dups
+        run: |
+          wget -O dups-entries_default.nix https://raw.githubusercontent.com/ropensci/rix/refs/heads/main/tests/testthat/_snaps/rix/dups-entries_default.nix
+
+      - name: Remove lines starting with # from generated expression
+        run: sed -i '/^#/d' default.nix
+
+      - name: Compare lines
+        run: diff -q default.nix dups-entries_default.nix || exit 1
