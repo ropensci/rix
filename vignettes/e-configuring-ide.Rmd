@@ -38,6 +38,13 @@ Regardless of your operating system, a general-purpose editor such as VS Code
 covered here due to lack of experience—PRs welcome!) However, some editors
 perform better on certain platforms.
 
+Also, we recommend you uninstall R if it's installed system-wide and also remove
+your local library of packages and instead, you have dedicated Nix shells to
+manage your projects. While we made our possible for Nix shells to not interfere
+with a system-installed R, we recommend users go into the habit of taking some
+minutes at the start of a project to properly set up their development
+environment.
+
 #### Recommended setup on macOS
 
 On macOS, RStudio will not be able to interact with Nix shells, so you cannot
@@ -70,8 +77,13 @@ If you want to use RStudio or Positron, this is also possible but:
   should be fine on Windows 11 or the very latest Windows 10 builds. WSLg allows
   you to run GUI apps from WSL.
 
-However, be aware that there is a bug in WSLg that prevents modifier keys like
-[Alt Gr](https://github.com/microsoft/wslg/issues/890) from working properly.
+You should also be aware that there is currently a bug in the RStudio Nix
+package that makes RStudio ignore project-specific `.Rprofile` files, which can
+be an issue if you also have a system-level library of packages.
+
+Furthermore, be aware that there is a bug in WSLg that prevents modifier keys
+like [Alt Gr](https://github.com/microsoft/wslg/issues/890) from working
+properly.
 
 If you prefer Emacs or Neovim, then we recommend to install it in WSL and use
 it in command line mode, not through WSLg (so starting Emacs with the `- nw`
@@ -82,6 +94,10 @@ argument).
 On Linux distributions, the only real limitation is that RStudio cannot interact
 with Nix shells (just like on the other operating systems), so if you want to
 use RStudio then you need to install it using Nix.
+
+You should also be aware that there is currently a bug in the RStudio Nix
+package that makes RStudio ignore project-specific `.Rprofile` files, which can
+be an issue if you also have a system-level library of packages.
 
 If you use another editor, just follow the relevant instructions below; the
 question you need to think about is whether you want to use Nix to install the
@@ -95,6 +111,10 @@ choose.
 RStudio **must** be installed by Nix in order to *see* and use Nix shells. So
 you cannot use the RStudio already installed on your computer to work with Nix
 shells. This means you need to set `ide = "rstudio"` if you wish to use RStudio.
+
+You should also be aware that there is currently a bug in the RStudio Nix
+package that makes RStudio ignore project-specific `.Rprofile` files, which can
+be an issue if you also have a system-level library of packages.
 
 ### RStudio on macOS
 
