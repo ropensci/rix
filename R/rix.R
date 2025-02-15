@@ -384,11 +384,13 @@ for more details."
 
   # Generate default.nix file # nolint next: object_name_linter
 
+  default.nix <- strsplit(default.nix, split = "\n")[[1]]
+
   # Remove potential duplicates
   default.nix <- post_processing(default.nix, flag_git_archive, skip_post_processing)
 
   if (print) {
-    cat(default.nix, sep = "\n")
+    cat(default.nix, "\n")
   }
 
   if (!file.exists(default.nix_path) || overwrite) {
@@ -473,8 +475,10 @@ post_processing <- function(default.nix, flag_git_archive, skip_post_processing)
   # only do post processing if there are git packages
   # or if skip_post_processing is TRUE
   if (all(c(do_processing, !skip_post_processing))){
-    remove_duplicate_entries(default.nix)
+    out <- remove_duplicate_entries(default.nix)
   } else {
-    default.nix
+    out <-default.nix
   }
+
+  out
 }

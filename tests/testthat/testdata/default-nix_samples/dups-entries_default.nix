@@ -18,7 +18,7 @@ let
       name = "CoxBoost";
       src = pkgs.fetchgit {
         url = "https://github.com/binderh/CoxBoost";
-        rev = "HEAD";
+        rev = "1dc47d7051f660b28520670b34d031143f9eadfd";
         sha256 = "sha256-5Ck0idCpn6oU3RBULqcz7bEtOnYxzKH29aHVzOUWGsQ=";
       };
       propagatedBuildInputs = builtins.attrValues {
@@ -34,8 +34,8 @@ let
       name = "set6";
       src = pkgs.fetchgit {
         url = "https://github.com/xoopR/set6";
-        rev = "HEAD";
-        sha256 = "sha256-3iDxFyGqSp4msc2BzIFx62nQtO0OsWI8gYhyod4un4A=";
+        rev = "e65ffeea48d30d687482f6706d0cb43b16ba3919";
+        sha256 = "sha256-trJ2cmx/KXRapN+LoHbyGNBueHhLCDWvrtZSicJba5U=";
       };
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) 
@@ -50,7 +50,7 @@ let
       name = "param6";
       src = pkgs.fetchgit {
         url = "https://github.com/xoopR/param6";
-        rev = "HEAD";
+        rev = "0fa35771276fc05efe007a71bda466ced1e4c5eb";
         sha256 = "sha256-6mfOzx0DPGnKyXJPFm1V1qhsLCIHC26XW8q5jZ2gpAg=";
       };
       propagatedBuildInputs = builtins.attrValues {
@@ -66,8 +66,8 @@ let
       name = "distr6";
       src = pkgs.fetchgit {
         url = "https://github.com/xoopR/distr6";
-        rev = "HEAD";
-        sha256 = "sha256-1PQ2ptGbDumsG5OmAGRqgvoLHu7YinrIupDW1uu8wVA=";
+        rev = "548ba956510cb1b5389901ad6a960d7db4d16f41";
+        sha256 = "sha256-jTaDwXzyWyWOOmtWuY/H/Ys/3pDm1hGFtSZX/zHwrDE=";
       };
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) 
@@ -83,8 +83,8 @@ let
       name = "mlr3proba";
       src = pkgs.fetchgit {
         url = "https://github.com/mlr-org/mlr3proba";
-        rev = "HEAD";
-        sha256 = "sha256-D4baD1WcpCpQbBYfz44QPm8FLVJnZ9dUkU1ujSbebv0=";
+        rev = "c5bec7b9b0b73d3611e61882e7556404a6d9fb2e";
+        sha256 = "sha256-xGOluZgEAPqRWm0HbhCaSa+qmonEQoBexud2h3BeY58=";
       };
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) 
@@ -93,11 +93,12 @@ let
           data_table
           ggplot2
           mlr3misc
-          mlr3pipelines
+          mlr3viz
           paradox
           R6
           Rcpp
-          survival;
+          survival
+          survivalmodels;
       } ++ [ distr6 param6 set6 ];
     });
 
@@ -106,8 +107,8 @@ let
       name = "set6";
       src = pkgs.fetchgit {
         url = "https://github.com/xoopR/set6";
-        rev = "HEAD";
-        sha256 = "sha256-3iDxFyGqSp4msc2BzIFx62nQtO0OsWI8gYhyod4un4A=";
+        rev = "e65ffeea48d30d687482f6706d0cb43b16ba3919";
+        sha256 = "sha256-trJ2cmx/KXRapN+LoHbyGNBueHhLCDWvrtZSicJba5U=";
       };
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) 
@@ -122,7 +123,7 @@ let
       name = "param6";
       src = pkgs.fetchgit {
         url = "https://github.com/xoopR/param6";
-        rev = "HEAD";
+        rev = "0fa35771276fc05efe007a71bda466ced1e4c5eb";
         sha256 = "sha256-6mfOzx0DPGnKyXJPFm1V1qhsLCIHC26XW8q5jZ2gpAg=";
       };
       propagatedBuildInputs = builtins.attrValues {
@@ -137,9 +138,9 @@ let
     distr6 = (pkgs.rPackages.buildRPackage {
       name = "distr6";
       src = pkgs.fetchgit {
-        url = "https://github.com/xoopR/distr6";
-        rev = "HEAD";
-        sha256 = "sha256-1PQ2ptGbDumsG5OmAGRqgvoLHu7YinrIupDW1uu8wVA=";
+        url = "https://github.com/alan-turing-institute/distr6";
+        rev = "bb410f4557395846906d8dbcbca9f0f71fc15900";
+        sha256 = "sha256-i0zMfYZA4INu49J4RcKuxNczSXpSjkqdwXQZwbs0o/E=";
       };
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) 
@@ -155,8 +156,8 @@ let
       name = "survivalmodels";
       src = pkgs.fetchgit {
         url = "https://github.com/RaphaelS1/survivalmodels";
-        rev = "HEAD";
-        sha256 = "sha256-+L6ops0DkXXwjdCSLXkIZ1RPHbt2NoiL6/dQFb18K/o=";
+        rev = "9d59b0c93780a71ae8a6c9904eed72a360a1c2d6";
+        sha256 = "sha256-LvrT6425UU3gMY3xpXCz/iE9I1GH7gsWxTKOO8KMpVU=";
       };
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) 
