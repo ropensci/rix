@@ -343,22 +343,6 @@ let
       zoo;
   };
  
-    datathin = (pkgs.rPackages.buildRPackage {
-      name = "datathin";
-      src = pkgs.fetchgit {
-        url = "https://github.com/anna-neufeld/datathin";
-        rev = "58eb154609365fa7301ea0fa397fbf04dd8c28ed";
-        sha256 = "sha256-rtRpwFI+JggX8SwnfH4SPDaMPK2yLhJFTgzvWT+Zll4=";
-      };
-      propagatedBuildInputs = builtins.attrValues {
-        inherit (pkgs.rPackages) 
-          VGAM
-          knitr
-          extraDistr
-          mvtnorm;
-      };
-    });
-
     CSFAtlasTools = (pkgs.rPackages.buildRPackage {
       name = "CSFAtlasTools";
       src = pkgs.fetchgit {
@@ -388,6 +372,22 @@ let
           yardstick
           ggsignif;
       } ++ [ datathin ];
+    });
+
+    datathin = (pkgs.rPackages.buildRPackage {
+      name = "datathin";
+      src = pkgs.fetchgit {
+        url = "https://github.com/anna-neufeld/datathin";
+        rev = "58eb154609365fa7301ea0fa397fbf04dd8c28ed";
+        sha256 = "sha256-rtRpwFI+JggX8SwnfH4SPDaMPK2yLhJFTgzvWT+Zll4=";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages) 
+          VGAM
+          knitr
+          extraDistr
+          mvtnorm;
+      };
     });
     
   system_packages = builtins.attrValues {
