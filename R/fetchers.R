@@ -603,20 +603,16 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes) {
   pkg_name <- remote_pkg_name_and_ref[[1]]
   
   # First check if we have any cached commit for this package name
-  pkg_cache_keys <- names(cache$commit_cache)
-  pkg_matches <- grep(paste0("^", pkg_name, "@"), pkg_cache_keys)
+  pkg_matches <- grep(paste0("^", pkg_name, "@"), cache$commit_cache)
   
   if (length(pkg_matches) > 0) {
     # Return the first cached commit for this package
-    cached_key <- pkg_cache_keys[pkg_matches[1]]
-    return(cache$commit_cache[[cached_key]])
+    return(cache$commit_cache[pkg_matches[1]])
   }
   
   # If no cache exists, proceed with commit resolution
   cache_key <- if (length(remote_pkg_name_and_ref) == 2) {
     paste0(pkg_name, "@", remote_pkg_name_and_ref[[2]])
-  } else {
-    pkg_name  # We'll update this with commit once resolved
   }
   
   commit <- if (length(remote_pkg_name_and_ref) == 2) {
@@ -629,7 +625,6 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes) {
       all_commits <- download_all_commits(remotes_fetch, date)
       closest_commit <- get_closest_commit(all_commits, date)
       commit <- closest_commit$sha
-      # Update cache key to include resolved commit
       cache_key <- paste0(pkg_name, "@", commit)
       commit
     }, error = function(e) {
@@ -642,7 +637,7 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes) {
   }
   
   # Cache the result
-  cache$commit_cache[[cache_key]] <- commit
+  cache$commit_cache <- c(cache$commit_cache, cache_key)
   saveRDS(cache, cache_file)
   
   return(commit)
@@ -658,7 +653,7 @@ get_cache_file <- function() {
   }
   cache_file <- file.path(cache_dir, "package_cache.rds")
   if (!file.exists(cache_file)) {
-    saveRDS(list(seen_packages = character(0), commit_cache = list()), cache_file)
+    saveRDS(list(seen_packages = character(0), commit_cache = character(0)), cache_file)
   }
   cache_file
 }
