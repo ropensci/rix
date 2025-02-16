@@ -143,6 +143,10 @@ testthat::test_that("Test fetchgits works when tag is provided in a remote packa
   # https://github.com/mihem/rixTest/commit/25da90697895b006934a70bbd003aab5c5206c8b
   # This should not fail, however it will not use the tag and instead fetch the closest commit using GitHub API
   testthat::skip_on_cran()
+  cache_dir <- file.path(tempdir(), "rix_cache")
+    if (dir.exists(cache_dir)) {
+      unlink(cache_dir, recursive = TRUE)
+    }
   pkg_list <- list(
     list(
       package_name = "rixTest",
