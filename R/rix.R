@@ -204,6 +204,7 @@ rix <- function(r_ver = NULL,
                 message_type = "simple",
                 shell_hook = NULL,
                 skip_post_processing = FALSE) {
+  
   message_type <- match.arg(message_type,
     choices = c("quiet", "simple", "verbose")
   )
@@ -382,6 +383,10 @@ for more details."
     collapse = "\n"
   )
 
+  cache_dir <- file.path(tempdir(), "rix_cache")
+    if (dir.exists(cache_dir)) {
+      unlink(cache_dir, recursive = TRUE)
+    }
   # Generate default.nix file # nolint next: object_name_linter
 
   default.nix <- strsplit(default.nix, split = "\n")[[1]]

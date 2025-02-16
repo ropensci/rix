@@ -370,23 +370,23 @@ fetchlocals <- function(local_r_pkgs) {
 #' from GitHub.
 #' @noRd
 fetchgits <- function(git_pkgs) {
-  # Initialize global seen variable if it doesn't exist
-  if (!exists(".seen_packages", envir = .GlobalEnv)) {
-    assign(".seen_packages", character(0), envir = .GlobalEnv)
-  }
+  cache_file <- get_cache_file()
+  cache <- readRDS(cache_file)
   
   if (!all(vapply(git_pkgs, is.list, logical(1)))) {
-    if (git_pkgs$package_name %in% .seen_packages) {
+    if (git_pkgs$package_name %in% cache$seen_packages) {
       return("")
     }
-    assign(".seen_packages", c(.seen_packages, git_pkgs$package_name), envir = .GlobalEnv)
+    cache$seen_packages <- c(cache$seen_packages, git_pkgs$package_name)
+    saveRDS(cache, cache_file)
     fetchgit(git_pkgs)
   } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
     # Re-order list of git packages by "package name"
     git_pkgs <- git_pkgs[order(sapply(git_pkgs, "[[", "package_name"))]
     # Filter out already processed packages
-    git_pkgs <- git_pkgs[!sapply(git_pkgs, function(x) x$package_name %in% .seen_packages)]
-    assign(".seen_packages", c(.seen_packages, sapply(git_pkgs, "[[", "package_name")), envir = .GlobalEnv)
+    git_pkgs <- git_pkgs[!sapply(git_pkgs, function(x) x$package_name %in% cache$seen_packages)]
+    cache$seen_packages <- c(cache$seen_packages, sapply(git_pkgs, "[[", "package_name"))
+    saveRDS(cache, cache_file)
     paste(lapply(git_pkgs, fetchgit), collapse = "\n")
   } else {
     stop(
@@ -596,25 +596,23 @@ get_closest_commit <- function(commits_df, target_date) {
 #' resolve_package_commit Resolves the commit SHA for a package based on a date
 #' @param remote_pkg_name_and_ref A list containing the package name and optionally a ref
 #' @param date The target date to find the closest commit
-#' @param remotess A character vector of remotes
+#' @param remotes A character vector of remotes
 #' @return A character. The commit SHA of the closest commit to the target date or "HEAD" if API fails
 #' @noRd
 resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes) {
-  # Initialize commit cache if it doesn't exist
-  if (!exists(".commit_cache", envir = .GlobalEnv)) {
-    assign(".commit_cache", new.env(), envir = .GlobalEnv)
-  }
+  cache_file <- get_cache_file()
+  cache <- readRDS(cache_file)
   
   pkg_name <- remote_pkg_name_and_ref[[1]]
   
   # First check if we have any cached commit for this package name
-  pkg_cache_keys <- ls(envir = .commit_cache)
+  pkg_cache_keys <- names(cache$commit_cache)
   pkg_matches <- grep(paste0("^", pkg_name, "@"), pkg_cache_keys)
   
   if (length(pkg_matches) > 0) {
     # Return the first cached commit for this package
     cached_key <- pkg_cache_keys[pkg_matches[1]]
-    return(get(cached_key, envir = .commit_cache))
+    return(cache$commit_cache[[cached_key]])
   }
   
   # If no cache exists, proceed with commit resolution
@@ -647,7 +645,23 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes) {
   }
   
   # Cache the result
-  assign(cache_key, commit, envir = .commit_cache)
+  cache$commit_cache[[cache_key]] <- commit
+  saveRDS(cache, cache_file)
   
   return(commit)
+}
+
+#' Get shared cache file path
+#' @return Path to shared cache file
+#' @noRd
+get_cache_file <- function() {
+  cache_dir <- file.path(tempdir(), "rix_cache")
+  if (!dir.exists(cache_dir)) {
+    dir.create(cache_dir)
+  }
+  cache_file <- file.path(cache_dir, "package_cache.rds")
+  if (!file.exists(cache_file)) {
+    saveRDS(list(seen_packages = character(0), commit_cache = list()), cache_file)
+  }
+  cache_file
 }
