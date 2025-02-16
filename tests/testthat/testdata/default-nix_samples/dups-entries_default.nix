@@ -30,38 +30,6 @@ let
     });
 
 
-    set6 = (pkgs.rPackages.buildRPackage {
-      name = "set6";
-      src = pkgs.fetchgit {
-        url = "https://github.com/xoopR/set6";
-        rev = "e65ffeea48d30d687482f6706d0cb43b16ba3919";
-        sha256 = "sha256-trJ2cmx/KXRapN+LoHbyGNBueHhLCDWvrtZSicJba5U=";
-      };
-      propagatedBuildInputs = builtins.attrValues {
-        inherit (pkgs.rPackages) 
-          checkmate
-          ooplah
-          Rcpp
-          R6;
-      };
-    });
-
-    param6 = (pkgs.rPackages.buildRPackage {
-      name = "param6";
-      src = pkgs.fetchgit {
-        url = "https://github.com/xoopR/param6";
-        rev = "0fa35771276fc05efe007a71bda466ced1e4c5eb";
-        sha256 = "sha256-6mfOzx0DPGnKyXJPFm1V1qhsLCIHC26XW8q5jZ2gpAg=";
-      };
-      propagatedBuildInputs = builtins.attrValues {
-        inherit (pkgs.rPackages) 
-          checkmate
-          data_table
-          dictionar6
-          R6;
-      } ++ [ set6 ];
-    });
-
     distr6 = (pkgs.rPackages.buildRPackage {
       name = "distr6";
       src = pkgs.fetchgit {
@@ -78,6 +46,7 @@ let
           Rcpp;
       } ++ [ set6 param6 ];
     });
+
 
     mlr3proba = (pkgs.rPackages.buildRPackage {
       name = "mlr3proba";
@@ -103,22 +72,6 @@ let
     });
 
 
-    set6 = (pkgs.rPackages.buildRPackage {
-      name = "set6";
-      src = pkgs.fetchgit {
-        url = "https://github.com/xoopR/set6";
-        rev = "e65ffeea48d30d687482f6706d0cb43b16ba3919";
-        sha256 = "sha256-trJ2cmx/KXRapN+LoHbyGNBueHhLCDWvrtZSicJba5U=";
-      };
-      propagatedBuildInputs = builtins.attrValues {
-        inherit (pkgs.rPackages) 
-          checkmate
-          ooplah
-          Rcpp
-          R6;
-      };
-    });
-
     param6 = (pkgs.rPackages.buildRPackage {
       name = "param6";
       src = pkgs.fetchgit {
@@ -135,22 +88,23 @@ let
       } ++ [ set6 ];
     });
 
-    distr6 = (pkgs.rPackages.buildRPackage {
-      name = "distr6";
+
+    set6 = (pkgs.rPackages.buildRPackage {
+      name = "set6";
       src = pkgs.fetchgit {
-        url = "https://github.com/alan-turing-institute/distr6";
-        rev = "bb410f4557395846906d8dbcbca9f0f71fc15900";
-        sha256 = "sha256-i0zMfYZA4INu49J4RcKuxNczSXpSjkqdwXQZwbs0o/E=";
+        url = "https://github.com/xoopR/set6";
+        rev = "a901255c26614a0ece317dc849621420f9393d42";
+        sha256 = "sha256-3iDxFyGqSp4msc2BzIFx62nQtO0OsWI8gYhyod4un4A=";
       };
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) 
           checkmate
-          data_table
           ooplah
-          R6
-          Rcpp;
-      } ++ [ set6 param6 ];
+          Rcpp
+          R6;
+      };
     });
+
 
     survivalmodels = (pkgs.rPackages.buildRPackage {
       name = "survivalmodels";
@@ -204,4 +158,3 @@ pkgs.mkShell {
   buildInputs = [ mlr3extralearners rpkgs  system_packages   ];
   
 }
-

@@ -36,13 +36,10 @@ jobs:
 
       - name: Download test default.nix without dups
         run: |
-          wget -O dups-entries_default.nix https://raw.githubusercontent.com/ropensci/rix/refs/heads/main/tests/testthat/_snaps/rix/dups-entries_default.nix
+          wget -O dups-entries_default.nix https://raw.githubusercontent.com/mihem/rix/refs/heads/remove_duplicate_third/tests/testthat/_snaps/rix/dups-entries_default.nix
 
-      - name: Remove lines starting with # from generated expression
+      - name: Remove lines starting with `#` from generated expression
         run: sed -i '/^#/d' default.nix
-
-      - name: Remove empty last line in dups-entries_default.nix
-        run: sed -i '${/^$/d;}' dups-entries_default.nix
 
       - name: Compare lines
         run: diff -q default.nix dups-entries_default.nix || exit 1
