@@ -95,6 +95,10 @@ testthat::test_that("Test fetchgits works when PR is provided in a remote packag
   # see https://github.com/mihem/rixTest/commit/b56829f7771d131e02fc58c546f9af6ee13b857e
   # This should not fail, however it will not use the PR and instead fetch the closest commit using GitHub API
   testthat::skip_on_cran()
+  cache_dir <- file.path(tempdir(), "rix_cache")
+    if (dir.exists(cache_dir)) {
+      unlink(cache_dir, recursive = TRUE)
+    }
   pkg_list <- list(
     package_name = "rixTest",
     repo_url = "https://github.com/mihem/rixTest",
@@ -167,6 +171,10 @@ testthat::test_that("Test fetchzips works", {
 
 testthat::test_that("Test fetchpkgs works", {
   testthat::skip_on_cran()
+  cache_dir <- file.path(tempdir(), "rix_cache")
+    if (dir.exists(cache_dir)) {
+      unlink(cache_dir, recursive = TRUE)
+    }
   testthat::expect_equal(
     fetchpkgs(
       git_pkgs = list(
