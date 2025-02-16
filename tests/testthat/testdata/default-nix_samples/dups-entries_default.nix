@@ -29,6 +29,7 @@ let
       };
     });
 
+
     set6 = (pkgs.rPackages.buildRPackage {
       name = "set6";
       src = pkgs.fetchgit {
@@ -99,6 +100,56 @@ let
           survival
           survivalmodels;
       } ++ [ distr6 param6 set6 ];
+    });
+
+
+    set6 = (pkgs.rPackages.buildRPackage {
+      name = "set6";
+      src = pkgs.fetchgit {
+        url = "https://github.com/xoopR/set6";
+        rev = "e65ffeea48d30d687482f6706d0cb43b16ba3919";
+        sha256 = "sha256-trJ2cmx/KXRapN+LoHbyGNBueHhLCDWvrtZSicJba5U=";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages) 
+          checkmate
+          ooplah
+          Rcpp
+          R6;
+      };
+    });
+
+    param6 = (pkgs.rPackages.buildRPackage {
+      name = "param6";
+      src = pkgs.fetchgit {
+        url = "https://github.com/xoopR/param6";
+        rev = "0fa35771276fc05efe007a71bda466ced1e4c5eb";
+        sha256 = "sha256-6mfOzx0DPGnKyXJPFm1V1qhsLCIHC26XW8q5jZ2gpAg=";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages) 
+          checkmate
+          data_table
+          dictionar6
+          R6;
+      } ++ [ set6 ];
+    });
+
+    distr6 = (pkgs.rPackages.buildRPackage {
+      name = "distr6";
+      src = pkgs.fetchgit {
+        url = "https://github.com/alan-turing-institute/distr6";
+        rev = "bb410f4557395846906d8dbcbca9f0f71fc15900";
+        sha256 = "sha256-i0zMfYZA4INu49J4RcKuxNczSXpSjkqdwXQZwbs0o/E=";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages) 
+          checkmate
+          data_table
+          ooplah
+          R6
+          Rcpp;
+      } ++ [ set6 param6 ];
     });
 
     survivalmodels = (pkgs.rPackages.buildRPackage {
