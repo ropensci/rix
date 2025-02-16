@@ -428,9 +428,6 @@ fetchzips <- function(archive_pkgs) {
 #' @return Nix definition string for building the packages
 #' @noRd
 fetchpkgs <- function(git_pkgs, archive_pkgs) {
-  # Reset seen packages at start
-  assign(".seen_packages", character(0), envir = .GlobalEnv)
-  
   # Combine git and archive package definitions
   paste(
     fetchgits(git_pkgs),
