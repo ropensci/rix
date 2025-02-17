@@ -35,22 +35,7 @@ jobs:
       - uses: cachix/cachix-action@v14
         with:
           name: rstats-on-nix
-      
+
       - name: devtools::test() via nix-shell
-        run: nix-shell --fallback --pure -p cacert nix R rPackages.covr rPackages.codetools rPackages.xml2 rPackages.sys rPackages.devtools --run "Rscript -e 'devtools::test()'"
-      #- name: Test coverage
-      #  run: nix-shell --pure -p nix git cacert R rPackages.covr rPackages.codetools rPackages.sys rPackages.xml2 rPackages.testthat --run "Rscript -e 'covr::codecov()' "
+        run: nix-shell --pure -p cacert nix R rPackages.covr rPackages.codetools rPackages.xml2 rPackages.sys rPackages.devtools --run "Rscript -e 'out <- devtools::test();result <- grepl(\"error\", sapply(out, function(x) x$results[1]) |> sapply(class));stopifnot(\"unit tests failing!\" = !any(result)';print(out)"
 
-      - name: Show testthat output
-        if: always()
-        run: |
-          ## --------------------------------------------------------------------
-          find ${{ runner.temp }}/package -name 'testthat.Rout*' -exec cat '{}' \; || true
-        shell: bash
-
-      - name: Upload test results
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-test-failures
-          path: ${{ runner.temp }}/package
