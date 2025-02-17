@@ -37,6 +37,6 @@ jobs:
           name: rstats-on-nix
 
       - name: devtools::test() via nix-shell
-        run: nix-shell --pure -p cacert nix R rPackages.covr rPackages.codetools rPackages.xml2 rPackages.sys rPackages.devtools --run "Rscript -e \"out <- devtools::test(); out_df <- as.data.frame(out); if (any(out_df$failed)) { stop('Unit tests failed!') }\""
+        run: nix-shell --pure -p cacert nix R rPackages.covr rPackages.codetools rPackages.xml2 rPackages.sys rPackages.devtools --run "Rscript -e \"devtools::test(stop_on_failure = TRUE)\""
 
 
