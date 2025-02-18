@@ -2,10 +2,11 @@
 #' @param git_pkg A list of three elements: "package_name", the name of the
 #'   package, "repo_url", the repository's url, "commit", the commit hash of
 #'   interest.
+#' @param ignore_cache A logical, defaults to `FALSE`. Should the cache be ignored?
 #' @return A character. The Nix definition to download and build the R package
 #'   from GitHub.
 #' @noRd
-fetchgit <- function(git_pkg) {
+fetchgit <- function(git_pkg, ignore_cache = FALSE) {
   package_name <- git_pkg$package_name
   repo_url <- git_pkg$repo_url
   commit <- git_pkg$commit
@@ -34,7 +35,7 @@ fetchgit <- function(git_pkg) {
     output <- main_package_expression
   } else { # if there are remote dependencies, start over
 
-    remote_packages_expressions <- fetchgits(remotes)
+    remote_packages_expressions <- fetchgits(remotes, ignore_cache)
 
     output <- paste0(remote_packages_expressions,
       main_package_expression,
@@ -366,13 +367,12 @@ fetchlocals <- function(local_r_pkgs) {
 #' @param git_pkgs A list of three elements: "package_name", the name of the
 #' package, "repo_url", the repository's url and "commit", the commit hash of
 #' interest. This argument can also be a list of lists of these three elements.
-#' @param ignore_cache A logical. If `TRUE`, the cache will be ignored and all
-#' packages will be processed. If `FALSE`, the cache will be used to skip
+#' @param ignore_cache A logical, defaults to `FALSE`. Should the cache be ignored?
 #' already processed packages.
 #' @return A character. The Nix definition to download and build the R package
 #' from GitHub.
 #' @noRd
-fetchgits <- function(git_pkgs, ignore_cache) {
+fetchgits <- function(git_pkgs, ignore_cache = FALSE) {
   cache_file <- get_cache_file()
   cache <- readRDS(cache_file)
   
@@ -383,7 +383,7 @@ fetchgits <- function(git_pkgs, ignore_cache) {
       }
       cache$seen_packages <- c(cache$seen_packages, git_pkgs$package_name)
       saveRDS(cache, cache_file)
-      fetchgit(git_pkgs)
+      fetchgit(git_pkgs, ignore_cache)
     } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
       # Re-order list of git packages by "package name"
       git_pkgs <- git_pkgs[order(sapply(git_pkgs, "[[", "package_name"))]
@@ -391,7 +391,7 @@ fetchgits <- function(git_pkgs, ignore_cache) {
       git_pkgs <- git_pkgs[!sapply(git_pkgs, function(x) x$package_name %in% cache$seen_packages)]
       cache$seen_packages <- c(cache$seen_packages, sapply(git_pkgs, "[[", "package_name"))
       saveRDS(cache, cache_file)
-      paste(lapply(git_pkgs, fetchgit), collapse = "\n")
+      paste(lapply(git_pkgs, function(pkg) fetchgit(pkg, ignore_cache)), collapse = "\n")
     } else {
       stop(
         "There is something wrong with the input. Make sure it is either a list of three elements ",
@@ -439,9 +439,10 @@ fetchzips <- function(archive_pkgs) {
 #' fetchpkgs Downloads and installs packages from CRAN archives or GitHub
 #' @param git_pkgs List of Git packages with name, url and commit
 #' @param archive_pkgs Vector of CRAN archive package names
+#' @param ignore_cache A logical, defaults to FALSE. Should the cache be ignored?
 #' @return Nix definition string for building the packages
 #' @noRd
-fetchpkgs <- function(git_pkgs, archive_pkgs, ignore_cache) {
+fetchpkgs <- function(git_pkgs, archive_pkgs, ignore_cache = FALSE) {
   # Initialize cache if git packages are present and not ignoring cache
   if (!is.null(git_pkgs) && !ignore_cache) {
     cache_file <- get_cache_file()
