@@ -71,22 +71,24 @@ testthat::test_that("Test fetchzip fails gracefully", {
 
 testthat::test_that("Test fetchgits", {
   testthat::skip_on_cran()
-  testthat::expect_equal(
-    fetchgits(
-      list(
-        list(
-          package_name = "housing",
-          repo_url = "https://github.com/rap4all/housing/",
-          commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"
-        ),
-        list(
-          package_name = "fusen",
-          repo_url = "https://github.com/ThinkR-open/fusen",
-          commit = "d617172447d2947efb20ad6a4463742b8a5d79dc"
-        )
-      )
+  cache_file <- get_cache_file()
+  on.exit(unlink(cache_file))
+  pkg_list <- list(
+    list(
+      package_name = "housing",
+      repo_url = "https://github.com/rap4all/housing/",
+      commit = "1c860959310b80e67c41f7bbdc3e84cef00df18e"
     ),
-    "\n    fusen = (pkgs.rPackages.buildRPackage {\n      name = \"fusen\";\n      src = pkgs.fetchgit {\n        url = \"https://github.com/ThinkR-open/fusen\";\n        rev = \"d617172447d2947efb20ad6a4463742b8a5d79dc\";\n        sha256 = \"sha256-TOHA1ymLUSgZMYIA1a2yvuv0799svaDOl3zOhNRxcmw=\";\n      };\n      propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.rPackages) \n          attachment\n          cli\n          desc\n          devtools\n          glue\n          here\n          magrittr\n          parsermd\n          roxygen2\n          stringi\n          tibble\n          tidyr\n          usethis\n          yaml;\n      };\n    });\n\n\n    housing = (pkgs.rPackages.buildRPackage {\n      name = \"housing\";\n      src = pkgs.fetchgit {\n        url = \"https://github.com/rap4all/housing/\";\n        rev = \"1c860959310b80e67c41f7bbdc3e84cef00df18e\";\n        sha256 = \"sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=\";\n      };\n      propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.rPackages) \n          dplyr\n          ggplot2\n          janitor\n          purrr\n          readxl\n          rlang\n          rvest\n          stringr\n          tidyr;\n      };\n    });\n"
+    list(
+      package_name = "fusen",
+      repo_url = "https://github.com/ThinkR-open/fusen",
+      commit = "d617172447d2947efb20ad6a4463742b8a5d79dc"
+    )
+  )
+  expected_output <- "\n    fusen = (pkgs.rPackages.buildRPackage {\n      name = \"fusen\";\n      src = pkgs.fetchgit {\n        url = \"https://github.com/ThinkR-open/fusen\";\n        rev = \"d617172447d2947efb20ad6a4463742b8a5d79dc\";\n        sha256 = \"sha256-TOHA1ymLUSgZMYIA1a2yvuv0799svaDOl3zOhNRxcmw=\";\n      };\n      propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.rPackages) \n          attachment\n          cli\n          desc\n          devtools\n          glue\n          here\n          magrittr\n          parsermd\n          roxygen2\n          stringi\n          tibble\n          tidyr\n          usethis\n          yaml;\n      };\n    });\n\n\n    housing = (pkgs.rPackages.buildRPackage {\n      name = \"housing\";\n      src = pkgs.fetchgit {\n        url = \"https://github.com/rap4all/housing/\";\n        rev = \"1c860959310b80e67c41f7bbdc3e84cef00df18e\";\n        sha256 = \"sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=\";\n      };\n      propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.rPackages) \n          dplyr\n          ggplot2\n          janitor\n          purrr\n          readxl\n          rlang\n          rvest\n          stringr\n          tidyr;\n      };\n    });\n"
+  testthat::expect_equal(
+    fetchgits(pkg_list),
+    expected_output
   )
 })
 
@@ -143,10 +145,8 @@ testthat::test_that("Test fetchgits works when tag is provided in a remote packa
   # https://github.com/mihem/rixTest/commit/25da90697895b006934a70bbd003aab5c5206c8b
   # This should not fail, however it will not use the tag and instead fetch the closest commit using GitHub API
   testthat::skip_on_cran()
-  cache_dir <- file.path(tempdir(), "rix_cache")
-    if (dir.exists(cache_dir)) {
-      unlink(cache_dir, recursive = TRUE)
-    }
+  cache_file <- get_cache_file()
+  on.exit(unlink(cache_file))
   pkg_list <- list(
     list(
       package_name = "rixTest",
@@ -175,10 +175,6 @@ testthat::test_that("Test fetchzips works", {
 
 testthat::test_that("Test fetchpkgs works", {
   testthat::skip_on_cran()
-  cache_dir <- file.path(tempdir(), "rix_cache")
-    if (dir.exists(cache_dir)) {
-      unlink(cache_dir, recursive = TRUE)
-    }
   testthat::expect_equal(
     fetchpkgs(
       git_pkgs = list(
