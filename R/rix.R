@@ -383,7 +383,6 @@ for more details."
     collapse = "\n"
   )
 
-  cache_dir <- file.path(tempdir(), "rix_cache")
     if (dir.exists(cache_dir)) {
       unlink(cache_dir, recursive = TRUE)
     }
