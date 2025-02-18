@@ -369,34 +369,45 @@ fetchlocals <- function(local_r_pkgs) {
 #' @return A character. The Nix definition to download and build the R package
 #' from GitHub.
 #' @noRd
-fetchgits <- function(git_pkgs) {
+fetchgits <- function(git_pkgs, ignore_cache = FALSE) {
   cache_file <- get_cache_file()
   cache <- readRDS(cache_file)
   
-  if (!all(vapply(git_pkgs, is.list, logical(1)))) {
-    if (git_pkgs$package_name %in% cache$seen_packages) {
-      return("")
-    }
-    cache$seen_packages <- c(cache$seen_packages, git_pkgs$package_name)
-    saveRDS(cache, cache_file)
-    fetchgit(git_pkgs)
-  } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
-    # Re-order list of git packages by "package name"
-    git_pkgs <- git_pkgs[order(sapply(git_pkgs, "[[", "package_name"))]
-    # Filter out already processed packages
-    git_pkgs <- git_pkgs[!sapply(git_pkgs, function(x) x$package_name %in% cache$seen_packages)]
-    cache$seen_packages <- c(cache$seen_packages, sapply(git_pkgs, "[[", "package_name"))
-    saveRDS(cache, cache_file)
-    paste(lapply(git_pkgs, fetchgit), collapse = "\n")
-  } else {
-    stop(
-      paste0(
-        "There is something wrong with the input. ",
-        "Make sure it is either a list of three elements ",
-        "'package_name', 'repo_url' and 'commit', or ",
-        "a list of lists with these three elements"
+  if (!ignore_cache) {
+    if (!all(vapply(git_pkgs, is.list, logical(1)))) {
+      if (git_pkgs$package_name %in% cache$seen_packages) {
+        return("")
+      }
+      cache$seen_packages <- c(cache$seen_packages, git_pkgs$package_name)
+      saveRDS(cache, cache_file)
+      fetchgit(git_pkgs)
+    } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
+      # Re-order list of git packages by "package name"
+      git_pkgs <- git_pkgs[order(sapply(git_pkgs, "[[", "package_name"))]
+      # Filter out already processed packages
+      git_pkgs <- git_pkgs[!sapply(git_pkgs, function(x) x$package_name %in% cache$seen_packages)]
+      cache$seen_packages <- c(cache$seen_packages, sapply(git_pkgs, "[[", "package_name"))
+      saveRDS(cache, cache_file)
+      paste(lapply(git_pkgs, fetchgit), collapse = "\n")
+    } else {
+      stop(
+        "There is something wrong with the input. Make sure it is either a list of three elements ",
+        "'package_name', 'repo_url' and 'commit', or a list of lists with these three elements"
       )
-    )
+    }
+  } else {
+    # When ignoring cache, process all packages without checking cache
+    if (!all(vapply(git_pkgs, is.list, logical(1)))) {
+      fetchgit(git_pkgs)
+    } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
+      git_pkgs <- git_pkgs[order(sapply(git_pkgs, "[[", "package_name"))]
+      paste(lapply(git_pkgs, fetchgit), collapse = "\n")
+    } else {
+      stop(
+        "There is something wrong with the input. Make sure it is either a list of three elements ",
+        "'package_name', 'repo_url' and 'commit', or a list of lists with these three elements"
+      )
+    }
   }
 }
 
@@ -427,16 +438,16 @@ fetchzips <- function(archive_pkgs) {
 #' @param archive_pkgs Vector of CRAN archive package names
 #' @return Nix definition string for building the packages
 #' @noRd
-fetchpkgs <- function(git_pkgs, archive_pkgs) {
-  # Initialize cache if git packages are present
-  if (!is.null(git_pkgs)) {
+fetchpkgs <- function(git_pkgs, archive_pkgs, ignore_cache = FALSE) {
+  # Initialize cache if git packages are present and not ignoring cache
+  if (!is.null(git_pkgs) && !ignore_cache) {
     cache_file <- get_cache_file()
     on.exit(unlink(cache_file))  # Will clean up after all processing is done
   }
   
   # Combine git and archive package definitions
   paste(
-    fetchgits(git_pkgs),
+    fetchgits(git_pkgs, ignore_cache),
     fetchzips(archive_pkgs),
     collapse = "\n"
   )

@@ -72,7 +72,8 @@
 #'   is post-processed to eliminate potential duplicate definitions of packages,
 #'   which may happen if these packages have recursive remote dependencies. Set
 #'   to TRUE to skip post processing, which might be useful for debugging.
-#'
+#' @param ignore_cache Logical, defaults to FALSE. If TRUE, do not use the cache
+#'   to store remote dependencies that have been fetched. 
 #' @details This function will write a `default.nix` and an `.Rprofile` in the
 #'   chosen path. Using the Nix package manager, it is then possible to build a
 #'   reproducible development environment using the `nix-build` command in the
@@ -187,7 +188,8 @@
 #'   print = TRUE,
 #'   message_type = "simple",
 #'   shell_hook = NULL,
-#'   skip_post_processing = FALSE
+#'   skip_post_processing = FALSE,
+#'   ignore_cache = FALSE
 #' )
 #' }
 rix <- function(r_ver = NULL,
@@ -203,7 +205,8 @@ rix <- function(r_ver = NULL,
                 print = FALSE,
                 message_type = "simple",
                 shell_hook = NULL,
-                skip_post_processing = FALSE) {
+                skip_post_processing = FALSE,
+                ignore_cache = FALSE) {
   
   message_type <- match.arg(message_type,
     choices = c("quiet", "simple", "verbose")
@@ -371,7 +374,12 @@ for more details."
       ide
     ),
     generate_rpkgs(cran_pkgs$rPackages, flag_rpkgs),
-    generate_git_archived_pkgs(git_pkgs, cran_pkgs$archive_pkgs, flag_git_archive),
+    generate_git_archived_pkgs(
+      git_pkgs, 
+      cran_pkgs$archive_pkgs, 
+      flag_git_archive,
+      ignore_cache
+    ),
     generate_tex_pkgs(tex_pkgs),
     generate_local_r_pkgs(local_r_pkgs, flag_local_r_pkgs),
     generate_system_pkgs(system_pkgs, r_pkgs, ide),
