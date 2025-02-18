@@ -36,7 +36,7 @@ jobs:
 
       - name: Download test default.nix without dups
         run: |
-          wget -O dups-entries_default.nix https://raw.githubusercontent.com/mihem/rix/refs/heads/remove_duplicate_third/tests/testthat/_snaps/rix/mlr3_default.nix
+          wget -O dups-entries_default.nix https://raw.githubusercontent.com/mihem/rix/refs/heads/remove_duplicate_third/tests/testthat/remote-pkgs/mlr3_default.nix
 
       - name: Remove lines starting with `#` from generated expression
         run: sed -i '/^#/d' default.nix
