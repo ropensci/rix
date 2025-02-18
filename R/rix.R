@@ -383,10 +383,6 @@ for more details."
     collapse = "\n"
   )
 
-  cache_dir <- file.path(tempdir(), "rix_cache")
-    if (dir.exists(cache_dir)) {
-      unlink(cache_dir, recursive = TRUE)
-    }
   # Generate default.nix file # nolint next: object_name_linter
 
   default.nix <- strsplit(default.nix, split = "\n")[[1]]
