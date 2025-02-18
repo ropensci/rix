@@ -41,8 +41,5 @@ jobs:
       - name: Remove lines starting with `#` from generated expression
         run: sed -i '/^#/d' default.nix
 
-      - name: Help debugging
-        run: diff -y default.nix mlr3_dups_default.nix
-
       - name: Compare lines and fail if different
         run: diff -q default.nix mlr3_dups_default.nix || exit 1
