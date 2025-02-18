@@ -11,9 +11,9 @@ fetchgit <- function(git_pkg, ignore_cache = FALSE) {
   repo_url <- git_pkg$repo_url
   commit <- git_pkg$commit
 
-  output <- get_sri_hash_deps(repo_url, commit)
+  output <- get_sri_hash_deps(repo_url, commit, ignore_cache)
   sri_hash <- output$sri_hash
-  # If package has no remote dependencies
+  # If package has no remote dependencie
 
   imports <- output$deps$imports
   imports <- paste(c("", imports), collapse = "\n          ")
@@ -169,10 +169,11 @@ remove_base <- function(list_imports) {
 #' Finds dependencies of a package from the DESCRIPTION file
 #' @param path path to package
 #' @param commit_date date of commit
+#' @param ignore_cache A logical, defaults to FALSE. Should the cache be ignored?
 #' @importFrom utils untar
 #' @return Atomic vector of packages
 #' @noRd
-get_imports <- function(path, commit_date) {
+get_imports <- function(path, commit_date, ignore_cache = FALSE) {
   tmpdir <- tempdir()
 
   tmp_dir <- tempfile(pattern = "file", tmpdir = tmpdir, fileext = "")
@@ -236,7 +237,7 @@ get_imports <- function(path, commit_date) {
 
     # try to get commit hash for each package if not already provided
     remote_pkgs_refs <- lapply(remote_pkgs_names_and_refs, function(x) {
-      resolve_package_commit(x, commit_date, remotes)
+      resolve_package_commit(x, commit_date, remotes, ignore_cache)
     })
 
     urls <- paste0(
@@ -373,10 +374,9 @@ fetchlocals <- function(local_r_pkgs) {
 #' from GitHub.
 #' @noRd
 fetchgits <- function(git_pkgs, ignore_cache = FALSE) {
-  cache_file <- get_cache_file()
-  cache <- readRDS(cache_file)
-  
   if (!ignore_cache) {
+    cache_file <- get_cache_file()
+    cache <- readRDS(cache_file)
     if (!all(vapply(git_pkgs, is.list, logical(1)))) {
       if (git_pkgs$package_name %in% cache$seen_packages) {
         return("")
@@ -401,10 +401,10 @@ fetchgits <- function(git_pkgs, ignore_cache = FALSE) {
   } else {
     # When ignoring cache, process all packages without checking cache
     if (!all(vapply(git_pkgs, is.list, logical(1)))) {
-      fetchgit(git_pkgs)
+      fetchgit(git_pkgs, ignore_cache)
     } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
       git_pkgs <- git_pkgs[order(sapply(git_pkgs, "[[", "package_name"))]
-      paste(lapply(git_pkgs, fetchgit), collapse = "\n")
+      paste(lapply(git_pkgs, fetchgit, ignore_cache), collapse = "\n")
     } else {
       stop(
         "There is something wrong with the input. Make sure it is either a list of three elements ",
@@ -615,52 +615,60 @@ get_closest_commit <- function(commits_df, target_date) {
 #' @param remote_pkg_name_and_ref A list containing the package name and optionally a ref
 #' @param date The target date to find the closest commit
 #' @param remotes A character vector of remotes
+#' @param ignore_cache A logical, defaults to FALSE. Should the cache be ignored?
 #' @return A character. The commit SHA of the closest commit to the target date or "HEAD" if API fails
 #' @noRd
-resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes) {
-  cache_file <- get_cache_file()
-  cache <- readRDS(cache_file)
-  
+resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes, ignore_cache = FALSE) {
+  # Load cache if not ignoring cache
   pkg_name <- remote_pkg_name_and_ref[[1]]
-  
-  # First check if we have any cached commit for this package name
-  pkg_matches <- grep(paste0("^", pkg_name, "@"), cache$commit_cache)
-  
-  if (length(pkg_matches) > 0) {
-    # Return the first cached commit for this package
-    return(cache$commit_cache[pkg_matches[1]])
+
+  # Check if package is already in cache
+  if (!ignore_cache) {
+    cache_file <- get_cache_file()
+    cache <- readRDS(cache_file)
+    pkg_matches <- grep(paste0("^", pkg_name, "@"), cache$commit_cache)
+
+    if (length(pkg_matches) > 0) {
+      return(cache$commit_cache[pkg_matches[1]])
+    }
   }
-  
-  # If no cache exists, proceed with commit resolution
+
   cache_key <- if (length(remote_pkg_name_and_ref) == 2) {
     paste0(pkg_name, "@", remote_pkg_name_and_ref[[2]])
   }
-  
+  # If ref (commit hash) is provided, use it
   commit <- if (length(remote_pkg_name_and_ref) == 2) {
-    remote_pkg_name_and_ref[[2]]  # Keep existing ref if present
+    remote_pkg_name_and_ref[[2]]
   } else if (length(remote_pkg_name_and_ref) == 1) {
     # For packages without ref, try to find closest one by date
     # fallback to HEAD if API fails
-    tryCatch({
-      remotes_fetch <- remotes[grepl(remote_pkg_name_and_ref, remotes)]
-      all_commits <- download_all_commits(remotes_fetch, date)
-      closest_commit <- get_closest_commit(all_commits, date)
-      commit <- closest_commit$sha
-      cache_key <- paste0(pkg_name, "@", commit)
-      commit
-    }, error = function(e) {
-      message(paste0("Failed to get closest commit for ", remotes_fetch, 
-                    ": ", e$message, ".\nFalling back to <<< HEAD >>>\n"))
-      "HEAD"
-    })
+    tryCatch(
+      {
+        remotes_fetch <- remotes[grepl(remote_pkg_name_and_ref, remotes)]
+        all_commits <- download_all_commits(remotes_fetch, date)
+        closest_commit <- get_closest_commit(all_commits, date)
+        commit <- closest_commit$sha
+        cache_key <- paste0(pkg_name, "@", commit)
+        commit
+      },
+      error = function(e) {
+        message(paste0(
+          "Failed to get closest commit for ", remotes_fetch,
+          ": ", e$message, ".\nFalling back to <<< HEAD >>>\n"
+        ))
+        "HEAD"
+      }
+    )
   } else {
     stop("remote_pkg_name_and_ref must be a list of length 1 or 2")
   }
-  
-  # Cache the result
-  cache$commit_cache <- c(cache$commit_cache, cache_key)
-  saveRDS(cache, cache_file)
-  
+
+  # Update cache with new commit if not ignoring cache
+  if (!ignore_cache) {
+    cache$commit_cache <- c(cache$commit_cache, cache_key)
+    saveRDS(cache, cache_file)
+  }
+
   return(commit)
 }
 
