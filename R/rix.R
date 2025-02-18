@@ -72,8 +72,9 @@
 #'   is post-processed to eliminate potential duplicate definitions of packages,
 #'   which may happen if these packages have recursive remote dependencies. Set
 #'   to TRUE to skip post processing, which might be useful for debugging.
-#' @param ignore_cache Logical, defaults to FALSE. If TRUE, do not use the cache
-#'   to store remote dependencies that have been fetched. 
+#' @param ignore_cache Logical, defaults to FALSE. If `TRUE`, the cache will be ignored 
+#'   and all packages will be processed. If `FALSE`, the cache will be used to skip
+#'   already processed packages.
 #' @details This function will write a `default.nix` and an `.Rprofile` in the
 #'   chosen path. Using the Nix package manager, it is then possible to build a
 #'   reproducible development environment using the `nix-build` command in the

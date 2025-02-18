@@ -104,8 +104,9 @@ is post-processed to eliminate potential duplicate definitions of packages,
 which may happen if these packages have recursive remote dependencies. Set
 to TRUE to skip post processing, which might be useful for debugging.}
 
-\item{ignore_cache}{Logical, defaults to FALSE. If TRUE, do not use the cache
-to store remote dependencies that have been fetched.}
+\item{ignore_cache}{Logical, defaults to FALSE. If \code{TRUE}, the cache will be ignored
+and all packages will be processed. If \code{FALSE}, the cache will be used to skip
+already processed packages.}
 }
 \value{
 Nothing, this function only has the side-effect of writing two files:

@@ -366,10 +366,13 @@ fetchlocals <- function(local_r_pkgs) {
 #' @param git_pkgs A list of three elements: "package_name", the name of the
 #' package, "repo_url", the repository's url and "commit", the commit hash of
 #' interest. This argument can also be a list of lists of these three elements.
+#' @param ignore_cache A logical. If `TRUE`, the cache will be ignored and all
+#' packages will be processed. If `FALSE`, the cache will be used to skip
+#' already processed packages.
 #' @return A character. The Nix definition to download and build the R package
 #' from GitHub.
 #' @noRd
-fetchgits <- function(git_pkgs, ignore_cache = FALSE) {
+fetchgits <- function(git_pkgs, ignore_cache) {
   cache_file <- get_cache_file()
   cache <- readRDS(cache_file)
   
@@ -438,7 +441,7 @@ fetchzips <- function(archive_pkgs) {
 #' @param archive_pkgs Vector of CRAN archive package names
 #' @return Nix definition string for building the packages
 #' @noRd
-fetchpkgs <- function(git_pkgs, archive_pkgs, ignore_cache = FALSE) {
+fetchpkgs <- function(git_pkgs, archive_pkgs, ignore_cache) {
   # Initialize cache if git packages are present and not ignoring cache
   if (!is.null(git_pkgs) && !ignore_cache) {
     cache_file <- get_cache_file()
