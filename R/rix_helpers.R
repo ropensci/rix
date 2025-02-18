@@ -265,7 +265,7 @@ generate_git_archived_pkgs <- function(git_pkgs,
   if (flag_git_archive == "") {
     NULL
   } else {
-    fetchpkgs(git_pkgs, archive_pkgs)
+    fetchpkgs(git_pkgs, archive_pkgs, ignore_cache)
   }
 }
 
