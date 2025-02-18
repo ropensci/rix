@@ -72,7 +72,6 @@ testthat::test_that("Test fetchzip fails gracefully", {
 testthat::test_that("Test fetchgits", {
   testthat::skip_on_cran()
   cache_file <- get_cache_file()
-  on.exit(unlink(cache_file))
   pkg_list <- list(
     list(
       package_name = "housing",
@@ -90,6 +89,7 @@ testthat::test_that("Test fetchgits", {
     fetchgits(pkg_list),
     expected_output
   )
+  on.exit(unlink(cache_file))
 })
 
 testthat::test_that("Test fetchgits works when PR is provided in a remote package, but does not use it", {
@@ -97,10 +97,7 @@ testthat::test_that("Test fetchgits works when PR is provided in a remote packag
   # see https://github.com/mihem/rixTest/commit/b56829f7771d131e02fc58c546f9af6ee13b857e
   # This should not fail, however it will not use the PR and instead fetch the closest commit using GitHub API
   testthat::skip_on_cran()
-  cache_dir <- file.path(tempdir(), "rix_cache")
-    if (dir.exists(cache_dir)) {
-      unlink(cache_dir, recursive = TRUE)
-    }
+  cache_file <- get_cache_file()
   pkg_list <- list(
     package_name = "rixTest",
     repo_url = "https://github.com/mihem/rixTest",
@@ -138,6 +135,7 @@ testthat::test_that("Test fetchgits works when PR is provided in a remote packag
     fetchgits(pkg_list),
     expected_output
   )
+  on.exit(unlink(cache_file))
 })
 
 testthat::test_that("Test fetchgits works when tag is provided in a remote package, but does not use it", {
@@ -146,7 +144,6 @@ testthat::test_that("Test fetchgits works when tag is provided in a remote packa
   # This should not fail, however it will not use the tag and instead fetch the closest commit using GitHub API
   testthat::skip_on_cran()
   cache_file <- get_cache_file()
-  on.exit(unlink(cache_file))
   pkg_list <- list(
     list(
       package_name = "rixTest",
@@ -161,6 +158,7 @@ testthat::test_that("Test fetchgits works when tag is provided in a remote packa
     fetchgits(pkg_list),
     expected_output
   )
+  on.exit(unlink(cache_file))
 })
 
 testthat::test_that("Test fetchzips works", {
