@@ -428,6 +428,12 @@ fetchzips <- function(archive_pkgs) {
 #' @return Nix definition string for building the packages
 #' @noRd
 fetchpkgs <- function(git_pkgs, archive_pkgs) {
+  # Initialize cache if git packages are present
+  if (!is.null(git_pkgs)) {
+    cache_file <- get_cache_file()
+    on.exit(unlink(cache_file))  # Will clean up after all processing is done
+  }
+  
   # Combine git and archive package definitions
   paste(
     fetchgits(git_pkgs),
@@ -647,13 +653,9 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes) {
 #' @return Path to shared cache file
 #' @noRd
 get_cache_file <- function() {
-  cache_dir <- file.path(tempdir(), "rix_cache")
-  if (!dir.exists(cache_dir)) {
-    dir.create(cache_dir)
-  }
-  cache_file <- file.path(cache_dir, "package_cache.rds")
+  cache_file <- file.path(tempdir(), "package_cache.rds")
   if (!file.exists(cache_file)) {
     saveRDS(list(seen_packages = character(0), commit_cache = character(0)), cache_file)
   }
-  cache_file
+  return(cache_file)
 }
