@@ -268,13 +268,15 @@ like this:
 ```{r, eval = FALSE}
 rix(
   date = ...,
-  r_pkgs = c("languageserver", ...), # languageserver is needed
+  r_pkgs = ...,
   ide = "code", # or "codium"
   ...
 )
 ```
 
-Or if you prefer to use the Code you have installed system-wide, then:
+But if you prefer to use the Code you have installed system-wide, then you 
+need to add the `{languageserver}` 
+package and use `ide = "none"`:
 
 ```{r, eval = FALSE}
 rix(
