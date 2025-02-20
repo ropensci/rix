@@ -654,8 +654,10 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes, ...) 
 
   # Store package name and ref in cache key if ref is provided
   # otherwise set to NULL
-  cache_key <- if (length(remote_pkg_name_and_ref) == 2) {
-    paste0(pkg_name, "@", remote_pkg_name_and_ref[[2]])
+  if (!ignore_remotes_cache) {
+    cache_key <- if (length(remote_pkg_name_and_ref) == 2) {
+      paste0(pkg_name, "@", remote_pkg_name_and_ref[[2]])
+    }
   }
 
   # If ref (commit hash) is provided, use it
