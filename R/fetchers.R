@@ -652,10 +652,12 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes, ...) 
     }
   }
 
+  cache_key <- if (length(remote_pkg_name_and_ref) == 2) {
+    paste0(pkg_name, "@", remote_pkg_name_and_ref[[2]])
+  }
   # If ref (commit hash) is provided, use it
-  if (length(remote_pkg_name_and_ref) == 2) {
-    cache_key <- paste0(pkg_name, "@", remote_pkg_name_and_ref[[2]])
-    commit <- remote_pkg_name_and_ref[[2]]
+  commit <- if (length(remote_pkg_name_and_ref) == 2) {
+    remote_pkg_name_and_ref[[2]]
   } else if (length(remote_pkg_name_and_ref) == 1) {
     # For packages without ref, try to find closest one by date
     # fallback to HEAD if API fails
