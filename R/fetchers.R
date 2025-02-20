@@ -697,7 +697,13 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes, ...) 
 get_cache_file <- function() {
   cache_file <- file.path(tempdir(), "package_cache.rds")
   if (!file.exists(cache_file)) {
-    saveRDS(list(seen_packages = character(0), commit_cache = character(0)), cache_file)
+    saveRDS(
+      list(
+        "seen_packages" = character(0),
+        "commit_cache" = character(0)
+      ),
+      cache_file
+    )
   }
   return(cache_file)
 }
