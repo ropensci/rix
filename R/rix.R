@@ -72,7 +72,12 @@
 #'   is post-processed to eliminate potential duplicate definitions of packages,
 #'   which may happen if these packages have recursive remote dependencies. Set
 #'   to TRUE to skip post processing, which might be useful for debugging.
-#'
+#' @param ignore_remotes_cache Logical, defaults to FALSE. This variable is only
+#'   needed when adding packages from GitHub with remote dependencies, it can be
+#'   ignored otherwise. If `TRUE`, the cache of already processed GitHub remotes
+#'   will be ignored and all packages will be processed. If `FALSE`, the cache
+#'   will be used to skip already processed packages, which makes use of fewer
+#'   API calls. Setting this argument to `TRUE` can be useful for debugging.
 #' @details This function will write a `default.nix` and an `.Rprofile` in the
 #'   chosen path. Using the Nix package manager, it is then possible to build a
 #'   reproducible development environment using the `nix-build` command in the
@@ -187,7 +192,8 @@
 #'   print = TRUE,
 #'   message_type = "simple",
 #'   shell_hook = NULL,
-#'   skip_post_processing = FALSE
+#'   skip_post_processing = FALSE,
+#'   ignore_remotes_cache = FALSE
 #' )
 #' }
 rix <- function(r_ver = NULL,
@@ -203,7 +209,8 @@ rix <- function(r_ver = NULL,
                 print = FALSE,
                 message_type = "simple",
                 shell_hook = NULL,
-                skip_post_processing = FALSE) {
+                skip_post_processing = FALSE,
+                ignore_remotes_cache = FALSE) {
   message_type <- match.arg(message_type,
     choices = c("quiet", "simple", "verbose")
   )
@@ -370,7 +377,12 @@ for more details."
       ide
     ),
     generate_rpkgs(cran_pkgs$rPackages, flag_rpkgs),
-    generate_git_archived_pkgs(git_pkgs, cran_pkgs$archive_pkgs, flag_git_archive),
+    generate_git_archived_pkgs(
+      git_pkgs,
+      cran_pkgs$archive_pkgs,
+      flag_git_archive,
+      ignore_remotes_cache
+    ),
     generate_tex_pkgs(tex_pkgs),
     generate_local_r_pkgs(local_r_pkgs, flag_local_r_pkgs),
     generate_system_pkgs(system_pkgs, r_pkgs, ide),
@@ -417,7 +429,7 @@ for more details."
           "to ensure correct functioning of your Nix environment. ###\n\n"
         )
       } else {
-        if (message_type != "quiet"  && identical(Sys.getenv("TESTTHAT"), "false")) {
+        if (message_type != "quiet" && identical(Sys.getenv("TESTTHAT"), "false")) {
           message(
             sprintf(
               "\n\n### Successfully generated `default.nix` in %s. ",
@@ -457,28 +469,25 @@ for more details."
   }
 
   on.exit(close(con))
-
-
 }
 
 
 #' @noRd
-post_processing <- function(default.nix, flag_git_archive, skip_post_processing){
-
+post_processing <- function(default.nix, flag_git_archive, skip_post_processing) {
   # Remove potential duplicates
   do_processing <- if (flag_git_archive == "") {
-                     FALSE
-                   } else {
-                     TRUE
-                   }
+    FALSE
+  } else {
+    TRUE
+  }
 
   # only do post processing if there are git packages
   # or if skip_post_processing is TRUE
-  if (all(c(do_processing, !skip_post_processing))){
+  if (all(c(do_processing, !skip_post_processing))) {
     out <- remove_duplicate_entries(default.nix) |>
       remove_empty_lines()
   } else {
-    out <-default.nix
+    out <- default.nix
   }
 
   out
