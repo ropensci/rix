@@ -460,7 +460,7 @@ fetchpkgs <- function(git_pkgs, archive_pkgs, ...) {
     cache_file <- get_cache_file()
     on.exit(unlink(cache_file))  # Will clean up after all processing is done
   }
-  
+
   # Combine git and archive package definitions
   paste(
     fetchgits(git_pkgs, ...),
