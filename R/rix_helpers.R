@@ -256,16 +256,16 @@ generate_system_pkgs <- function(system_pkgs, r_pkgs, ide) {
 #' @param archive_pkgs Character, list of R packages to install from the CRAN
 #' archives.
 #' @param flag_git_archive Character, are there R packages from GitHub at all?
-#' @param ignore_cache Logical, should the cache be ignored?
+#' @param ... Further arguments passed down to methods.
 #' @noRd
 generate_git_archived_pkgs <- function(git_pkgs,
                                        archive_pkgs,
                                        flag_git_archive,
-                                       ignore_cache) {
+                                       ...) {
   if (flag_git_archive == "") {
     NULL
   } else {
-    fetchpkgs(git_pkgs, archive_pkgs, ignore_cache)
+    fetchpkgs(git_pkgs, archive_pkgs, ...)
   }
 }
 
