@@ -2,16 +2,16 @@
 #' @param git_pkg A list of three elements: "package_name", the name of the
 #'   package, "repo_url", the repository's url, "commit", the commit hash of
 #'   interest.
-#' @param ignore_cache A logical, defaults to `FALSE`. Should the cache be ignored?
+#' @param ... Further arguments passed down to methods.
 #' @return A character. The Nix definition to download and build the R package
 #'   from GitHub.
 #' @noRd
-fetchgit <- function(git_pkg, ignore_cache = FALSE) {
+fetchgit <- function(git_pkg, ...) {
   package_name <- git_pkg$package_name
   repo_url <- git_pkg$repo_url
   commit <- git_pkg$commit
 
-  output <- get_sri_hash_deps(repo_url, commit, ignore_cache)
+  output <- get_sri_hash_deps(repo_url, commit, ...)
   sri_hash <- output$sri_hash
   # If package has no remote dependencie
 
@@ -35,7 +35,7 @@ fetchgit <- function(git_pkg, ignore_cache = FALSE) {
     output <- main_package_expression
   } else { # if there are remote dependencies, start over
 
-    remote_packages_expressions <- fetchgits(remotes, ignore_cache)
+    remote_packages_expressions <- fetchgits(remotes, ...)
 
     output <- paste0(remote_packages_expressions,
       main_package_expression,
@@ -169,11 +169,11 @@ remove_base <- function(list_imports) {
 #' Finds dependencies of a package from the DESCRIPTION file
 #' @param path path to package
 #' @param commit_date date of commit
-#' @param ignore_cache A logical, defaults to FALSE. Should the cache be ignored?
+#' @param ... Further arguments passed down to methods.
 #' @importFrom utils untar
 #' @return Atomic vector of packages
 #' @noRd
-get_imports <- function(path, commit_date, ignore_cache = FALSE) {
+get_imports <- function(path, commit_date, ...) {
   tmpdir <- tempdir()
 
   tmp_dir <- tempfile(pattern = "file", tmpdir = tmpdir, fileext = "")
@@ -237,7 +237,7 @@ get_imports <- function(path, commit_date, ignore_cache = FALSE) {
 
     # try to get commit hash for each package if not already provided
     remote_pkgs_refs <- lapply(remote_pkgs_names_and_refs, function(x) {
-      resolve_package_commit(x, commit_date, remotes, ignore_cache)
+      resolve_package_commit(x, commit_date, remotes, ...)
     })
 
     urls <- paste0(
@@ -361,20 +361,22 @@ fetchlocals <- function(local_r_pkgs) {
   }
 }
 
-
-
 #' fetchgits Downloads and installs packages hosted on Git. Wraps `fetchgit()`
 #' to handle multiple packages
 #' @param git_pkgs A list of three elements: "package_name", the name of the
 #' package, "repo_url", the repository's url and "commit", the commit hash of
 #' interest. This argument can also be a list of lists of these three elements.
-#' @param ignore_cache A logical, defaults to `FALSE`. Should the cache be ignored?
-#' already processed packages.
+#' @param ... Further arguments passed down to methods.
 #' @return A character. The Nix definition to download and build the R package
 #' from GitHub.
 #' @noRd
-fetchgits <- function(git_pkgs, ignore_cache = FALSE) {
-  if (!ignore_cache) {
+fetchgits <- function(git_pkgs, ...) {
+  # Check if ignore_remotes_cache was passed
+  # If not passed, ignore_remotes_cache is FALSE
+  args <- list(...)
+  ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache)) args$ignore_remotes_cache else FALSE
+
+  if (!ignore_remotes_cache) {
     cache_file <- get_cache_file()
     cache <- readRDS(cache_file)
     if (!all(vapply(git_pkgs, is.list, logical(1)))) {
@@ -383,15 +385,25 @@ fetchgits <- function(git_pkgs, ignore_cache = FALSE) {
       }
       cache$seen_packages <- c(cache$seen_packages, git_pkgs$package_name)
       saveRDS(cache, cache_file)
-      fetchgit(git_pkgs, ignore_cache)
+      fetchgit(git_pkgs, ...)
     } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
       # Re-order list of git packages by "package name"
       git_pkgs <- git_pkgs[order(sapply(git_pkgs, "[[", "package_name"))]
       # Filter out already processed packages
-      git_pkgs <- git_pkgs[!sapply(git_pkgs, function(x) x$package_name %in% cache$seen_packages)]
-      cache$seen_packages <- c(cache$seen_packages, sapply(git_pkgs, "[[", "package_name"))
+      git_pkgs <- git_pkgs[
+        !sapply(
+          git_pkgs,
+          function(x) x$package_name %in% cache$seen_packages
+        )
+      ]
+
+      cache$seen_packages <- c(
+        cache$seen_packages,
+        sapply(git_pkgs, "[[", "package_name")
+      )
+
       saveRDS(cache, cache_file)
-      paste(lapply(git_pkgs, function(pkg) fetchgit(pkg, ignore_cache)), collapse = "\n")
+      paste(lapply(git_pkgs, function(pkg) fetchgit(pkg, ...)), collapse = "\n")
     } else {
       stop(
         "There is something wrong with the input. Make sure it is either a list of three elements ",
@@ -401,10 +413,10 @@ fetchgits <- function(git_pkgs, ignore_cache = FALSE) {
   } else {
     # When ignoring cache, process all packages without checking cache
     if (!all(vapply(git_pkgs, is.list, logical(1)))) {
-      fetchgit(git_pkgs, ignore_cache)
+      fetchgit(git_pkgs, ...)
     } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
       git_pkgs <- git_pkgs[order(sapply(git_pkgs, "[[", "package_name"))]
-      paste(lapply(git_pkgs, fetchgit, ignore_cache), collapse = "\n")
+      paste(lapply(git_pkgs, fetchgit, ...), collapse = "\n")
     } else {
       stop(
         "There is something wrong with the input. Make sure it is either a list of three elements ",
@@ -439,19 +451,22 @@ fetchzips <- function(archive_pkgs) {
 #' fetchpkgs Downloads and installs packages from CRAN archives or GitHub
 #' @param git_pkgs List of Git packages with name, url and commit
 #' @param archive_pkgs Vector of CRAN archive package names
-#' @param ignore_cache A logical, defaults to FALSE. Should the cache be ignored?
+#' @param ... Further arguments passed down to methods.
 #' @return Nix definition string for building the packages
 #' @noRd
-fetchpkgs <- function(git_pkgs, archive_pkgs, ignore_cache = FALSE) {
+fetchpkgs <- function(git_pkgs, archive_pkgs, ...) {
+  args <- list(...)
+  ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache)) args$ignore_remotes_cache else FALSE
+
   # Initialize cache if git packages are present and not ignoring cache
-  if (!is.null(git_pkgs) && !ignore_cache) {
+  if (!is.null(git_pkgs) && !ignore_remotes_cache) {
     cache_file <- get_cache_file()
-    on.exit(unlink(cache_file))  # Will clean up after all processing is done
+    on.exit(unlink(cache_file))
   }
-  
+
   # Combine git and archive package definitions
   paste(
-    fetchgits(git_pkgs, ignore_cache),
+    fetchgits(git_pkgs, ...),
     fetchzips(archive_pkgs),
     collapse = "\n"
   )
@@ -612,18 +627,22 @@ get_closest_commit <- function(commits_df, target_date) {
 }
 
 #' resolve_package_commit Resolves the commit SHA for a package based on a date
-#' @param remote_pkg_name_and_ref A list containing the package name and optionally a ref
+#' @param remote_pkg_name_and_ref A list containing the package name and
+#'   optionally a ref
 #' @param date The target date to find the closest commit
 #' @param remotes A character vector of remotes
-#' @param ignore_cache A logical, defaults to FALSE. Should the cache be ignored?
-#' @return A character. The commit SHA of the closest commit to the target date or "HEAD" if API fails
+#' @param ... Further arguments passed down to methods.
+#' @return A character. The commit SHA of the closest commit to the target date
+#'   or "HEAD" if API fails
 #' @noRd
-resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes, ignore_cache = FALSE) {
-  # Load cache if not ignoring cache
+resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes, ...) {
   pkg_name <- remote_pkg_name_and_ref[[1]]
 
+  args <- list(...)
+  ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache)) args$ignore_remotes_cache else FALSE
+
   # Check if package is already in cache
-  if (!ignore_cache) {
+  if (!ignore_remotes_cache) {
     cache_file <- get_cache_file()
     cache <- readRDS(cache_file)
     pkg_matches <- grep(paste0("^", pkg_name, "@"), cache$commit_cache)
@@ -664,7 +683,7 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes, ignor
   }
 
   # Update cache with new commit if not ignoring cache
-  if (!ignore_cache) {
+  if (!ignore_remotes_cache) {
     cache$commit_cache <- c(cache$commit_cache, cache_key)
     saveRDS(cache, cache_file)
   }
@@ -678,7 +697,13 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes, ignor
 get_cache_file <- function() {
   cache_file <- file.path(tempdir(), "package_cache.rds")
   if (!file.exists(cache_file)) {
-    saveRDS(list(seen_packages = character(0), commit_cache = character(0)), cache_file)
+    saveRDS(
+      list(
+        "seen_packages" = character(0),
+        "commit_cache" = character(0)
+      ),
+      cache_file
+    )
   }
   return(cache_file)
 }

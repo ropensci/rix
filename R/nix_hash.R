@@ -2,15 +2,15 @@
 #' available locally
 #' @param repo_url URL to Git repository
 #' @param commit Commit hash (SHA-1)
-#' @param ignore_cache Logical. Should the cache be ignored?
+#' @param ... Further arguments passed down to methods.
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a GitHub repo
 #'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
-nix_hash <- function(repo_url, commit, ignore_cache = FALSE) {
+nix_hash <- function(repo_url, commit, ...) {
   if (grepl("(github)|(gitlab)", repo_url)) {
-    hash_git(repo_url = repo_url, commit, ignore_cache)
+    hash_git(repo_url = repo_url, commit, ...)
   } else if (grepl("cran.*Archive.*", repo_url)) {
     hash_cran(repo_url = repo_url)
   } else {
@@ -24,13 +24,13 @@ nix_hash <- function(repo_url, commit, ignore_cache = FALSE) {
 
 #' Return the SRI hash of an URL with .tar.gz
 #' @param url String with URL ending with `.tar.gz`
-#' @param ignore_cache Logical. Should the cache be ignored?
+#' @param ... Further arguments passed down to methods.
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a GitHub repo
 #'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
-hash_url <- function(url, ignore_cache = FALSE) {
+hash_url <- function(url, ...) {
   tdir <- tempdir()
 
   tmpdir <- paste0(
@@ -91,7 +91,7 @@ hash_url <- function(url, ignore_cache = FALSE) {
     commit_date <- get_commit_date(repo_url_short, commit)
   }
 
-  deps <- get_imports(desc_path, commit_date, ignore_cache)
+  deps <- get_imports(desc_path, commit_date, ...)
 
   return(
     list(
@@ -189,13 +189,13 @@ hash_cran <- function(repo_url) {
 #' NAR
 #' @param repo_url URL to GitHub repository
 #' @param commit Commit hash
-#' @param ignore_cache Logical. Should the cache be ignored?
+#' @param ... Further arguments passed down to methods.
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a GitHub repo
 #'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
-hash_git <- function(repo_url, commit, ignore_cache = FALSE) {
+hash_git <- function(repo_url, commit, ...) {
   trailing_slash <- grepl("/$", repo_url)
   if (isTRUE(trailing_slash)) {
     slash <- ""
@@ -210,7 +210,7 @@ hash_git <- function(repo_url, commit, ignore_cache = FALSE) {
   }
 
   # list contains `sri_hash` and `deps` elements
-  list_sri_hash_deps <- hash_url(url, ignore_cache)
+  list_sri_hash_deps <- hash_url(url, ...)
 
   return(list_sri_hash_deps)
 }
@@ -265,20 +265,20 @@ nix_hash_online <- function(repo_url, commit) {
 #' the `.tar.gz` package hosted on CRAN.
 #' @param commit A character. The commit hash of interest, for reproducibility's
 #' sake, NULL for archived CRAN packages.
-#' @param ignore_cache Logical. Should the cache be ignored?
+#' @param ... Further arguments passed down to methods.
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a GitHub repo
 #'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
-get_sri_hash_deps <- function(repo_url, commit, ignore_cache = FALSE) {
+get_sri_hash_deps <- function(repo_url, commit, ...) {
   # if no `options(rix.sri_hash=)` is set, default is `"check_nix"`
   sri_hash_option <- get_sri_hash_option()
   has_nix_shell <- nix_shell_available()
   if (isTRUE(has_nix_shell)) {
     switch(sri_hash_option,
-      "check_nix" = nix_hash(repo_url, commit, ignore_cache),
-      "locally" = nix_hash(repo_url, commit, ignore_cache),
+      "check_nix" = nix_hash(repo_url, commit, ...),
+      "locally" = nix_hash(repo_url, commit, ...),
       "api_server" = nix_hash_online(repo_url, commit)
     )
   } else {

@@ -19,7 +19,7 @@ rix(
   message_type = "simple",
   shell_hook = NULL,
   skip_post_processing = FALSE,
-  ignore_cache = FALSE
+  ignore_remotes_cache = FALSE
 )
 }
 \arguments{
@@ -104,8 +104,12 @@ is post-processed to eliminate potential duplicate definitions of packages,
 which may happen if these packages have recursive remote dependencies. Set
 to TRUE to skip post processing, which might be useful for debugging.}
 
-\item{ignore_cache}{Logical, defaults to FALSE. If TRUE, do not use the cache
-to store remote dependencies that have been fetched.}
+\item{ignore_remotes_cache}{Logical, defaults to FALSE. This variable is only
+needed when adding packages from GitHub with remote dependencies, it can be
+ignored otherwise. If \code{TRUE}, the cache of already processed GitHub remotes
+will be ignored and all packages will be processed. If \code{FALSE}, the cache
+will be used to skip already processed packages, which makes use of fewer
+API calls.}
 }
 \value{
 Nothing, this function only has the side-effect of writing two files:
@@ -232,7 +236,7 @@ rix(
   message_type = "simple",
   shell_hook = NULL,
   skip_post_processing = FALSE,
-  ignore_cache = FALSE
+  ignore_remotes_cache = FALSE
 )
 }
 }
