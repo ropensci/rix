@@ -211,7 +211,7 @@ testthat::test_that("testing renv_helpers", {
         "/default_v0-17-3.nix"
       )),
       name = "default_v0-17-3.nix"
-      )
+    )
 
     testthat::expect_snapshot_file(
       # suprressWarning about incomplete final line

@@ -371,7 +371,6 @@ fetchlocals <- function(local_r_pkgs) {
 #' from GitHub.
 #' @noRd
 fetchgits <- function(git_pkgs, ...) {
-
   # Check if ignore_remotes_cache was passed
   # If not passed, ignore_remotes_cache is FALSE
   args <- list(...)
@@ -392,12 +391,16 @@ fetchgits <- function(git_pkgs, ...) {
       git_pkgs <- git_pkgs[order(sapply(git_pkgs, "[[", "package_name"))]
       # Filter out already processed packages
       git_pkgs <- git_pkgs[
-        !sapply(git_pkgs,
-                function(x) x$package_name %in% cache$seen_packages)
+        !sapply(
+          git_pkgs,
+          function(x) x$package_name %in% cache$seen_packages
+        )
       ]
 
-      cache$seen_packages <- c(cache$seen_packages,
-                               sapply(git_pkgs, "[[", "package_name"))
+      cache$seen_packages <- c(
+        cache$seen_packages,
+        sapply(git_pkgs, "[[", "package_name")
+      )
 
       saveRDS(cache, cache_file)
       paste(lapply(git_pkgs, function(pkg) fetchgit(pkg, ...)), collapse = "\n")
@@ -458,7 +461,7 @@ fetchpkgs <- function(git_pkgs, archive_pkgs, ...) {
   # Initialize cache if git packages are present and not ignoring cache
   if (!is.null(git_pkgs) && !ignore_remotes_cache) {
     cache_file <- get_cache_file()
-    on.exit(unlink(cache_file))  # Will clean up after all processing is done
+    on.exit(unlink(cache_file))
   }
 
   # Combine git and archive package definitions
@@ -624,14 +627,15 @@ get_closest_commit <- function(commits_df, target_date) {
 }
 
 #' resolve_package_commit Resolves the commit SHA for a package based on a date
-#' @param remote_pkg_name_and_ref A list containing the package name and optionally a ref
+#' @param remote_pkg_name_and_ref A list containing the package name and
+#'   optionally a ref
 #' @param date The target date to find the closest commit
 #' @param remotes A character vector of remotes
 #' @param ... Further arguments passed down to methods.
-#' @return A character. The commit SHA of the closest commit to the target date or "HEAD" if API fails
+#' @return A character. The commit SHA of the closest commit to the target date
+#'   or "HEAD" if API fails
 #' @noRd
 resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes, ...) {
-  # Load cache if not ignoring cache
   pkg_name <- remote_pkg_name_and_ref[[1]]
 
   args <- list(...)

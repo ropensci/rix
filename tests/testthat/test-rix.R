@@ -737,9 +737,10 @@ testthat::test_that("rix(), r-devel-bioc-devel", {
 
 
 testthat::test_that("remove_duplicate_entries(), correctly remove duplicates", {
-
-  dups_entries_default.nix <- paste0(testthat::test_path(),
-    "/testdata/default-nix_samples/dups-entries_default.nix")
+  dups_entries_default.nix <- paste0(
+    testthat::test_path(),
+    "/testdata/default-nix_samples/dups-entries_default.nix"
+  )
   tmpdir <- tempdir()
   destination_file <- file.path(tempdir(), basename(dups_entries_default.nix))
   file.copy(dups_entries_default.nix, destination_file, overwrite = TRUE)
@@ -750,7 +751,6 @@ testthat::test_that("remove_duplicate_entries(), correctly remove duplicates", {
   )
 
   removed_dups <- function(destination_file) {
-
     out <- remove_duplicate_entries(readLines(destination_file)) |>
       remove_empty_lines()
 
@@ -766,10 +766,10 @@ testthat::test_that("remove_duplicate_entries(), correctly remove duplicates", {
 })
 
 testthat::test_that("remove_duplicate_entries(), don't remove duplicates if skip", {
-
-
-  dups_entries_default.nix <- paste0(testthat::test_path(),
-    "/testdata/default-nix_samples/dups-entries_default.nix")
+  dups_entries_default.nix <- paste0(
+    testthat::test_path(),
+    "/testdata/default-nix_samples/dups-entries_default.nix"
+  )
   tmpdir <- tempdir()
   destination_file <- file.path(tempdir(), basename(dups_entries_default.nix))
   file.copy(dups_entries_default.nix, destination_file, overwrite = TRUE)
@@ -780,7 +780,6 @@ testthat::test_that("remove_duplicate_entries(), don't remove duplicates if skip
   )
 
   removed_dups <- function(destination_file) {
-
     out <- post_processing(destination_file, flag_git_archive = "", skip_post_processing = TRUE)
 
     file.path(destination_file)
