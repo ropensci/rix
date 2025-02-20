@@ -372,10 +372,12 @@ fetchlocals <- function(local_r_pkgs) {
 #' @noRd
 fetchgits <- function(git_pkgs, ...) {
 
+  # Check if ignore_remotes_cache was passed
+  # If not passed, ignore_remotes_cache is FALSE
   args <- list(...)
-  ignore_cache <- if (!is.null(args$ignore_cache)) args$ignore_cache else FALSE
+  ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache)) args$ignore_remotes_cache else FALSE
 
-  if (!ignore_cache) {
+  if (!ignore_remotes_cache) {
     cache_file <- get_cache_file()
     cache <- readRDS(cache_file)
     if (!all(vapply(git_pkgs, is.list, logical(1)))) {
@@ -389,8 +391,14 @@ fetchgits <- function(git_pkgs, ...) {
       # Re-order list of git packages by "package name"
       git_pkgs <- git_pkgs[order(sapply(git_pkgs, "[[", "package_name"))]
       # Filter out already processed packages
-      git_pkgs <- git_pkgs[!sapply(git_pkgs, function(x) x$package_name %in% cache$seen_packages)]
-      cache$seen_packages <- c(cache$seen_packages, sapply(git_pkgs, "[[", "package_name"))
+      git_pkgs <- git_pkgs[
+        !sapply(git_pkgs,
+                function(x) x$package_name %in% cache$seen_packages)
+      ]
+
+      cache$seen_packages <- c(cache$seen_packages,
+                               sapply(git_pkgs, "[[", "package_name"))
+
       saveRDS(cache, cache_file)
       paste(lapply(git_pkgs, function(pkg) fetchgit(pkg, ...)), collapse = "\n")
     } else {
@@ -445,10 +453,10 @@ fetchzips <- function(archive_pkgs) {
 #' @noRd
 fetchpkgs <- function(git_pkgs, archive_pkgs, ...) {
   args <- list(...)
-  ignore_cache <- if (!is.null(args$ignore_cache)) args$ignore_cache else FALSE
+  ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache)) args$ignore_remotes_cache else FALSE
 
   # Initialize cache if git packages are present and not ignoring cache
-  if (!is.null(git_pkgs) && !ignore_cache) {
+  if (!is.null(git_pkgs) && !ignore_remotes_cache) {
     cache_file <- get_cache_file()
     on.exit(unlink(cache_file))  # Will clean up after all processing is done
   }
@@ -627,10 +635,10 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes, ...) 
   pkg_name <- remote_pkg_name_and_ref[[1]]
 
   args <- list(...)
-  ignore_cache <- if (!is.null(args$ignore_cache)) args$ignore_cache else FALSE
+  ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache)) args$ignore_remotes_cache else FALSE
 
   # Check if package is already in cache
-  if (!ignore_cache) {
+  if (!ignore_remotes_cache) {
     cache_file <- get_cache_file()
     cache <- readRDS(cache_file)
     pkg_matches <- grep(paste0("^", pkg_name, "@"), cache$commit_cache)
@@ -671,7 +679,7 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes, ...) 
   }
 
   # Update cache with new commit if not ignoring cache
-  if (!ignore_cache) {
+  if (!ignore_remotes_cache) {
     cache$commit_cache <- c(cache$commit_cache, cache_key)
     saveRDS(cache, cache_file)
   }

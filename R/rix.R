@@ -72,9 +72,12 @@
 #'   is post-processed to eliminate potential duplicate definitions of packages,
 #'   which may happen if these packages have recursive remote dependencies. Set
 #'   to TRUE to skip post processing, which might be useful for debugging.
-#' @param ignore_cache Logical, defaults to FALSE. If `TRUE`, the cache will be ignored 
-#'   and all packages will be processed. If `FALSE`, the cache will be used to skip
-#'   already processed packages.
+#' @param ignore_remotes_cache Logical, defaults to FALSE. This variable is only
+#'   needed when adding packages from GitHub with remote dependencies, it can be
+#'   ignored otherwise. If `TRUE`, the cache of already processed GitHub remotes
+#'   will be ignored and all packages will be processed. If `FALSE`, the cache
+#'   will be used to skip already processed packages, which makes use of fewer
+#'   API calls.
 #' @details This function will write a `default.nix` and an `.Rprofile` in the
 #'   chosen path. Using the Nix package manager, it is then possible to build a
 #'   reproducible development environment using the `nix-build` command in the
@@ -190,7 +193,7 @@
 #'   message_type = "simple",
 #'   shell_hook = NULL,
 #'   skip_post_processing = FALSE,
-#'   ignore_cache = FALSE
+#'   ignore_remotes_cache = FALSE
 #' )
 #' }
 rix <- function(r_ver = NULL,
@@ -207,7 +210,7 @@ rix <- function(r_ver = NULL,
                 message_type = "simple",
                 shell_hook = NULL,
                 skip_post_processing = FALSE,
-                ignore_cache = FALSE) {
+                ignore_remotes_cache = FALSE) {
   
   message_type <- match.arg(message_type,
     choices = c("quiet", "simple", "verbose")
@@ -379,7 +382,7 @@ for more details."
       git_pkgs, 
       cran_pkgs$archive_pkgs, 
       flag_git_archive,
-      ignore_cache
+      ignore_remotes_cache
     ),
     generate_tex_pkgs(tex_pkgs),
     generate_local_r_pkgs(local_r_pkgs, flag_local_r_pkgs),

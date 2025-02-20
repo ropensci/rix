@@ -19,7 +19,7 @@ rix(
   message_type = "simple",
   shell_hook = NULL,
   skip_post_processing = FALSE,
-  ignore_cache = FALSE
+  ignore_remotes_cache = FALSE
 )
 }
 \arguments{
@@ -104,7 +104,7 @@ is post-processed to eliminate potential duplicate definitions of packages,
 which may happen if these packages have recursive remote dependencies. Set
 to TRUE to skip post processing, which might be useful for debugging.}
 
-\item{ignore_cache}{Logical, defaults to FALSE. If TRUE, do not use the cache
+\item{ignore_remotes_cache}{Logical, defaults to FALSE. If TRUE, do not use the cache
 to store remote dependencies that have been fetched.}
 }
 \value{
@@ -232,7 +232,7 @@ rix(
   message_type = "simple",
   shell_hook = NULL,
   skip_post_processing = FALSE,
-  ignore_cache = FALSE
+  ignore_remotes_cache = FALSE
 )
 }
 }
