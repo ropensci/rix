@@ -381,7 +381,7 @@ for more details."
       git_pkgs,
       cran_pkgs$archive_pkgs,
       flag_git_archive,
-      ignore_remotes_cache
+      ignore_remotes_cache = ignore_remotes_cache
     ),
     generate_tex_pkgs(tex_pkgs),
     generate_local_r_pkgs(local_r_pkgs, flag_local_r_pkgs),
