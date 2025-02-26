@@ -374,6 +374,7 @@ let
       } ++ [ datathin ];
     });
 
+
     datathin = (pkgs.rPackages.buildRPackage {
       name = "datathin";
       src = pkgs.fetchgit {

@@ -67,11 +67,6 @@
 #'   possibly with flags (separated by space), and/or do shell actions. You can
 #'   for example use `shell_hook = R`, if you want to directly enter the
 #'   declared Nix R session when dropping into the Nix shell.
-#' @param skip_post_processing Logical, defaults to FALSE. Should post-processing be
-#'   skipped? By default, if there are GitHub packages, the generated `default.nix`
-#'   is post-processed to eliminate potential duplicate definitions of packages,
-#'   which may happen if these packages have recursive remote dependencies. Set
-#'   to TRUE to skip post processing, which might be useful for debugging.
 #' @param ignore_remotes_cache Logical, defaults to FALSE. This variable is only
 #'   needed when adding packages from GitHub with remote dependencies, it can be
 #'   ignored otherwise. If `TRUE`, the cache of already processed GitHub remotes
@@ -192,7 +187,6 @@
 #'   print = TRUE,
 #'   message_type = "simple",
 #'   shell_hook = NULL,
-#'   skip_post_processing = FALSE,
 #'   ignore_remotes_cache = FALSE
 #' )
 #' }
@@ -209,7 +203,6 @@ rix <- function(r_ver = NULL,
                 print = FALSE,
                 message_type = "simple",
                 shell_hook = NULL,
-                skip_post_processing = FALSE,
                 ignore_remotes_cache = FALSE) {
   message_type <- match.arg(message_type,
     choices = c("quiet", "simple", "verbose")
@@ -398,9 +391,6 @@ for more details."
 
   default.nix <- strsplit(default.nix, split = "\n")[[1]]
 
-  # Remove potential duplicates
-  default.nix <- post_processing(default.nix, flag_git_archive, skip_post_processing)
-
   if (print) {
     print(default.nix)
   }
@@ -469,26 +459,4 @@ for more details."
   }
 
   on.exit(close(con))
-}
-
-
-#' @noRd
-post_processing <- function(default.nix, flag_git_archive, skip_post_processing) {
-  # Remove potential duplicates
-  do_processing <- if (flag_git_archive == "") {
-    FALSE
-  } else {
-    TRUE
-  }
-
-  # only do post processing if there are git packages
-  # or if skip_post_processing is TRUE
-  if (all(c(do_processing, !skip_post_processing))) {
-    out <- remove_duplicate_entries(default.nix) |>
-      remove_empty_lines()
-  } else {
-    out <- default.nix
-  }
-
-  out
 }

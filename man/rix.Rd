@@ -18,7 +18,6 @@ rix(
   print = FALSE,
   message_type = "simple",
   shell_hook = NULL,
-  skip_post_processing = FALSE,
   ignore_remotes_cache = FALSE
 )
 }
@@ -98,18 +97,12 @@ possibly with flags (separated by space), and/or do shell actions. You can
 for example use \code{shell_hook = R}, if you want to directly enter the
 declared Nix R session when dropping into the Nix shell.}
 
-\item{skip_post_processing}{Logical, defaults to FALSE. Should post-processing be
-skipped? By default, if there are GitHub packages, the generated \code{default.nix}
-is post-processed to eliminate potential duplicate definitions of packages,
-which may happen if these packages have recursive remote dependencies. Set
-to TRUE to skip post processing, which might be useful for debugging.}
-
 \item{ignore_remotes_cache}{Logical, defaults to FALSE. This variable is only
 needed when adding packages from GitHub with remote dependencies, it can be
 ignored otherwise. If \code{TRUE}, the cache of already processed GitHub remotes
 will be ignored and all packages will be processed. If \code{FALSE}, the cache
 will be used to skip already processed packages, which makes use of fewer
-API calls.}
+API calls. Setting this argument to \code{TRUE} can be useful for debugging.}
 }
 \value{
 Nothing, this function only has the side-effect of writing two files:
@@ -235,7 +228,6 @@ rix(
   print = TRUE,
   message_type = "simple",
   shell_hook = NULL,
-  skip_post_processing = FALSE,
   ignore_remotes_cache = FALSE
 )
 }
