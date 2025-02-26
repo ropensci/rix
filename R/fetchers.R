@@ -387,18 +387,20 @@ fetchgits <- function(git_pkgs, ...) {
       fetchgit(git_pkgs, ...)
     } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
       # Re-order list of git packages by "package name"
-      git_pkgs <- git_pkgs[order(sapply(git_pkgs, "[[", "package_name"))]
-      # Filter out already processed packages
+      pkg_names <- vapply(git_pkgs, function(x) x$package_name, character(1))
+      git_pkgs <- git_pkgs[order(pkg_names)]
+      # Filter out already processed packages 
       git_pkgs <- git_pkgs[
-        !sapply(
+        !vapply(
           git_pkgs,
-          function(x) x$package_name %in% cache$seen_packages
+          function(x) x$package_name %in% cache$seen_packages,
+          logical(1)
         )
       ]
 
       cache$seen_packages <- c(
         cache$seen_packages,
-        sapply(git_pkgs, "[[", "package_name")
+        vapply(git_pkgs, function(x) x$package_name, character(1))
       )
 
       saveRDS(cache, cache_file)
@@ -414,7 +416,7 @@ fetchgits <- function(git_pkgs, ...) {
     if (!all(vapply(git_pkgs, is.list, logical(1)))) {
       fetchgit(git_pkgs, ...)
     } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
-      git_pkgs <- git_pkgs[order(sapply(git_pkgs, "[[", "package_name"))]
+      git_pkgs <- git_pkgs[order(vapply(git_pkgs, function(x) x$package_name, character(1)))]
       paste(lapply(git_pkgs, fetchgit, ...), collapse = "\n")
     } else {
       stop(
