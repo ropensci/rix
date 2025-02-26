@@ -213,14 +213,13 @@ get_imports <- function(path, commit_date, ...) {
     remotes <- gsub("\n", "", x = unlist(strsplit(remotes$Remotes, ",")))
     # Remove PR if present because this is difficult to handle
     remotes <- sub("#.*$", "", remotes)
-    # Only keep @ part if it is a commit sha
+    # Only keep part after @ if it is a commit sha(7-40 hex chars)
     remotes <- unname(sapply(remotes, function(x) {
       parts <- strsplit(x, "@")[[1]]
       if (length(parts) == 1) {
         return(parts[1])
       }
       ref <- parts[2]
-      # Keep only if it looks like a SHA (7-40 hex chars)
       if (grepl("^[0-9a-f]{7,40}$", ref)) {
         return(x)
       }
@@ -638,6 +637,7 @@ get_closest_commit <- function(commits_df, target_date) {
 resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes, ...) {
   pkg_name <- remote_pkg_name_and_ref[[1]]
 
+  # Check if ignore_remotes_cache was passed, otherwise set to FALSE
   args <- list(...)
   ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache)) args$ignore_remotes_cache else FALSE
 
@@ -647,20 +647,25 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes, ...) 
     cache <- readRDS(cache_file)
     pkg_matches <- grep(paste0("^", pkg_name, "@"), cache$commit_cache)
 
+  # Return commit from cache if found
     if (length(pkg_matches) > 0) {
       return(cache$commit_cache[pkg_matches[1]])
     }
   }
-
-  # Store package name and ref in cache key if ref is provided
+  # Store package name and ref in cache key if ref (commit-sha) is provided
   # otherwise set to NULL
+  # example: package_name@commit_sha, e.g., schex@031320d was earlier split
+  # into a list of two elements: `package_name` and `commit_sha, e.g., `schex`, `031320d`
+  # and is now stored in `cache_key` as `schex@031320d` for caching
   if (!ignore_remotes_cache) {
     cache_key <- if (length(remote_pkg_name_and_ref) == 2) {
       paste0(pkg_name, "@", remote_pkg_name_and_ref[[2]])
+    } else {
+      NULL
     }
   }
 
-  # If ref (commit hash) is provided, use it
+  # If ref (commit hash, e.g. `031320d`) is provided, use it
   commit <- if (length(remote_pkg_name_and_ref) == 2) {
     remote_pkg_name_and_ref[[2]]
   } else if (length(remote_pkg_name_and_ref) == 1) {
@@ -687,7 +692,7 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes, ...) 
     stop("remote_pkg_name_and_ref must be a list of length 1 or 2")
   }
 
-  # Update cache with new commit if not ignoring cache
+  # If not ignoring cache, Update cache with new cache_key (e.g. `schex@031320d`)
   if (!ignore_remotes_cache) {
     cache$commit_cache <- c(cache$commit_cache, cache_key)
     saveRDS(cache, cache_file)
