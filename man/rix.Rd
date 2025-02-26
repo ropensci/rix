@@ -18,7 +18,8 @@ rix(
   print = FALSE,
   message_type = "simple",
   shell_hook = NULL,
-  skip_post_processing = FALSE
+  skip_post_processing = FALSE,
+  ignore_remotes_cache = FALSE
 )
 }
 \arguments{
@@ -102,6 +103,13 @@ skipped? By default, if there are GitHub packages, the generated \code{default.n
 is post-processed to eliminate potential duplicate definitions of packages,
 which may happen if these packages have recursive remote dependencies. Set
 to TRUE to skip post processing, which might be useful for debugging.}
+
+\item{ignore_remotes_cache}{Logical, defaults to FALSE. This variable is only
+needed when adding packages from GitHub with remote dependencies, it can be
+ignored otherwise. If \code{TRUE}, the cache of already processed GitHub remotes
+will be ignored and all packages will be processed. If \code{FALSE}, the cache
+will be used to skip already processed packages, which makes use of fewer
+API calls.}
 }
 \value{
 Nothing, this function only has the side-effect of writing two files:
@@ -227,7 +235,8 @@ rix(
   print = TRUE,
   message_type = "simple",
   shell_hook = NULL,
-  skip_post_processing = FALSE
+  skip_post_processing = FALSE,
+  ignore_remotes_cache = FALSE
 )
 }
 }
