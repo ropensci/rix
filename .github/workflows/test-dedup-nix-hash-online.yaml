@@ -1,0 +1,39 @@
+# Integration tests for removing duplicates when nix is not installed
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: test-dedup-nix-hash-online
+
+permissions:
+  contents: read
+
+jobs:
+  devtools:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.4.2'
+    
+      - name: Build default.nix that could result in duplicates
+        run: |
+          "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = c('tidyverse', 'mlr3', 'qs', 'matrixStats', 'prospectr', 'Cubist', 'checkmate', 'mlr3misc', 'paradox'), git_pkgs = list(package_name = 'mlr3extralearners', repo_url = 'https://github.com/mlr-org/mlr3extralearners/', commit = '6e2af9ef9ecd420d2be44e9aa2488772bb9f7080'), ide = 'none', project_path = '.', overwrite = TRUE, print = FALSE, ignore_remotes_cache = FALSE)\""
+
+      - name: Download test default.nix without dups
+        run: |
+          wget -O mlr3_default.nix https://raw.githubusercontent.com/mihem/rix/refs/heads/remove_duplicate_third/tests/testthat/testdata/remote-pkgs/mlr3_default.nix
+
+      - name: Remove lines starting with `#` from generated expression
+        run: sed -i '/^#/d' default.nix
+
+      - name: Compare lines and fail if different
+        run: diff -q default.nix mlr3_default.nix || exit 1
