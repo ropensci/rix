@@ -250,7 +250,10 @@ nix_hash_online <- function(repo_url, commit) {
   # - `sri_hash`: string with SHA256 hash in base-64 and SRI format of a
   # GitHub repository at a given commit ID
   # - `deps`: string with R package dependencies separated by `" "`
-  sri_hash_deps_list <- jsonlite::fromJSON(rawToChar(req$content))
+  sri_hash_deps_list <- jsonlite::fromJSON(rawToChar(req$content), 
+                                           simplifyDataFrame = FALSE,
+                                           simplifyMatrix = FALSE
+                                          )
 
   return(sri_hash_deps_list)
 }
