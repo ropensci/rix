@@ -93,7 +93,7 @@ generate_git_nix_expression <- function(package_name,
 ',
     package_name,
     package_name,
-    repo_url,
+    sub("/$", "", repo_url), #remove trailing url as it messes up api call to git2nixsha
     commit,
     sri_hash,
     imports,
