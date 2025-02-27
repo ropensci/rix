@@ -158,18 +158,15 @@ have looked at the time of \code{{ggplot2}}'s version 2.2.1 release, then use
 the Nix revision closest to that date, by setting \code{r_ver = "3.1.0"}, which
 was the version of R current at the time. This ensures that Nix builds a
 completely coherent environment. For security purposes, users that wish to
-install packages from GitHub/Gitlab or from the CRAN archives must provide
+install packages from GitHub/GitLab or from the CRAN archives must provide
 a security hash for each package. \code{{rix}} automatically precomputes this
 hash for the source directory of R packages from GitHub/Gitlab or from the
 CRAN archives, to make sure the expected trusted sources that match the
-precomputed hashes in the \code{default.nix} are downloaded. If Nix is
-available, then the hash will be computed on the user's machine, however,
-if Nix is not available, then the hash gets computed on a server that we
-set up for this purposes. This server then returns the security hash as
-well as the dependencies of the packages. It is possible to control this
-behaviour using \code{options(rix.sri_hash=x)}, where \code{x} is one of "check_nix"
-(the default), "locally" (use the local Nix installation) or "api_server"
-(use the remote server to compute and return the hash).
+precomputed hashes in the \code{default.nix} are downloaded, but only if Nix
+is installed. If you need to generate an expression with such packages,
+but are working on a system where you can't install Nix, consider generating
+the expression using a continuous integration service, such as GitHub
+Actions. The function \code{init_git_project()} can help you get started.
 
 Note that installing packages from Git or old versions using the \code{"@"}
 notation or local packages, does not leverage Nix's capabilities for

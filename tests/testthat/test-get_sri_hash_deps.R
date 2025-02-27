@@ -1,8 +1,8 @@
-testthat::test_that("get_sri_hash_deps returns correct sri hash and dependencies of R packages", {
+testthat::test_that("nix_hash returns correct sri hash and dependencies of R packages", {
   testthat::skip_on_cran()
 
   testthat::expect_equal(
-    get_sri_hash_deps(
+    nix_hash(
       "https://github.com/rap4all/housing/",
       "1c860959310b80e67c41f7bbdc3e84cef00df18e"
     ),
@@ -11,8 +11,15 @@ testthat::test_that("get_sri_hash_deps returns correct sri hash and dependencies
       "deps" = list(
         "package" = "housing",
         "imports" = c(
-          "dplyr", "ggplot2", "janitor", "purrr",
-          "readxl", "rlang", "rvest", "stringr", "tidyr"
+          "dplyr",
+          "ggplot2",
+          "janitor",
+          "purrr",
+          "readxl",
+          "rlang",
+          "rvest",
+          "stringr",
+          "tidyr"
         ),
         "remotes" = list()
       )
