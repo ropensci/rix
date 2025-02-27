@@ -821,3 +821,48 @@ testthat::test_that("remove_duplicate_entries(), don't remove duplicates if skip
     name = "skip-dups-entries_default.nix",
   )
 })
+
+testthat::test_that("rix() errors if nix is not installed", {
+  os_type <- Sys.info()["sysname"]
+  skip_if(os_type == "Windows")
+
+  skip_if_not(!nix_shell_available())
+  tmpdir <- tempdir()
+
+  path_default_nix <- paste0(
+    tmpdir,
+    paste0(sample(letters, 5), collapse = "")
+  )
+  dir.create(path_default_nix)
+  path_default_nix <- normalizePath(path_default_nix)
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+
+  save_default_nix_test <- function(ide, path_default_nix) {
+    # This will generate the warning to read the vignette for r-devel-bioc-devel
+    suppressWarnings(
+      rix(
+        r_ver = "2025-02-24",
+        r_pkgs = "dplyr@0.8.0",
+        ide = ide,
+        project_path = path_default_nix,
+        overwrite = TRUE,
+        message_type = "quiet",
+        shell_hook = NULL
+      )
+    )
+
+    file.path(path_default_nix, "default.nix")
+  }
+
+  testthat::expect_error(
+    save_default_nix_test(ide = "none", path_default_nix),
+    "is needed but is not available in your"
+  )
+})
