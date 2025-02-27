@@ -5,7 +5,7 @@ let
     housing = (pkgs.rPackages.buildRPackage {
       name = "housing";
       src = pkgs.fetchgit {
-        url = "https://github.com/rap4all/housing/";
+        url = "https://github.com/rap4all/housing";
         rev = "1c860959310b80e67c41f7bbdc3e84cef00df18e";
         sha256 = "sha256-s4KGtfKQ7hL0sfDhGb4BpBpspfefBN6hf+XlslqyEn4=";
       };
