@@ -1,6 +1,6 @@
 testthat::test_that("nix_hash returns correct sri hash and dependencies of R packages", {
   testthat::skip_on_cran()
-
+  skip_if_not(nix_shell_available())
   testthat::expect_equal(
     nix_hash(
       "https://github.com/rap4all/housing/",

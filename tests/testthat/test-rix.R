@@ -481,6 +481,7 @@ testthat::test_that("rix(), frozen-edge", {
 testthat::test_that("rix(), only one GitHub package", {
   os_type <- Sys.info()["sysname"]
   skip_if(os_type == "Windows")
+  skip_if_not(nix_shell_available())
 
   tmpdir <- tempdir()
 
