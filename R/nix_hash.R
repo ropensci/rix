@@ -193,17 +193,11 @@ hash_cran <- function(repo_url) {
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
 hash_git <- function(repo_url, commit) {
-  trailing_slash <- grepl("/$", repo_url)
-  if (isTRUE(trailing_slash)) {
-    slash <- ""
-  } else {
-    slash <- "/"
-  }
 
   if (grepl("github", repo_url)) {
-    url <- paste0(repo_url, slash, "archive/", commit, ".tar.gz")
+    url <- paste0(repo_url, "/archive/", commit, ".tar.gz")
   } else if (grepl("gitlab", repo_url)) {
-    url <- paste0(repo_url, slash, "-/archive/", commit, ".tar.gz")
+    url <- paste0(repo_url, "/-/archive/", commit, ".tar.gz")
   }
 
   # list contains `sri_hash` and `deps` elements
