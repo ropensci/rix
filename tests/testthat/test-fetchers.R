@@ -164,6 +164,7 @@ testthat::test_that("Test fetchgits works when tag is provided in a remote packa
 
 testthat::test_that("Test fetchzips works", {
   testthat::skip_on_cran()
+  skip_if_not(nix_shell_available())
   testthat::expect_equal(
     fetchzips(
       c("dplyr@0.8.0", "AER@1.2-8")
@@ -174,6 +175,7 @@ testthat::test_that("Test fetchzips works", {
 
 testthat::test_that("Test fetchpkgs works", {
   testthat::skip_on_cran()
+  skip_if_not(nix_shell_available())
   testthat::expect_equal(
     fetchpkgs(
       git_pkgs = list(
@@ -228,6 +230,7 @@ testthat::test_that("Test fetchgit gets a package that is not listed in DESCRIPT
 
 testthat::test_that("Test fetchgit works even if there are not `importfrom` in NAMESPACE", {
   testthat::skip_on_cran()
+  skip_if_not(nix_shell_available())
   testthat::expect_no_error(
     fetchgit(
       list(

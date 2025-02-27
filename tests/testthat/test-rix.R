@@ -848,7 +848,7 @@ testthat::test_that("rix() errors if nix is not installed", {
     # This will generate the warning to read the vignette for r-devel-bioc-devel
     suppressWarnings(
       rix(
-        r_ver = "2025-02-24",
+        date = "2025-02-24",
         r_pkgs = "dplyr@0.8.0",
         ide = ide,
         project_path = path_default_nix,

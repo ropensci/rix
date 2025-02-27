@@ -1,3 +1,5 @@
+skip_if_not(nix_shell_available())
+
 testthat::test_that("testing renv_helpers", {
   testthat::expect_true(exists("renv2nix"))
   # following as nested test pattern based on:
@@ -6,13 +8,23 @@ testthat::test_that("testing renv_helpers", {
   # testthat::skip("skipping remaining renv_helpers tests...") # uncomment to skip subsequent tests
 
   renv_sample_dir <- paste0(testthat::test_path(), "/testdata/renv-samples")
-  renv_sample_files <- list.files(renv_sample_dir, pattern = "*.lock", full.names = TRUE)
+  renv_sample_files <- list.files(
+    renv_sample_dir,
+    pattern = "*.lock",
+    full.names = TRUE
+  )
 
   testthat::test_that("Testing `read_renv_lock()`", {
-    testthat::expect_error(read_renv_lock("nosuchfile"), "nosuchfile does not exist")
+    testthat::expect_error(
+      read_renv_lock("nosuchfile"),
+      "nosuchfile does not exist"
+    )
     tmpf <- tempfile()
     cat("not json", file = tmpf)
-    testthat::expect_error(read_renv_lock(tmpf), "Error reading renv\\.lock file")
+    testthat::expect_error(
+      read_renv_lock(tmpf),
+      "Error reading renv\\.lock file"
+    )
     unlink(tmpf)
     for (file in renv_sample_files) {
       testthat::expect_type(read_renv_lock(file), "list")
@@ -83,7 +95,10 @@ testthat::test_that("testing renv_helpers", {
 
   testthat::test_that("Testing `renv_remote_pkg()`", {
     testthat::expect_equal(
-      renv_remote_pkgs(synthetic_renv_lock_example$Packages[c("githubpkg", "gitlabpkg")]),
+      renv_remote_pkgs(synthetic_renv_lock_example$Packages[c(
+        "githubpkg",
+        "gitlabpkg"
+      )]),
       expected_git_pkg
     )
     testthat::expect_error(
@@ -91,9 +106,12 @@ testthat::test_that("testing renv_helpers", {
       "Not a package installed from a remote outside of the main package repositories"
     )
     testthat::expect_error(
-      renv_remote_pkgs(synthetic_renv_lock_example$Packages[
-        c("githubpkg", "gitlabpkg", "unsupported")
-      ], host = "unsupported"),
+      renv_remote_pkgs(
+        synthetic_renv_lock_example$Packages[
+          c("githubpkg", "gitlabpkg", "unsupported")
+        ],
+        host = "unsupported"
+      ),
       "Unsupported remote host:"
     )
     testthat::expect_error(
@@ -103,9 +121,12 @@ testthat::test_that("testing renv_helpers", {
       "has unsupported remote host"
     )
     testthat::expect_error(
-      renv_remote_pkgs(synthetic_renv_lock_example$Packages[
-        c("githubpkg", "gitlabpkg", "unsupported")
-      ], host = "api.github.com"),
+      renv_remote_pkgs(
+        synthetic_renv_lock_example$Packages[
+          c("githubpkg", "gitlabpkg", "unsupported")
+        ],
+        host = "api.github.com"
+      ),
       "does not match the provided host"
     )
   })
@@ -158,7 +179,11 @@ testthat::test_that("testing renv_helpers", {
 
   testthat::test_that("Testing `renv_lock_r_ver()`", {
     tmpf <- tempfile()
-    jsonlite::write_json(list(R = list(Version = "4.4.1")), tmpf, auto_unbox = TRUE)
+    jsonlite::write_json(
+      list(R = list(Version = "4.4.1")),
+      tmpf,
+      auto_unbox = TRUE
+    )
     renv_lock <- read_renv_lock(tmpf)
     testthat::expect_equal(renv_lock_r_ver(renv_lock), "4.4.1")
     unlink(tmpf)
@@ -167,7 +192,12 @@ testthat::test_that("testing renv_helpers", {
   testthat::test_that("Testing `renv2nix()` on actual renv.lock files", {
     path_env_nix <- tempdir()
 
-    save_renv2nix_test <- function(renv_lock_path, path_env_nix, output_nix_file, ...) {
+    save_renv2nix_test <- function(
+      renv_lock_path,
+      path_env_nix,
+      output_nix_file,
+      ...
+    ) {
       renv2nix(
         renv_lock_path = renv_lock_path,
         project_path = path_env_nix,
@@ -211,7 +241,7 @@ testthat::test_that("testing renv_helpers", {
         "/default_v0-17-3.nix"
       )),
       name = "default_v0-17-3.nix"
-      )
+    )
 
     testthat::expect_snapshot_file(
       # suprressWarning about incomplete final line
