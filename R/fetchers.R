@@ -8,7 +8,7 @@
 fetchgit <- function(git_pkg) {
   package_name <- git_pkg$package_name
   repo_url <- sub("/$", "", git_pkg$repo_url)
-  commit <- unlist(git_pkg$commit)
+  commit <- git_pkg$commit
 
   output <- get_sri_hash_deps(repo_url, commit)
   sri_hash <- output$sri_hash
