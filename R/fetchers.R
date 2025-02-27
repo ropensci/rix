@@ -7,7 +7,7 @@
 #' @noRd
 fetchgit <- function(git_pkg) {
   package_name <- git_pkg$package_name
-  repo_url <- sub("/$", "", git_pkg$repo_url)
+  repo_url <- sub("/$", "", git_pkg$repo_url) #remove trailing url as it messes up api call to git2nixsha
   commit <- git_pkg$commit
 
   output <- get_sri_hash_deps(repo_url, commit)
