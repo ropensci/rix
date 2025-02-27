@@ -8,7 +8,7 @@
 fetchgit <- function(git_pkg) {
   package_name <- git_pkg$package_name
   repo_url <- sub("/$", "", git_pkg$repo_url) #remove trailing url as it messes up api call to git2nixsha
-  stopifnot(!is.null(git_pkgs&commit))
+  stopifnot(!is.null(git_pkg&commit))
   commit <- unlist(git_pkg$commit, use.names = FALSE) #when using git2nixsha, is a list of named list, which messes things up
 
   output <- get_sri_hash_deps(repo_url, commit)
