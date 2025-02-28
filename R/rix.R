@@ -202,7 +202,6 @@ rix <- function(
   print = FALSE,
   message_type = "simple",
   shell_hook = NULL,
-  skip_post_processing = FALSE,
   ignore_remotes_cache = FALSE
 ) {
   message_type <- match.arg(
