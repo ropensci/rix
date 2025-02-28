@@ -1,5 +1,6 @@
 testthat::test_that("Test fetchgit works", {
   testthat::skip_on_cran()
+  skip_if_not(nix_shell_available())
   testthat::expect_equal(
     fetchgit(
       list(
@@ -21,12 +22,14 @@ testthat::test_that("Test fetchgit fails gracefully", {
         repo_url = "https://github.com/rap4all/housing666/",
         commit = "this_commit_is_wrong"
       )
-    ), "Are these correct?"
+    ),
+    "Are these correct?"
   )
 })
 
 testthat::test_that("Test fetchgit works with gitlab packages", {
   testthat::skip_on_cran()
+  skip_if_not(nix_shell_available())
   testthat::expect_equal(
     fetchgit(
       list(
@@ -41,6 +44,7 @@ testthat::test_that("Test fetchgit works with gitlab packages", {
 
 testthat::test_that("Test fetchgit works with packages with empty imports", {
   testthat::skip_on_cran()
+  skip_if_not(nix_shell_available())
   testthat::expect_equal(
     fetchgit(
       list(
@@ -55,6 +59,7 @@ testthat::test_that("Test fetchgit works with packages with empty imports", {
 
 testthat::test_that("Test fetchzip works", {
   testthat::skip_on_cran()
+  skip_if_not(nix_shell_available())
   testthat::expect_equal(
     fetchzip("AER@1.2-8"),
     "\n    AER = (pkgs.rPackages.buildRPackage {\n      name = \"AER\";\n      src = pkgs.fetchzip {\n       url = \"https://cran.r-project.org/src/contrib/Archive/AER/AER_1.2-8.tar.gz\";\n       sha256 = \"sha256-OqxXcnUX/2C6wfD5fuNayc8OU+mstI3tt4eBVGQZ2S0=\";\n      };\n      propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.rPackages) \n          car\n          lmtest\n          sandwich\n          survival\n          zoo\n          Formula;\n      };\n    });\n"
@@ -71,6 +76,7 @@ testthat::test_that("Test fetchzip fails gracefully", {
 
 testthat::test_that("Test fetchgits", {
   testthat::skip_on_cran()
+  skip_if_not(nix_shell_available())
   cache_file <- get_cache_file()
   pkg_list <- list(
     list(
@@ -97,6 +103,7 @@ testthat::test_that("Test fetchgits works when PR is provided in a remote packag
   # see https://github.com/mihem/rixTest/commit/b56829f7771d131e02fc58c546f9af6ee13b857e
   # This should not fail, however it will not use the PR and instead fetch the closest commit using GitHub API
   testthat::skip_on_cran()
+  skip_if_not(nix_shell_available())
   cache_file <- get_cache_file()
   pkg_list <- list(
     package_name = "rixTest",
@@ -143,6 +150,7 @@ testthat::test_that("Test fetchgits works when tag is provided in a remote packa
   # https://github.com/mihem/rixTest/commit/25da90697895b006934a70bbd003aab5c5206c8b
   # This should not fail, however it will not use the tag and instead fetch the closest commit using GitHub API
   testthat::skip_on_cran()
+  skip_if_not(nix_shell_available())
   cache_file <- get_cache_file()
   pkg_list <- list(
     list(
@@ -163,6 +171,7 @@ testthat::test_that("Test fetchgits works when tag is provided in a remote packa
 
 testthat::test_that("Test fetchzips works", {
   testthat::skip_on_cran()
+  skip_if_not(nix_shell_available())
   testthat::expect_equal(
     fetchzips(
       c("dplyr@0.8.0", "AER@1.2-8")
@@ -173,6 +182,7 @@ testthat::test_that("Test fetchzips works", {
 
 testthat::test_that("Test fetchpkgs works", {
   testthat::skip_on_cran()
+  skip_if_not(nix_shell_available())
   testthat::expect_equal(
     fetchpkgs(
       git_pkgs = list(
@@ -195,6 +205,7 @@ testthat::test_that("Test fetchpkgs works", {
 
 testthat::test_that("Test fetchgit gets a package with several remote deps and commits", {
   testthat::skip_on_cran()
+  skip_if_not(nix_shell_available())
   testthat::expect_equal(
     suppressMessages(
       fetchgit(
@@ -211,6 +222,7 @@ testthat::test_that("Test fetchgit gets a package with several remote deps and c
 
 testthat::test_that("Test fetchgit gets a package that is not listed in DESCRIPTION, only in NAMESPACE", {
   testthat::skip_on_cran()
+  skip_if_not(nix_shell_available())
   testthat::expect_equal(
     fetchgit(
       list(
@@ -225,6 +237,7 @@ testthat::test_that("Test fetchgit gets a package that is not listed in DESCRIPT
 
 testthat::test_that("Test fetchgit works even if there are not `importfrom` in NAMESPACE", {
   testthat::skip_on_cran()
+  skip_if_not(nix_shell_available())
   testthat::expect_no_error(
     fetchgit(
       list(
@@ -318,7 +331,11 @@ testthat::test_that("resolve_package_commit works with different input cases", {
   remotes <- c("welch-lab/liger", "SaskiaFreytag/schex@031320d")
   target_date <- "2024-04-04T14:16:11Z"
   testthat::expect_equal(
-    resolve_package_commit(remote_pkg_name_and_ref = pkg_with_ref, date = target_date, remotes = remotes),
+    resolve_package_commit(
+      remote_pkg_name_and_ref = pkg_with_ref,
+      date = target_date,
+      remotes = remotes
+    ),
     "031320d"
   )
 
@@ -327,7 +344,11 @@ testthat::test_that("resolve_package_commit works with different input cases", {
   remotes <- c("welch-lab/liger", "hms-dbmi/conos")
   target_date <- "2024-04-04T14:16:11Z"
   testthat::expect_equal(
-    resolve_package_commit(remote_pkg_name_and_ref = pkg_without_ref, date = target_date, remotes = remotes),
+    resolve_package_commit(
+      remote_pkg_name_and_ref = pkg_without_ref,
+      date = target_date,
+      remotes = remotes
+    ),
     "43fccb96b986f9da2c3a4320fe58693ca660193b"
   )
 

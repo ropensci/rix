@@ -1,11 +1,13 @@
 testthat::test_that("rix(), ide is 'rstudio', Linux", {
   os_type <- Sys.info()["sysname"]
+  skip_if_not(nix_shell_available())
   skip_if(os_type == "Darwin" || os_type == "Windows")
 
   tmpdir <- tempdir()
 
   path_default_nix <- paste0(
-    tmpdir, paste0(sample(letters, 5), collapse = "")
+    tmpdir,
+    paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
@@ -45,8 +47,6 @@ testthat::test_that("rix(), ide is 'rstudio', Linux", {
     file.path(path_default_nix, "default.nix")
   }
 
-  testthat::announce_snapshot_file("rix/rstudio_default.nix")
-
   testthat::expect_snapshot_file(
     path = save_default_nix_test(ide = "rstudio", path_default_nix),
     name = "rstudio_default.nix",
@@ -55,13 +55,15 @@ testthat::test_that("rix(), ide is 'rstudio', Linux", {
 
 
 testthat::test_that("rix(), ide is 'none' or 'code'", {
+  skip_if_not(nix_shell_available())
   os_type <- Sys.info()["sysname"]
   skip_if(os_type == "Windows")
 
   tmpdir <- tempdir()
 
   path_default_nix <- paste0(
-    tmpdir, paste0(sample(letters, 5), collapse = "")
+    tmpdir,
+    paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
@@ -106,9 +108,6 @@ testthat::test_that("rix(), ide is 'none' or 'code'", {
     file.path(path_default_nix, "default.nix")
   }
 
-
-  testthat::announce_snapshot_file("rix/other_default.nix")
-
   testthat::expect_snapshot_file(
     path = save_default_nix_test(
       ide = "none",
@@ -116,8 +115,6 @@ testthat::test_that("rix(), ide is 'none' or 'code'", {
     ),
     name = "other_default.nix"
   )
-
-  testthat::announce_snapshot_file("rix/code_default.nix")
 
   testthat::expect_snapshot_file(
     path = save_default_nix_test(
@@ -127,8 +124,6 @@ testthat::test_that("rix(), ide is 'none' or 'code'", {
     name = "code_default.nix"
   )
 
-  testthat::announce_snapshot_file("rix/codium_default.nix")
-
   testthat::expect_snapshot_file(
     path = save_default_nix_test(
       ide = "codium",
@@ -136,8 +131,6 @@ testthat::test_that("rix(), ide is 'none' or 'code'", {
     ),
     name = "codium_default.nix"
   )
-
-  testthat::announce_snapshot_file("rix/positron_default.nix")
 
   testthat::expect_snapshot_file(
     path = save_default_nix_test(
@@ -181,8 +174,6 @@ testthat::test_that("Quarto gets added to sys packages", {
     file.path(path_default_nix, "default.nix")
   }
 
-  testthat::announce_snapshot_file("rix/no_quarto_default.nix")
-
   testthat::expect_snapshot_file(
     path = save_default_nix_test(
       pkgs = "dplyr",
@@ -191,8 +182,6 @@ testthat::test_that("Quarto gets added to sys packages", {
     ),
     name = "no_quarto_default.nix",
   )
-
-  testthat::announce_snapshot_file("rix/yes_quarto_default.nix")
 
   testthat::expect_snapshot_file(
     path = save_default_nix_test(
@@ -209,7 +198,7 @@ testthat::test_that("Quarto gets added to sys packages", {
   )
 })
 
-testthat::test_that("If on darwin and ide = rstudio, raise warning", {
+testthat::test_that("If on darwin and ide = rstudio, raise warning for old R", {
   os_type <- Sys.info()["sysname"]
   skip_if(os_type != "Darwin" || os_type == "Windows")
 
@@ -235,6 +224,35 @@ testthat::test_that("If on darwin and ide = rstudio, raise warning", {
   testthat::expect_warning(
     save_default_nix_test(path_default_nix),
     regexp = "refer to the macOS"
+  )
+})
+
+testthat::test_that("If on darwin and ide = rstudio, work for R 4.4.3", {
+  os_type <- Sys.info()["sysname"]
+  skip_if(os_type != "Darwin" || os_type == "Windows")
+
+  path_default_nix <- normalizePath(tempdir())
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+
+  save_default_nix_test <- function(path_default_nix) {
+    rix(
+      date = "2025-02-28",
+      ide = "rstudio",
+      r_pkgs = "dplyr",
+      project_path = path_default_nix,
+      overwrite = TRUE,
+      shell_hook = NULL
+    )
+
+    file.path(path_default_nix, "default.nix")
+  }
+
+  testthat::expect_snapshot_file(
+    path = save_default_nix_test(path_default_nix),
+    name = "darwin_rstudio_default.nix",
   )
 })
 
@@ -267,13 +285,15 @@ testthat::test_that("If on ide = rstudio, but no R packages, raise error", {
 
 
 testthat::test_that("rix(), date working", {
+  skip_if_not(nix_shell_available())
   os_type <- Sys.info()["sysname"]
   skip_if(os_type == "Windows")
 
   tmpdir <- tempdir()
 
   path_default_nix <- paste0(
-    tmpdir, paste0(sample(letters, 5), collapse = "")
+    tmpdir,
+    paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
@@ -313,8 +333,6 @@ testthat::test_that("rix(), date working", {
     file.path(path_default_nix, "default.nix")
   }
 
-  testthat::announce_snapshot_file("rix/date_default.nix")
-
   testthat::expect_snapshot_file(
     path = save_default_nix_test(ide = "none", path_default_nix),
     name = "date_default.nix",
@@ -323,13 +341,15 @@ testthat::test_that("rix(), date working", {
 
 
 testthat::test_that("rix(), bleeding-edge", {
+  skip_if_not(nix_shell_available())
   os_type <- Sys.info()["sysname"]
   skip_if(os_type == "Windows")
 
   tmpdir <- tempdir()
 
   path_default_nix <- paste0(
-    tmpdir, paste0(sample(letters, 5), collapse = "")
+    tmpdir,
+    paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
@@ -372,8 +392,6 @@ testthat::test_that("rix(), bleeding-edge", {
     file.path(path_default_nix, "default.nix")
   }
 
-  testthat::announce_snapshot_file("rix/bleeding-edge_default.nix")
-
   testthat::expect_snapshot_file(
     path = save_default_nix_test(ide = "none", path_default_nix),
     name = "bleeding-edge_default.nix",
@@ -381,20 +399,26 @@ testthat::test_that("rix(), bleeding-edge", {
 })
 
 testthat::test_that("rix(), frozen-edge", {
+  skip_if_not(nix_shell_available())
   # because of the sed command, this will only work on Linux
   skip_if(Sys.info()["sysname"] != "Linux")
 
   tmpdir <- tempdir()
 
   path_default_nix <- paste0(
-    tmpdir, paste0(sample(letters, 5), collapse = "")
+    tmpdir,
+    paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
   on.exit(
     {
       system(
-        paste0("sed -i 's/", frozen_edge_commit, "/REVISION/' _snaps/rix/frozen-edge_default.nix")
+        paste0(
+          "sed -i 's/",
+          frozen_edge_commit,
+          "/REVISION/' _snaps/rix/frozen-edge_default.nix"
+        )
       )
       unlink(path_default_nix, recursive = TRUE, force = FALSE)
       unlink(tmpdir, recursive = TRUE, force = FALSE)
@@ -432,12 +456,14 @@ testthat::test_that("rix(), frozen-edge", {
     file.path(path_default_nix, "/default.nix")
   }
 
-  testthat::announce_snapshot_file("rix/frozen-edge_default.nix")
-
   frozen_edge_commit <- get_right_commit("frozen-edge")
 
   system(
-    paste0("sed -i 's/REVISION/", frozen_edge_commit, "/' _snaps/rix/frozen-edge_default.nix")
+    paste0(
+      "sed -i 's/REVISION/",
+      frozen_edge_commit,
+      "/' _snaps/rix/frozen-edge_default.nix"
+    )
   )
 
   testthat::expect_snapshot_file(
@@ -445,11 +471,14 @@ testthat::test_that("rix(), frozen-edge", {
     name = "frozen-edge_default.nix",
   )
 
-
   on.exit(
     {
       system(
-        paste0("sed -i 's/", frozen_edge_commit, "/REVISION/' _snaps/rix/frozen-edge_default.nix")
+        paste0(
+          "sed -i 's/",
+          frozen_edge_commit,
+          "/REVISION/' _snaps/rix/frozen-edge_default.nix"
+        )
       )
       unlink(path_default_nix, recursive = TRUE, force = FALSE)
     },
@@ -461,11 +490,13 @@ testthat::test_that("rix(), frozen-edge", {
 testthat::test_that("rix(), only one GitHub package", {
   os_type <- Sys.info()["sysname"]
   skip_if(os_type == "Windows")
+  skip_if_not(nix_shell_available())
 
   tmpdir <- tempdir()
 
   path_default_nix <- paste0(
-    tmpdir, paste0(sample(letters, 5), collapse = "")
+    tmpdir,
+    paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
@@ -497,8 +528,6 @@ testthat::test_that("rix(), only one GitHub package", {
     file.path(path_default_nix, "default.nix")
   }
 
-  testthat::announce_snapshot_file("rix/one_git_default.nix")
-
   testthat::expect_snapshot_file(
     path = save_default_nix_test(path_default_nix),
     name = "one_git_default.nix",
@@ -509,7 +538,8 @@ testthat::test_that("rix(), only one GitHub package", {
 testthat::test_that("rix(), conclusion message", {
   tmpdir <- tempdir()
   path_default_nix <- paste0(
-    tmpdir, paste0(sample(letters, 5), collapse = "")
+    tmpdir,
+    paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
@@ -553,7 +583,8 @@ testthat::test_that("rix(), warning message if rix_init() already called", {
   tmpdir <- tempdir()
 
   path_default_nix <- paste0(
-    tmpdir, paste0(sample(letters, 5), collapse = "")
+    tmpdir,
+    paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
@@ -607,7 +638,8 @@ testthat::test_that("rix(), bioc-devel", {
   tmpdir <- tempdir()
 
   path_default_nix <- paste0(
-    tmpdir, paste0(sample(letters, 5), collapse = "")
+    tmpdir,
+    paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
@@ -637,8 +669,6 @@ testthat::test_that("rix(), bioc-devel", {
     file.path(path_default_nix, "default.nix")
   }
 
-  testthat::announce_snapshot_file("rix/bioc-devel_default.nix")
-
   testthat::expect_snapshot_file(
     path = save_default_nix_test(ide = "none", path_default_nix),
     name = "bioc-devel_default.nix",
@@ -652,7 +682,8 @@ testthat::test_that("rix(), r-devel", {
   tmpdir <- tempdir()
 
   path_default_nix <- paste0(
-    tmpdir, paste0(sample(letters, 5), collapse = "")
+    tmpdir,
+    paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
@@ -682,8 +713,6 @@ testthat::test_that("rix(), r-devel", {
     file.path(path_default_nix, "default.nix")
   }
 
-  testthat::announce_snapshot_file("rix/r-devel_default.nix")
-
   testthat::expect_snapshot_file(
     path = save_default_nix_test(ide = "none", path_default_nix),
     name = "r-devel_default.nix",
@@ -697,7 +726,8 @@ testthat::test_that("rix(), r-devel-bioc-devel", {
   tmpdir <- tempdir()
 
   path_default_nix <- paste0(
-    tmpdir, paste0(sample(letters, 5), collapse = "")
+    tmpdir,
+    paste0(sample(letters, 5), collapse = "")
   )
   dir.create(path_default_nix)
   path_default_nix <- normalizePath(path_default_nix)
@@ -727,11 +757,8 @@ testthat::test_that("rix(), r-devel-bioc-devel", {
     file.path(path_default_nix, "default.nix")
   }
 
-  testthat::announce_snapshot_file("rix/r-devel-bioc-devel_default.nix")
-
   testthat::expect_snapshot_file(
     path = save_default_nix_test(ide = "none", path_default_nix),
     name = "r-devel-bioc-devel_default.nix",
   )
 })
-

@@ -34,7 +34,8 @@ hash_url <- function(url, ...) {
   tdir <- tempdir()
 
   tmpdir <- paste0(
-    tdir, "_repo_hash_url_",
+    tdir,
+    "_repo_hash_url_",
     paste0(sample(letters, 5), collapse = "")
   )
 
@@ -65,7 +66,9 @@ hash_url <- function(url, ...) {
   tar_file <- file.path(path_to_tarfile, "package.tar.gz")
 
   try_download(
-    url = url, file = tar_file, handle = h,
+    url = url,
+    file = tar_file,
+    handle = h,
     extra_diagnostics = extra_diagnostics
   )
 
@@ -83,7 +86,11 @@ hash_url <- function(url, ...) {
   sri_hash <- nix_sri_hash(path = path_to_source_root)
 
   paths <- list.files(path_to_src, full.names = TRUE, recursive = TRUE)
-  desc_path <- grep(file.path(list.files(path_to_src), "DESCRIPTION"), paths, value = TRUE)
+  desc_path <- grep(
+    file.path(list.files(path_to_src), "DESCRIPTION"),
+    paths,
+    value = TRUE
+  )
 
   if (grepl("github", url)) {
     repo_url_short <- paste(unlist(strsplit(url, "/"))[4:5], collapse = "/")
@@ -143,7 +150,8 @@ nix_sri_hash <- function(path) {
   cmd <- "nix-hash"
   args <- c("--type", "sha256", "--sri", path)
   proc <- sys::exec_internal(
-    cmd = cmd, args = args
+    cmd = cmd,
+    args = args
   )
 
   poll_sys_proc_blocking(
@@ -162,8 +170,7 @@ nix_sri_hash <- function(path) {
     )
   }
 
-  sri_hash <- sys::as_text(proc$stdout)
-  return(sri_hash)
+  sys::as_text(proc$stdout)
 }
 
 
@@ -208,143 +215,31 @@ hash_git <- function(repo_url, commit, ...) {
   } else if (grepl("gitlab", repo_url)) {
     url <- paste0(repo_url, slash, "-/archive/", commit, ".tar.gz")
   }
-
   # list contains `sri_hash` and `deps` elements
-  list_sri_hash_deps <- hash_url(url, ...)
-
-  return(list_sri_hash_deps)
+  hash_url(url)
 }
 
-
-#' Get the SRI hash of the NAR serialization of a GitHub repo, if nix is not
-#' available locally
-#' @param repo_url A character. The URL to the package's GitHub repository or to
-#' the `.tar.gz` package hosted on CRAN.
-#' @param commit A character. The commit hash of interest, for reproducibility's
-#' sake, NULL for archived CRAN packages.
-#' @return list with following elements:
-#' - `sri_hash`: string with SRI hash of the NAR serialization of a GitHub repo
-#' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
-#' @noRd
-nix_hash_online <- function(repo_url, commit) {
-  # handle to get error for status code 404
-  h <- curl::new_handle(failonerror = TRUE)
-
-  url <- paste0(
-    "https://git2nixsha.dev/hash?repo_url=",
-    repo_url, "&commit=", commit
-  )
-
-  # extra diagnostics
-  extra_diagnostics <-
-    c(
-      "\nIf it's a GitHub repo, check the url and commit.\n",
-      "Are these correct? If it's an archived CRAN package, check the name\n",
-      "of the package and the version number.\n",
-      paste0("Failing repo: ", repo_url)
-    )
-
-  req <- try_get_request(
-    url = url, handle = h,
-    extra_diagnostics = extra_diagnostics
-  )
-
-  # plumber endpoint delivers list with
-  # - `sri_hash`: string with SHA256 hash in base-64 and SRI format of a
-  # GitHub repository at a given commit ID
-  # - `deps`: string with R package dependencies separated by `" "`
-  sri_hash_deps_list <- jsonlite::fromJSON(rawToChar(req$content))
-
-  return(sri_hash_deps_list)
-}
-
-#' Return the sri hash of a path using `nix-hash --type sha256 --sri <path>`
-#' with local Nix, or using an online API service (equivalent
-#' `nix hash path --sri <path>`) if Nix is not available
-#' @param repo_url A character. The URL to the package's GitHub repository or to
-#' the `.tar.gz` package hosted on CRAN.
-#' @param commit A character. The commit hash of interest, for reproducibility's
-#' sake, NULL for archived CRAN packages.
-#' @param ... Further arguments passed down to methods.
-#' @return list with following elements:
-#' - `sri_hash`: string with SRI hash of the NAR serialization of a GitHub repo
-#'      at a given deterministic git commit ID (SHA-1)
-#' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
-#' @noRd
-get_sri_hash_deps <- function(repo_url, commit, ...) {
-  # if no `options(rix.sri_hash=)` is set, default is `"check_nix"`
-  sri_hash_option <- get_sri_hash_option()
-  has_nix_shell <- nix_shell_available()
-  if (isTRUE(has_nix_shell)) {
-    switch(sri_hash_option,
-      "check_nix" = nix_hash(repo_url, commit, ...),
-      "locally" = nix_hash(repo_url, commit, ...),
-      "api_server" = nix_hash_online(repo_url, commit)
-    )
-  } else {
-    switch(sri_hash_option,
-      "check_nix" = nix_hash_online(repo_url, commit),
-      "locally" = {
-        if (isFALSE(has_nix_shell)) {
-          stop(
-            'You set `options(rix.sri_hash="locally")`, but Nix seems not',
-            "installed.\n", "Either switch to",
-            '`options(rix.sri_hash="api_server")`', "to compute the SRI hashes",
-            "through the http://git2nixsha.dev API server, or install Nix.\n",
-            no_nix_shell_msg,
-            call. = FALSE
-          )
-        }
-      },
-      "api_server" = nix_hash_online(repo_url, commit)
-    )
-  }
-}
-
-#' Retrieve validated value for options(rix.sri_hash=)
-#' @return validated `rix.sri_hash` option. Currently, either `"check_nix"`
-#' if option is not set, `"locally"` or `"api_server"` if the option is set.
-#' @noRd
-get_sri_hash_option <- function() {
-  sri_hash_options <- c(
-    "check_nix",
-    "locally",
-    "api_server"
-  )
-  sri_hash <- getOption(
-    "rix.sri_hash",
-    default = "check_nix"
-  )
-
-  valid_vars <- all(sri_hash %in% sri_hash_options)
-
-  if (!isTRUE(valid_vars)) {
-    stop("`options(rix.sri_hash=)` ",
-      "only allows the following values:\n",
-      paste(sri_hash_options, collapse = "; "),
-      call. = FALSE
-    )
-  }
-
-  return(sri_hash)
-}
 
 #' Try download contents of an URL onto file on disk
 #'
 #' Fetch if available and stop with propagating the curl error. Also show URL
 #' for context
 #' @noRd
-try_download <- function(url,
-                         file,
-                         handle = curl::new_handle(failonerror = TRUE),
-                         extra_diagnostics = NULL) {
+try_download <- function(
+  url,
+  file,
+  handle = curl::new_handle(failonerror = TRUE),
+  extra_diagnostics = NULL
+) {
   tryCatch(
     {
       req <- curl::curl_fetch_disk(url, path = file, handle = handle)
     },
     error = function(e) {
-      stop("Request `curl::curl_fetch_disk()` failed:\n",
-        e$message[1], extra_diagnostics,
+      stop(
+        "Request `curl::curl_fetch_disk()` failed:\n",
+        e$message[1],
+        extra_diagnostics,
         call. = FALSE
       )
     }

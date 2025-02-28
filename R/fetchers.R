@@ -10,11 +10,10 @@ fetchgit <- function(git_pkg, ...) {
   package_name <- git_pkg$package_name
   repo_url <- git_pkg$repo_url
   commit <- git_pkg$commit
-
-  output <- get_sri_hash_deps(repo_url, commit, ...)
+  output <- nix_hash(repo_url, commit)
   sri_hash <- output$sri_hash
+  
   # If package has no remote dependencie
-
   imports <- output$deps$imports
   imports <- paste(c("", imports), collapse = "\n          ")
 
@@ -37,7 +36,8 @@ fetchgit <- function(git_pkg, ...) {
 
     remote_packages_expressions <- fetchgits(remotes, ...)
 
-    output <- paste0(remote_packages_expressions,
+    output <- paste0(
+      remote_packages_expressions,
       main_package_expression,
       collapse = "\n"
     )
@@ -56,12 +56,14 @@ fetchgit <- function(git_pkg, ...) {
 #' @return A character. Part of the Nix definition to download and build the R package
 #' from the CRAN archives.
 #' @noRd
-generate_git_nix_expression <- function(package_name,
-                                        repo_url,
-                                        commit,
-                                        sri_hash,
-                                        imports,
-                                        remotes = NULL) {
+generate_git_nix_expression <- function(
+  package_name,
+  repo_url,
+  commit,
+  sri_hash,
+  imports,
+  remotes = NULL
+) {
   # If there are remote dependencies, pass this string
   flag_remote_deps <- if (is.list(remotes) && length(remotes) == 0) {
     ""
@@ -106,7 +108,8 @@ fetchzip <- function(archive_pkg, sri_hash = NULL) {
 
   cran_archive_link <- paste0(
     "https://cran.r-project.org/src/contrib/Archive/",
-    pkgs[1], "/",
+    pkgs[1],
+    "/",
     paste0(pkgs[1], "_", pkgs[2]),
     ".tar.gz"
   )
@@ -115,7 +118,7 @@ fetchzip <- function(archive_pkg, sri_hash = NULL) {
   repo_url <- cran_archive_link
 
   if (is.null(sri_hash)) {
-    output <- get_sri_hash_deps(repo_url, commit = NULL)
+    output <- nix_hash(repo_url, commit = NULL)
     sri_hash <- output$sri_hash
     imports <- output$deps$imports
     imports <- paste(c("", imports), collapse = "\n          ")
@@ -194,7 +197,9 @@ get_imports <- function(path, commit_date, ...) {
   } else if (grepl("DESCRIPTION", path)) {
     desc_path <- path
   } else {
-    stop("Path is neither a .tar.gz archive, nor pointing to a DESCRIPTION file directly.")
+    stop(
+      "Path is neither a .tar.gz archive, nor pointing to a DESCRIPTION file directly."
+    )
   }
 
   columns_of_interest <- c("Depends", "Imports", "LinkingTo")
@@ -241,7 +246,8 @@ get_imports <- function(path, commit_date, ...) {
 
     urls <- paste0(
       "https://github.com/",
-      remote_pkgs_usernames, "/",
+      remote_pkgs_usernames,
+      "/",
       remote_pkgs_names
     )
 
@@ -276,7 +282,11 @@ get_imports <- function(path, commit_date, ...) {
 
   if (length(namespace_imports) > 0) {
     # Get package names from `importFrom` statements
-    namespace_imports_pkgs <- gsub("importFrom\\(([^,]+).*", "\\1", namespace_imports)
+    namespace_imports_pkgs <- gsub(
+      "importFrom\\(([^,]+).*",
+      "\\1",
+      namespace_imports
+    )
     # Remove quotes, which is sometimes necessary
     # example: https://github.com/cran/AER/blob/master/NAMESPACE
     namespace_imports_pkgs <- gsub("[\"']", "", namespace_imports_pkgs)
@@ -359,6 +369,7 @@ fetchlocals <- function(local_r_pkgs) {
     paste(lapply(sort(local_r_pkgs), fetchlocal), collapse = "\n")
   }
 }
+
 
 #' fetchgits Downloads and installs packages hosted on Git. Wraps `fetchgit()`
 #' to handle multiple packages
@@ -471,6 +482,7 @@ fetchpkgs <- function(git_pkgs, archive_pkgs, ...) {
   )
 }
 
+                   
 #' get_commit_date Retrieves the date of a commit from a Git repository
 #' @param repo The GitHub repository (e.g. "r-lib/usethis")
 #' @param  commit_sha The commit hash of interest
@@ -579,7 +591,6 @@ download_all_commits <- function(repo, date) {
         # if no commits are found, break the loop
         n_commits <- length(commits$sha)
         if (n_commits == 0) break
-
 
         idx <- (commit_count + 1):(commit_count + n_commits)
         all_commits$sha[idx] <- commits$sha
@@ -691,7 +702,6 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes, ...) 
   } else {
     stop("remote_pkg_name_and_ref must be a list of length 1 or 2")
   }
-
   # If not ignoring cache, Update cache with new cache_key (e.g. `schex@031320d`)
   if (!ignore_remotes_cache) {
     cache$commit_cache <- c(cache$commit_cache, cache_key)

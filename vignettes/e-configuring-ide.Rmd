@@ -39,7 +39,7 @@ covered here due to lack of experience—PRs welcome!) However, some editors
 perform better on certain platforms.
 
 Also, we recommend you uninstall R if it's installed system-wide and also remove
-your local library of packages and instead, you have dedicated Nix shells to
+your local library of packages and instead only use dedicated Nix shells to
 manage your projects. While we made our possible for Nix shells to not interfere
 with a system-installed R, we recommend users go into the habit of taking some
 minutes at the start of a project to properly set up their development
@@ -47,12 +47,15 @@ environment.
 
 #### Recommended setup on macOS
 
-On macOS, RStudio will not be able to interact with Nix shells, so you cannot
-use it. As such, we recommend either VS Code (or Codium) or Positron. Emacs or
-Neovim are also good options. See the relevant sections below to set up any of
-these editors. We also recommend to install the editor on macOS directly, and
-configure it to interact with Nix shells, instead of using Nix to install the
-editor, even though it does take some more effort to configure.
+On macOS, RStudio will only be available through Nix and only for versions 4.4.3
+or more recent, or after the 2025-02-28 if you're using dates. For older
+versions of R or dates, RStudio is not available for macOS through Nix so you
+cannot use it. As such, we recommend either VS Code (or Codium) or Positron for
+older dates or versions. Emacs or Neovim are also good options. See the relevant
+sections below to set up any of these editors. We also recommend to install the
+editor on macOS directly, and configure it to interact with Nix shells, instead
+of using Nix to install the editor, even though it does take some more effort to
+configure.
 
 #### Recommended setup on Windows
 
@@ -124,12 +127,13 @@ system-level R and library of packages.
 
 ### RStudio on macOS
 
-As of writing, RStudio is not yet available for macOS through Nixpkgs, which
-means that you cannot use RStudio to work with Nix shells. [There is a draft PR
-that will introduce RStudio for
-macOS](https://github.com/NixOS/nixpkgs/pull/362637) though. As soon as this PR
-is merged, it will become possible to use RStudio on macOS with Nix shells. In
-the meantime, you might consider using [Positron](#positron).
+To use RStudio on macOS simply use `ide = "rstudio"`, but be aware that this
+will only work for R version 4.4.3 at least, or for a date on or after the
+2025-02-28. If you don't need to work with older versions of R or older date,
+RStudio is an appropriate choice. Then, build the environment using `nix-build`
+and drop into the shell using `nix-shell`. Then, type `rstudio` to start
+RStudio. If you wish, you can even put the `rstudio`
+command in the shell hook to start it immediately as you run `nix-shell`.
 
 ### RStudio on Linux or Windows
 
@@ -157,7 +161,7 @@ export QT_XCB_GL_INTEGRATION=none
 
 ## Positron
 
-### Letting Nix manage Positron
+### Letting Nix manage Positron on any operating system
 
 If you want to install Positron with Nix, you need a call that looks like this:
 
@@ -268,13 +272,15 @@ like this:
 ```{r, eval = FALSE}
 rix(
   date = ...,
-  r_pkgs = c("languageserver", ...), # languageserver is needed
+  r_pkgs = ...,
   ide = "code", # or "codium"
   ...
 )
 ```
 
-Or if you prefer to use the Code you have installed system-wide, then:
+But if you prefer to use the Code you have installed system-wide, then you 
+need to add the `{languageserver}` 
+package and use `ide = "none"`:
 
 ```{r, eval = FALSE}
 rix(
