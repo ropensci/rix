@@ -20,9 +20,12 @@
 #' \dontrun{
 #' nix_build()
 #' }
-nix_build <- function(project_path = getwd(),
-                      message_type = c("simple", "quiet", "verbose")) {
-  message_type <- match.arg(message_type,
+nix_build <- function(
+  project_path = getwd(),
+  message_type = c("simple", "quiet", "verbose")
+) {
+  message_type <- match.arg(
+    message_type,
     choices = c("simple", "quiet", "verbose")
   )
   # if nix store is not PATH variable; e.g. on macOS (system's) RStudio
@@ -66,19 +69,24 @@ nix_build <- function(project_path = getwd(),
 
   # nolint start: line_length_linter
   stopifnot(
-    "`project_path` must be character of length 1." =
-      is.character(project_path) && length(project_path) == 1L,
-    "`project_path` has no `default.nix` file. Use one that contains `default.nix`" =
-      file.exists(nix_file),
-    "`nix-build` not available. To install, we suggest you follow https://zero-to-nix.com/start/install ." =
-      isTRUE(has_nix_build)
+    "`project_path` must be character of length 1." = is.character(
+      project_path
+    ) &&
+      length(project_path) == 1L,
+    "`project_path` has no `default.nix` file. Use one that contains `default.nix`" = file.exists(
+      nix_file
+    ),
+    "`nix-build` not available. To install, we suggest you follow the 'Setting up and using Nix' vignette for your operating system." = isTRUE(
+      has_nix_build
+    )
   )
   # nolint end
 
   max_jobs <- getOption("rix.nix_build_max_jobs", default = 1L)
   stopifnot(
-    "option `rix.nix_build_max_jobs` is not integerish" =
-      is_integerish(max_jobs)
+    "option `rix.nix_build_max_jobs` is not integerish" = is_integerish(
+      max_jobs
+    )
   )
   max_jobs <- as.integer(max_jobs)
 
@@ -92,7 +100,9 @@ nix_build <- function(project_path = getwd(),
 
   if (identical(Sys.getenv("TESTTHAT"), "false")) {
     cat(paste0(
-      "Running `", paste0(cmd, " ", args, collapse = " "), "`",
+      "Running `",
+      paste0(cmd, " ", args, collapse = " "),
+      "`",
       " ...\n"
     ))
   }

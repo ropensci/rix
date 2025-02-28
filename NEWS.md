@@ -1,5 +1,11 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.15.3 (2025-02-28)
+
+- `rix()`: cannot generate expressions that contain remote packages without Nix
+  being locally installed anymore. Previously, when Nix was not available, a remote
+  server was being used to compute the hash but this is now being decommissioned.
+
 # rix 0.15.2 (2025-02-15)
 
 - `rix()`: duplicate entries were not correctly being removed, this is now fixed.
