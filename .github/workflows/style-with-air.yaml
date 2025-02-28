@@ -46,7 +46,7 @@ jobs:
         run: |
           git add \*.R
           git add \*.Rmd
-          git commit -m 'Style via {styler}'
+          git commit -m 'Style via air'
 
       - uses: r-lib/actions/pr-push@v2
         with:
