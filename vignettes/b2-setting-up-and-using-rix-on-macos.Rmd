@@ -165,23 +165,28 @@ Nix path) appear on the R library path.
 
 ### RStudio and other development interfaces on macOS
 
-As of writing, RStudio cannot be installed through `nixpkgs` for macOS, and if
-you wish to use RStudio with a Nix environment, you have to install it through
-`nixpkgs`. This means that it is impossible to use RStudio and a Nix environment
-on macOS. When you try to generate an expression with `ide =
-"rstudio"` on macOS, this will raise a warning. Here are the options you have:
+RStudio installed via traditional means cannot be used with Nix shells. To use
+RStudio, you must install it through Nix. As of now, RStudio in `nixpkgs` for
+macOS is only available for R 4.4.3 or later, or for dates on or after
+2025-02-28. Using RStudio with a Nix environment for older R versions or dates
+is not possible, you will need to choose a different IDE, or no IDE. If you
+attempt to generate an expression with `ide = "rstudio"` on macOS for R versions
+older than 4.4.3 or dates before 2025-02-28, a warning will be raised. Your
+options are:
 
+- set `r_ver = 4.4.3` or pick a date on or after the 2025-02-28 if you don't need
+  to run an older version of R;
 - ignore the warning, because the environment will be built on a Linux
   distribution (even though you generated the expression on macOS) and used on a
   Linux distribution;
-- change the `ide =` argument to either `"other"` or `"code"` or `"positron"`.
+- change the `ide =` argument to either `"none"` or `"code"` or `"positron"`.
   Use `"code"` if you want to use VS Code and `"other"` for any other editor,
   like Vim or Emacs. These other editors don't need to be installed through
-  `nixpkgs` to use Nix environments, unlike RStudio. See the 
+  `nixpkgs` to use Nix environments, unlike RStudio. See the
   `vignette("e-configure-ide")` for more details;
 - if you're working on a pipeline with the `{targets}` package, you could run it
   on GitHub Actions. This means you could work on the code on RStudio outside
-  of the Nix environment, as the code will only be executed on GitHub Actions 
+  of the Nix environment, as the code will only be executed on GitHub Actions
   runners. See this vignette
   `vignette("z-advanced-topic-reproducible-analytical-pipelines-with-nix")` for
   further details;
@@ -189,11 +194,8 @@ on macOS. When you try to generate an expression with `ide =
   but generate a `default.nix` at the end with `ide = "none"` with the right
   version of R for reproducibility purposes;
 - use *subshells* to execute only the code you need to run in a specific
-  environment. See this vignette 
+  environment. See this vignette
   `vignette("z-advanced-topic-running-r-or-shell-code-in-nix-from-r")`;
-- help us package RStudio for macOS on `nixpgs`. See
-  [here](https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/rstudio/default.nix),
-  the Nix expression for RStudio.
 
 We recommend you continue with the next vignette before tackling the more
 advanced topics listed above: `vignette("c-using-rix-to-build-project-specific-environments")`.
