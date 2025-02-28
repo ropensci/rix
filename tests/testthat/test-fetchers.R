@@ -1,5 +1,6 @@
 testthat::test_that("Test fetchgit works", {
   testthat::skip_on_cran()
+  skip_if_not(nix_shell_available())
   testthat::expect_equal(
     fetchgit(
       list(
