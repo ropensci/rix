@@ -216,7 +216,7 @@ hash_git <- function(repo_url, commit, ...) {
     url <- paste0(repo_url, slash, "-/archive/", commit, ".tar.gz")
   }
   # list contains `sri_hash` and `deps` elements
-  hash_url(url)
+  hash_url(url, ...)
 }
 
 

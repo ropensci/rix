@@ -10,7 +10,7 @@ fetchgit <- function(git_pkg, ...) {
   package_name <- git_pkg$package_name
   repo_url <- git_pkg$repo_url
   commit <- git_pkg$commit
-  output <- nix_hash(repo_url, commit)
+  output <- nix_hash(repo_url, commit, ...)
   sri_hash <- output$sri_hash
   
   # If package has no remote dependencie
