@@ -22,8 +22,13 @@ available_df <- function() {
 available_r <- function() {
   r_versions <- unique(available_df()$`R.version`)
   c(
-    "bleeding-edge", "frozen-edge", "r-devel", "bioc-devel",
-    "r-devel-bioc-devel", "latest-upstream", r_versions
+    "bleeding-edge",
+    "frozen-edge",
+    "r-devel",
+    "bioc-devel",
+    "r-devel-bioc-devel",
+    "latest-upstream",
+    r_versions
   )
 }
 

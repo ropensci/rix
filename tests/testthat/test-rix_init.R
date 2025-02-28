@@ -105,7 +105,8 @@ testthat::test_that("Snapshot test of rix_init(), append", {
   rprofile_file <- paste0(path_env_nix, "/.Rprofile")
   rprofile_con <- file(rprofile_file, open = "a+", encoding = "native.enc")
 
-  writeLines(enc2utf8("This is in the original Rprofile"),
+  writeLines(
+    enc2utf8("This is in the original Rprofile"),
     rprofile_con,
     useBytes = TRUE
   )

@@ -19,7 +19,11 @@ make_nixpkgs_url <- function(r_ver = NULL, date = NULL) {
 
     list(
       "url" = paste0(
-        "https://github.com/", github_repo, "archive/", latest_commit, ".tar.gz"
+        "https://github.com/",
+        github_repo,
+        "archive/",
+        latest_commit,
+        ".tar.gz"
       ),
       "latest_commit" = latest_commit,
       "r_ver" = r_ver
@@ -27,7 +31,9 @@ make_nixpkgs_url <- function(r_ver = NULL, date = NULL) {
   } else {
     list(
       "url" = paste0(
-        "https://github.com/rstats-on-nix/nixpkgs/archive/", date, ".tar.gz"
+        "https://github.com/rstats-on-nix/nixpkgs/archive/",
+        date,
+        ".tar.gz"
       ),
       "latest_commit" = date,
       "r_ver" = get_version_from_date(date)

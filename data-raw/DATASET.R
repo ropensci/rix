@@ -31,7 +31,6 @@ library(rix)
 # commit that contains all the fixes that were merged during this release. This
 # ensures that a maximum of packages are in a working state.
 
-
 # data("r_nix_revs")
 
 # This was added already, so it's commented now

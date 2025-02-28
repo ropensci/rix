@@ -10,7 +10,6 @@ testthat::test_that("Testing `with_nix()` if Nix is installed", {
   # R version 3.5.3 on Nixpkgs does not build for aarch64-darwin (ARM macOS)
   skip_if(Sys.info()["sysname"] == "Darwin")
 
-
   path_subshell <- tempdir()
 
   # Suppress the warning related to generating an expression
@@ -82,7 +81,6 @@ testthat::test_that("Test `with_nix()` if Nix is installed on R 4.2.0", {
   testthat::expect_false(
     inherits(out_subshell, "data.frame")
   )
-
 
   on.exit(
     unlink(path_subshell, recursive = TRUE, force = TRUE),
