@@ -295,15 +295,16 @@ before continuing."
   if (
     message_type != "quiet" &&
       Sys.info()["sysname"] == "Darwin" &&
-      ide == "rstudio"
+      ide == "rstudio" &&
+      (r_ver < "4.4.3" || date < "2025-02-28")
   ) {
     warning(
-      "Your detected operating system is macOS, and you chose
-'rstudio' as the IDE. Please note that 'rstudio' is not
-available through 'nixpkgs' for macOS, so the expression you
-generated will not build on macOS. If you wish to build this
-expression on macOS, change the 'ide =' argument to either
-'code' or 'none'. Please refer to the macOS-specific vignette
+      "Your operating system is detected as macOS, but you selected 'rstudio'
+for an R version or date that does not support it.
+To use RStudio on macOS, select at least R 4.4.3 or a
+date on or after 2025-02-28. If you require an older R version or date,
+choose a different IDE for compatibility.
+Please refer to the macOS-specific vignette
 https://docs.ropensci.org/rix/articles/b2-setting-up-and-using-rix-on-macos.html
 for more details."
     )
