@@ -13,7 +13,7 @@ fetchgit <- function(git_pkg, ...) {
   output <- nix_hash(repo_url, commit, ...)
   sri_hash <- output$sri_hash
   
-  # If package has no remote dependencie
+  # If package has no remote dependencies
   imports <- output$deps$imports
   imports <- paste(c("", imports), collapse = "\n          ")
 
