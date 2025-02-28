@@ -166,7 +166,7 @@ precomputed hashes in the \code{default.nix} are downloaded, but only if Nix
 is installed. If you need to generate an expression with such packages,
 but are working on a system where you can't install Nix, consider generating
 the expression using a continuous integration service, such as GitHub
-Actions. The function \code{init_git_project()} can help you get started.
+Actions.
 
 Note that installing packages from Git or old versions using the \code{"@"}
 notation or local packages, does not leverage Nix's capabilities for
