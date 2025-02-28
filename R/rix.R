@@ -296,7 +296,8 @@ before continuing."
     message_type != "quiet" &&
       Sys.info()["sysname"] == "Darwin" &&
       ide == "rstudio" &&
-      (r_ver < "4.4.3" || date < "2025-02-28")
+      ((r_ver < "4.4.3" && is.null(date)) ||
+        (is.null(r_ver) && date < "2025-02-28"))
   ) {
     warning(
       "Your operating system is detected as macOS, but you selected 'rstudio'
