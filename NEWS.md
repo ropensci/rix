@@ -2,7 +2,7 @@
 
 # rix 0.15.4 (2025-02-28)
 
-- `rix()`: RStudio is now available for macOS as of R version 4.4.3 or as of 
+- `rix()`: RStudio is now available for macOS as of R version 4.4.3 or as of
   date 2025-02-28.
 
 # rix 0.15.3 (2025-02-28)
