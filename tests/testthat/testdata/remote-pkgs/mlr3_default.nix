@@ -29,7 +29,6 @@ let
       };
     });
 
-
     distr6 = (pkgs.rPackages.buildRPackage {
       name = "distr6";
       src = pkgs.fetchgit {
@@ -46,7 +45,6 @@ let
           Rcpp;
       } ++ [ set6 param6 ];
     });
-
 
     mlr3proba = (pkgs.rPackages.buildRPackage {
       name = "mlr3proba";
@@ -71,7 +69,6 @@ let
       } ++ [ distr6 param6 set6 ];
     });
 
-
     param6 = (pkgs.rPackages.buildRPackage {
       name = "param6";
       src = pkgs.fetchgit {
@@ -88,7 +85,6 @@ let
       } ++ [ set6 ];
     });
 
-
     set6 = (pkgs.rPackages.buildRPackage {
       name = "set6";
       src = pkgs.fetchgit {
@@ -104,7 +100,6 @@ let
           R6;
       };
     });
-
 
     survivalmodels = (pkgs.rPackages.buildRPackage {
       name = "survivalmodels";

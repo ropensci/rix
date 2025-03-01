@@ -29,7 +29,6 @@ let
       };
     });
 
-
     set6 = (pkgs.rPackages.buildRPackage {
       name = "set6";
       src = pkgs.fetchgit {
@@ -61,7 +60,6 @@ let
           R6;
       } ++ [ set6 ];
     });
-
 
     set6 = (pkgs.rPackages.buildRPackage {
       name = "set6";
@@ -96,7 +94,6 @@ let
       } ++ [ set6 param6 ];
     });
 
-
     set6 = (pkgs.rPackages.buildRPackage {
       name = "set6";
       src = pkgs.fetchgit {
@@ -128,7 +125,6 @@ let
           R6;
       } ++ [ set6 ];
     });
-
 
     set6 = (pkgs.rPackages.buildRPackage {
       name = "set6";
@@ -163,7 +159,6 @@ let
       } ++ [ set6 param6 ];
     });
 
-
     set6 = (pkgs.rPackages.buildRPackage {
       name = "set6";
       src = pkgs.fetchgit {
@@ -195,7 +190,6 @@ let
           R6;
       } ++ [ set6 ];
     });
-
 
     set6 = (pkgs.rPackages.buildRPackage {
       name = "set6";
@@ -236,7 +230,6 @@ let
       } ++ [ distr6 param6 set6 ];
     });
 
-
     set6 = (pkgs.rPackages.buildRPackage {
       name = "set6";
       src = pkgs.fetchgit {
@@ -268,7 +261,6 @@ let
           R6;
       } ++ [ set6 ];
     });
-
 
     set6 = (pkgs.rPackages.buildRPackage {
       name = "set6";
@@ -286,7 +278,6 @@ let
       };
     });
 
-
     set6 = (pkgs.rPackages.buildRPackage {
       name = "set6";
       src = pkgs.fetchgit {
@@ -318,7 +309,6 @@ let
           R6;
       } ++ [ set6 ];
     });
-
 
     set6 = (pkgs.rPackages.buildRPackage {
       name = "set6";
@@ -353,7 +343,6 @@ let
       } ++ [ set6 param6 ];
     });
 
-
     set6 = (pkgs.rPackages.buildRPackage {
       name = "set6";
       src = pkgs.fetchgit {
@@ -385,7 +374,6 @@ let
           R6;
       } ++ [ set6 ];
     });
-
 
     set6 = (pkgs.rPackages.buildRPackage {
       name = "set6";
