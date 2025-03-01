@@ -1,3 +1,17 @@
+## 01-03-2025 Submission, version 0.15.5
+
+R CMD check using R-devel with win-builder:
+
+```
+0 errors | 0 warnings | 0 note
+
+same on other platforms.
+
+```
+
+This release also fixes the currently failing unit test:
+https://cran.r-project.org/web/checks/check_results_rix.html
+
 ## 15-02-2025 Submission, version 0.15.2
 
 R CMD check using R-devel with win-builder:
