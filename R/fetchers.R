@@ -12,7 +12,7 @@ fetchgit <- function(git_pkg, ...) {
   commit <- git_pkg$commit
   output <- nix_hash(repo_url, commit, ...)
   sri_hash <- output$sri_hash
-  
+
   # If package has no remote dependencies
   imports <- output$deps$imports
   imports <- paste(c("", imports), collapse = "\n          ")
@@ -32,7 +32,8 @@ fetchgit <- function(git_pkg, ...) {
     # if no remote dependencies
 
     output <- main_package_expression
-  } else { # if there are remote dependencies, start over
+  } else {
+    # if there are remote dependencies, start over
 
     remote_packages_expressions <- fetchgits(remotes, ...)
 
@@ -384,7 +385,8 @@ fetchgits <- function(git_pkgs, ...) {
   # Check if ignore_remotes_cache was passed
   # If not passed, ignore_remotes_cache is FALSE
   args <- list(...)
-  ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache)) args$ignore_remotes_cache else FALSE
+  ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache))
+    args$ignore_remotes_cache else FALSE
 
   if (!ignore_remotes_cache) {
     cache_file <- get_cache_file()
@@ -466,7 +468,8 @@ fetchzips <- function(archive_pkgs) {
 #' @noRd
 fetchpkgs <- function(git_pkgs, archive_pkgs, ...) {
   args <- list(...)
-  ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache)) args$ignore_remotes_cache else FALSE
+  ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache))
+    args$ignore_remotes_cache else FALSE
 
   # Initialize cache if git packages are present and not ignoring cache
   if (!is.null(git_pkgs) && !ignore_remotes_cache) {
@@ -482,7 +485,7 @@ fetchpkgs <- function(git_pkgs, archive_pkgs, ...) {
   )
 }
 
-                   
+
 #' get_commit_date Retrieves the date of a commit from a Git repository
 #' @param repo The GitHub repository (e.g. "r-lib/usethis")
 #' @param  commit_sha The commit hash of interest
@@ -645,12 +648,18 @@ get_closest_commit <- function(commits_df, target_date) {
 #' @return A character. The commit SHA of the closest commit to the target date
 #'   or "HEAD" if API fails
 #' @noRd
-resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes, ...) {
+resolve_package_commit <- function(
+  remote_pkg_name_and_ref,
+  date,
+  remotes,
+  ...
+) {
   pkg_name <- remote_pkg_name_and_ref[[1]]
 
   # Check if ignore_remotes_cache was passed, otherwise set to FALSE
   args <- list(...)
-  ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache)) args$ignore_remotes_cache else FALSE
+  ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache))
+    args$ignore_remotes_cache else FALSE
 
   # Check if package is already in cache
   if (!ignore_remotes_cache) {
@@ -658,7 +667,7 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes, ...) 
     cache <- readRDS(cache_file)
     pkg_matches <- grep(paste0("^", pkg_name, "@"), cache$commit_cache)
 
-  # Return commit from cache if found
+    # Return commit from cache if found
     if (length(pkg_matches) > 0) {
       return(cache$commit_cache[pkg_matches[1]])
     }
@@ -693,8 +702,11 @@ resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes, ...) 
       },
       error = function(e) {
         message(paste0(
-          "Failed to get closest commit for ", remotes_fetch,
-          ": ", e$message, ".\nFalling back to <<< HEAD >>>\n"
+          "Failed to get closest commit for ",
+          remotes_fetch,
+          ": ",
+          e$message,
+          ".\nFalling back to <<< HEAD >>>\n"
         ))
         "HEAD"
       }
