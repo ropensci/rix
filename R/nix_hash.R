@@ -2,14 +2,15 @@
 #' available locally
 #' @param repo_url URL to Git repository
 #' @param commit Commit hash (SHA-1)
+#' @param ... Further arguments passed down to methods.
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a GitHub repo
 #'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
-nix_hash <- function(repo_url, commit) {
+nix_hash <- function(repo_url, commit, ...) {
   if (grepl("(github)|(gitlab)", repo_url)) {
-    hash_git(repo_url = repo_url, commit)
+    hash_git(repo_url = repo_url, commit, ...)
   } else if (grepl("cran.*Archive.*", repo_url)) {
     hash_cran(repo_url = repo_url)
   } else {
@@ -23,12 +24,13 @@ nix_hash <- function(repo_url, commit) {
 
 #' Return the SRI hash of an URL with .tar.gz
 #' @param url String with URL ending with `.tar.gz`
+#' @param ... Further arguments passed down to methods.
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a GitHub repo
 #'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
-hash_url <- function(url) {
+hash_url <- function(url, ...) {
   tdir <- tempdir()
 
   tmpdir <- paste0(
@@ -96,7 +98,7 @@ hash_url <- function(url) {
     commit_date <- get_commit_date(repo_url_short, commit)
   }
 
-  deps <- get_imports(desc_path, commit_date)
+  deps <- get_imports(desc_path, commit_date, ...)
 
   return(
     list(
@@ -194,12 +196,13 @@ hash_cran <- function(repo_url) {
 #' NAR
 #' @param repo_url URL to GitHub repository
 #' @param commit Commit hash
+#' @param ... Further arguments passed down to methods.
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a GitHub repo
 #'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
-hash_git <- function(repo_url, commit) {
+hash_git <- function(repo_url, commit, ...) {
   trailing_slash <- grepl("/$", repo_url)
   if (isTRUE(trailing_slash)) {
     slash <- ""
@@ -212,9 +215,8 @@ hash_git <- function(repo_url, commit) {
   } else if (grepl("gitlab", repo_url)) {
     url <- paste0(repo_url, slash, "-/archive/", commit, ".tar.gz")
   }
-
   # list contains `sri_hash` and `deps` elements
-  hash_url(url)
+  hash_url(url, ...)
 }
 
 

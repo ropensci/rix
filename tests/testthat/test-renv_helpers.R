@@ -203,7 +203,6 @@ testthat::test_that("testing renv_helpers", {
         project_path = path_env_nix,
         message_type = "quiet",
         overwrite = TRUE,
-        skip_post_processing = FALSE,
         ...
       )
 

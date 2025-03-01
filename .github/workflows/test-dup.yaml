@@ -1,11 +1,11 @@
-# Integration tests for removing duplicates
+# Integration tests for keeping duplicates
 on:
   push:
     branches: [main, master]
   pull_request:
     branches: [main, master]
 
-name: test-dedup
+name: test-dup
 
 permissions:
   contents: read
@@ -32,14 +32,14 @@ jobs:
 
       - name: Build default.nix that results in duplicates
         run: |
-          nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = c('tidyverse', 'mlr3', 'qs', 'matrixStats', 'prospectr', 'Cubist', 'checkmate', 'mlr3misc', 'paradox'), git_pkgs = list(package_name = 'mlr3extralearners', repo_url = 'https://github.com/mlr-org/mlr3extralearners/', commit = '6e2af9ef9ecd420d2be44e9aa2488772bb9f7080'), ide = 'none', project_path = '.', overwrite = TRUE, print = FALSE, ignore_remotes_cache = FALSE)\""
+          nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = c('tidyverse', 'mlr3', 'qs', 'matrixStats', 'prospectr', 'Cubist', 'checkmate', 'mlr3misc', 'paradox'), git_pkgs = list(package_name = 'mlr3extralearners', repo_url = 'https://github.com/mlr-org/mlr3extralearners/', commit = '6e2af9ef9ecd420d2be44e9aa2488772bb9f7080'), ide = 'none', project_path = '.', overwrite = TRUE, print = FALSE, ignore_remotes_cache = TRUE)\""
 
-      - name: Download test default.nix without dups
+      - name: Download test default.nix with dups
         run: |
-          wget -O mlr3_default.nix https://raw.githubusercontent.com/mihem/rix/refs/heads/remove_duplicate_third/tests/testthat/testdata/remote-pkgs/mlr3_default.nix
+          wget -O mlr3_dups_default.nix https://raw.githubusercontent.com/mihem/rix/refs/heads/remove_duplicate_third/tests/testthat/testdata/remote-pkgs/mlr3_dups_default.nix
 
       - name: Remove lines starting with `#` from generated expression
         run: sed -i '/^#/d' default.nix
 
       - name: Compare lines and fail if different
-        run: diff -q default.nix mlr3_default.nix || exit 1
+        run: diff -q default.nix mlr3_dups_default.nix || exit 1

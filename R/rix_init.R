@@ -284,7 +284,7 @@ message_rprofile <- function(action_string = "Added",
     "/nix/var/nix/profiles/default/bin"
   )
 
-  if(identical(Sys.getenv("TESTTHAT"), "false")){
+  if (identical(Sys.getenv("TESTTHAT"), "false")) {
     cat(msg)
   }
 }

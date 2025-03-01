@@ -206,6 +206,27 @@ in `Remotes` in the DESCRIPTION file will work.
 However, if a branch name (e.g. `ropensci/rix@available_dates`), tag (e.g. `ropensci/rix@v.0.8.0`), or pull request number
 (e.g. `ropensci/rix#100`) is specified, `{rix}` will ignore this and will try to fetch the closest commit (see above).
 
+### Duplicated packages
+
+Let's  say package `A` depends on package `B` and `C`, but package `B` also depends on package `C`. Then 
+this would usually result in a duplicate entry of package `C` in the `default.nix` file. 
+To avoid this, `{rix}` will cache all packages that have been fetched from GitHub and will not
+fetch them again if they are already in the cache. This also avoids unnecessary API calls to GitHub.
+If you would like to disable this feature, you can set `ignore_remotes_cache = TRUE` in the `rix()` call.
+Be aware that you need to manually remove the duplicates from the `default.nix` file before `nix-build` will work.
+
+Another issue, which is closely related to this problem, is getting the "correct" commit of the dependency.
+Let's say the commit of package `A` that you specify in the `rix()` call was committed on the 1st of January 2025.
+Then `{rix}` will try to find the commit, whose date is closest to the 1st of January 2025, for package `B` and `C`.
+Let's say this is the 1st November 2024 for package `B` and the 1st December 2024 for package `C`. 
+If you use `ignore_remotes_cache = TRUE`, then `{rix}` will fetch commits of these dates.
+However, if you disable this feature, then `{rix}` will fetch package `C` twice, once for the commit of the 1st December 2024 as before
+(closest date that is earlier than the commit date of package `A`) and once for a date
+before the 1st November 2024 (closest date that is earlier than the commit date of package `B`).
+Again you would need to manually remove the duplicates from the `default.nix` file before `nix-build` will work.
+Be aware of dependency issues: for example the older version of package `C` might be imcompatbile with package `A`.
+
+
 ### Authenticating to GitHub
 
 Note: `{rix}` will only be able to fetch a maximum of 1000 commits. That means

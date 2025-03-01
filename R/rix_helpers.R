@@ -255,19 +255,20 @@ generate_system_pkgs <- function(system_pkgs, r_pkgs, ide) {
 #' @param archive_pkgs Character, list of R packages to install from the CRAN
 #' archives.
 #' @param flag_git_archive Character, are there R packages from GitHub at all?
+#' @param ... Further arguments passed down to methods.
 #' @noRd
 generate_git_archived_pkgs <- function(
   git_pkgs,
   archive_pkgs,
-  flag_git_archive
+  flag_git_archive,
+  ...
 ) {
   if (flag_git_archive == "") {
     NULL
   } else {
-    fetchpkgs(git_pkgs, archive_pkgs)
+    fetchpkgs(git_pkgs, archive_pkgs, ...)
   }
 }
-
 
 #' generate_locale_variables Internal function that generates the string
 #' containing the correct Nix expression to set locales.
@@ -386,104 +387,4 @@ pkgs.mkShell {
     flag_wrapper,
     shell_hook
   )
-}
-
-#' remove_duplicate_entries Internal function post-processes `default.nix`
-#' files. When remote packages have remote dependencies, it can happen
-#' that there are duplicated entries in the generated `default.nix` files.
-#' This function removes duplicated blocks.
-#' @param default.nix Character, default.nix lines.
-#' @noRd
-remove_duplicate_entries <- function(default.nix) {
-  # nolint start: object_name_linter
-  #default.nix_path <- file.path(default.nix_path)
-  # nolint end
-
-  lines <- default.nix
-
-  # To store output lines
-  out_lines <- character(0)
-
-  # A vector to track which package blocks have been seen
-  seen <- character(0)
-
-  # A vector to track package names for which duplicates were removed
-  removed <- character(0)
-
-  # Variables to accumulate a multi-line block
-  in_block <- FALSE
-  block_lines <- character(0)
-  block_name <- NULL
-
-  # Process each line in order
-  for (line in lines) {
-    if (!in_block) {
-      # Look for the start of a package block:
-      # A package block is assumed to start with a line like:
-      #    <name> = (<rest>
-      if (grepl("^\\s*([a-zA-Z0-9_]+)\\s*=\\s*\\(", line)) {
-        # Extract the package name from the start of the line.
-        block_name <- sub("^\\s*([a-zA-Z0-9_]+)\\s*=.*", "\\1", line)
-        in_block <- TRUE
-        block_lines <- line
-      } else {
-        # Not a block start, simply add the line to output.
-        out_lines <- c(out_lines, line)
-      }
-    } else {
-      # We are inside a block; accumulate the line.
-      block_lines <- c(block_lines, line)
-
-      # Check if the current line marks the end of the block.
-      # Here we assume a block ends with a line that has a
-      # closing parenthesis and semicolon.
-      if (grepl("\\)\\s*;\\s*$", line)) {
-        # If this package has not been seen yet, add the block to the output.
-        if (!(block_name %in% seen)) {
-          out_lines <- c(out_lines, block_lines)
-          seen <- c(seen, block_name)
-        } else {
-          if (identical(Sys.getenv("TESTTHAT"), "false")) {
-            message(sprintf(
-              "Duplicate block for '%s' already removed, skipping.",
-              block_name
-            ))
-            removed <- c(removed, block_name)
-          }
-        }
-        # Reset block tracking variables
-        in_block <- FALSE
-        block_lines <- character(0)
-        block_name <- NULL
-      }
-    }
-  }
-
-  # Hide messages when testing
-  if (identical(Sys.getenv("TESTTHAT"), "false")) {
-    # At the end, print a message listing all removed packages (unique names)
-    removed_unique <- unique(removed)
-    if (length(removed_unique) > 0) {
-      message(
-        "Removed duplicate blocks for the following packages: ",
-        paste(removed_unique, collapse = ", ")
-      )
-    } else {
-      message("No duplicate package blocks were found.")
-    }
-  }
-
-  out_lines
-}
-
-
-#' remove_empty_lines Internal function to post-processes `default.nix`
-#' files. Remove 2+ consecutive empty lines, only leaving one.
-#' @param default.nix Character, default.nix lines.
-#' @importFrom utils head
-#' @noRd
-remove_empty_lines <- function(default.nix) {
-  keep <- !(default.nix == "" & c(FALSE, head(default.nix, -1) == ""))
-
-  default.nix[keep]
 }

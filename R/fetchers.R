@@ -2,18 +2,18 @@
 #' @param git_pkg A list of three elements: "package_name", the name of the
 #'   package, "repo_url", the repository's url, "commit", the commit hash of
 #'   interest.
+#' @param ... Further arguments passed down to methods.
 #' @return A character. The Nix definition to download and build the R package
 #'   from GitHub.
 #' @noRd
-fetchgit <- function(git_pkg) {
+fetchgit <- function(git_pkg, ...) {
   package_name <- git_pkg$package_name
   repo_url <- git_pkg$repo_url
   commit <- git_pkg$commit
-
-  output <- nix_hash(repo_url, commit)
+  output <- nix_hash(repo_url, commit, ...)
   sri_hash <- output$sri_hash
+  
   # If package has no remote dependencies
-
   imports <- output$deps$imports
   imports <- paste(c("", imports), collapse = "\n          ")
 
@@ -32,19 +32,9 @@ fetchgit <- function(git_pkg) {
     # if no remote dependencies
 
     output <- main_package_expression
-  } else {
-    # if there are remote dependencies, start over
-    # don't include remote dependencies twice
-    # this can happen if a remote dependency of a remote dependency
-    # is already present as a remote dependency
-    remotes_remotes <- unique(unlist(lapply(remotes, get_remote)))
-    remotes <- remotes[
-      !sapply(remotes, function(pkg) {
-        pkg$package_name %in% remotes_remotes
-      })
-    ]
+  } else { # if there are remote dependencies, start over
 
-    remote_packages_expressions <- fetchgits(remotes)
+    remote_packages_expressions <- fetchgits(remotes, ...)
 
     output <- paste0(
       remote_packages_expressions,
@@ -182,10 +172,11 @@ remove_base <- function(list_imports) {
 #' Finds dependencies of a package from the DESCRIPTION file
 #' @param path path to package
 #' @param commit_date date of commit
+#' @param ... Further arguments passed down to methods.
 #' @importFrom utils untar
 #' @return Atomic vector of packages
 #' @noRd
-get_imports <- function(path, commit_date) {
+get_imports <- function(path, commit_date, ...) {
   tmpdir <- tempdir()
 
   tmp_dir <- tempfile(pattern = "file", tmpdir = tmpdir, fileext = "")
@@ -227,14 +218,13 @@ get_imports <- function(path, commit_date) {
     remotes <- gsub("\n", "", x = unlist(strsplit(remotes$Remotes, ",")))
     # Remove PR if present because this is difficult to handle
     remotes <- sub("#.*$", "", remotes)
-    # Only keep @ part if it is a commit sha
+    # Only keep part after @ if it is a commit sha(7-40 hex chars)
     remotes <- unname(sapply(remotes, function(x) {
       parts <- strsplit(x, "@")[[1]]
       if (length(parts) == 1) {
         return(parts[1])
       }
       ref <- parts[2]
-      # Keep only if it looks like a SHA (7-40 hex chars)
       if (grepl("^[0-9a-f]{7,40}$", ref)) {
         return(x)
       }
@@ -251,7 +241,7 @@ get_imports <- function(path, commit_date) {
 
     # try to get commit hash for each package if not already provided
     remote_pkgs_refs <- lapply(remote_pkgs_names_and_refs, function(x) {
-      resolve_package_commit(x, commit_date, remotes)
+      resolve_package_commit(x, commit_date, remotes, ...)
     })
 
     urls <- paste0(
@@ -386,26 +376,63 @@ fetchlocals <- function(local_r_pkgs) {
 #' @param git_pkgs A list of three elements: "package_name", the name of the
 #' package, "repo_url", the repository's url and "commit", the commit hash of
 #' interest. This argument can also be a list of lists of these three elements.
+#' @param ... Further arguments passed down to methods.
 #' @return A character. The Nix definition to download and build the R package
 #' from GitHub.
 #' @noRd
-fetchgits <- function(git_pkgs) {
-  if (!all(vapply(git_pkgs, is.list, logical(1)))) {
-    fetchgit(git_pkgs)
-  } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
-    # Re-order list of git packages by "package name"
-    git_pkgs <- git_pkgs[order(sapply(git_pkgs, "[[", "package_name"))]
+fetchgits <- function(git_pkgs, ...) {
+  # Check if ignore_remotes_cache was passed
+  # If not passed, ignore_remotes_cache is FALSE
+  args <- list(...)
+  ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache)) args$ignore_remotes_cache else FALSE
 
-    paste(lapply(git_pkgs, fetchgit), collapse = "\n")
-  } else {
-    stop(
-      paste0(
-        "There is something wrong with the input. ",
-        "Make sure it is either a list of three elements ",
-        "'package_name', 'repo_url' and 'commit', or ",
-        "a list of lists with these three elements"
+  if (!ignore_remotes_cache) {
+    cache_file <- get_cache_file()
+    cache <- readRDS(cache_file)
+    if (!all(vapply(git_pkgs, is.list, logical(1)))) {
+      if (git_pkgs$package_name %in% cache$seen_packages) {
+        return("")
+      }
+      cache$seen_packages <- c(cache$seen_packages, git_pkgs$package_name)
+      saveRDS(cache, cache_file)
+      fetchgit(git_pkgs, ...)
+    } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
+      # Re-order list of git packages by "package name"
+      git_pkgs <- git_pkgs[order(sapply(git_pkgs, "[[", "package_name"))]
+      # Filter out already processed packages
+      git_pkgs <- git_pkgs[
+        !sapply(
+          git_pkgs,
+          function(x) x$package_name %in% cache$seen_packages
+        )
+      ]
+
+      cache$seen_packages <- c(
+        cache$seen_packages,
+        sapply(git_pkgs, "[[", "package_name")
       )
-    )
+
+      saveRDS(cache, cache_file)
+      paste(lapply(git_pkgs, function(pkg) fetchgit(pkg, ...)), collapse = "\n")
+    } else {
+      stop(
+        "There is something wrong with the input. Make sure it is either a list of three elements ",
+        "'package_name', 'repo_url' and 'commit', or a list of lists with these three elements"
+      )
+    }
+  } else {
+    # When ignoring cache, process all packages without checking cache
+    if (!all(vapply(git_pkgs, is.list, logical(1)))) {
+      fetchgit(git_pkgs, ...)
+    } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
+      git_pkgs <- git_pkgs[order(sapply(git_pkgs, "[[", "package_name"))]
+      paste(lapply(git_pkgs, fetchgit, ...), collapse = "\n")
+    } else {
+      stop(
+        "There is something wrong with the input. Make sure it is either a list of three elements ",
+        "'package_name', 'repo_url' and 'commit', or a list of lists with these three elements"
+      )
+    }
   }
 }
 
@@ -434,42 +461,28 @@ fetchzips <- function(archive_pkgs) {
 #' fetchpkgs Downloads and installs packages from CRAN archives or GitHub
 #' @param git_pkgs List of Git packages with name, url and commit
 #' @param archive_pkgs Vector of CRAN archive package names
+#' @param ... Further arguments passed down to methods.
 #' @return Nix definition string for building the packages
 #' @noRd
-fetchpkgs <- function(git_pkgs, archive_pkgs) {
-  # Only include git packages that aren't already remote dependencies
-  if (all(sapply(git_pkgs, is.list))) {
-    all_remotes <- unique(unlist(lapply(git_pkgs, get_remote)))
-    git_pkgs <- git_pkgs[
-      !sapply(git_pkgs, function(pkg) {
-        pkg$package_name %in% all_remotes
-      })
-    ]
+fetchpkgs <- function(git_pkgs, archive_pkgs, ...) {
+  args <- list(...)
+  ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache)) args$ignore_remotes_cache else FALSE
+
+  # Initialize cache if git packages are present and not ignoring cache
+  if (!is.null(git_pkgs) && !ignore_remotes_cache) {
+    cache_file <- get_cache_file()
+    on.exit(unlink(cache_file))
   }
 
   # Combine git and archive package definitions
   paste(
-    fetchgits(git_pkgs),
+    fetchgits(git_pkgs, ...),
     fetchzips(archive_pkgs),
     collapse = "\n"
   )
 }
 
-#' get_remote Retrieves the names of remote dependencies for a given Git package
-#' @param git_pkg A list of three elements: "package_name", the name of the
-#'   package, "repo_url", the repository's URL, and "commit", the commit hash of
-#'   interest.
-#' @return A character vector containing the names of remote dependencies.
-#' @noRd
-get_remote <- function(git_pkg) {
-  repo_url <- git_pkg$repo_url
-  commit <- git_pkg$commit
-  output <- nix_hash(repo_url, commit)
-  remotes <- output$deps$remotes
-  remote_package_names <- sapply(remotes, `[[`, "package_name")
-  return(remote_package_names)
-}
-
+                   
 #' get_commit_date Retrieves the date of a commit from a Git repository
 #' @param repo The GitHub repository (e.g. "r-lib/usethis")
 #' @param  commit_sha The commit hash of interest
@@ -624,41 +637,93 @@ get_closest_commit <- function(commits_df, target_date) {
 }
 
 #' resolve_package_commit Resolves the commit SHA for a package based on a date
-#' @param remote_pkg_name_and_ref A list containing the package name and optionally a ref
+#' @param remote_pkg_name_and_ref A list containing the package name and
+#'   optionally a ref
 #' @param date The target date to find the closest commit
-#' @param remotess A character vector of remotes
-#' @return A character. The commit SHA of the closest commit to the target date or "HEAD" if API fails
+#' @param remotes A character vector of remotes
+#' @param ... Further arguments passed down to methods.
+#' @return A character. The commit SHA of the closest commit to the target date
+#'   or "HEAD" if API fails
 #' @noRd
-resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes) {
-  # Check if remote is a list with a package name and a ref
-  if (length(remote_pkg_name_and_ref) == 2) {
-    # Keep existing ref if present
-    return(remote_pkg_name_and_ref[[2]])
+resolve_package_commit <- function(remote_pkg_name_and_ref, date, remotes, ...) {
+  pkg_name <- remote_pkg_name_and_ref[[1]]
+
+  # Check if ignore_remotes_cache was passed, otherwise set to FALSE
+  args <- list(...)
+  ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache)) args$ignore_remotes_cache else FALSE
+
+  # Check if package is already in cache
+  if (!ignore_remotes_cache) {
+    cache_file <- get_cache_file()
+    cache <- readRDS(cache_file)
+    pkg_matches <- grep(paste0("^", pkg_name, "@"), cache$commit_cache)
+
+  # Return commit from cache if found
+    if (length(pkg_matches) > 0) {
+      return(cache$commit_cache[pkg_matches[1]])
+    }
+  }
+  # Store package name and ref in cache key if ref (commit-sha) is provided
+  # otherwise set to NULL
+  # example: package_name@commit_sha, e.g., schex@031320d was earlier split
+  # into a list of two elements: `package_name` and `commit_sha, e.g., `schex`, `031320d`
+  # and is now stored in `cache_key` as `schex@031320d` for caching
+  if (!ignore_remotes_cache) {
+    cache_key <- if (length(remote_pkg_name_and_ref) == 2) {
+      paste0(pkg_name, "@", remote_pkg_name_and_ref[[2]])
+    } else {
+      NULL
+    }
+  }
+
+  # If ref (commit hash, e.g. `031320d`) is provided, use it
+  commit <- if (length(remote_pkg_name_and_ref) == 2) {
+    remote_pkg_name_and_ref[[2]]
   } else if (length(remote_pkg_name_and_ref) == 1) {
     # For packages without ref, try to find closest one by date
     # fallback to HEAD if API fails
-    result <- tryCatch(
+    tryCatch(
       {
         remotes_fetch <- remotes[grepl(remote_pkg_name_and_ref, remotes)]
         all_commits <- download_all_commits(remotes_fetch, date)
         closest_commit <- get_closest_commit(all_commits, date)
-        closest_commit$sha
+        commit <- closest_commit$sha
+        cache_key <- paste0(pkg_name, "@", commit)
+        commit
       },
       error = function(e) {
-        message(
-          paste0(
-            "Failed to get closest commit for ",
-            remotes_fetch,
-            ": ",
-            e$message,
-            ".\nFalling back to <<< HEAD >>>\n"
-          )
-        )
-        return("HEAD")
+        message(paste0(
+          "Failed to get closest commit for ", remotes_fetch,
+          ": ", e$message, ".\nFalling back to <<< HEAD >>>\n"
+        ))
+        "HEAD"
       }
     )
-    return(result)
   } else {
     stop("remote_pkg_name_and_ref must be a list of length 1 or 2")
   }
+  # If not ignoring cache, Update cache with new cache_key (e.g. `schex@031320d`)
+  if (!ignore_remotes_cache) {
+    cache$commit_cache <- c(cache$commit_cache, cache_key)
+    saveRDS(cache, cache_file)
+  }
+
+  return(commit)
+}
+
+#' Get shared cache file path
+#' @return Path to shared cache file
+#' @noRd
+get_cache_file <- function() {
+  cache_file <- file.path(tempdir(), "package_cache.rds")
+  if (!file.exists(cache_file)) {
+    saveRDS(
+      list(
+        "seen_packages" = character(0),
+        "commit_cache" = character(0)
+      ),
+      cache_file
+    )
+  }
+  return(cache_file)
 }
