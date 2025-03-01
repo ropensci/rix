@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [main, master]
 
-name: test-dedup
+name: test-prep-ci
 
 permissions:
   contents: read
