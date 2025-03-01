@@ -223,7 +223,8 @@ If you use `ignore_remotes_cache = TRUE`, then `{rix}` will fetch commits of the
 However, if you disable this feature, then `{rix}` will fetch package `C` twice, once for the commit of the 1st December 2024 as before
 (closest date that is earlier than the commit date of package `A`) and once for a date
 before the 1st November 2024 (closest date that is earlier than the commit date of package `B`).
-You should be aware of this because if you are unlucky the default option `ignore_remotes_cache = FALSE` might result in a solution that does not work.
+Again you would need to manually remove the duplicates from the `default.nix` file before `nix-build` will work.
+Be aware of dependency issues: for example the older version of package `C` might be imcompatbile with package `A`.
 
 
 ### Authenticating to GitHub
