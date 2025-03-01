@@ -30,7 +30,7 @@ jobs:
 
       - name: Generate .inst/extdata/default.nix
         run: |
-          nix-shell ./inst/extdata/default.nix --run "Rscript -e \"library(rix);rix(date = '2025-02-17', git_pkgs = list(package_name = 'rix', repo_url = 'https://github.com/ropensci/rix/', commit = '${{ env.LATEST_COMMIT_HASH }}'), ide = 'none', project_path = 'inst/extdata', overwrite = TRUE)\""
+          nix-shell ./inst/extdata/default.nix --run "Rscript -e \"library(rix);rix(date = '2025-02-28', git_pkgs = list(package_name = 'rix', repo_url = 'https://github.com/ropensci/rix/', commit = '${{ env.LATEST_COMMIT_HASH }}'), ide = 'none', project_path = 'inst/extdata', overwrite = TRUE)\""
 
       - name: Check if PR exists
         id: check_pr
