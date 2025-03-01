@@ -388,3 +388,14 @@ pkgs.mkShell {
     shell_hook
   )
 }
+
+#' remove_empty_lines Internal function to post-processes `default.nix`
+#' files. Remove 2+ consecutive empty lines, only leaving one.
+#' @param default.nix Character, default.nix lines.
+#' @importFrom utils head
+#' @noRd
+remove_empty_lines <- function(default.nix) {
+  keep <- !(default.nix == "" & c(FALSE, head(default.nix, -1) == ""))
+
+  default.nix[keep]
+}

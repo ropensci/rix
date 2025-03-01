@@ -35,7 +35,6 @@ let
       };
     });
 
-
     housing = (pkgs.rPackages.buildRPackage {
       name = "housing";
       src = pkgs.fetchgit {

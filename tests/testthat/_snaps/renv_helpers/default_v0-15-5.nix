@@ -152,7 +152,6 @@ let
       };
     });
 
-
     colourScaleR = (pkgs.rPackages.buildRPackage {
       name = "colourScaleR";
       src = pkgs.fetchgit {

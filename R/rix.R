@@ -405,7 +405,6 @@ for more details."
       cran_pkgs$archive_pkgs,
       flag_git_archive,
       ignore_remotes_cache = ignore_remotes_cache
-
     ),
     generate_tex_pkgs(tex_pkgs),
     generate_local_r_pkgs(local_r_pkgs, flag_local_r_pkgs),
@@ -430,6 +429,9 @@ for more details."
 
   # Generate default.nix file # nolint next: object_name_linter
   default.nix <- strsplit(default.nix, split = "\n")[[1]]
+
+  # Remove consecutive empty lines
+  default.nix <- remove_empty_lines(default.nix)
 
   if (print) {
     print(default.nix)
