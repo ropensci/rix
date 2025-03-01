@@ -37,7 +37,9 @@ Windows won't interfere with a Nix-managed R inside WSL, so you can keep it if
 needed.
 
 After uninstalling R, remove your local package libraries:
+
 - Linux and WSL: `~/R/x86_64-pc-linux-gnu-library/<R_version>/`
+
 - macOS: `~/Library/R/<R_version>/library/`
 
 And don't worry, just because R is no longer installed doesn't mean you're
@@ -127,6 +129,10 @@ Here are some examples that you can use as inspiration:
 
 You can also check out [this video](https://www.youtube.com/watch?v=aZ38ph9plOU)
 to explain the *why* of using continuous integration.
+
+But of course you don't have to use GitHub Actions, see for example
+[this project](https://github.com/soilspectroscopy/ossl-nix).
+ 
 
 ## How to update or reproduce your project
 
