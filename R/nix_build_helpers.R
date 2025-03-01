@@ -62,12 +62,15 @@ fix_ld_library_path <- function() {
 
 #'
 #' @noRd
-poll_sys_proc_blocking <- function(cmd, proc,
-                                   what = c("nix-build", "expr", "nix-hash"),
-                                   message_type =
-                                     c("simple", "quiet", "verbose")) {
+poll_sys_proc_blocking <- function(
+  cmd,
+  proc,
+  what = c("nix-build", "expr", "nix-hash"),
+  message_type = c("simple", "quiet", "verbose")
+) {
   what <- match.arg(what, choices = c("nix-build", "expr", "nix-hash"))
-  message_type <- match.arg(message_type,
+  message_type <- match.arg(
+    message_type,
     choices = c("simple", "quiet", "verbose")
   )
   is_quiet <- message_type == "quiet"
@@ -97,13 +100,15 @@ poll_sys_proc_blocking <- function(cmd, proc,
 #' with an error code. The waiting is implemented to not create race conditions
 #'
 #' @noRd
-poll_sys_proc_nonblocking <- function(cmd,
-                                      proc,
-                                      what = c("nix-build", "expr", "nix-hash"),
-                                      message_type =
-                                        c("simple", "quiet", "verbose")) {
+poll_sys_proc_nonblocking <- function(
+  cmd,
+  proc,
+  what = c("nix-build", "expr", "nix-hash"),
+  message_type = c("simple", "quiet", "verbose")
+) {
   what <- match.arg(what, choices = c("nix-build", "expr", "nix-hash"))
-  message_type <- match.arg(message_type,
+  message_type <- match.arg(
+    message_type,
     choices = c("simple", "quiet", "verbose")
   )
   is_quiet <- message_type == "quiet"
@@ -119,7 +124,8 @@ poll_sys_proc_nonblocking <- function(cmd,
     tools::pskill(pid = proc)
     stop(
       "`nix_build()` likely interrupted by SIGINT (ctrl+c)\n",
-      "Stop process with PID ", proc
+      "Stop process with PID ",
+      proc
     )
   }
 
@@ -151,7 +157,8 @@ nix_build_installed <- function() {
 nix_build_exit_msg <- function(x) {
   x_char <- as.character(x)
 
-  err_msg <- switch(x_char,
+  err_msg <- switch(
+    x_char,
     "100" = "generic build failure (100).",
     "101" = "build timeout (101).",
     "102" = "hash mismatch (102).",

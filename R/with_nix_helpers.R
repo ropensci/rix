@@ -117,11 +117,13 @@ where <- function(name, env = parent.frame()) {
 #' @param expr an **R** expression
 #' @param args_vec character vector with arguments
 #' @noRd
-recurse_find_check_globals <- function(expr,
-                                       args_vec,
-                                       message_type =
-                                         c("simple", "quiet", "verbose")) {
-  message_type <- match.arg(message_type,
+recurse_find_check_globals <- function(
+  expr,
+  args_vec,
+  message_type = c("simple", "quiet", "verbose")
+) {
+  message_type <- match.arg(
+    message_type,
     choices = c("simple", "quiet", "verbose")
   )
   is_quiet <- message_type == "quiet"
@@ -282,9 +284,10 @@ classify_globals <- function(globals_expr, args_vec) {
       globs_empty <- NULL
     }
     globs_other <- vec_envs_check[
-      !names(vec_envs_check) %in% names(
-        c(globs_pkg, globs_globalenv, globs_empty, globs_base)
-      )
+      !names(vec_envs_check) %in%
+        names(
+          c(globs_pkg, globs_globalenv, globs_empty, globs_base)
+        )
     ]
     if (length(globs_other) == 0L) {
       globs_other <- NULL
@@ -292,12 +295,14 @@ classify_globals <- function(globals_expr, args_vec) {
   }
 
   is_globalenv_funs <- vapply(
-    names(globs_globalenv), function(x) is.function(get(x)),
+    names(globs_globalenv),
+    function(x) is.function(get(x)),
     FUN.VALUE = logical(1L)
   )
 
   is_otherenv_funs <- vapply(
-    names(globs_other), function(x) is.function(get(x)),
+    names(globs_other),
+    function(x) is.function(get(x)),
     FUN.VALUE = logical(1L)
   )
 
@@ -355,10 +360,13 @@ classify_globals <- function(globals_expr, args_vec) {
 #' (default), `"quiet"` for no messaging, or `"verbose"` to report which object
 #' categories are saved under which `.Rds` file and path.
 #' @noRd
-serialize_globals <- function(globals_expr,
-                              temp_dir,
-                              message_type = c("simple", "quiet", "verbose")) {
-  message_type <- match.arg(message_type,
+serialize_globals <- function(
+  globals_expr,
+  temp_dir,
+  message_type = c("simple", "quiet", "verbose")
+) {
+  message_type <- match.arg(
+    message_type,
     choices = c("simple", "quiet", "verbose")
   )
   funs <- globals_expr$globalenv_fun
@@ -367,7 +375,9 @@ serialize_globals <- function(globals_expr,
       cat(
         "==> serializing global functions under `<function-name>.Rds` in
       temporary folder at",
-        paste0(normalizePath(temp_dir), "...\n"), paste(names(funs)), "\n"
+        paste0(normalizePath(temp_dir), "...\n"),
+        paste(names(funs)),
+        "\n"
       )
     }
     globalenv_funs <- lapply(
@@ -382,7 +392,8 @@ serialize_globals <- function(globals_expr,
     if (message_type == "verbose") {
       cat(
         "==> serializing non-function object(s), e.g., other environments",
-        paste(names(others)), " ...\n"
+        paste(names(others)),
+        " ...\n"
       )
     }
     globalenv_others <- lapply(
@@ -396,7 +407,8 @@ serialize_globals <- function(globals_expr,
   if (!is.null(env_funs)) {
     cat(
       "==> Serializing function(s) from other environment(s):",
-      paste(names(env_funs)), "\n"
+      paste(names(env_funs)),
+      "\n"
     )
     env_funs <- lapply(
       names(env_funs),
@@ -409,7 +421,8 @@ serialize_globals <- function(globals_expr,
   if (!is.null(env_others)) {
     cat(
       "==> Serializing non-function object(s) from custom environment(s)::",
-      paste(names(env_others)), "\n"
+      paste(names(env_others)),
+      "\n"
     )
     env_others <- lapply(
       names(env_others),
@@ -436,10 +449,13 @@ serialize_globals <- function(globals_expr,
 #' `"quiet"`, or `"verbose"`.
 #' @return character vector with name of R packages.
 #' @noRd
-serialize_pkgs <- function(globals_expr,
-                           temp_dir,
-                           message_type = c("simple", "verbose", "quiet")) {
-  message_type <- match.arg(message_type,
+serialize_pkgs <- function(
+  globals_expr,
+  temp_dir,
+  message_type = c("simple", "verbose", "quiet")
+) {
+  message_type <- match.arg(
+    message_type,
     choices = c("simple", "quiet", "verbose")
   )
   is_quiet <- message_type == "quiet"
@@ -447,7 +463,8 @@ serialize_pkgs <- function(globals_expr,
   if (!is.null(pkgs) && isFALSE(is_quiet)) {
     cat(
       "=> Serializing package(s) required to run `expr`:\n",
-      paste(pkgs), "\n"
+      paste(pkgs),
+      "\n"
     )
   }
   saveRDS(
@@ -476,14 +493,16 @@ serialize_pkgs <- function(globals_expr,
 #' `Rscript` in `nix-shell`
 #' @return A language object
 #' @noRd
-quote_rnix <- function(expr,
-                       program,
-                       message_type,
-                       args_vec,
-                       globals,
-                       pkgs,
-                       temp_dir,
-                       rnix_file) {
+quote_rnix <- function(
+  expr,
+  program,
+  message_type,
+  args_vec,
+  globals,
+  pkgs,
+  temp_dir,
+  rnix_file
+) {
   expr_quoted <- bquote({
     message_type <- .(message_type)
     is_quiet <- message_type == "quiet"
@@ -506,7 +525,11 @@ quote_rnix <- function(expr,
     .libPaths(new_paths)
     r_version_num <- paste0(R.version$major, ".", R.version$minor)
     if (isFALSE(is_quiet)) {
-      cat("\n* evaluating `expr` in Nix shell with R version", r_version_num, "\n\n")
+      cat(
+        "\n* evaluating `expr` in Nix shell with R version",
+        r_version_num,
+        "\n\n"
+      )
     }
     # assign `args_vec` as in c(...) form.
     args_vec <- .(with_assign_vecnames_call(vec = args_vec))
@@ -521,8 +544,14 @@ quote_rnix <- function(expr,
       if (message_type == "verbose") {
         cat(
           paste0(
-            "  ==> reading file ", "'", obj, ".Rds", "'",
-            " for argument named `", obj, "` ...\n"
+            "  ==> reading file ",
+            "'",
+            obj,
+            ".Rds",
+            "'",
+            " for argument named `",
+            obj,
+            "` ...\n"
           )
         )
       }
@@ -539,8 +568,14 @@ quote_rnix <- function(expr,
       if (message_type == "verbose") {
         cat(
           paste0(
-            "  ==> reading file ", "'", obj, ".Rds", "'",
-            " for global object named `", obj, "`\n"
+            "  ==> reading file ",
+            "'",
+            obj,
+            ".Rds",
+            "'",
+            " for global object named `",
+            obj,
+            "`\n"
           )
         )
       }

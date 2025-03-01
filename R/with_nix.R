@@ -129,25 +129,34 @@
 #' ## session, which will be exported to the nix-R session.
 #' ## Other option: running system commands through `nix-shell` environment.
 #' }
-with_nix <- function(expr,
-                     program = c("R", "shell"),
-                     project_path = ".",
-                     message_type = c("simple", "quiet", "verbose")) {
+with_nix <- function(
+  expr,
+  program = c("R", "shell"),
+  project_path = ".",
+  message_type = c("simple", "quiet", "verbose")
+) {
   nix_file <- file.path(project_path, "default.nix")
   # nolint start: line_length_linter
   stopifnot(
-    "`project_path` must be character of length 1." =
-      is.character(project_path) && length(project_path) == 1L,
-    "`project_path` has no `default.nix` file. Use one that contains `default.nix`" =
-      file.exists(nix_file),
+    "`project_path` must be character of length 1." = is.character(
+      project_path
+    ) &&
+      length(project_path) == 1L,
+    "`project_path` has no `default.nix` file. Use one that contains `default.nix`" = file.exists(
+      nix_file
+    ),
     "`message_type` must be character." = is.character(message_type),
-    "`expr` needs to be a call or function for `program = R`, and character of length 1 for `program = shell`" =
-      is.function(expr) || is.call(expr) || (is.character(expr) && length(expr) == 1L)
+    "`expr` needs to be a call or function for `program = R`, and character of length 1 for `program = shell`" = is.function(
+      expr
+    ) ||
+      is.call(expr) ||
+      (is.character(expr) && length(expr) == 1L)
   )
   # nolint end
 
   program <- match.arg(program, choices = c("R", "shell"))
-  message_type <- match.arg(message_type,
+  message_type <- match.arg(
+    message_type,
     choices = c("simple", "quiet", "verbose")
   )
 
@@ -219,7 +228,8 @@ with_nix <- function(expr,
     if (isFALSE(is_quiet)) {
       cat(
         "\n* using environment defined by Nix expression in file:\n",
-        normalizePath(file.path(project_path, "default.nix")), "\n"
+        normalizePath(file.path(project_path, "default.nix")),
+        "\n"
       )
     }
 
@@ -265,9 +275,14 @@ with_nix <- function(expr,
     rnix_file <- file.path(temp_dir, "with_nix_r.R")
 
     rnix_quoted <- quote_rnix(
-      expr, program,
+      expr,
+      program,
       message_type = message_type,
-      args_vec, globals, pkgs, temp_dir, rnix_file
+      args_vec,
+      globals,
+      pkgs,
+      temp_dir,
+      rnix_file
     )
     rnix_deparsed <- deparse_chr1(expr = rnix_quoted, collapse = "\n")
 
@@ -294,10 +309,13 @@ with_nix <- function(expr,
     proc <- sys::exec_background(cmd = "nix-shell", cmd_rnix_deparsed)
 
     poll_sys_proc_nonblocking(
-      cmd = cmd_rnix_deparsed, proc, what = "expr",
+      cmd = cmd_rnix_deparsed,
+      proc,
+      what = "expr",
       message_type
     )
-  } else if (program == "shell") { # end of `if (program == "R")`
+  } else if (program == "shell") {
+    # end of `if (program == "R")`
     shell_cmd <- c(
       file.path(project_path, "default.nix"),
       "--pure",
@@ -313,7 +331,10 @@ with_nix <- function(expr,
     out <- readRDS(file = file.path(temp_dir, "_out.Rds"))
   } else if (program == "shell") {
     status <- poll_sys_proc_blocking(
-      cmd = shell_cmd, proc, what = "expr", message_type
+      cmd = shell_cmd,
+      proc,
+      what = "expr",
+      message_type
     )
     out <- sys::as_text(proc$stdout)
   }

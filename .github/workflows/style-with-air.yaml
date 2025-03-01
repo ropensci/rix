@@ -2,9 +2,9 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   pull_request:
-    branches: [not-main, not-master]
+    branches: [main, master]
 
-name: style-and-lint
+name: style-with-air
 
 permissions: write-all
 
@@ -32,26 +32,21 @@ jobs:
       - name: Build dev env
         run: nix-build
 
-      - name: Run styler::style_pkg
-        run: nix-shell --run "Rscript -e 'styler::style_pkg()'"
-
-      - name: Run lintr
-        run: nix-shell --run "Rscript -e 'lintr::lint_package()'"
-        env:
-          LINTR_ERROR_ON_LINT: true
+      - name: Run Air
+        run: nix-shell -I nixpkgs='https://github.com/rstats-on-nix/nixpkgs/archive/2025-02-28.tar.gz' -p air-formatter --run "air format ."
 
       - name: config bot user and check for changes
         run: |
           git config --local user.name "$GITHUB_ACTOR"
           git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
           git diff-index --quiet HEAD || echo "has_changes=true" >> $GITHUB_ENV
-          
+
       - name: commit if changes
         if: env.has_changes == 'true'
         run: |
           git add \*.R
           git add \*.Rmd
-          git commit -m 'Style via {styler}'
+          git commit -m 'Style via air'
 
       - uses: r-lib/actions/pr-push@v2
         with:

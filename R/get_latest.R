@@ -17,14 +17,18 @@ get_latest <- function(r_version) {
   if (nchar(r_version) == 40) {
     return(r_version)
   } else if (
-    !(r_version %in% c(
-      "bioc-devel",
-      "r-devel-bioc-devel",
-      "r-devel",
-      "frozen-edge",
-      "bleeding-edge",
-      "latest-upstream"
-    )) && all(r_version > Filter(function(x) ("latest-upstream" != x), available_r()))
+    !(r_version %in%
+      c(
+        "bioc-devel",
+        "r-devel-bioc-devel",
+        "r-devel",
+        "frozen-edge",
+        "bleeding-edge",
+        "latest-upstream"
+      )) &&
+      all(
+        r_version > Filter(function(x) ("latest-upstream" != x), available_r())
+      )
   ) {
     stop(
       "The provided R version is too recent,\nand not yet included in `nixpkgs`.\n",
@@ -36,10 +40,15 @@ get_latest <- function(r_version) {
       "'bleeding-edge' and 'frozen-edge'."
     )
   } else if (
-    !(r_version %in% c(
-      "r-devel-bioc-devel", "r-devel", "bioc-devel",
-      "bleeding-edge", "frozen-edge", available_r()
-    ))
+    !(r_version %in%
+      c(
+        "r-devel-bioc-devel",
+        "r-devel",
+        "bioc-devel",
+        "bleeding-edge",
+        "frozen-edge",
+        available_r()
+      ))
   ) {
     stop(
       "The provided R version is too recent,\nand not yet included in `nixpkgs`.\n",
@@ -74,7 +83,8 @@ get_right_commit <- function(r_version) {
     api_url <- "https://api.github.com/repos/rstats-on-nix/nixpkgs/commits?sha=r-daily"
   } else if (
     r_version %in% Filter(function(x) `!=`(x, "latest-upstream"), available_r())
-  ) { # all but latest-upstream
+  ) {
+    # all but latest-upstream
     # If a user provides an R version, use most recent date for that version
     return(get_date_from_version(r_version))
   } else {
@@ -101,17 +111,18 @@ get_right_commit <- function(r_version) {
 #' Fetch if available and stop with propagating the curl error. Also show URL
 #' for context
 #' @noRd
-try_get_request <- function(url,
-                            handle,
-                            extra_diagnostics = NULL) {
+try_get_request <- function(url, handle, extra_diagnostics = NULL) {
   tryCatch(
     {
       req <- curl::curl_fetch_memory(url, handle)
     },
     error = function(e) {
-      stop("Request `curl::curl_fetch_memory(",
-        paste0("url = ", "'", url, "'", ")` "), "failed:\n ",
-        e$message[1], extra_diagnostics,
+      stop(
+        "Request `curl::curl_fetch_memory(",
+        paste0("url = ", "'", url, "'", ")` "),
+        "failed:\n ",
+        e$message[1],
+        extra_diagnostics,
         call. = FALSE
       )
     }

@@ -22,14 +22,19 @@
 make_launcher <- function(editor, project_path) {
   editor <- trimws(editor)
 
-  stopifnot("'editor' argument must be a single word" = grepl("^[A-Za-z]+$", editor))
+  stopifnot(
+    "'editor' argument must be a single word" = grepl("^[A-Za-z]+$", editor)
+  )
 
   if (isFALSE(dir.exists(project_path))) {
     dir.create(path = project_path, recursive = TRUE)
     project_path <- normalizePath(path = project_path)
   }
 
-  script_text <- sprintf("#!/usr/bin/env nix-shell\n#!nix-shell default.nix -i bash\n%s", editor)
+  script_text <- sprintf(
+    "#!/usr/bin/env nix-shell\n#!nix-shell default.nix -i bash\n%s",
+    editor
+  )
   script_path <- file.path(project_path, paste0("start-", editor, ".sh"))
   writeLines(script_text, script_path)
 

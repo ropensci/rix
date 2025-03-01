@@ -93,23 +93,31 @@
 #'   message_type = c("simple")
 #' )
 #' }
-rix_init <- function(project_path,
-                     rprofile_action = c(
-                       "create_missing", "create_backup",
-                       "overwrite", "append"
-                     ),
-                     message_type = c("simple", "quiet", "verbose")) {
-  message_type <- match.arg(message_type,
+rix_init <- function(
+  project_path,
+  rprofile_action = c(
+    "create_missing",
+    "create_backup",
+    "overwrite",
+    "append"
+  ),
+  message_type = c("simple", "quiet", "verbose")
+) {
+  message_type <- match.arg(
+    message_type,
     choices = c("simple", "quiet", "verbose")
   )
   is_quiet <- message_type == "quiet"
 
-  rprofile_action <- match.arg(rprofile_action,
+  rprofile_action <- match.arg(
+    rprofile_action,
     choices = c("create_missing", "create_backup", "overwrite", "append")
   )
   stopifnot(
-    "`project_path` needs to be character of length 1" =
-      is.character(project_path) && length(project_path) == 1L
+    "`project_path` needs to be character of length 1" = is.character(
+      project_path
+    ) &&
+      length(project_path) == 1L
   )
 
   if (isFALSE(is_quiet) && identical(Sys.getenv("TESTTHAT"), "false")) {
@@ -128,7 +136,8 @@ rix_init <- function(project_path,
     project_path <- normalizePath(path = project_path)
     if (isFALSE(is_quiet) && identical(Sys.getenv("TESTTHAT"), "false")) {
       cat(
-        "==> Existing isolated nix-R project folder:\n", project_path,
+        "==> Existing isolated nix-R project folder:\n",
+        project_path,
         "\n"
       )
     }
@@ -175,17 +184,23 @@ rix_init <- function(project_path,
   timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")
   rprofile_backup <- paste0(rprofile_file, "_backup_", timestamp)
 
-  switch(rprofile_action,
+  switch(
+    rprofile_action,
     create_missing = {
       if (isTRUE(rprofile_exists)) {
         if (isFALSE(is_quiet)) {
           cat(
             "\n* Keep existing `.Rprofile`. in `project_path`:\n",
-            paste0(project_path, "/"), "\n"
+            paste0(project_path, "/"),
+            "\n"
           )
         }
       } else {
-        write_rprofile(rprofile_text, rprofile_file = rprofile_file, mode = "wb")
+        write_rprofile(
+          rprofile_text,
+          rprofile_file = rprofile_file,
+          mode = "wb"
+        )
         if (isFALSE(is_quiet)) {
           message_rprofile(action_string = "Added", project_path = project_path)
         }
@@ -195,10 +210,15 @@ rix_init <- function(project_path,
     create_backup = {
       if (isTRUE(rprofile_exists)) {
         file.copy(from = rprofile_file, to = rprofile_backup)
-        write_rprofile(rprofile_text, rprofile_file = rprofile_file, mode = "wb")
+        write_rprofile(
+          rprofile_text,
+          rprofile_file = rprofile_file,
+          mode = "wb"
+        )
         if (isFALSE(is_quiet) && identical(Sys.getenv("TESTTHAT"), "false")) {
           cat(
-            "\n==> Backed up existing `.Rprofile` in file:\n", rprofile_backup,
+            "\n==> Backed up existing `.Rprofile` in file:\n",
+            rprofile_backup,
             "\n"
           )
           message_rprofile(
@@ -207,7 +227,10 @@ rix_init <- function(project_path,
           )
         }
 
-        if (message_type == "verbose" && identical(Sys.getenv("TESTTHAT"), "false")) {
+        if (
+          message_type == "verbose" &&
+            identical(Sys.getenv("TESTTHAT"), "false")
+        ) {
           cat("\n* Current lines of local `.Rprofile` are\n:")
           cat(readLines(con = rprofile_file), sep = "\n")
         }
@@ -225,18 +248,21 @@ rix_init <- function(project_path,
       write_rprofile(rprofile_text, rprofile_file = rprofile_file, mode = "wb")
       if (isTRUE(rprofile_exists)) {
         message_rprofile(
-          action_string = "Overwrote", project_path = project_path
+          action_string = "Overwrote",
+          project_path = project_path
         )
       } else {
         message_rprofile(
-          action_string = "Added", project_path = project_path
+          action_string = "Added",
+          project_path = project_path
         )
       }
     },
     append = {
       write_rprofile(rprofile_text, rprofile_file = rprofile_file, mode = "a+")
       message_rprofile(
-        action_string = "Appended", project_path = project_path
+        action_string = "Appended",
+        project_path = project_path
       )
     }
   )
@@ -273,10 +299,10 @@ get_rprofile_text <- function(rprofile_deparsed) {
 #' @param action_string string
 #' @param project_path string with project path
 #' @noRd
-message_rprofile <- function(action_string = "Added",
-                             project_path = ".") {
+message_rprofile <- function(action_string = "Added", project_path = ".") {
   msg <- paste0(
-    "\n==> ", action_string,
+    "\n==> ",
+    action_string,
     " `.Rprofile` file and code lines for new R sessions launched from:\n",
     project_path,
     "\n\n* Added the location of the Nix store to `PATH` ",
@@ -299,9 +325,11 @@ message_rprofile <- function(action_string = "Added",
 #' are separated by `":"`.
 #' @noRd
 # nolint start: object_name_linter
-set_message_session_PATH <- function(message_type =
-                                       c("simple", "quiet", "verbose")) {
-  message_type <- match.arg(message_type,
+set_message_session_PATH <- function(
+  message_type = c("simple", "quiet", "verbose")
+) {
+  message_type <- match.arg(
+    message_type,
     choices = c("simple", "quiet", "verbose")
   )
   if (message_type == "verbose" && identical(Sys.getenv("TESTTHAT"), "false")) {
@@ -322,7 +350,6 @@ set_message_session_PATH <- function(message_type =
 }
 # nolint end: object_name_linter
 
-
 #' Report whether the current R session is running in Nix and RStudio, or not.
 #' @param is_nix_r logical scalar. `TRUE` means in a Nix R environment
 #' @param is_rstudio `TRUE` means source R session is inside RStudio
@@ -331,17 +358,19 @@ set_message_session_PATH <- function(message_type =
 #' create identical messages, while `"quiet"` omits diagnostics messages
 #' @return NULL
 #' @noRd
-message_r_session_nix_rstudio <- function(is_nix_r,
-                                          is_rstudio,
-                                          message_type =
-                                            c("simple", "quiet", "verbose")) {
+message_r_session_nix_rstudio <- function(
+  is_nix_r,
+  is_rstudio,
+  message_type = c("simple", "quiet", "verbose")
+) {
   stopifnot(
-    "`is_nix_r` needs to be TRUE or FALSE" =
-      is.logical(is_nix_r) && length(is_nix_r) == 1L,
-    "`is_rstudio` needs to be TRUE or FALSE" =
-      is.logical(is_rstudio) && length(is_rstudio) == 1L
+    "`is_nix_r` needs to be TRUE or FALSE" = is.logical(is_nix_r) &&
+      length(is_nix_r) == 1L,
+    "`is_rstudio` needs to be TRUE or FALSE" = is.logical(is_rstudio) &&
+      length(is_rstudio) == 1L
   )
-  message_type <- match.arg(message_type,
+  message_type <- match.arg(
+    message_type,
     choices = c("simple", "quiet", "verbose")
   )
 
@@ -362,10 +391,7 @@ message_r_session_nix_rstudio <- function(is_nix_r,
   # derive compound message
   msg <- paste0(nix_r_msg, " and ", rstudio_msg)
 
-  switch(message_type,
-    simple = cat(msg),
-    verbose = cat(msg)
-  )
+  switch(message_type, simple = cat(msg), verbose = cat(msg))
 }
 
 
@@ -437,7 +463,8 @@ nix_rprofile <- function() {
       if (isFALSE(has_nix_path)) {
         Sys.setenv(
           PATH = paste(
-            old_path, nix_path,
+            old_path,
+            nix_path,
             sep = ":"
           )
         )
@@ -486,12 +513,25 @@ nix_rprofile <- function() {
       rm(current_paths, userlib_paths, user_dir, new_paths)
     }
     # source vscode-R init.R file for vscode-R
-    if (isTRUE(is_code) && interactive() && isFALSE(is_rstudio) && isFALSE(is_positron)) {
-      vscode_r_init <- file.path(Sys.getenv(if (.Platform$OS.type == "windows") "USERPROFILE" else "HOME"), ".vscode-R", "init.R")
+    if (
+      isTRUE(is_code) &&
+        interactive() &&
+        isFALSE(is_rstudio) &&
+        isFALSE(is_positron)
+    ) {
+      vscode_r_init <- file.path(
+        Sys.getenv(
+          if (.Platform$OS.type == "windows") "USERPROFILE" else "HOME"
+        ),
+        ".vscode-R",
+        "init.R"
+      )
       if (file.exists(vscode_r_init)) {
         source(vscode_r_init)
       } else {
-        message("No .vscode-R/init.R file found. If you want to use VSCode-R, you need to source it in your .Rprofile or start vscode from within nix-shell")
+        message(
+          "No .vscode-R/init.R file found. If you want to use VSCode-R, you need to source it in your .Rprofile or start vscode from within nix-shell"
+        )
       }
     }
     rm(is_rstudio, is_nix_r, is_code, is_positron)

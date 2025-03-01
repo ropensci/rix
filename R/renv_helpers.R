@@ -40,7 +40,9 @@ read_renv_lock <- function(renv_lock_path = "renv.lock") {
 #' renv_remote_pkgs(read_renv_lock()$Packages)
 #' }
 renv_remote_pkgs <- function(
-    renv_lock_remote_pkgs, host = NULL) {
+  renv_lock_remote_pkgs,
+  host = NULL
+) {
   # , "bitbucket", "git", "local", "svn", "url", "version", "cran", "bioc"
   supported_pkg_hosts <- c("api.github.com", "gitlab.com")
   if (!(is.null(host) || (host %in% supported_pkg_hosts))) {
@@ -61,28 +63,38 @@ renv_remote_pkgs <- function(
         host <- renv_lock_pkg_info$RemoteHost
       } else {
         stop(
-          renv_lock_pkg_info$Package, " has unsupported remote host: ",
-          renv_lock_pkg_info$RemoteHost, "\nSupported hosts are: ",
+          renv_lock_pkg_info$Package,
+          " has unsupported remote host: ",
+          renv_lock_pkg_info$RemoteHost,
+          "\nSupported hosts are: ",
           paste0(supported_pkg_hosts, collapse = ", ")
         )
       }
     } else {
       if (host != renv_lock_pkg_info$RemoteHost) {
         stop(
-          "Remote host (", renv_lock_pkg_info$RemoteHost, ") of ", renv_lock_pkg_info$Package,
-          " does not match the provided host (", host, ")"
+          "Remote host (",
+          renv_lock_pkg_info$RemoteHost,
+          ") of ",
+          renv_lock_pkg_info$Package,
+          " does not match the provided host (",
+          host,
+          ")"
         )
       }
     }
 
     pkg_info <- vector(mode = "list", length = 3)
     names(pkg_info) <- c("package_name", "repo_url", "commit")
-    switch(host,
+    switch(
+      host,
       "api.github.com" = {
         pkg_info[[1]] <- renv_lock_pkg_info$Package
         pkg_info[[2]] <- paste0(
           # RemoteHost is listed as api.github.com for some reason
-          "https://github.com/", renv_lock_pkg_info$RemoteUser, "/",
+          "https://github.com/",
+          renv_lock_pkg_info$RemoteUser,
+          "/",
           renv_lock_pkg_info$RemoteRepo
         )
         pkg_info[[3]] <- renv_lock_pkg_info$RemoteSha
@@ -90,8 +102,11 @@ renv_remote_pkgs <- function(
       "gitlab.com" = {
         pkg_info[[1]] <- renv_lock_pkg_info$Package
         pkg_info[[2]] <- paste0(
-          "https://", renv_lock_pkg_info$RemoteHost, "/",
-          renv_lock_pkg_info$RemoteUser, "/",
+          "https://",
+          renv_lock_pkg_info$RemoteHost,
+          "/",
+          renv_lock_pkg_info$RemoteUser,
+          "/",
           renv_lock_pkg_info$RemoteRepo
         )
         pkg_info[[3]] <- renv_lock_pkg_info$RemoteSha
@@ -159,12 +174,13 @@ renv_remote_pkgs <- function(
 #' }
 #'
 renv2nix <- function(
-    renv_lock_path = "renv.lock",
-    project_path,
-    return_rix_call = FALSE,
-    method = c("fast", "accurate"),
-    override_r_ver = NULL,
-    ...) {
+  renv_lock_path = "renv.lock",
+  project_path,
+  return_rix_call = FALSE,
+  method = c("fast", "accurate"),
+  override_r_ver = NULL,
+  ...
+) {
   method <- match.arg(method, c("fast", "accurate"))
   renv_lock <- read_renv_lock(renv_lock_path = renv_lock_path)
   if (method == "fast") {
@@ -175,13 +191,18 @@ renv2nix <- function(
     for (i in seq_along(renv_lock$Packages)) {
       if (renv_lock$Packages[[i]]$Source %in% c("Repository", "Bioconductor")) {
         repo_pkgs[[renv_lock_pkg_names[i]]] <- renv_lock$Packages[[i]]
-      } else if (renv_lock$Packages[[i]]$RemoteHost %in% c("api.github.com", "gitlab.com")) {
+      } else if (
+        renv_lock$Packages[[i]]$RemoteHost %in%
+          c("api.github.com", "gitlab.com")
+      ) {
         remote_pkgs[[renv_lock_pkg_names[i]]] <- renv_lock$Packages[[i]]
       } else {
         # unsupported_pkgs[[renv_lock_pkg_names[i]]] <- renv_lock$Packages[[i]]
         warning(
-          renv_lock$Packages[[i]]$Package, " has the unsupported remote host ",
-          renv_lock$Packages[[i]]$RemoteHost, " and will not be included in the Nix expression.",
+          renv_lock$Packages[[i]]$Package,
+          " has the unsupported remote host ",
+          renv_lock$Packages[[i]]$RemoteHost,
+          " and will not be included in the Nix expression.",
           "\n Consider manually specifying the git remote or a local package install."
         )
       }
