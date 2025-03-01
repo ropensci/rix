@@ -1,5 +1,13 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.15.5 (2025-03-01)
+
+- `rix()`: Handing of remote dependencies is now more efficient thanks to caching
+  (see https://github.com/ropensci/rix/pull/424)
+- `tar_nix_ga()`: package that are not required to run code on GitHub ACtions (IDEs
+  and `{languageserver}`) are now removed
+- Air is used for formatting the package (see https://github.com/ropensci/rix/pull/434)
+
 # rix 0.15.4 (2025-02-28)
 
 - `rix()`: RStudio is now available for macOS as of R version 4.4.3 or as of
