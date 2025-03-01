@@ -80,7 +80,7 @@ jobs:
             if (file.exists(source)) file.rename(source, dest)
           }'"
 
-      - name: Run model
+      - name: Run targets pipeline in Nix shell
         run: |
           nix-shell default.nix --run "Rscript -e 'targets::tar_make()'"
 
