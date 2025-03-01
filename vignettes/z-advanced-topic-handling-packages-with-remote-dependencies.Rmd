@@ -224,7 +224,7 @@ However, if you disable this feature, then `{rix}` will fetch package `C` twice,
 (closest date that is earlier than the commit date of package `A`) and once for a date
 before the 1st November 2024 (closest date that is earlier than the commit date of package `B`).
 Again you would need to manually remove the duplicates from the `default.nix` file before `nix-build` will work.
-Be aware of dependency issues: for example the older version of package `C` might be imcompatbile with package `A`.
+Be aware of dependency issues: for example the older version of package `C` might be incompatible with package `A`.
 
 
 ### Authenticating to GitHub
