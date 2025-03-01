@@ -81,7 +81,7 @@ jobs:
         run: |
           nix-build
 
-      - name: Codium: Build default.nix that results in duplicates
+      - name: Codium, build default.nix that results in duplicates
         run: |
           nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = 'dplyr', ide = 'codium', project_path = '.', overwrite = TRUE, print = FALSE)\""
 
