@@ -40,13 +40,13 @@ After uninstalling R, remove your local package libraries:
 - Linux and WSL: `~/R/x86_64-pc-linux-gnu-library/<R_version>/`
 - macOS: `~/Library/R/<R_version>/library/`
 
-And don't worry, just because R is no longer installed doesn’t mean you’re
+And don't worry, just because R is no longer installed doesn't mean you're
 locked out of using `{rix}`! Just follow along and trust the process.
 
 ## Setting up Git
 
 This isn't directly related to Nix or `{rix}`, but we strongly recommend using
-version control for your projects. Whether it’s a private GitHub repository or a
+version control for your projects. Whether it's a private GitHub repository or a
 self-hosted Git instance like GitLab or Gitea at your job, you should absolutely
 be using Git—no exceptions.
 
@@ -55,13 +55,13 @@ you're already using it, great! Keep going.
 
 ## Setting up your environment
 
-Start by writing a script called something like `gen_env.R` and that looks like this:
+Start by writing a script called something like `gen_env.R` and that looks like
+this:
 
 ```{r, eval=FALSE}
 library(rix)
 
 # Choose the path to your project
-# This will create two files: .Rprofile and default.nix
 path_default_nix <- "."
 
 rix(
@@ -99,10 +99,7 @@ by typing the appropriate command (`rstudio` for RStudio, an so on... refer to
 the vignette `vignette("e-configuring-ide")` for more details). If you need to
 add packages to the environment, we recommend adding them to the `gen_env.R`
 script, and regenerate your environment. You may even add `{rix}` itself to your
-environment so you don't need to use the temporary shell as explained above if
-you want to add packages. Also, we don't recommend you update the date, unless
-you specifically wish to do so and make sure your analysis' results remain
-stable!
+environment so you don't need to use the temporary shell as explained above.
 
 ## Using GitHub Actions
 
@@ -123,7 +120,7 @@ time, believe us. But not all projects lend themselves to being set up as a
 `{targets}` pipeline, but all projects can benefit from continuous integration.
 Here are some examples that you can use as inspiration:
 
-- [Compile a paper using Quarto and Nix on GitHub Actions](https://github.com/b-rodrigues/rix_paper)
+- [A paper compiled using Quarto and Nix on GitHub Actions](https://github.com/b-rodrigues/rix_paper)
 - [A blog built on GitHub Actions with Nix and hosted on GitHub pages](https://github.com/b-rodrigues/blog)
 - [A research paper compiled on GitHub Actions using Nix/rix](https://github.com/jgeller112/L2_VWP_Webcam)
 - [Check out all the actions we use for rix itself](https://github.com/ropensci/rix/tree/main/.github/workflows)
