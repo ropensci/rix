@@ -128,15 +128,16 @@ environment.
 It is possible to use environments built with Nix interactively, either
 from the terminal, or using an interface such as RStudio. If you want to
 use RStudio, set the \code{ide} argument to \code{"rstudio"}. Please be aware that
-RStudio is not available for macOS through Nix. As such, you may want to
-use another editor on macOS. To use Visual Studio Code (or Codium), set the
-\code{ide} argument to \code{"code"} or \code{"codium"} respectively, which will add the
-\code{{languageserver}} R package to the list of R packages to be installed by
-Nix in that environment. It is also possible to use Positron by setting the
-\code{ide} argument to \code{"positron"}. Setting the \code{ide} argument to an editor
-will install it from Nix, meaning that each of your projects can have a
-dedicated IDE (or IDE version). \code{"radian"} and \code{"rserver"} are also
-options.
+for macOS, RStudio is only available starting from R version 4.4.3 or from
+the 2025-02-28. As such, you may want to use another editor on macOS if you
+need to use an environment with an older version of R. To use Visual Studio
+Code (or Codium), set the \code{ide} argument to \code{"code"} or \code{"codium"}
+respectively, which will add the \code{{languageserver}} R package to the list
+of R packages to be installed by Nix in that environment. It is also
+possible to use Positron by setting the \code{ide} argument to \code{"positron"}.
+Setting the \code{ide} argument to an editor will install it from Nix, meaning
+that each of your projects can have a dedicated IDE (or IDE version).
+\code{"radian"} and \code{"rserver"} are also options.
 
 Instead of using Nix to install an IDE, you can also simply use the one you
 have already installed on your system, with the exception of RStudio which

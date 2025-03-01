@@ -200,39 +200,54 @@ to (always before, never after) the date of the commit provided by the user.
 
 ### Fixed commits
 
-`{rix}` is able to fetch a fixed commit specified in DESCRIPTION files using a 
+`{rix}` is able to fetch a fixed commit specified in DESCRIPTION files using a
 commit hash. This also works in a short form. For example `ropensci/rix@88bb24f`
-in `Remotes` in the DESCRIPTION file will work.
-However, if a branch name (e.g. `ropensci/rix@available_dates`), tag (e.g. `ropensci/rix@v.0.8.0`), or pull request number
-(e.g. `ropensci/rix#100`) is specified, `{rix}` will ignore this and will try to fetch the closest commit (see above).
+in `Remotes` in the DESCRIPTION file will work. However, if a branch name (e.g.
+`ropensci/rix@available_dates`), tag (e.g. `ropensci/rix@v.0.8.0`), or pull
+request number (e.g. `ropensci/rix#100`) is specified, `{rix}` will ignore this
+and will try to fetch the closest commit (see above).
 
 ### Duplicated packages
 
-Let's  say package `A` depends on package `B` and `C`, but package `B` also depends on package `C`. Then 
-this would usually result in a duplicate entry of package `C` in the `default.nix` file. 
-To avoid this, `{rix}` will cache all packages that have been fetched from GitHub and will not
-fetch them again if they are already in the cache. This also avoids unnecessary API calls to GitHub.
-If you would like to disable this feature, you can set `ignore_remotes_cache = TRUE` in the `rix()` call.
-Be aware that you need to manually remove the duplicates from the `default.nix` file before `nix-build` will work.
+Let's say package `A` depends on package `B` and `C`, but package `B` also
+depends on package `C`. Then this would usually result in a duplicate entry of
+package `C` in the `default.nix` file. To avoid this, `{rix}` will cache all
+packages that have been fetched from GitHub and will not fetch them again if
+they are already in the cache. This also avoids unnecessary API calls to GitHub.
+If you would like to disable this feature, you can set `ignore_remotes_cache =
+TRUE` in the `rix()` call, which might be useful for debugging purposes. Be
+aware that you need to manually remove the duplicates from the `default.nix`
+file before `nix-build` will work in this case.
 
-Another issue, which is closely related to this problem, is getting the "correct" commit of the dependency.
-Let's say the commit of package `A` that you specify in the `rix()` call was committed on the 1st of January 2025.
-Then `{rix}` will try to find the commit, whose date is closest to the 1st of January 2025, for package `B` and `C`.
-Let's say this is the 1st November 2024 for package `B` and the 1st December 2024 for package `C`. 
-If you use `ignore_remotes_cache = TRUE`, then `{rix}` will fetch commits of these dates.
-However, if you disable this feature, then `{rix}` will fetch package `C` twice, once for the commit of the 1st December 2024 as before
-(closest date that is earlier than the commit date of package `A`) and once for a date
-before the 1st November 2024 (closest date that is earlier than the commit date of package `B`).
-Again you would need to manually remove the duplicates from the `default.nix` file before `nix-build` will work.
-Be aware of dependency issues: for example the older version of package `C` might be imcompatbile with package `A`.
+Unlike with packages hosted on CRAN, packages hosted on GitHub or GitLab may
+incorrectly specify their dependencies. `{rix}` will always try to generate
+syntactically correct expressions, but if dependencies are not correctly
+specified (for example, if a remote dependency got updated in a way that breaks
+the main package), you will need to manually inspect and fix the file.
 
+Consider the following scenario: let's say the commit of package `A` that you
+specify in the `rix()` call was committed on the 1st of January 2025. Then
+`{rix}` will try to find the commit, whose date is closest to the 1st of January
+2025, for package `B` and `C`. Let's say this is the 1st November 2024 for
+package `B` and the 1st December 2024 for package `C`. By default (so
+`ignore_remotes_cache = FALSE`), then `{rix}` will fetch commits on these dates.
+However, if you would ignore the cache (by setting `ignore_remotes_cache =
+TRUE`), then `{rix}` will fetch package `C` twice, once for the commit of the
+1st December 2024 as before (closest date that is earlier than the commit date
+of package `A`) and once for a date before the 1st November 2024 (closest date
+that is earlier than the commit date of package `B`). Again you would need to
+manually remove the duplicates from the `default.nix` file before `nix-build`
+will work. Be aware of dependency issues: for example the older version of
+package `C` might be imcompatbile with package `A`, so you might need to
+manually look for the right commit of `C` that works with both `A` and `B`.
 
 ### Authenticating to GitHub
 
 Note: `{rix}` will only be able to fetch a maximum of 1000 commits. That means
-if the commit you provided is rather old or if the package has many commits, this
-will fail and fallback to the `HEAD` of the repository. We have not observed this
-in practice yet, but if this happens you should see a message like this:
+if the commit you provided is rather old or if the package has many commits,
+this will fail and fallback to the `HEAD` of the repository. We have not
+observed this in practice yet, but if this happens you should see a message like
+this:
 
 ```
 Failed to get commit date for <<< satijalab/seurat-wrappers >>> No commits found before or on the target date
@@ -270,11 +285,14 @@ Of course, you need to create a [GitHub PAT
 first](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic).
 If don't want to always have to set the `GITHUB_PAT` environment variable, you
 can also use a more [long term solution](https://gitcreds.r-lib.org/index.html).
-For more information on GitHub Tokens, please also refer to [Happy Git and GitHub for the useR](https://happygitwithr.com/https-pat). For permanent storage, also refer
-to [this stackoverflow question](https://stackoverflow.com/a/5343146/21417317).
+For more information on GitHub Tokens, please also refer to [Happy Git and
+GitHub for the useR](https://happygitwithr.com/https-pat). For permanent
+storage, also refer to [this stackoverflow
+question](https://stackoverflow.com/a/5343146/21417317).
 
-Note: If you use `{gitcreds}`, you still need to set the `GITHUB_PAT` variable explicitly for each session before calling `{rix}`.
-To avoid exposing your PAT in your code, you could use:
+Note: If you use `{gitcreds}`, you still need to set the `GITHUB_PAT` variable
+explicitly for each session before calling `{rix}`. To avoid exposing your PAT
+in your code, you could use:
 
 ```
 my_token <- gitcreds::gitcreds_get()$password
