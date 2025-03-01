@@ -1,0 +1,100 @@
+# Integration tests for preparing default.nix for CI
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: test-dedup
+
+permissions:
+  contents: read
+
+jobs:
+  devtools:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - uses: cachix/cachix-action@v15
+        with:
+          name: rstats-on-nix
+          authToken: '${{ secrets.CACHIX_AUTH }}'
+
+      - name: RStudio, build default.nix that results in duplicates
+        run: |
+          nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = 'dplyr', ide = 'rstudio', project_path = '.', overwrite = TRUE, print = FALSE)\""
+
+      # Test whether the steps in tar_nix_ga() work
+      - name: Prepare default.nix for CI
+        run: |
+          # Remove unneeded wrappers
+          sed -i 's/\bradianWrapper\b/rWrapper/g; s/\brstudioWrapper\b/rWrapper/g; s/\brstudioServerWrapper\b/rWrapper/g' default.nix
+          # Remove unneded IDEs
+          sed -i 's/\bvscode-fhs\b//g; s/\bvscodium-fhs\b//g; s/\bpositron-bin\b//g' default.nix
+          # Remove unneeded languageserver
+          sed -i 's/\blanguageserver\b//g' default.nix
+
+      - name: Build development environment
+        run: |
+          nix-build
+
+      - name: Positron,  build default.nix that results in duplicates
+        run: |
+          nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = 'dplyr', ide = 'positron', project_path = '.', overwrite = TRUE, print = FALSE)\""
+
+      # Test whether the steps in tar_nix_ga() work
+      - name: Prepare default.nix for CI
+        run: |
+          # Remove unneeded wrappers
+          sed -i 's/\bradianWrapper\b/rWrapper/g; s/\brstudioWrapper\b/rWrapper/g; s/\brstudioServerWrapper\b/rWrapper/g' default.nix
+          # Remove unneded IDEs
+          sed -i 's/\bvscode-fhs\b//g; s/\bvscodium-fhs\b//g; s/\bpositron-bin\b//g' default.nix
+          # Remove unneeded languageserver
+          sed -i 's/\blanguageserver\b//g' default.nix
+
+      - name: Build development environment
+        run: |
+          nix-build
+
+      - name: VScode, build default.nix that results in duplicates
+        run: |
+          nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = 'dplyr', ide = 'code', project_path = '.', overwrite = TRUE, print = FALSE)\""
+
+      # Test whether the steps in tar_nix_ga() work
+      - name: Prepare default.nix for CI
+        run: |
+          # Remove unneeded wrappers
+          sed -i 's/\bradianWrapper\b/rWrapper/g; s/\brstudioWrapper\b/rWrapper/g; s/\brstudioServerWrapper\b/rWrapper/g' default.nix
+          # Remove unneded IDEs
+          sed -i 's/\bvscode-fhs\b//g; s/\bvscodium-fhs\b//g; s/\bpositron-bin\b//g' default.nix
+          # Remove unneeded languageserver
+          sed -i 's/\blanguageserver\b//g' default.nix
+
+      - name: Build development environment
+        run: |
+          nix-build
+
+      - name: Codium: Build default.nix that results in duplicates
+        run: |
+          nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = 'dplyr', ide = 'codium', project_path = '.', overwrite = TRUE, print = FALSE)\""
+
+      # Test whether the steps in tar_nix_ga() work
+      - name: Prepare default.nix for CI
+        run: |
+          # Remove unneeded wrappers
+          sed -i 's/\bradianWrapper\b/rWrapper/g; s/\brstudioWrapper\b/rWrapper/g; s/\brstudioServerWrapper\b/rWrapper/g' default.nix
+          # Remove unneded IDEs
+          sed -i 's/\bvscode-fhs\b//g; s/\bvscodium-fhs\b//g; s/\bpositron-bin\b//g' default.nix
+          # Remove unneeded languageserver
+          sed -i 's/\blanguageserver\b//g' default.nix
+
+      - name: Build development environment
+        run: |
+          nix-build

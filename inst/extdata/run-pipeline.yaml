@@ -35,8 +35,8 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
-    
-      - uses: actions/checkout@v3
+
+      - uses: actions/checkout@v4
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
@@ -45,10 +45,19 @@ jobs:
         with:
           name: rstats-on-nix
 
+      - name: Prepare default.nix for CI
+        run: |
+          # Remove unneeded wrappers
+          sed -i 's/\bradianWrapper\b/rWrapper/g; s/\brstudioWrapper\b/rWrapper/g; s/\brstudioServerWrapper\b/rWrapper/g' default.nix
+          # Remove unneded IDEs
+          sed -i 's/\bvscode-fhs\b//g; s/\bvscodium-fhs\b//g; s/\bpositron-bin\b//g' default.nix
+          # Remove unneeded languageserver
+          sed -i 's/\blanguageserver\b//g' default.nix
+
       - name: Build development environment
         run: |
           nix-build
-          
+
       - name: Check if previous runs exists
         id: runs-exist
         run: git ls-remote --exit-code --heads origin targets-runs
