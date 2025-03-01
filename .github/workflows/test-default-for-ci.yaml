@@ -49,6 +49,10 @@ jobs:
         run: |
           nix-build
 
+      - name: Download dev env default.nix to have correct env again
+        run: |
+          wget -O default.nix https://raw.githubusercontent.com/ropensci/rix/refs/heads/main/default.nix
+
       - name: Positron,  build default.nix
         run: |
           nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = 'dplyr', ide = 'positron', project_path = '.', overwrite = TRUE, print = FALSE)\""
@@ -71,9 +75,9 @@ jobs:
         run: |
           nix-build
 
-      - name: Show default.nix
+      - name: Download dev env default.nix to have correct env again
         run: |
-          cat default.nix
+          wget -O default.nix https://raw.githubusercontent.com/ropensci/rix/refs/heads/main/default.nix
 
       - name: VScode, build default.nix
         run: |
@@ -89,13 +93,17 @@ jobs:
           # Remove unneeded languageserver
           sed -i 's/\blanguageserver\b//g' default.nix
 
+      - name: Show default.nix
+        run: |
+          cat default.nix
+
       - name: Build development environment
         run: |
           nix-build
 
-      - name: Show default.nix
+      - name: Download dev env default.nix to have correct env again
         run: |
-          cat default.nix
+          wget -O default.nix https://raw.githubusercontent.com/ropensci/rix/refs/heads/main/default.nix
 
       - name: Codium, build default.nix
         run: |
