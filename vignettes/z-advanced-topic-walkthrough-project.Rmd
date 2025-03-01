@@ -1,0 +1,148 @@
+---
+title: "z - Advanced topic: A complete end-to-end walkthrough to set up a project"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{z-advanced-topic-walkthrough-project}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r, include=FALSE}
+library(rix)
+```
+
+## Introduction
+
+This vignette walks you through setting up an entire project using Nix and
+`{rix}`. We assume you already installed Nix on your system and configured the
+`rstats-on-nix` cache. If not, go back to the vignette
+`vignette("a-getting-started")`.
+
+First, we strongly recommend uninstalling any locally installed R versions and
+using Nix exclusively to manage your R environments. This prevents conflicts
+between a system-installed R and a Nix-managed environment. While `{rix}` does
+its best to avoid compatibility issues, it can't cover every edge case. Beyond
+avoiding conflicts, defining your environment upfront ensures reproducibility
+from the start, saving you from potential headaches later.
+
+On Windows, this applies to R installations inside WSL. A system-installed R on
+Windows won't interfere with a Nix-managed R inside WSL, so you can keep it if
+needed.
+
+After uninstalling R, remove your local package libraries:
+- Linux and WSL: `~/R/x86_64-pc-linux-gnu-library/<R_version>/`
+- macOS: `~/Library/R/<R_version>/library/`
+
+And don't worry, just because R is no longer installed doesn’t mean you’re
+locked out of using `{rix}`! Just follow along and trust the process.
+
+## Setting up Git
+
+This isn't directly related to Nix or `{rix}`, but we strongly recommend using
+version control for your projects. Whether it’s a private GitHub repository or a
+self-hosted Git instance like GitLab or Gitea at your job, you should absolutely
+be using Git—no exceptions.
+
+If you're new to Git, check out [this guide](https://happygitwithr.com/). If
+you're already using it, great! Keep going.
+
+## Setting up your environment
+
+Start by writing a script called something like `gen_env.R` and that looks like this:
+
+```{r, eval=FALSE}
+library(rix)
+
+# Choose the path to your project
+# This will create two files: .Rprofile and default.nix
+path_default_nix <- "."
+
+rix(
+  date = "2025-02-28", # We recommend using a date
+  r_pkgs = c("dplyr", "ggplot2"), # List all the packages you need
+  ide = "rstudio", # List whatever editor you need
+  project_path = path_default_nix,
+  overwrite = TRUE,
+  print = FALSE
+)
+```
+
+Just copy and paste the lines above and adapt them. You can use any editor for
+this, we are not going to execute these lines just yet. Now, remember what I
+told you above, something about trusting the process? We are now going to
+bootstrap this environment. First, run the following line to drop into a
+temporary shell with R and `{rix}`:
+
+```
+nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/ropensci/rix/main/inst/extdata/default.nix)"
+```
+
+Once the build process is done, you can simply start R by typing `R` and then,
+within the R session, run `source("gen_env.R")`. This will execute the lines
+above and generate a `default.nix` file. This is your environment's definition!
+Now quite R and the Nix shell (CTRL-D on your terminal, or type `quit()` to
+quite R and `exit` then to quite the Nix shell), or open a new terminal, and
+type `nix-build`. This will start building your environment.
+
+## Using your environment
+
+Once the build process is done, you can start using your environment. By typing
+`nix-shell` you will get dropped in that environment. From there, start your IDE
+by typing the appropriate command (`rstudio` for RStudio, an so on... refer to
+the vignette `vignette("e-configuring-ide")` for more details). If you need to
+add packages to the environment, we recommend adding them to the `gen_env.R`
+script, and regenerate your environment. You may even add `{rix}` itself to your
+environment so you don't need to use the temporary shell as explained above if
+you want to add packages. Also, we don't recommend you update the date, unless
+you specifically wish to do so and make sure your analysis' results remain
+stable!
+
+## Using GitHub Actions
+
+### For a project using {targets}
+
+If you use `{targets}` for your projects (you should, `{targets}` is amazing!)
+you can run the pipeline on GitHub actions using the same Nix environment.
+Simply call `rix::tar_nix_ga()` and this will automatically create the
+appropriate folders and files in your project's root directory. Now, every time
+you push, the analysis is built on GitHub actions and the results are
+automatically cached and pushed to the `targets-runs` branch! This feature is
+heavily inspired by the original `targets::tar_github_actions()` function.
+
+### For a project that doesn't use {targets}
+
+First, consider whether you shouldn't learn `{targets}`. It is well worth your
+time, believe us. But not all projects lend themselves to being set up as a
+`{targets}` pipeline, but all projects can benefit from continuous integration.
+Here are some examples that you can use as inspiration:
+
+- [Compile a paper using Quarto and Nix on GitHub Actions](https://github.com/b-rodrigues/rix_paper)
+- [A blog built on GitHub Actions with Nix and hosted on GitHub pages](https://github.com/b-rodrigues/blog)
+- [A research paper compiled on GitHub Actions using Nix/rix](https://github.com/jgeller112/L2_VWP_Webcam)
+- [Check out all the actions we use for rix itself](https://github.com/ropensci/rix/tree/main/.github/workflows)
+
+You can also check out [this video](https://www.youtube.com/watch?v=aZ38ph9plOU)
+to explain the *why* of using continuous integration.
+
+## How to update or reproduce your project
+
+To update your project's environment, simply use a more recent date, rebuild
+using `nix-build` and run your project. This can be useful in certain cases if
+you want to ensure that your project works with the latest packages, for
+example, if you're developing a package yourself. This is how we do it with
+`{rix}`; the project ships a `default.nix` that contributors must use to work on
+`{rix}` and we update the date every now and then to make sure that `{rix}`
+keeps working with the latest CRAN packages. If anything breaks, just put back
+the original date and continue working. Also open an issue, we might be able to
+help you.
+
+Once you're done with the analysis, someone wanting to reproduce the results can
+simply reuse the project's `default.nix` to restore the exact development
+environment you used.
