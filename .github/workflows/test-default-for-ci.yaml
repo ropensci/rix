@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 jobs:
-  devtools:
+  prep-ci:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -27,7 +27,7 @@ jobs:
           name: rstats-on-nix
           authToken: '${{ secrets.CACHIX_AUTH }}'
 
-      - name: RStudio, build default.nix that results in duplicates
+      - name: RStudio, build default.nix
         run: |
           nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = 'dplyr', ide = 'rstudio', project_path = '.', overwrite = TRUE, print = FALSE)\""
 
@@ -41,11 +41,15 @@ jobs:
           # Remove unneeded languageserver
           sed -i 's/\blanguageserver\b//g' default.nix
 
+      - name: Show default.nix
+        run: |
+          cat default.nix
+
       - name: Build development environment
         run: |
           nix-build
 
-      - name: Positron,  build default.nix that results in duplicates
+      - name: Positron,  build default.nix
         run: |
           nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = 'dplyr', ide = 'positron', project_path = '.', overwrite = TRUE, print = FALSE)\""
 
@@ -59,11 +63,19 @@ jobs:
           # Remove unneeded languageserver
           sed -i 's/\blanguageserver\b//g' default.nix
 
+      - name: Show default.nix
+        run: |
+          cat default.nix
+
       - name: Build development environment
         run: |
           nix-build
 
-      - name: VScode, build default.nix that results in duplicates
+      - name: Show default.nix
+        run: |
+          cat default.nix
+
+      - name: VScode, build default.nix
         run: |
           nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = 'dplyr', ide = 'code', project_path = '.', overwrite = TRUE, print = FALSE)\""
 
@@ -81,7 +93,11 @@ jobs:
         run: |
           nix-build
 
-      - name: Codium, build default.nix that results in duplicates
+      - name: Show default.nix
+        run: |
+          cat default.nix
+
+      - name: Codium, build default.nix
         run: |
           nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = 'dplyr', ide = 'codium', project_path = '.', overwrite = TRUE, print = FALSE)\""
 
@@ -94,6 +110,10 @@ jobs:
           sed -i 's/\bvscode-fhs\b//g; s/\bvscodium-fhs\b//g; s/\bpositron-bin\b//g' default.nix
           # Remove unneeded languageserver
           sed -i 's/\blanguageserver\b//g' default.nix
+
+      - name: Show default.nix
+        run: |
+          cat default.nix
 
       - name: Build development environment
         run: |
