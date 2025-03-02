@@ -29,9 +29,6 @@ jobs:
         with:
           name: rstats-on-nix
 
-      - name: Build dev env
-        run: nix-build
-
       - name: Run Air
         run: nix-shell -I nixpkgs='https://github.com/rstats-on-nix/nixpkgs/archive/2025-02-28.tar.gz' -p air-formatter --run "air format ."
 
