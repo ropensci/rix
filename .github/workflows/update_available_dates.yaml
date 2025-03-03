@@ -23,12 +23,16 @@ jobs:
       id: set_date
       run: echo "branch_date=$(date '+%Y-%m-%d')" >> $GITHUB_ENV
 
+    - name: Set year
+      id: set_year
+      run: echo "year_date=$(date '+%Y')" >> $GITHUB_ENV
+
     - name: Access Payload Data
       run: echo "${{ env.branch_date }}"
 
     - name: Update available_df.csv
       run: |
-          echo "\"2025\",\"4.4.3\",\"3.20\",\"${{ env.branch_date }}\",\"supported\",\"supported\",\"might work\"" >> inst/extdata/available_df.csv
+          echo "\"${{ env.year_date }}\",\"4.4.3\",\"3.20\",\"${{ env.branch_date }}\",\"supported\",\"supported\",\"might work\"" >> inst/extdata/available_df.csv
 
     - name: Push changes to update_default.nix branch
       run: |
