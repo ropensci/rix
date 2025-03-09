@@ -421,4 +421,3 @@ for creating `{rix}`’s logo!
   Nix](https://rgoswami.me/posts/rethinking-r-nix/)
 - [Blog post: Searching and installing old versions of Nix
   packages](https://lazamar.github.io/download-specific-package-version-with-nix/)
-
