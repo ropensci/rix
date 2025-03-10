@@ -370,14 +370,12 @@ generate_shell <- function(
 ) {
   sprintf(
     "
-in
-
-pkgs.mkShell {
-  %s
-  %s
-  buildInputs = [ %s %s %s system_packages %s %s ];
-  %s
-}",
+  shell = pkgs.mkShell {
+    %s
+    %s
+    buildInputs = [ %s %s %s system_packages %s %s ];
+    %s
+  };",
     generate_locale_archive(detect_os()),
     generate_locale_variables(),
     flag_git_archive,
@@ -386,6 +384,18 @@ pkgs.mkShell {
     flag_local_r_pkgs,
     flag_wrapper,
     shell_hook
+  )
+}
+
+#' generate_inherit Inherit pkgs shell for compatibility with rixpress
+#' @noRd
+generate_inherit <- function() {
+  sprintf(
+    "
+in
+  {
+    inherit pkgs shell;
+  }"
   )
 }
 

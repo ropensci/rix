@@ -91,17 +91,19 @@ let
     packages = [ housing fusen AER rpkgs  ];
   };
  
-in
-
-pkgs.mkShell {
-  LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
-  LANG = "en_US.UTF-8";
+  shell = pkgs.mkShell {
+    LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
+    LANG = "en_US.UTF-8";
    LC_ALL = "en_US.UTF-8";
    LC_TIME = "en_US.UTF-8";
    LC_MONETARY = "en_US.UTF-8";
    LC_PAPER = "en_US.UTF-8";
    LC_MEASUREMENT = "en_US.UTF-8";
 
-  buildInputs = [ housing fusen AER rpkgs tex system_packages  wrapped_pkgs ];
-  
-}
+    buildInputs = [ housing fusen AER rpkgs tex system_packages  wrapped_pkgs ];
+    
+  }; 
+in
+  {
+    inherit pkgs shell;
+  }
