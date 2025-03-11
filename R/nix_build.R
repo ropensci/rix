@@ -2,7 +2,6 @@
 #' @param project_path Path to the folder where the `default.nix` file resides.
 #' @param message_type Character vector with messaging type, Either `"simple"`
 #' (default), `"quiet"` for no messaging, or `"verbose"`.
-#' @param nxbld_args Further args passed down to nix-build
 #' @return integer of the process ID (PID) of `nix-build` shell command
 #' launched, if `nix_build()` call is assigned to an R object. Otherwise, it
 #' will be returned invisibly.
@@ -23,8 +22,7 @@
 #' }
 nix_build <- function(
   project_path = getwd(),
-  message_type = c("simple", "quiet", "verbose"),
-  nxbld_args = NULL
+  message_type = c("simple", "quiet", "verbose")
 ) {
   message_type <- match.arg(
     message_type,
@@ -95,9 +93,9 @@ nix_build <- function(
   cmd <- "nix-build"
 
   if (max_jobs == 1L) {
-    args <- c(nix_dir, nxbld_args)
+    args <- nix_dir
   } else {
-    args <- c("--max-jobs", as.character(max_jobs), nix_dir, nxbld_args)
+    args <- c("--max-jobs", as.character(max_jobs), nix_dir)
   }
 
   if (identical(Sys.getenv("TESTTHAT"), "false")) {
