@@ -6,7 +6,8 @@
 \usage{
 nix_build(
   project_path = getwd(),
-  message_type = c("simple", "quiet", "verbose")
+  message_type = c("simple", "quiet", "verbose"),
+  nxbld_args = NULL
 )
 }
 \arguments{
@@ -14,6 +15,8 @@ nix_build(
 
 \item{message_type}{Character vector with messaging type, Either \code{"simple"}
 (default), \code{"quiet"} for no messaging, or \code{"verbose"}.}
+
+\item{nxbld_args}{Further args passed down to nix-build}
 }
 \value{
 integer of the process ID (PID) of \code{nix-build} shell command
