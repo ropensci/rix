@@ -6,38 +6,39 @@
 \usage{
 nix_build(
   project_path = getwd(),
-  message_type = c("simple", "quiet", "verbose")
+  message_type = c("simple", "quiet", "verbose"),
+  args = NULL
 )
 }
 \arguments{
 \item{project_path}{Path to the folder where the \code{default.nix} file resides.}
 
-\item{message_type}{Character vector with messaging type, Either \code{"simple"}
+\item{message_type}{Character vector with messaging type. Either \code{"simple"}
 (default), \code{"quiet"} for no messaging, or \code{"verbose"}.}
+
+\item{args}{A character vector of additional arguments to be passed directly to
+the \code{nix-build} command. If the project directory (i.e. \code{project_path}) is not
+included in \code{args}, it will be appended automatically.}
 }
 \value{
-integer of the process ID (PID) of \code{nix-build} shell command
-launched, if \code{nix_build()} call is assigned to an R object. Otherwise, it
-will be returned invisibly.
+Integer of the process ID (PID) of the \code{nix-build} shell command
+launched, if the \code{nix_build()} call is assigned to an R object.
+Otherwise, it will be returned invisibly.
 }
 \description{
 Invoke shell command \code{nix-build} from an R session
 }
 \details{
-The \code{nix-build} command line interface has more arguments. We will
-probably not support all of them in this R wrapper, but currently we have
-support for the following \code{nix-build} flags:
-\itemize{
-\item \code{--max-jobs}: Maximum number of build jobs done in parallel by Nix.
-According to the official docs of Nix, it defaults to \code{1}, which is one
-core. This option can be useful for shared memory multiprocessing or
-systems with high I/O latency. To set \code{--max-jobs} used, you can declare
-with \verb{options(rix.nix_build_max_jobs = <integer>)}. Once you call
-\code{nix_build()} the flag will be propagated to the call of \code{nix-build}.
-}
+This function is a wrapper for the \code{nix-build} command-line interface.
+Users can supply any flags supported by \code{nix-build} via the \code{args} parameter.
+If no custom arguments are provided, only the project directory is passed.
 }
 \examples{
 \dontrun{
-nix_build()
+  # Run nix-build with default arguments (project directory)
+  nix_build()
+
+  # Run nix-build with custom arguments
+  nix_build(args = c("--max-jobs", "2", "--quiet"))
 }
 }
