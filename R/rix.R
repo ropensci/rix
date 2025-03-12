@@ -424,6 +424,7 @@ for more details."
       flag_wrapper,
       shell_hook
     ),
+    generate_inherit(),
     collapse = "\n"
   )
 

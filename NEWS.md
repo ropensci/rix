@@ -1,5 +1,13 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.15.6 (2025-03-12)
+
+- `rix()`: expressions now expose the shell so it can be used by other expressions.
+  This is mainly useful for `{rixpress}`
+  (see https://github.com/b-rodrigues/rixpress)
+- `nix_build()`: gets an additional argument, `args` which is passed down to `nix-build`
+
+
 # rix 0.15.5 (2025-03-01)
 
 - `rix()`: Handing of remote dependencies is now more efficient thanks to caching

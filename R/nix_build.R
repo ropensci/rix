@@ -1,34 +1,37 @@
 #' Invoke shell command `nix-build` from an R session
 #' @param project_path Path to the folder where the `default.nix` file resides.
-#' @param message_type Character vector with messaging type, Either `"simple"`
+#' @param message_type Character vector with messaging type. Either `"simple"`
 #' (default), `"quiet"` for no messaging, or `"verbose"`.
-#' @return integer of the process ID (PID) of `nix-build` shell command
-#' launched, if `nix_build()` call is assigned to an R object. Otherwise, it
-#' will be returned invisibly.
-#' @details The `nix-build` command line interface has more arguments. We will
-#' probably not support all of them in this R wrapper, but currently we have
-#' support for the following `nix-build` flags:
-#' - `--max-jobs`: Maximum number of build jobs done in parallel by Nix.
-#'   According to the official docs of Nix, it defaults to `1`, which is one
-#'   core. This option can be useful for shared memory multiprocessing or
-#'   systems with high I/O latency. To set `--max-jobs` used, you can declare
-#'   with `options(rix.nix_build_max_jobs = <integer>)`. Once you call
-#'   `nix_build()` the flag will be propagated to the call of `nix-build`.
+#' @param args A character vector of additional arguments to be passed directly to
+#'   the `nix-build` command. If the project directory (i.e. `project_path`) is not
+#'   included in `args`, it will be appended automatically.
+#' @return Integer of the process ID (PID) of the `nix-build` shell command
+#'   launched, if the `nix_build()` call is assigned to an R object.
+#'   Otherwise, it will be returned invisibly.
+#' @details This function is a wrapper for the `nix-build` command-line interface.
+#'   Users can supply any flags supported by `nix-build` via the `args` parameter.
+#'   If no custom arguments are provided, only the project directory is passed.
 #' @importFrom tools pskill
 #' @export
 #' @examples
 #' \dontrun{
-#' nix_build()
+#'   # Run nix-build with default arguments (project directory)
+#'   nix_build()
+#'
+#'   # Run nix-build with custom arguments
+#'   nix_build(args = c("--max-jobs", "2", "--quiet"))
 #' }
 nix_build <- function(
   project_path = getwd(),
-  message_type = c("simple", "quiet", "verbose")
+  message_type = c("simple", "quiet", "verbose"),
+  args = NULL
 ) {
   message_type <- match.arg(
     message_type,
     choices = c("simple", "quiet", "verbose")
   )
-  # if nix store is not PATH variable; e.g. on macOS (system's) RStudio
+
+  # if nix store is not in the PATH variable; e.g. on macOS (system's) RStudio
   PATH <- set_nix_path() # nolint: object_name_linter
   if (isTRUE(nzchar(Sys.getenv("NIX_STORE")))) {
     # for Nix R sessions, guarantee that the system's user library
@@ -36,12 +39,11 @@ nix_build <- function(
     current_libpaths <- .libPaths()
     # don't do this in covr test environment, because this sets R_LIBS_USER
     # to multiple paths
-    R_LIBS_USER <- Sys.getenv("R_LIBS_USER") # nolint: object_name_linter
+    R_LIBS_USER <- Sys.getenv("R_LIBS_USER")
     if (isFALSE(nzchar(Sys.getenv("R_COVR")))) {
       remove_r_libs_user()
     }
   } else {
-    # nolint next: object_name_linter
     LD_LIBRARY_PATH_default <- Sys.getenv("LD_LIBRARY_PATH")
     if (nzchar(LD_LIBRARY_PATH_default)) {
       # On some systems, like Ubuntu 22.04, we found that a preset
@@ -58,16 +60,16 @@ nix_build <- function(
       fix_ld_library_path()
       cat(
         "* Current LD_LIBRARY_PATH in system R session is:",
-        LD_LIBRARY_PATH_default # nolint: object_name_linter
+        LD_LIBRARY_PATH_default
       )
       cat("\n", "Setting `LD_LIBRARY_PATH` to `''` during `nix_build()`")
     }
   }
-  has_nix_build <- nix_build_installed() # TRUE if yes, FALSE if no
+
+  has_nix_build <- nix_build_installed() # TRUE if available, FALSE if not
   nix_dir <- normalizePath(project_path)
   nix_file <- file.path(nix_dir, "default.nix")
 
-  # nolint start: line_length_linter
   stopifnot(
     "`project_path` must be character of length 1." = is.character(
       project_path
@@ -80,22 +82,18 @@ nix_build <- function(
       has_nix_build
     )
   )
-  # nolint end
-
-  max_jobs <- getOption("rix.nix_build_max_jobs", default = 1L)
-  stopifnot(
-    "option `rix.nix_build_max_jobs` is not integerish" = is_integerish(
-      max_jobs
-    )
-  )
-  max_jobs <- as.integer(max_jobs)
 
   cmd <- "nix-build"
 
-  if (max_jobs == 1L) {
+  # If no custom args provided, just use the project directory.
+  # Otherwise, ensure that the project directory is appended.
+  if (is.null(args)) {
     args <- nix_dir
   } else {
-    args <- c("--max-jobs", as.character(max_jobs), nix_dir)
+    args <- as.character(args)
+    if (!(nix_dir %in% args)) {
+      args <- c(args, nix_dir)
+    }
   }
 
   if (identical(Sys.getenv("TESTTHAT"), "false")) {
