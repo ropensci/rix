@@ -389,7 +389,7 @@ let
           mvtnorm;
       };
     });
-    
+     
   system_packages = builtins.attrValues {
     inherit (pkgs) 
       R
@@ -406,7 +406,7 @@ let
    LC_PAPER = "en_US.UTF-8";
    LC_MEASUREMENT = "en_US.UTF-8";
 
-    buildInputs = [ CSFAtlasTools datathin rpkgs  system_packages   ];
+    buildInputs = [ CSFAtlasTools datathin rpkgs   system_packages   ];
     
   }; 
 in
