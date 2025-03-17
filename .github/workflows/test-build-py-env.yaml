@@ -5,13 +5,13 @@ on:
   pull_request:
     branches: [main, master]
 
-name: test-renv2nix
+name: test-rix-python
 
 permissions:
   contents: read
 
 jobs:
-  devtools:
+  build-py-env:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
