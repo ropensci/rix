@@ -1,5 +1,11 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.15.7 (2025-03-17)
+
+- `rix()`: added a new argument, called `py_pkgs` for easy installation of
+  Pyhon packages.
+  (see https://github.com/ropensci/rix/pull/453)
+
 # rix 0.15.6 (2025-03-12)
 
 - `rix()`: expressions now expose the shell so it can be used by other expressions.

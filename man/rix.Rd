@@ -12,6 +12,7 @@ rix(
   git_pkgs = NULL,
   local_r_pkgs = NULL,
   tex_pkgs = NULL,
+  py_pkgs = NULL,
   ide = "none",
   project_path,
   overwrite = FALSE,
@@ -59,6 +60,11 @@ Quarto. If you don't know which package to add, start by adding "amsmath".
 See the
 \code{vignette("d2- installing-system-tools-and-texlive-packages-in-a-nix-environment")}
 for more details.}
+
+\item{py_pkgs}{List. A list of two elements, \code{py_version} and \code{py_pkgs}.
+\code{py_version} must be of the form \code{"3.12"} for Python 3.12 and \code{py_pkgs}
+must be an atomic vector of packages names, for example
+\code{py_pkgs = c("polars", "plotnine", "great-tables")}.}
 
 \item{ide}{Character, defaults to "none". If you wish to use RStudio to work
 interactively use "rstudio" or "rserver" for the server version. Use "code"

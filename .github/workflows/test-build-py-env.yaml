@@ -1,0 +1,37 @@
+# Integration tests for installing Python packages
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: test-rix-python
+
+permissions:
+  contents: read
+
+jobs:
+  build-py-env:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - uses: cachix/cachix-action@v15
+        with:
+          name: rstats-on-nix
+          # If you chose signing key for write access
+          # signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+          # If you chose API tokens for write access OR if you have a private cache
+          authToken: '${{ secrets.CACHIX_AUTH }}'
+
+      - name: Build default.nix
+        run: nix-build tests/testthat/_snaps/rix-python/python_default.nix
+
+      - name: Hello from Python
+        run: nix-shell tests/testthat/_snaps/rix-python/python_default.nix --run "python -c \"print('hello from Python')\""
