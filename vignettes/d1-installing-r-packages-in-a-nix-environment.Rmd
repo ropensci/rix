@@ -1,5 +1,5 @@
 ---
-title: "d1 - Installing R packages in a Nix environment"
+title: "d1 - Installing R and Python packages in a Nix environment"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{d1-installing-r-packages-in-a-nix-environment}
@@ -327,6 +327,29 @@ been downloaded beforehand. If you want to include a local package that you are
 developing, make sure to first build it using `devtools::build()` to build the
 `.tar.gz` archive, but if you can, consider uploading the source code to your
 package on GitHub and installing it from GitHub instead.
+
+## Installing Python packages
+
+It is also possible to add Python packages to an environment, by passing a list
+of two elements to the `py_pkgs` argument of `rix()`. This list needs to first
+specify a Python version, and then an atomic character vector of Python
+packages:
+
+```{r, eval = F}
+rix(
+  date = "2025-02-17",
+  r_pkgs = "ggplot2",
+  py_pkgs = list(
+    py_version = "3.12", 
+    py_pkgs = c("polars", "great-tables")
+  ),
+  overwrite = TRUE
+)
+```
+
+This will install Python 3.12, the `polars` and `great-tables` packages, but also
+`ipykernel` and `pip` to ensure the Python interpreter works correctly with IDEs 
+such as Positron.
 
 ## Converting from an renv.lock file
 
