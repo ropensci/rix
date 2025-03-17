@@ -135,7 +135,7 @@ vector of Python packages:
 
 ``` r
 rix(
-  date = "2025-02-17",
+  date = "2025-03-17",
   r_pkgs = "ggplot2",
   py_pkgs = list(
     py_version = "3.12", 
