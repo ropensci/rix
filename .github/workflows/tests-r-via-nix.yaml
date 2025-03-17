@@ -23,6 +23,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Create this folder to silence warning
+        run: mkdir -p ~/.nix-defexpr/channels
+
       - name: Create .Renviron
         run: |
           echo "GITHUB_PAT=${{ secrets.GITHUB_TOKEN }}" >> ~/.Renviron
@@ -37,6 +40,6 @@ jobs:
           name: rstats-on-nix
 
       - name: devtools::test() via nix-shell
-        run: nix-shell --pure -p cacert nix R rPackages.covr rPackages.codetools rPackages.xml2 rPackages.sys rPackages.devtools --run "Rscript -e \"devtools::test(stop_on_failure = TRUE)\""
+        run: nix-shell --quiet --pure -p cacert nix R rPackages.covr rPackages.codetools rPackages.xml2 rPackages.sys rPackages.devtools --run "Rscript -e \"devtools::test(stop_on_failure = TRUE)\""
 
 

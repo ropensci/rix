@@ -22,6 +22,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Create this folder to silence warning
+        run: mkdir -p ~/.nix-defexpr/channels
+
       - name: Download test packages
         run: |
           wget https://cran.r-project.org/src/contrib/Archive/chronicler/chronicler_0.2.1.tar.gz
@@ -40,20 +43,20 @@ jobs:
 
       - name: Build default.nix with 2 local packages
         run: |
-          nix-shell ./inst/extdata/default.nix --run "Rscript -e \"library(rix);rix('4.3.1', local_r_pkgs = c('knitr_1.43.tar.gz', 'chronicler_0.2.1.tar.gz'), project_path = '.', overwrite = TRUE)\""
+          nix-shell --quiet ./inst/extdata/default.nix --run "Rscript -e \"library(rix);rix('4.3.1', local_r_pkgs = c('knitr_1.43.tar.gz', 'chronicler_0.2.1.tar.gz'), project_path = '.', overwrite = TRUE)\""
 
       - name: Check generated default.nix
         run: cat default.nix
 
       - name: Build default.nix
-        run: nix-build
+        run: nix-build --quiet
 
       - name: Build default.nix with 1 local package
         run: |
-          nix-shell ./inst/extdata/default.nix --run "Rscript -e \"library(rix);rix('4.3.1', local_r_pkgs = 'chronicler_0.2.1.tar.gz', project_path = '.', overwrite = TRUE)\""
+          nix-shell --quiet ./inst/extdata/default.nix --run "Rscript -e \"library(rix);rix('4.3.1', local_r_pkgs = 'chronicler_0.2.1.tar.gz', project_path = '.', overwrite = TRUE)\""
 
       - name: Build default.nix
-        run: nix-build
+        run: nix-build --quiet
 
       - name: Try running the shell
         run: nix-shell --run "echo OK"

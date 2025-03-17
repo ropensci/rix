@@ -17,6 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Create this folder to silence warning
+        run: mkdir -p ~/.nix-defexpr/channels
+
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
 
@@ -30,7 +33,7 @@ jobs:
 
       - name: Generate .inst/extdata/default.nix
         run: |
-          nix-shell -p R rPackages.{codetools,curl,jsonlite,sys,devtools} --run "Rscript -e \"devtools::load_all();rix(date = '2025-02-28', git_pkgs = list(package_name = 'rix', repo_url = 'https://github.com/ropensci/rix/', commit = '${{ env.LATEST_COMMIT_HASH }}'), ide = 'none', project_path = 'inst/extdata', overwrite = TRUE)\""
+          nix-shell --quiet -p R rPackages.{codetools,curl,jsonlite,sys,devtools} --run "Rscript -e \"devtools::load_all();rix(date = '2025-02-28', git_pkgs = list(package_name = 'rix', repo_url = 'https://github.com/ropensci/rix/', commit = '${{ env.LATEST_COMMIT_HASH }}'), ide = 'none', project_path = 'inst/extdata', overwrite = TRUE)\""
 
       - name: Check if PR exists
         id: check_pr

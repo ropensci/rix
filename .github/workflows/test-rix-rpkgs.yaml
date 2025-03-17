@@ -22,6 +22,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Create this folder to silence warning
+        run: mkdir -p ~/.nix-defexpr/channels
+
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
 
@@ -35,13 +38,13 @@ jobs:
 
       - name: Build default.nix with 2 packages
         run: |
-          nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix('4.3.1', r_pkgs = c('dplyr', 'S4Vectors', 'AER@1.1-8'), project_path = '.', overwrite = TRUE)\""
+          nix-shell --quiet default.nix --run "Rscript -e \"devtools::load_all();rix('4.3.1', r_pkgs = c('dplyr', 'S4Vectors', 'AER@1.1-8'), project_path = '.', overwrite = TRUE)\""
 
       - name: Check generated default.nix
         run: cat default.nix
 
       - name: Build default.nix
-        run: nix-build
+        run: nix-build --quiet
 
       - name: Try running the shell
         run: nix-shell --run "echo OK"

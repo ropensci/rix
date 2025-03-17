@@ -19,6 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Create this folder to silence warning
+        run: mkdir -p ~/.nix-defexpr/channels
+
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
 
@@ -29,7 +32,7 @@ jobs:
 
       - name: RStudio, build default.nix
         run: |
-          nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = 'dplyr', ide = 'rstudio', project_path = '.', overwrite = TRUE, print = FALSE)\""
+          nix-shell --quiet default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = 'dplyr', ide = 'rstudio', project_path = '.', overwrite = TRUE, print = FALSE)\""
 
       # Test whether the steps in tar_nix_ga() work
       - name: Prepare default.nix for CI
@@ -47,7 +50,7 @@ jobs:
 
       - name: Build development environment
         run: |
-          nix-build
+          nix-build --quiet
 
       - name: Download dev env default.nix to have correct env again
         run: |
@@ -55,7 +58,7 @@ jobs:
 
       - name: Positron,  build default.nix
         run: |
-          nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = 'dplyr', ide = 'positron', project_path = '.', overwrite = TRUE, print = FALSE)\""
+          nix-shell --quiet default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = 'dplyr', ide = 'positron', project_path = '.', overwrite = TRUE, print = FALSE)\""
 
       # Test whether the steps in tar_nix_ga() work
       - name: Prepare default.nix for CI
@@ -73,7 +76,7 @@ jobs:
 
       - name: Build development environment
         run: |
-          nix-build
+          nix-build --quiet
 
       - name: Download dev env default.nix to have correct env again
         run: |
@@ -81,7 +84,7 @@ jobs:
 
       - name: VScode, build default.nix
         run: |
-          nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = 'dplyr', ide = 'code', project_path = '.', overwrite = TRUE, print = FALSE)\""
+          nix-shell --quiet default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = 'dplyr', ide = 'code', project_path = '.', overwrite = TRUE, print = FALSE)\""
 
       # Test whether the steps in tar_nix_ga() work
       - name: Prepare default.nix for CI
@@ -99,7 +102,7 @@ jobs:
 
       - name: Build development environment
         run: |
-          nix-build
+          nix-build --quiet
 
       - name: Download dev env default.nix to have correct env again
         run: |
@@ -107,7 +110,7 @@ jobs:
 
       - name: Codium, build default.nix
         run: |
-          nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = 'dplyr', ide = 'codium', project_path = '.', overwrite = TRUE, print = FALSE)\""
+          nix-shell --quiet default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = 'dplyr', ide = 'codium', project_path = '.', overwrite = TRUE, print = FALSE)\""
 
       # Test whether the steps in tar_nix_ga() work
       - name: Prepare default.nix for CI
@@ -125,4 +128,4 @@ jobs:
 
       - name: Build development environment
         run: |
-          nix-build
+          nix-build --quiet

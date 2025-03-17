@@ -16,9 +16,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Create this folder to silence warning
+      run: mkdir -p ~/.nix-defexpr/channels
+
     - name: Install Nix
       uses: DeterminateSystems/nix-installer-action@main
-
 
     - uses: cachix/cachix-action@v15
       with:
@@ -30,8 +32,8 @@ jobs:
 
     - name: Run `nix-build ./inst/extdata/default.nix`
       run: |
-        nix-build ./inst/extdata/default.nix
-        nix-shell ./inst/extdata/default.nix
+        nix-build --quiet ./inst/extdata/default.nix
+        nix-shell --quiet ./inst/extdata/default.nix
 
   run-x86_64-darwin:
     name: nix builder for MacOS X86_64
@@ -44,5 +46,5 @@ jobs:
       uses: DeterminateSystems/nix-installer-action@main
     - name: Run `nix-build ./inst/extdata/default.nix`
       run: |
-        nix-build ./inst/extdata/default.nix
-        nix-shell ./inst/extdata/default.nix
+        nix-build --quiet ./inst/extdata/default.nix
+        nix-shell --quiet ./inst/extdata/default.nix

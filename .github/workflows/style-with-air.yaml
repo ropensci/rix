@@ -18,6 +18,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Create this folder to silence warning
+        run: mkdir -p ~/.nix-defexpr/channels
+
       - uses: r-lib/actions/pr-fetch@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -30,7 +33,7 @@ jobs:
           name: rstats-on-nix
 
       - name: Run Air
-        run: nix-shell -I nixpkgs='https://github.com/rstats-on-nix/nixpkgs/archive/2025-02-28.tar.gz' -p air-formatter --run "air format ."
+        run: nix-shell --quiet -p air-formatter --run "air format ."
 
       - name: config bot user and check for changes
         run: |

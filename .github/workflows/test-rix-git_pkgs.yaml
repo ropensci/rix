@@ -19,6 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Create this folder to silence warning
+        run: mkdir -p ~/.nix-defexpr/channels
+
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
 
@@ -32,13 +35,13 @@ jobs:
 
       - name: Build default.nix with 2 git packages
         run: |
-          nix-shell default.nix --run "Rscript -e \"devtools::load_all();rix('4.4.2', git_pkgs = list(list(package_name = 'scMisc', repo_url = 'https://github.com/mihem/scMisc/', commit = 'e2ebddcb779b935551f14216514c0429616fc91d'), list(package_name = 'housing', repo_url = 'https://github.com/rap4all/housing/', commit = '1c860959310b80e67c41f7bbdc3e84cef00df18e')), project_path = '.', overwrite = TRUE)\""
+          nix-shell --quiet default.nix --run "Rscript -e \"devtools::load_all();rix('4.4.2', git_pkgs = list(list(package_name = 'scMisc', repo_url = 'https://github.com/mihem/scMisc/', commit = 'e2ebddcb779b935551f14216514c0429616fc91d'), list(package_name = 'housing', repo_url = 'https://github.com/rap4all/housing/', commit = '1c860959310b80e67c41f7bbdc3e84cef00df18e')), project_path = '.', overwrite = TRUE)\""
 
       - name: Check generated default.nix
         run: cat default.nix
 
       - name: Build default.nix
-        run: nix-build
+        run: nix-build --quiet
 
       - name: Try running the shell
         run: nix-shell --run "echo OK"

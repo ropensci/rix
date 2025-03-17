@@ -19,6 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Create this folder to silence warning
+        run: mkdir -p ~/.nix-defexpr/channels
+
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
 
@@ -31,7 +34,7 @@ jobs:
           authToken: '${{ secrets.CACHIX_AUTH }}'
 
       - name: Build default.nix
-        run: nix-build tests/testthat/_snaps/rix-python/python_default.nix
+        run: nix-build --quiet tests/testthat/_snaps/rix-python/python_default.nix
 
       - name: Hello from Python
-        run: nix-shell tests/testthat/_snaps/rix-python/python_default.nix --run "python -c \"print('hello from Python')\""
+        run: nix-shell --quiet tests/testthat/_snaps/rix-python/python_default.nix --run "python -c \"print('hello from Python')\""

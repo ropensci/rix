@@ -19,6 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Create this folder to silence warning
+        run: mkdir -p ~/.nix-defexpr/channels
+
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
 
@@ -38,7 +41,7 @@ jobs:
         run: cat default.nix
 
       - name: Build default.nix
-        run: nix-build
+        run: nix-build --quiet
 
       - name: Try running the shell
-        run: nix-shell --run "echo OK"
+        run: nix-shell --quiet --run "echo OK"
