@@ -1,3 +1,18 @@
+## 01-03-2025 Submission, version 0.15.7
+
+R CMD check using R-devel with win-builder:
+
+```
+0 errors | 0 warnings | 1 note
+
+* checking CRAN incoming feasibility ... [22s] NOTE
+Maintainer: 'Bruno Rodrigues <bruno@brodrigues.co>'
+
+```
+
+We believe that this NOTE is not relevant for a new
+release.
+
 ## 01-03-2025 Submission, version 0.15.5
 
 R CMD check using R-devel with win-builder:
