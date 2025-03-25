@@ -1,5 +1,11 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.15.8 (2025-03-25)
+
+- `rix()`: deals with remotes defined as `github::repo/package` and 
+  `gitlab::repo/package`
+  (see https://github.com/ropensci/rix/issues/458)
+
 # rix 0.15.7 (2025-03-17)
 
 - `rix()`: added a new argument, called `py_pkgs` for easy installation of

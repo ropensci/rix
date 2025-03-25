@@ -219,6 +219,9 @@ get_imports <- function(path, commit_date, ...) {
     remotes <- gsub("\n", "", x = unlist(strsplit(remotes$Remotes, ",")))
     # Remove PR if present because this is difficult to handle
     remotes <- sub("#.*$", "", remotes)
+    # Remove `github::`, see: https://github.com/microbiome/miaViz/blob/fdb4ded0dbb36aead1be2d5e60b626c9f0c94ae8/DESCRIPTION#L77 for an example
+    remotes <- gsub("github::", "", remotes)
+    remotes <- gsub("gitlab::", "", remotes)
     # Only keep part after @ if it is a commit sha(7-40 hex chars)
     remotes <- unname(sapply(remotes, function(x) {
       parts <- strsplit(x, "@")[[1]]
