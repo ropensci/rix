@@ -86,7 +86,9 @@ let
       glibcLocales
       nix
       vscode-fhs
-      quarto;
+      quarto
+      which
+      pandoc;
   };
   
   shell = pkgs.mkShell {

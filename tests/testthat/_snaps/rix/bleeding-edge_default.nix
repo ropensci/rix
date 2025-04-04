@@ -85,7 +85,9 @@ let
       R
       glibcLocales
       nix
-      quarto;
+      quarto
+      which
+      pandoc;
   };
   
   shell = pkgs.mkShell {

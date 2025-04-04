@@ -86,7 +86,9 @@ let
       glibcLocales
       nix
       vscodium-fhs
-      quarto;
+      quarto
+      which
+      pandoc;
   };
   
   shell = pkgs.mkShell {

@@ -84,7 +84,9 @@ let
       R
       glibcLocales
       nix
-      quarto;
+      quarto
+      which
+      pandoc;
   };
  
   wrapped_pkgs = pkgs.rstudioWrapper.override {

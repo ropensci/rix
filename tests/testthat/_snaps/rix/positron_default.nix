@@ -85,7 +85,9 @@ let
       glibcLocales
       nix
       positron-bin
-      quarto;
+      quarto
+      which
+      pandoc;
   };
   
   shell = pkgs.mkShell {
