@@ -28,6 +28,7 @@ let
   
   system_packages = builtins.attrValues {
     inherit (pkgs) 
+      air-formatter
       glibcLocales
       glibcLocalesUtf8
       nix
