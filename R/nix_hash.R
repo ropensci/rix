@@ -109,7 +109,7 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
   # extract subdirectory from GitHub or GitLab URL if given
   # and create a path to this subdirectory
   if (grepl("github|gitlab", url)) {
-    if (unlist(strsplit(url, "/"))[6] == "archive") {
+    if (unlist(strsplit(url, "/"))[6] != "archive") {
       if (grepl("github", url)) {
         # GitHub pattern: /subdirectory/archive/
         url_subdir <- sub(
