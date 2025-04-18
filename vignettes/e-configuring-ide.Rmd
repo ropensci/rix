@@ -324,6 +324,17 @@ nix-env -f '<nixpkgs>' -iA direnv
 
 This will install `direnv` and make it available even outside of Nix shells!
 
+Then, we highly recommend to install the `nix-direnv` extension:
+
+```
+nix-env -f '<nixpkgs>' -iA nix-direnv
+```
+
+It is not mandatory to use `nix-direnv` if you already have `direnv`, but it'll
+make loading environments much faster and seamless. Finally, if you haven't used
+`direnv` before, don't forget [this last
+step](https://direnv.net/docs/hook.html).
+
 Then, in Code, install the
 [direnv](https://github.com/direnv/direnv-vscode) extension (and also the
 WSL extension if you're on Windows, as explained in the official documentation
@@ -418,6 +429,17 @@ nix-env -f '<nixpkgs>' -iA direnv
 ```
 
 This will install `direnv` and make it available even outside of Nix shells!
+
+Then, we highly recommend to install the `nix-direnv` extension:
+
+```
+nix-env -f '<nixpkgs>' -iA nix-direnv
+```
+
+It is not mandatory to use `nix-direnv` if you already have `direnv`, but it'll
+make loading environments much faster and seamless. Finally, if you haven't used
+`direnv` before, don't forget [this last
+step](https://direnv.net/docs/hook.html).
 
 Then install the Emacs `direnv`
 [package](https://github.com/wbolster/emacs-direnv). Finally, add a file called
