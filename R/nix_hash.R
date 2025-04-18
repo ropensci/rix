@@ -116,6 +116,7 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
         "\\1",
         url
       )
+      path_to_r <- file.path(path_to_source_root, url_subdir)
     } else {
       path_to_r <- path_to_source_root
     }
@@ -127,13 +128,13 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
         "\\1",
         url
       )
+      path_to_r <- file.path(path_to_source_root, url_subdir)
     } else {
       path_to_r <- path_to_source_root
     }
   } else {
     path_to_r <- path_to_source_root
   }
-
 
   paths <- list.files(
     path_to_r,
