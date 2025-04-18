@@ -108,23 +108,27 @@ hash_url <- function(url, repo_url, commit, ...) {
 
   # extract subdirectory from GitHub or GitLab URL if given
   # and create a path to this subdirectory
-  if (unlist(strsplit(url, "/"))[6] != "archive") {
-    if (grepl("github", url)) {
-      # GitHub pattern: /subdirectory/archive/
-      url_subdir <- sub(
-        ".*github\\.com/[^/]+/[^/]+/(.+)/archive/.*",
-        "\\1",
-        url
-      )
-    } else if (grepl("gitlab", url)) {
-      # GitLab pattern: /subdirectory/-/archive/
-      url_subdir <- sub(
-        ".*gitlab\\.com/[^/]+/[^/]+/(.+)/-/archive/.*",
-        "\\1",
-        url
-      )
+  if (grepl("github|gitlab", url)) {
+    if (unlist(strsplit(url, "/"))[6] == "archive") {
+      if (grepl("github", url)) {
+        # GitHub pattern: /subdirectory/archive/
+        url_subdir <- sub(
+          ".*github\\.com/[^/]+/[^/]+/(.+)/archive/.*",
+          "\\1",
+          url
+        )
+      } else if (grepl("gitlab", url)) {
+        # GitLab pattern: /subdirectory/-/archive/
+        url_subdir <- sub(
+          ".*gitlab\\.com/[^/]+/[^/]+/(.+)/-/archive/.*",
+          "\\1",
+          url
+        )
+      }
+      path_to_r <- file.path(path_to_source_root, url_subdir)
+    } else {
+      path_to_r <- file.path(path_to_source_root)
     }
-    path_to_r <- file.path(path_to_source_root, url_subdir)
   } else {
     path_to_r <- file.path(path_to_source_root)
   }
