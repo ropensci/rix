@@ -80,7 +80,7 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
     } else {
       root_url <- url
     }
-  } else if (grepl("gitlab", repo_url)) {
+  } else if (grepl("gitlab", url)) {
     has_subdir <- grepl("gitlab\\.com/[^/]+/[^/]+/[^/]+/-/archive/", url)
     if (has_subdir) {
       base_repo_url <- sub(
