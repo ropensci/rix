@@ -109,6 +109,42 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
   # extract subdirectory from GitHub or GitLab URL if given
   # and create a path to this subdirectory
   if (grepl("github", url)) {
+    # Check if URL contains a subdirectory path between repo name and "archive" segment
+    # using a proper regex pattern instead of position-based splitting
+    has_subdir <- grepl("github\\.com/[^/]+/[^/]+/[^/]+/archive/", url)
+    if (has_subdir) {
+      # GitHub pattern: extract subdirectory between repo name and archive
+      url_subdir <- sub(
+        "https://github\\.com/[^/]+/[^/]+/([^/].+)/archive/.*",
+        "\\1",
+        url
+      )
+      path_to_r <- file.path(path_to_source_root, url_subdir)
+    } else {
+      path_to_r <- path_to_source_root
+    }
+  } else if (grepl("gitlab", url)) {
+    # Check if URL contains a subdirectory path between repo name and "-/archive" segment
+    has_subdir <- grepl("gitlab\\.com/[^/]+/[^/]+/[^/]+/-/archive/", url)
+
+    if (has_subdir) {
+      # GitLab pattern: extract subdirectory between repo name and -/archive
+      url_subdir <- sub(
+        "https://gitlab\\.com/[^/]+/[^/]+/([^/].+)/-/archive/.*",
+        "\\1",
+        url
+      )
+      path_to_r <- file.path(path_to_source_root, url_subdir)
+    } else {
+      path_to_r <- path_to_source_root
+    }
+  } else {
+    path_to_r <- path_to_source_root
+  }
+
+  # extract subdirectory from GitHub or GitLab URL if given
+  # and create a path to this subdirectory
+  if (grepl("github", url)) {
     if (unlist(strsplit(url, "/"))[6] != "archive") {
       # GitHub pattern: /subdirectory/archive/
       url_subdir <- sub(
@@ -149,7 +185,11 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
   )
 
   if (grepl("github", url)) {
-    repo_url_short <- paste(unlist(strsplit(url, "/"))[4:5], collapse = "/")
+    repo_url_short <- sub(
+      "https://github\\.com/([^/]+/[^/]+)(/.*)?/archive/.*",
+      "\\1",
+      url
+    )
     commit <- gsub(x = basename(url), pattern = ".tar.gz", replacement = "")
     commit_date <- get_commit_date(repo_url_short, commit)
   }
