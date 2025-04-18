@@ -24,13 +24,15 @@ nix_hash <- function(repo_url, commit, ...) {
 
 #' Return the SRI hash of an URL with .tar.gz
 #' @param url String with URL ending with `.tar.gz`
+#' @param repo_url URL to GitHub repository
+#' @param commit Commit hash
 #' @param ... Further arguments passed down to methods.
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a GitHub repo
 #'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
-hash_url <- function(url, ...) {
+hash_url <- function(url, repo_url, commit, ...) {
   tdir <- tempdir()
 
   tmpdir <- paste0(
@@ -65,15 +67,21 @@ hash_url <- function(url, ...) {
 
   tar_file <- file.path(path_to_tarfile, "package.tar.gz")
 
-  # url <- "https://github.com/bnprks/BPCells/r/archive/16faeade0a26b392637217b0caf5d7017c5bdf9b.tar.gz"
-  # root_url <- "https://github.com/bnprks/BPCells/archive/16faeade0a26b392637217b0caf5d7017c5bdf9b.tar.gz"
-
-
-  # root_url <- sub(
-  #   ".*github\\.com/[^/]+/[^/]+/(.+)/archive/.*",
-  #   "\\1",
-  #   url
-  # )
+  # remove subdirectory from URL if given because only the entire repo can be downloaded
+  if (unlist(strsplit(url, "/"))[6] != "archive") {
+    base_repo_url <- sub(
+      "(https://(github|gitlab)\\.com/[^/]+/[^/]+/).*",
+      "\\1",
+      repo_url
+    )
+    if (grepl("github", repo_url)) {
+      root_url <- paste0(base_repo_url, "archive/", commit, ".tar.gz")
+    } else if (grepl("gitlab", repo_url)) {
+      root_url <- paste0(base_repo_url, "-/archive/", commit, ".tar.gz")
+    }
+  } else {
+    root_url <- url
+  }
 
   try_download(
     url = root_url,
@@ -253,7 +261,7 @@ hash_git <- function(repo_url, commit, ...) {
     url <- paste0(repo_url, slash, "-/archive/", commit, ".tar.gz")
   }
   # list contains `sri_hash` and `deps` elements
-  hash_url(url, ...)
+  hash_url(url, repo_url, commit, ...)
 }
 
 
