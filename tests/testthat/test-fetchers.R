@@ -235,6 +235,23 @@ testthat::test_that("Test fetchgit gets a package that is not listed in DESCRIPT
   )
 })
 
+testthat::test_that("Test fetchgit works with packages that use subdirectories", {
+  testthat::skip_on_cran()
+  skip_if_not(nix_shell_available())
+  testthat::expect_equal(
+    suppressMessages(
+      fetchgit(
+        list(
+          package_name = "BPCells",
+          repo_url = "https://github.com/bnprks/BPCells/r",
+          commit = "16faeade0a26b392637217b0caf5d7017c5bdf9b"
+        )
+      )
+    ),
+    "\n    BPCells = (pkgs.rPackages.buildRPackage {\n      name = \"BPCells\";\n      src = pkgs.fetchgit {\n        url = \"https://github.com/bnprks/BPCells/r\";\n        rev = \"16faeade0a26b392637217b0caf5d7017c5bdf9b\";\n        sha256 = \"sha256-8un4tazyJ3asjC4J/9AAAmRI584JPEjE3iL1i7BB8jk=\";\n      };\n      propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.rPackages) \n          magrittr\n          Matrix\n          Rcpp\n          rlang\n          vctrs\n          lifecycle\n          stringr\n          tibble\n          dplyr\n          tidyr\n          readr\n          ggplot2\n          scales\n          patchwork\n          scattermore\n          ggrepel\n          RColorBrewer\n          hexbin\n          RcppEigen;\n      };\n    });\n"
+  )
+})
+
 testthat::test_that("Test fetchgit works even if there are not `importfrom` in NAMESPACE", {
   testthat::skip_on_cran()
   skip_if_not(nix_shell_available())
