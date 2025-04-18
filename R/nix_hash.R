@@ -68,20 +68,27 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
   tar_file <- file.path(path_to_tarfile, "package.tar.gz")
 
   # remove subdirectory from URL if given because only the entire repo can be downloaded
-  if (grepl("github|gitlab", url)) {
-    if (unlist(strsplit(url, "/"))[6] != "archive") {
+  if (grepl("github", url)) {
+    has_subdir <- grepl("github\\.com/[^/]+/[^/]+/[^/]+/archive/", url)
+    if (has_subdir) {
       base_repo_url <- sub(
-        "(https://(github|gitlab)\\.com/[^/]+/[^/]+/).*",
+        "(https://github\\.com/[^/]+/[^/]+/).*",
         "\\1",
         repo_url
       )
-      if (grepl("github", repo_url)) {
-        root_url <- paste0(base_repo_url, "archive/", commit, ".tar.gz")
-      } else if (grepl("gitlab", repo_url)) {
-        root_url <- paste0(base_repo_url, "-/archive/", commit, ".tar.gz")
-      }
+      root_url <- paste0(base_repo_url, "archive/", commit, ".tar.gz")
     } else {
       root_url <- url
+    }
+  } else if (grepl("gitlab", repo_url)) {
+    has_subdir <- grepl("gitlab\\.com/[^/]+/[^/]+/[^/]+/-/archive/", url)
+    if (has_subdir) {
+      base_repo_url <- sub(
+        "(https://gitlab\\.com/[^/]+/[^/]+/).*",
+        "\\1",
+        repo_url
+      )
+      root_url <- paste0(base_repo_url, "-/archive/", commit, ".tar.gz")
     }
   } else {
     root_url <- url
@@ -131,36 +138,6 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
       # GitLab pattern: extract subdirectory between repo name and -/archive
       url_subdir <- sub(
         "https://gitlab\\.com/[^/]+/[^/]+/([^/].+)/-/archive/.*",
-        "\\1",
-        url
-      )
-      path_to_r <- file.path(path_to_source_root, url_subdir)
-    } else {
-      path_to_r <- path_to_source_root
-    }
-  } else {
-    path_to_r <- path_to_source_root
-  }
-
-  # extract subdirectory from GitHub or GitLab URL if given
-  # and create a path to this subdirectory
-  if (grepl("github", url)) {
-    if (unlist(strsplit(url, "/"))[6] != "archive") {
-      # GitHub pattern: /subdirectory/archive/
-      url_subdir <- sub(
-        "https://github\\.com/[^/]+/[^/]+/(.+)/archive/.*",
-        "\\1",
-        url
-      )
-      path_to_r <- file.path(path_to_source_root, url_subdir)
-    } else {
-      path_to_r <- path_to_source_root
-    }
-  } else if (grepl("gitlab", url)) {
-    if (unlist(strsplit(url, "/"))[7] != "archive") {
-      # GitLab pattern: /subdirectory/-/archive/
-      url_subdir <- sub(
-        "https://gitlab\\.com/[^/]+/[^/]+/(.+)/-/archive/.*",
         "\\1",
         url
       )
