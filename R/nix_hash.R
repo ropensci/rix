@@ -68,16 +68,20 @@ hash_url <- function(url, repo_url, commit, ...) {
   tar_file <- file.path(path_to_tarfile, "package.tar.gz")
 
   # remove subdirectory from URL if given because only the entire repo can be downloaded
-  if (unlist(strsplit(url, "/"))[6] != "archive") {
-    base_repo_url <- sub(
-      "(https://(github|gitlab)\\.com/[^/]+/[^/]+/).*",
-      "\\1",
-      repo_url
-    )
-    if (grepl("github", repo_url)) {
-      root_url <- paste0(base_repo_url, "archive/", commit, ".tar.gz")
-    } else if (grepl("gitlab", repo_url)) {
-      root_url <- paste0(base_repo_url, "-/archive/", commit, ".tar.gz")
+  if (grepl("github|gitlab", url)) {
+    if (unlist(strsplit(url, "/"))[6] != "archive") {
+      base_repo_url <- sub(
+        "(https://(github|gitlab)\\.com/[^/]+/[^/]+/).*",
+        "\\1",
+        repo_url
+      )
+      if (grepl("github", repo_url)) {
+        root_url <- paste0(base_repo_url, "archive/", commit, ".tar.gz")
+      } else if (grepl("gitlab", repo_url)) {
+        root_url <- paste0(base_repo_url, "-/archive/", commit, ".tar.gz")
+      }
+    } else {
+      root_url <- url
     }
   } else {
     root_url <- url
