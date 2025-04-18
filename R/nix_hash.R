@@ -65,8 +65,18 @@ hash_url <- function(url, ...) {
 
   tar_file <- file.path(path_to_tarfile, "package.tar.gz")
 
+  # url <- "https://github.com/bnprks/BPCells/r/archive/16faeade0a26b392637217b0caf5d7017c5bdf9b.tar.gz"
+  # root_url <- "https://github.com/bnprks/BPCells/archive/16faeade0a26b392637217b0caf5d7017c5bdf9b.tar.gz"
+
+
+  # root_url <- sub(
+  #   ".*github\\.com/[^/]+/[^/]+/(.+)/archive/.*",
+  #   "\\1",
+  #   url
+  # )
+
   try_download(
-    url = url,
+    url = root_url,
     file = tar_file,
     handle = h,
     extra_diagnostics = extra_diagnostics
@@ -82,12 +92,39 @@ hash_url <- function(url, ...) {
     path_to_src,
     list.files(path_to_src)
   )
-
   sri_hash <- nix_sri_hash(path = path_to_source_root)
 
-  paths <- list.files(path_to_src, full.names = TRUE, recursive = TRUE)
+  # extract subdirectory from GitHub or GitLab URL if given
+  # and create a path to this subdirectory
+  if (unlist(strsplit(url, "/"))[6] != "archive") {
+    if (grepl("github", url)) {
+      # GitHub pattern: /subdirectory/archive/
+      url_subdir <- sub(
+        ".*github\\.com/[^/]+/[^/]+/(.+)/archive/.*",
+        "\\1",
+        url
+      )
+    } else if (grepl("gitlab", url)) {
+      # GitLab pattern: /subdirectory/-/archive/
+      url_subdir <- sub(
+        ".*gitlab\\.com/[^/]+/[^/]+/(.+)/-/archive/.*",
+        "\\1",
+        url
+      )
+    }
+    path_to_r <- file.path(path_to_source_root, url_subdir)
+  } else {
+    path_to_r <- file.path(path_to_source_root)
+  }
+
+  paths <- list.files(
+    path_to_r,
+    full.names = TRUE,
+    recursive = TRUE
+  )
+
   desc_path <- grep(
-    file.path(list.files(path_to_src), "DESCRIPTION"),
+    file.path(path_to_r, "DESCRIPTION"),
     paths,
     value = TRUE
   )
