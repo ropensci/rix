@@ -24,15 +24,15 @@ nix_hash <- function(repo_url, commit, ...) {
 
 #' Return the SRI hash of an URL with .tar.gz
 #' @param url String with URL ending with `.tar.gz`
-#' @param repo_url URL to GitHub repository
-#' @param commit Commit hash
+#' @param repo_url URL to GitHub repository, NULL if CRAN archive
+#' @param commit Commit hash, NULL if CRAN archive
 #' @param ... Further arguments passed down to methods.
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a GitHub repo
 #'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
-hash_url <- function(url, repo_url, commit, ...) {
+hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
   tdir <- tempdir()
 
   tmpdir <- paste0(
