@@ -215,9 +215,12 @@ Change the commit to a more recent one and adapt the `project_path` argument if 
 
 ## Case 2: you have R installed through your OS's package manager
 
+*Note: this package's authors recommend you only have R versions managed by
+Nix, and not mix a system-wide installation of R with Nix-managed R shells.*
+
 If you have installed R on your system through the usual means of installation
-(so not with Nix, as described before), you can install the `{rix}` package as usual
-as well. To install `{rix}`, run:
+(so not with Nix, as described before), you can install the `{rix}` package as
+usual as well. To install `{rix}`, run:
 
 ```{r parsermd-chunk-2-0, eval = FALSE}
 install.packages("rix")
@@ -235,6 +238,14 @@ install.packages("rix", repos = c(
 You can then use the `{rix}` package to generate expressions. Consult the next
 vignette `vignette("c-using-rix-to-build-project-specific-environments")` to
 learn more.
+
+## Configuring an IDE
+
+We recommend you continue with the next vignettes vignette
+`vignette("d1-installing-r-packages-in-a-nix-environment")` and
+`vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")`,
+and also `vignette("e-configuring-ide")` which will guide you through setting
+you your editor to use Nix shells effectively.
 
 ## Other "Nix"es
 

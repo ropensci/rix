@@ -220,6 +220,14 @@ Nix store to the `PATH` variable in an active session automatically (via
 `Sys.setenv()`, when you use RStudio on macOS. You don't have to do anything. We
 have you covered, and you get a friendly message that informs you.
 
+## Configuring an IDE
+
+We recommend you continue with the next vignettes vignette
+`vignette("d1-installing-r-packages-in-a-nix-environment")` and
+`vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")`,
+and also `vignette("e-configuring-ide")` which will guide you through setting
+you your editor to use Nix shells effectively.
+
 ## Other "Nix"es
 
 There are several implementations of the Nix package manager that you might want
