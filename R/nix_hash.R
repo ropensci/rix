@@ -122,7 +122,7 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
     if (has_subdir) {
       # GitHub pattern: extract subdirectory between repo name and archive
       url_subdir <- sub(
-        "https://github\\.com/[^/]+/[^/]+/([^/].+)/archive/.*",
+        "https://github\\.com/[^/]+/[^/]+/([^/]+)/archive/.*",
         "\\1",
         url
       )
