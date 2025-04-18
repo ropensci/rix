@@ -89,6 +89,8 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
         repo_url
       )
       root_url <- paste0(base_repo_url, "-/archive/", commit, ".tar.gz")
+    } else {
+      root_url <- url
     }
   } else {
     root_url <- url
