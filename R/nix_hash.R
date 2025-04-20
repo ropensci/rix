@@ -62,7 +62,7 @@ get_git_regex <- function(platform) {
   
   # Generate patterns dynamically based on the config
   list(
-    has_subdir_pattern = paste0(repo_path, "/[^/]+/", cfg$archive_path),
+    has_subdir_pattern = paste0(repo_path, "/.+/", cfg$archive_path),
     extract_subdir_pattern = paste0(repo_path, "/(.+)/", cfg$archive_path, ".*"),
     archive_path = cfg$archive_path,
     repo_url_short_pattern = paste0(domain_prefix, "/([^/]+/[^/]+)(/.*)?/", cfg$archive_path, ".*"),
