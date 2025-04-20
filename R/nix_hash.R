@@ -47,25 +47,35 @@ get_git_regex <- function(platform) {
       archive_path = "-/archive/"
     )
   )
-  
+
   # Get platform configuration or error if invalid
   if (!platform %in% names(platforms)) {
     stop("Platform must be either 'github' or 'gitlab'", call. = FALSE)
   }
-  
+
   cfg <- platforms[[platform]]
-  
+
   # Build base patterns for reuse
   domain <- cfg$domain
   domain_prefix <- paste0("https://", domain)
   repo_path <- paste0(domain_prefix, "/[^/]+/[^/]+")
-  
+
   # Generate patterns dynamically based on the config
   list(
     has_subdir_pattern = paste0(repo_path, "/.+/", cfg$archive_path),
-    extract_subdir_pattern = paste0(repo_path, "/(.+)/", cfg$archive_path, ".*"),
+    extract_subdir_pattern = paste0(
+      repo_path,
+      "/(.+)/",
+      cfg$archive_path,
+      ".*"
+    ),
     archive_path = cfg$archive_path,
-    repo_url_short_pattern = paste0(domain_prefix, "/([^/]+/[^/]+)(/.*)?/", cfg$archive_path, ".*"),
+    repo_url_short_pattern = paste0(
+      domain_prefix,
+      "/([^/]+/[^/]+)(/.*)?/",
+      cfg$archive_path,
+      ".*"
+    ),
     base_url = paste0("https://", cfg$name, ".com"),
     is_platform = function(url) grepl(cfg$name, url)
   )
@@ -119,17 +129,23 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
   # First check which platform the URL is for
   is_github <- grepl("github", url)
   is_gitlab <- grepl("gitlab", url)
-  
+
   # Get the root URL based on platform
   if (is_github) {
     patterns <- get_git_regex("github")
     has_subdir <- grepl(patterns$has_subdir_pattern, url)
-    
+
     if (has_subdir) {
       # Extract username/repo using new pattern from get_git_regex
       username_repo <- sub(patterns$repo_url_short_pattern, "\\1", url)
       base_repo_url <- paste0(patterns$base_url, "/", username_repo)
-      root_url <- paste0(base_repo_url, "/", patterns$archive_path, commit, ".tar.gz")
+      root_url <- paste0(
+        base_repo_url,
+        "/",
+        patterns$archive_path,
+        commit,
+        ".tar.gz"
+      )
     } else {
       root_url <- url
     }
@@ -137,12 +153,18 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
   } else if (is_gitlab) {
     patterns <- get_git_regex("gitlab")
     has_subdir <- grepl(patterns$has_subdir_pattern, url)
-    
+
     if (has_subdir) {
       # Extract username/repo using new pattern from get_git_regex
       username_repo <- sub(patterns$repo_url_short_pattern, "\\1", url)
       base_repo_url <- paste0(patterns$base_url, "/", username_repo)
-      root_url <- paste0(base_repo_url, "/", patterns$archive_path, commit, ".tar.gz")
+      root_url <- paste0(
+        base_repo_url,
+        "/",
+        patterns$archive_path,
+        commit,
+        ".tar.gz"
+      )
     } else {
       root_url <- url
     }
@@ -176,14 +198,14 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
   if (!is.null(platform)) {
     patterns <- get_git_regex(platform)
     has_subdir <- grepl(patterns$has_subdir_pattern, url)
-    
+
     if (has_subdir) {
       url_subdir <- sub(patterns$extract_subdir_pattern, "\\1", url)
       path_to_r <- file.path(path_to_source_root, url_subdir)
     } else {
       path_to_r <- path_to_source_root
     }
-    
+
     # Extract repo info for GitHub URLs
     if (platform == "github") {
       repo_url_short <- sub(patterns$repo_url_short_pattern, "\\1", url)
@@ -205,7 +227,7 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
     paths,
     value = TRUE
   )
-  
+
   deps <- get_imports(desc_path, commit_date, ...)
 
   return(
