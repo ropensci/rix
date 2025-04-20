@@ -206,12 +206,7 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
     value = TRUE
   )
   
-  # If we have commit_date (from GitHub), use it
-  deps <- if (exists("commit_date", inherits = FALSE)) {
-    get_imports(desc_path, commit_date, ...)
-  } else {
-    get_imports(desc_path, ...)
-  }
+  deps <- get_imports(desc_path, commit_date, ...)
 
   return(
     list(
