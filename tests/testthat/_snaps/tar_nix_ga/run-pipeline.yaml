@@ -50,7 +50,7 @@ jobs:
           # Remove unneeded wrappers
           sed -i 's/\bradianWrapper\b/rWrapper/g; s/\brstudioWrapper\b/rWrapper/g; s/\brstudioServerWrapper\b/rWrapper/g' default.nix
           # Remove unneded IDEs
-          sed -i 's/\bvscode-fhs\b//g; s/\bvscodium-fhs\b//g; s/\bpositron-bin\b//g' default.nix
+          sed -i 's/\bvscode\b//g; s/\bvscodium\b//g; s/\bpositron-bin\b//g' default.nix
           # Remove unneeded languageserver
           sed -i 's/\blanguageserver\b//g' default.nix
 

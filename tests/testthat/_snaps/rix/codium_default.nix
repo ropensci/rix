@@ -85,7 +85,7 @@ let
       R
       glibcLocales
       nix
-      vscodium-fhs
+      vscodium
       quarto
       which
       pandoc;
