@@ -221,7 +221,7 @@ generate_py_conf <- function(py_conf, flag_py_conf) {
 
     # I'm adding pip and ipykernel because Positron complains otherwise
     py_conf <- paste(
-      c("", "pip", "ipykernel", sort(py_conf$py_conf)),
+      c("", "pip", "ipykernel", sort(py_conf$py_pkgs)),
       collapse = "\n      "
     )
 

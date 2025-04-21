@@ -17,7 +17,9 @@ let
   pyconf = builtins.attrValues {
     inherit (pkgs.python312Packages) 
       pip
-      ipykernel;
+      ipykernel
+      plotnine
+      polars;
   };
   
   system_packages = builtins.attrValues {
