@@ -252,8 +252,8 @@ get_system_pkgs <- function(system_pkgs, r_pkgs, py_pkgs, ide) {
 
   which_ide <- switch(
     ide,
-    "code" = "vscode-fhs",
-    "codium" = "vscodium-fhs",
+    "code" = "vscode",
+    "codium" = "vscodium",
     "positron" = "positron-bin",
     NULL
   )

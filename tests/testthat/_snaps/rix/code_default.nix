@@ -85,7 +85,7 @@ let
       R
       glibcLocales
       nix
-      vscode-fhs
+      vscode
       quarto
       which
       pandoc;
