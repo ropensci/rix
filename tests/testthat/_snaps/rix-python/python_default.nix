@@ -14,12 +14,10 @@ let
       amsmath;
   });
  
-  pypkgs = builtins.attrValues {
+  pyconf = builtins.attrValues {
     inherit (pkgs.python312Packages) 
       pip
-      ipykernel
-      plotnine
-      polars;
+      ipykernel;
   };
   
   system_packages = builtins.attrValues {
@@ -40,7 +38,7 @@ let
    LC_PAPER = "en_US.UTF-8";
    LC_MEASUREMENT = "en_US.UTF-8";
 
-    buildInputs = [  rpkgs tex pypkgs system_packages   ];
+    buildInputs = [  rpkgs tex pyconf system_packages   ];
     
   }; 
 in

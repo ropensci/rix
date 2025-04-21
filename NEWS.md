@@ -1,8 +1,17 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.15.9 (2025-04-21)
+
+- `rix()`: choosing `code` or `codium` previously installed `vscode-fhs` and
+  `codium-fhs` from `nixpkgs` however these are not available on macOS. Instead
+  now, `vscode` and `codium` are installed which works across platforms.
+  (see https://github.com/ropensci/rix/issues/465#issuecomment-2791032363)
+
+- `rix()`: `py_pkgs` argument renamed to `py_conf`.
+
 # rix 0.15.8 (2025-03-25)
 
-- `rix()`: deals with remotes defined as `github::repo/package` and 
+- `rix()`: deals with remotes defined as `github::repo/package` and
   `gitlab::repo/package`
   (see https://github.com/ropensci/rix/issues/458)
 

@@ -19,7 +19,7 @@
 #'   (and other dependencies) as of that date. You can check which dates are
 #'   available with `available_dates()`. For more details about versions check
 #'   `available_df()`.
-#' @param r_pkgs Vector of characters. List the required R packages for your
+#' @param r_conf Vector of characters. List the required R packages for your
 #'   analysis here.
 #' @param system_pkgs Vector of characters. List further software you wish to
 #'   install that are not R packages such as command line applications for
@@ -36,10 +36,10 @@
 #'   See the
 #'   `vignette("d2- installing-system-tools-and-texlive-packages-in-a-nix-environment")`
 #'   for more details.
-#' @param py_pkgs List. A list of two elements, `py_version` and `py_pkgs`.
+#' @param py_conf List. A list of two elements, `py_version` and `py_pkgs`.
 #'   `py_version` must be of the form `"3.12"` for Python 3.12 and `py_pkgs`
 #'   must be an atomic vector of packages names, for example
-#'   `py_pkgs = c("polars", "plotnine", "great-tables")`.
+#'   `py_conf = c("polars", "plotnine", "great-tables")`.
 #' @param ide Character, defaults to "none". If you wish to use RStudio to work
 #'   interactively use "rstudio" or "rserver" for the server version. Use "code"
 #'   for Visual Studio Code or "codium" for Codium, or "positron" for Positron.
@@ -200,7 +200,7 @@ rix <- function(
   git_pkgs = NULL,
   local_r_pkgs = NULL,
   tex_pkgs = NULL,
-  py_pkgs = NULL,
+  py_conf = NULL,
   ide = "none",
   project_path,
   overwrite = FALSE,
@@ -386,10 +386,10 @@ for more details."
   }
 
   # If there are Python packages, passes the string "local_r_pkgs" to buildInputs
-  flag_py_pkgs <- if (is.null(py_pkgs)) {
+  flag_py_conf <- if (is.null(py_conf)) {
     ""
   } else {
-    "pypkgs"
+    "pyconf"
   }
 
   # If there are wrapped packages (for example for RStudio), passes the "wrapped_pkgs"
@@ -419,9 +419,9 @@ for more details."
       ignore_remotes_cache = ignore_remotes_cache
     ),
     generate_tex_pkgs(tex_pkgs),
-    generate_py_pkgs(py_pkgs, flag_py_pkgs),
+    generate_py_conf(py_conf, flag_py_conf),
     generate_local_r_pkgs(local_r_pkgs, flag_local_r_pkgs),
-    generate_system_pkgs(system_pkgs, r_pkgs, py_pkgs, ide),
+    generate_system_pkgs(system_pkgs, r_pkgs, py_conf, ide),
     generate_wrapped_pkgs(
       ide,
       attrib,
@@ -433,7 +433,7 @@ for more details."
       flag_git_archive,
       flag_rpkgs,
       flag_tex_pkgs,
-      flag_py_pkgs,
+      flag_py_conf,
       flag_local_r_pkgs,
       flag_wrapper,
       shell_hook

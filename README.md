@@ -129,7 +129,7 @@ rix(
 ```
 
 It is also possible to add Python packages to an environment, by passing
-a list of two elements to the `py_pkgs` argument of `rix()`. This list
+a list of two elements to the `py_conf` argument of `rix()`. This list
 needs to first specify a Python version, and then an atomic character
 vector of Python packages:
 
@@ -137,8 +137,8 @@ vector of Python packages:
 rix(
   date = "2025-03-17",
   r_pkgs = "ggplot2",
-  py_pkgs = list(
-    py_version = "3.12", 
+  py_conf = list(
+    py_version = "3.12",
     py_pkgs = c("polars", "great-tables")
   ),
   overwrite = TRUE

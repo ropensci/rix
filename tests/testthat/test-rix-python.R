@@ -25,7 +25,7 @@ testthat::test_that("rix() with Python packages", {
       date = "2025-03-10",
       r_pkgs = c("dplyr", "janitor"),
       tex_pkgs = c("amsmath"),
-      py_pkgs = list(
+      py_conf = list(
         py_version = "3.12",
         py_pkgs = c("polars", "plotnine")
       ),
