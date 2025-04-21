@@ -333,7 +333,7 @@ Try Nix inside Docker by following this
 
 ### Docker + {renv}
 
-Docker and {renv} provide robust reproducibility by combining package snapshots
+Docker and `{renv}` provide robust reproducibility by combining package snapshots
 with system-level dependencies. However, for long-term reproducibility, Nix
 offers a simpler approach by bundling everything (R, packages, and dependencies)
 in a single environment.
@@ -351,9 +351,9 @@ CRAN/Bioconductor packages and works across Windows, macOS, and Linux.
 
 ### Is {rix} all there is?
 
-No, there are other tools that you might want to check out, especially if
-you want to set up polyglot environments (even though it is possible to
-use `{rix}` to set up an environment with R and Python packages for example).
+No, there are other tools that you might want to check out, especially if you
+want to set up polyglot environments (even though it is possible to use `{rix}`
+to set up an environment with R and Python packages for example).
 
 Take a look at [https://devenv.sh/](https://devenv.sh/) and
 [https://prefix.dev/](https://prefix.dev) if you want to explore other tools
@@ -361,10 +361,11 @@ that make using Nix easier!
 
 ## What's the recommended workflow?
 
-Ideally, you shouldn't be using a system-wide installation of R, and instead
-use dedicated Nix environments for each of your projects.
+Ideally, you shouldn't be using a system-wide installation of R, and instead use
+dedicated Nix environments for each of your projects.
 
-Start a new project by writing a file called `generate_env.R` and write something like:
+Start a new project by writing a file called `generate_env.R` and write
+something like:
 
 ```
 library(rix)
@@ -383,17 +384,25 @@ rix(
 )
 ```
 
-Then use the following command to bootstrap an enivronment with R and `{rix}` only (from the same
-directory):
+Then use the following command to bootstrap an enivronment with R and `{rix}`
+only (from the same directory):
 
 ```
 nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/ropensci/rix/main/inst/extdata/default.nix)"
 ```
 
-and then simply run `Rscript generate_env.R` which will run the above script, thus generating
-the project's `default.nix`. If you need to add packages, open the `generate_env.R` file again,
-modify it, and run it again, do not edit the `default.nix` directly. Also, commit all the files
-to version control to avoid any issues.
+and then simply run `Rscript generate_env.R` which will run the above script,
+thus generating the project's `default.nix`. If you need to add packages, open
+the `generate_env.R` file again, modify it, and run it again, do not edit the
+`default.nix` directly. Also, commit all the files to version control to avoid
+any issues.
+
+## Reproducible pipelines using rixpress
+
+`{rix}` is getting a little sister package, `{rixpress}`, which is heavily
+inspired by `{targets}`. If you want to build polyglot data science pipelines
+with the power of Nix, give `{rixpress}` [a
+try](https://github.com/b-rodrigues/rixpress)!
 
 ## Contributing
 
