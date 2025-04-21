@@ -19,7 +19,7 @@
 #'   (and other dependencies) as of that date. You can check which dates are
 #'   available with `available_dates()`. For more details about versions check
 #'   `available_df()`.
-#' @param r_conf Vector of characters. List the required R packages for your
+#' @param r_pkgs Vector of characters. List the required R packages for your
 #'   analysis here.
 #' @param system_pkgs Vector of characters. List further software you wish to
 #'   install that are not R packages such as command line applications for
@@ -39,7 +39,7 @@
 #' @param py_conf List. A list of two elements, `py_version` and `py_pkgs`.
 #'   `py_version` must be of the form `"3.12"` for Python 3.12 and `py_pkgs`
 #'   must be an atomic vector of packages names, for example
-#'   `py_conf = c("polars", "plotnine", "great-tables")`.
+#'   `py_pkgs = c("polars", "plotnine", "great-tables")`.
 #' @param ide Character, defaults to "none". If you wish to use RStudio to work
 #'   interactively use "rstudio" or "rserver" for the server version. Use "code"
 #'   for Visual Studio Code or "codium" for Codium, or "positron" for Positron.
