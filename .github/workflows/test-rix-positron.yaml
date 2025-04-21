@@ -1,17 +1,17 @@
-# Integration tests for installing packages wrapped by rstudio
+# Integration tests for installing packages wrapped by positron
 on:
   push:
     branches: [main, master]
   pull_request:
     branches: [main, master]
 
-name: test-rix-rstudio
+name: test-rix-positron
 
 permissions:
   contents: read
 
 jobs:
-  rstduio:
+  rstudio:
     runs-on: ${{ matrix.os }}
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -36,9 +36,9 @@ jobs:
           # If you chose API tokens for write access OR if you have a private cache
           authToken: '${{ secrets.CACHIX_AUTH }}'
 
-      - name: Build default.nix with 2 packages wrapped by Rstudio
+      - name: Build default.nix and positron
         run: |
-          nix-shell --quiet default.nix --run "Rscript -e \"devtools::load_all();rix('4.3.1', r_pkgs = c('dplyr', 'S4Vectors'), ide = 'rstudio', project_path = '.', overwrite = TRUE)\""
+          nix-shell --quiet default.nix --run "Rscript -e \"devtools::load_all();rix('4.3.1', r_pkgs = c('dplyr', 'S4Vectors'), ide = 'positron', project_path = '.', overwrite = TRUE)\""
 
       - name: Check generated default.nix
         run: cat default.nix
