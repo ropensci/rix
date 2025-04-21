@@ -126,53 +126,36 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
 
   tar_file <- file.path(path_to_tarfile, "package.tar.gz")
 
-  # First check which platform the URL is for
-  is_github <- grepl("github", url)
-  is_gitlab <- grepl("gitlab", url)
-
-  # Get the root URL based on platform
-  if (is_github) {
-    patterns <- get_git_regex("github")
-    has_subdir <- grepl(patterns$has_subdir_pattern, url)
-
-    if (has_subdir) {
-      # Extract username/repo using new pattern from get_git_regex
-      username_repo <- sub(patterns$repo_url_short_pattern, "\\1", url)
-      base_repo_url <- paste0(patterns$base_url, "/", username_repo)
-      root_url <- paste0(
-        base_repo_url,
-        "/",
-        patterns$archive_path,
-        commit,
-        ".tar.gz"
-      )
-    } else {
-      root_url <- url
-    }
+  # Determine platform: github, gitlab, or NULL for CRAN/other
+  if (grepl("github", url)) {
     platform <- "github"
-  } else if (is_gitlab) {
-    patterns <- get_git_regex("gitlab")
-    has_subdir <- grepl(patterns$has_subdir_pattern, url)
-
-    if (has_subdir) {
-      # Extract username/repo using new pattern from get_git_regex
-      username_repo <- sub(patterns$repo_url_short_pattern, "\\1", url)
-      base_repo_url <- paste0(patterns$base_url, "/", username_repo)
-      root_url <- paste0(
-        base_repo_url,
-        "/",
-        patterns$archive_path,
-        commit,
-        ".tar.gz"
-      )
-    } else {
-      root_url <- url
-    }
+  } else if (grepl("gitlab", url)) {
     platform <- "gitlab"
   } else {
-    # For CRAN or other URLs
-    root_url <- url
     platform <- NULL
+  }
+
+  # Construct root URL for Git platforms or use URL directly for others
+  if (!is.null(platform)) {
+    patterns <- get_git_regex(platform)
+    has_subdir <- grepl(patterns$has_subdir_pattern, url)
+    if (has_subdir) {
+      # Extract username/repo and build archive URL
+      username_repo <- sub(patterns$repo_url_short_pattern, "\\1", url)
+      base_repo_url <- paste0(patterns$base_url, "/", username_repo)
+      root_url <- paste0(
+        base_repo_url,
+        "/",
+        patterns$archive_path,
+        commit,
+        ".tar.gz"
+      )
+    } else {
+      root_url <- url
+    }
+  } else {
+    # CRAN or other URLs
+    root_url <- url
   }
 
   try_download(
