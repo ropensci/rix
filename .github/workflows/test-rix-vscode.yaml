@@ -38,7 +38,7 @@ jobs:
 
       - name: Build default.nix and VSCode
         run: |
-          nix-shell --quiet default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2025-04-14', r_pkgs = c('dplyr', 'rix'), ide = 'code', project_path = '.', overwrite = TRUE)\""
+          nix-shell --quiet default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2025-04-14', r_pkgs = c('dplyr', 'devtools', 'rix'), ide = 'code', project_path = '.', overwrite = TRUE)\""
 
       - name: Check generated default.nix
         run: cat default.nix
