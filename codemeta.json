@@ -2,18 +2,24 @@
   "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
   "@type": "SoftwareSourceCode",
   "identifier": "rix",
-  "description": "Provides helper functions to create reproducible development environments using the Nix package manager.",
-  "name": "rix: Rix: Reproducible Environments with Nix",
+  "description": "Simplifies the creation of reproducible data science environments using the 'Nix' package manager, as described in Dolstra (2006) <ISBN 90-393-4130-3>. The included `rix()` function generates a complete description of the environment as a `default.nix` file, which can then be built using 'Nix'. This results in project specific software environments with pinned versions of R, packages, linked system dependencies, and other tools. Additional helpers make it easy to run R code in 'Nix' software environments for testing and production.",
+  "name": "rix: Reproducible Data Science Environments with 'Nix'",
   "codeRepository": "https://github.com/ropensci/rix",
-  "issueTracker": "https://github.com/ropensci/rix",
+  "issueTracker": "https://github.com/ropensci/rix/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.5.1.9000",
+  "version": "0.15.9",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.3.2 (2023-10-31)",
+  "runtimePlatform": "R version 4.5.0 (2025-04-11)",
+  "provider": {
+    "@id": "https://cran.r-project.org",
+    "@type": "Organization",
+    "name": "Comprehensive R Archive Network (CRAN)",
+    "url": "https://cran.r-project.org"
+  },
   "author": [
     {
       "@type": "Person",
@@ -28,6 +34,43 @@
       "familyName": "Baumann",
       "email": "baumann-philipp@protonmail.com",
       "@id": "https://orcid.org/0000-0002-3194-8975"
+    }
+  ],
+  "contributor": [
+    {
+      "@type": "Person",
+      "givenName": "Richard J.",
+      "familyName": "Acton",
+      "email": "actonr@babraham.ac.uk",
+      "@id": "https://orcid.org/0000-0002-2574-9611"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Jordi",
+      "familyName": "Rosell",
+      "email": "jroselln@gmail.com",
+      "@id": "https://orcid.org/0000-0002-4349-1458"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Elio",
+      "familyName": "Campitelli",
+      "email": "eliocampitelli@gmail.com",
+      "@id": "https://orcid.org/0000-0002-7742-9230"
+    },
+    {
+      "@type": "Person",
+      "givenName": "László",
+      "familyName": "Kupcsik",
+      "email": "dev@biobits.be",
+      "@id": "https://orcid.org/0000-0003-3535-5496"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Michael",
+      "familyName": "Heming",
+      "email": "mhem@mailbox.org",
+      "@id": "https://orcid.org/0000-0002-9568-2790"
     }
   ],
   "maintainer": [
@@ -98,15 +141,15 @@
     },
     "3": {
       "@type": "SoftwareApplication",
-      "identifier": "httr",
-      "name": "httr",
+      "identifier": "curl",
+      "name": "curl",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
         "name": "Comprehensive R Archive Network (CRAN)",
         "url": "https://cran.r-project.org"
       },
-      "sameAs": "https://CRAN.R-project.org/package=httr"
+      "sameAs": "https://CRAN.R-project.org/package=curl"
     },
     "4": {
       "@type": "SoftwareApplication",
@@ -139,9 +182,15 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "1016.338KB",
-  "relatedLink": "https://docs.ropensci.org/rix/",
-  "releaseNotes": "https://github.com/ropensci/rix/blob/main/NEWS.md",
+  "fileSize": "2104.568KB",
+  "relatedLink": ["https://docs.ropensci.org/rix/", "https://CRAN.R-project.org/package=rix"],
+  "releaseNotes": "https://github.com/ropensci/rix/blob/master/NEWS.md",
   "readme": "https://github.com/ropensci/rix/blob/main/README.md",
-  "contIntegration": ["https://github.com/ropensci/rix/actions/workflows/R-CMD-check.yaml", "https://github.com/ropensci/rix/actions?query=workflow%3Apkgcheck"]
+  "contIntegration": "https://github.com/ropensci/rix/actions/workflows/rhub.yaml/",
+  "review": {
+    "@type": "Review",
+    "url": "https://github.com/ropensci/software-review/issues/625",
+    "provider": "https://ropensci.org"
+  },
+  "keywords": ["nix", "peer-reviewed", "reproducibility", "reproducible-research"]
 }
