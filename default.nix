@@ -4,6 +4,7 @@ let
   rpkgs = builtins.attrValues {
     inherit (pkgs.rPackages) 
       codetools
+      codemetar
       devtools
       diffviewer
       fledge
