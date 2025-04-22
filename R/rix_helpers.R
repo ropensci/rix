@@ -437,6 +437,7 @@ generate_shell <- function(
   };",
     generate_locale_archive(detect_os()),
     generate_locale_variables(),
+    generate_set_reticulate(),
     flag_git_archive,
     flag_rpkgs,
     flag_tex_pkgs,
@@ -468,4 +469,10 @@ remove_empty_lines <- function(default.nix) {
   keep <- !(default.nix == "" & c(FALSE, head(default.nix, -1) == ""))
 
   default.nix[keep]
+}
+
+#' generate_set_reticulate Helper to set path to reticulate
+#' @noRd
+generate_set_reticulate <- function() {
+  sprintf("RETICULATE_PYTHON = '${pkgs.python312}/bin/python';\n")
 }
