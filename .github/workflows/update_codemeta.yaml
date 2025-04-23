@@ -1,0 +1,43 @@
+# adapted from: https://github.com/ropensci/codemetar/blob/main/inst/templates/codemeta-github-actions.yml
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: update codemeta
+
+permissions: write-all
+
+jobs:
+  codemetar:
+    runs-on: ubuntu-latest
+    env:
+     GH_TOKEN: ${{ github.token }}
+     GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create this folder to silence warning
+        run: mkdir -p ~/.nix-defexpr/channels
+
+      - uses: r-lib/actions/pr-fetch@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - uses: cachix/cachix-action@v15
+        with:
+          name: rstats-on-nix
+
+      - name: Update codemeta
+        run: |
+          nix-shell --quiet default.nix --run "Rscript -e 'codemetar::write_codemeta()'"
+
+      - name: Commit results
+        run: |
+          git commit codemeta.json -m 'Re-build codemeta.json' || echo "No changes to commit"
+          git push https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git HEAD:${{ github.ref }} || echo "No changes to commit"
