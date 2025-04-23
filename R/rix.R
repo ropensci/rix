@@ -394,11 +394,12 @@ for more details."
         "Python packages have been requested, but 'reticulate' is not in your list of R packages. ",
         "If you want to handle Python objects from your R session, consider adding 'reticulate' to the list of R packages."
       )
-      flag_py_conf <- "pyconf"
-    } else {
-      flag_py_conf <- ""
     }
+    flag_py_conf <- "pyconf"
+  } else {
+    flag_py_conf <- ""
   }
+
 
 
   # If there are wrapped packages (for example for RStudio), passes the "wrapped_pkgs"

@@ -356,16 +356,14 @@ generate_locale_variables <- function() {
     )
   }
 
-  locale_vars <- paste(
+  locale_vars <-
     Map(
-      function(x, nm) paste0(nm, " = ", '"', x, '"'),
+      function(x, nm) paste0(nm, " = ", '"', x, '"', ";"),
       nm = names(locale_variables),
       x = locale_variables
-    ),
-    collapse = ";\n   "
-  )
+    )
 
-  paste0(locale_vars, ";\n")
+  paste(locale_vars, collapse = "\n    ")
 }
 
 
@@ -476,8 +474,8 @@ remove_empty_lines <- function(default.nix) {
 #' @noRd
 generate_set_reticulate <- function(flag_py_conf) {
   if (flag_py_conf == "") {
-    NULL
+    ""
   } else {
-    sprintf("RETICULATE_PYTHON = '${pkgs.python312}/bin/python';\n")
+    paste0("RETICULATE_PYTHON = '${pkgs.python312}/bin/python';\n")
   }
 }
