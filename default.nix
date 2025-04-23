@@ -7,7 +7,6 @@ let
       codemetar
       devtools
       diffviewer
-      fledge
       httr
       jsonlite
       knitr
