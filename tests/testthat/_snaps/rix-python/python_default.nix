@@ -40,7 +40,7 @@ let
     LC_MONETARY = "en_US.UTF-8";
     LC_PAPER = "en_US.UTF-8";
     LC_MEASUREMENT = "en_US.UTF-8";
-    RETICULATE_PYTHON = '${pkgs.python312}/bin/python';
+    RETICULATE_PYTHON = "${pkgs.python312}/bin/python";
 
     buildInputs = [  rpkgs tex pyconf system_packages   ];
     

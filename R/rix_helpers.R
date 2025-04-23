@@ -476,6 +476,6 @@ generate_set_reticulate <- function(flag_py_conf) {
   if (flag_py_conf == "") {
     ""
   } else {
-    paste0("RETICULATE_PYTHON = '${pkgs.python312}/bin/python';\n")
+    paste0('RETICULATE_PYTHON = "${pkgs.python312}/bin/python";\n')
   }
 }
