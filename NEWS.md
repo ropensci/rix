@@ -1,5 +1,3 @@
-<!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
-
 # rix 0.15.9 (2025-04-21)
 
 - `rix()`: choosing `code` or `codium` previously installed `vscode-fhs` and
