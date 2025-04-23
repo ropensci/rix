@@ -72,9 +72,11 @@ get_git_regex <- function(platform) {
     archive_path = cfg$archive_path,
     repo_url_short_pattern = paste0(
       domain_prefix,
-      "/([^/]+/[^/]+)(/.*)?/",
-      cfg$archive_path,
-      ".*"
+      "/([^/]+/[^/]+).*"
+    ),
+    repo_pattern = paste0(
+      domain_prefix,
+      "/[^/]+/([^/]+).*"
     ),
     base_url = paste0("https://", cfg$name, ".com"),
     is_platform = function(url) grepl(cfg$name, url)
@@ -135,13 +137,27 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
     platform <- NULL
   }
 
-  # Construct root URL for Git platforms or use URL directly for others
+  # if GitHub or GitLab URL, extract repo name and commit
   if (!is.null(platform)) {
     patterns <- get_git_regex(platform)
+    repo <- sub(patterns$repo_pattern, "\\1", url)
+    # when fetching from GitHub archive; e.g.,
+    # https://github.com/rap4all/housing/archive/1c860959310b80e67c41f7bbdc3e84cef00df18e.tar.gz")
+    # package_src will uncompressed contents in
+    # subfolder "housing-1c860959310b80e67c41f7bbdc3e84cef00df18e"
+    path_to_source_root <- file.path(
+      path_to_src,
+      paste0(
+        repo,
+        "-",
+        commit
+      )
+    )
+    username_repo <- sub(patterns$repo_url_short_pattern, "\\1", url)
     has_subdir <- grepl(patterns$has_subdir_pattern, url)
+    # if the URL has a subdirectory, we need build a root URL without the subdir (because only entire repos can be downloaded)
+    # and build the local path to the subdirectory
     if (has_subdir) {
-      # Extract username/repo and build archive URL
-      username_repo <- sub(patterns$repo_url_short_pattern, "\\1", url)
       base_repo_url <- paste0(patterns$base_url, "/", username_repo)
       root_url <- paste0(
         base_repo_url,
@@ -150,12 +166,17 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
         commit,
         ".tar.gz"
       )
+      url_subdir <- sub(patterns$extract_subdir_pattern, "\\1", url)
+      path_to_r <- file.path(path_to_source_root, url_subdir)
     } else {
+      # if the URL does not have a subdirectory, we can use the original URL
       root_url <- url
+      path_to_r <- path_to_source_root
     }
   } else {
-    # CRAN or other URLs
+    # if CRAN archive URL
     root_url <- url
+    path_to_r <- path_to_source_root
   }
 
   try_download(
@@ -167,37 +188,9 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
 
   untar(tar_file, exdir = path_to_src)
 
-  # when fetching from GitHub archive; e.g.,
-  # https://github.com/rap4all/housing/archive/1c860959310b80e67c41f7bbdc3e84cef00df18e.tar.gz")
-  # package_src will uncompressed contents in
-  # subfolder "housing-1c860959310b80e67c41f7bbdc3e84cef00df18e"
-  path_to_source_root <- file.path(
-    path_to_src,
-    list.files(path_to_src)
-  )
   sri_hash <- nix_sri_hash(path = path_to_source_root)
 
-  # Process Git URL to handle subdirectories
-  if (!is.null(platform)) {
-    patterns <- get_git_regex(platform)
-    has_subdir <- grepl(patterns$has_subdir_pattern, url)
-
-    if (has_subdir) {
-      url_subdir <- sub(patterns$extract_subdir_pattern, "\\1", url)
-      path_to_r <- file.path(path_to_source_root, url_subdir)
-    } else {
-      path_to_r <- path_to_source_root
-    }
-
-    # Extract repo info for GitHub URLs
-    if (platform == "github") {
-      repo_url_short <- sub(patterns$repo_url_short_pattern, "\\1", url)
-      commit <- gsub(x = basename(url), pattern = ".tar.gz", replacement = "")
-      commit_date <- get_commit_date(repo_url_short, commit)
-    }
-  } else {
-    path_to_r <- path_to_source_root
-  }
+  # Extract repo info for GitHub URLs
 
   paths <- list.files(
     path_to_r,
@@ -210,6 +203,10 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
     paths,
     value = TRUE
   )
+
+  if (platform == "github") {
+    commit_date <- get_commit_date(username_repo, commit)
+  }
 
   deps <- get_imports(desc_path, commit_date, ...)
 
