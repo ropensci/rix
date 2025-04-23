@@ -22,18 +22,17 @@ nix_hash <- function(repo_url, commit, ...) {
   }
 }
 
-#' Generate regex patterns for Git hosting platforms
+#' Generate regex patterns for Git hosting platforms or CRAN archive
 #'
-#' @param platform Either "github" or "gitlab"
+#' @param platform Either "github" or "gitlab" or "cran"
 #' @return A list with regex patterns for the given platform:
 #' - `has_subdir_pattern`: Pattern to check if a URL has a subdirectory
 #' - `extract_subdir_pattern`: Pattern to extract the subdirectory from a URL
 #' - `archive_path`: Path segment used for archive URLs
 #' - `repo_url_short_pattern`: Pattern to extract username/repo from archive URLs
 #' - `base_url`: Base URL prefix for constructing repository archive URLs
-#' - `is_platform`: Function to check if a URL belongs to this platform
 #' @noRd
-get_git_regex <- function(platform) {
+get_git_cran_regex <- function(platform) {
   # Define platform-specific parameters
   platforms <- list(
     github = list(
@@ -45,12 +44,17 @@ get_git_regex <- function(platform) {
       name = "gitlab",
       domain = "gitlab\\.com",
       archive_path = "-/archive/"
+    ),
+    cran = list(
+      name = "cran",
+      domain = "cran\\.r-project\\.org/src/contrib/",
+      archive_path = "Archive/"
     )
   )
 
   # Get platform configuration or error if invalid
   if (!platform %in% names(platforms)) {
-    stop("Platform must be either 'github' or 'gitlab'", call. = FALSE)
+    stop("Platform must be 'github', 'gitlab' or 'CRAN'", call. = FALSE)
   }
 
   cfg <- platforms[[platform]]
@@ -61,26 +65,35 @@ get_git_regex <- function(platform) {
   repo_path <- paste0(domain_prefix, "/[^/]+/[^/]+")
 
   # Generate patterns dynamically based on the config
-  list(
-    has_subdir_pattern = paste0(repo_path, "/.+/", cfg$archive_path),
-    extract_subdir_pattern = paste0(
-      repo_path,
-      "/(.+)/",
-      cfg$archive_path,
-      ".*"
-    ),
-    archive_path = cfg$archive_path,
-    repo_url_short_pattern = paste0(
-      domain_prefix,
-      "/([^/]+/[^/]+).*"
-    ),
-    repo_pattern = paste0(
-      domain_prefix,
-      "/[^/]+/([^/]+).*"
-    ),
-    base_url = paste0("https://", cfg$name, ".com"),
-    is_platform = function(url) grepl(cfg$name, url)
-  )
+  if (platform %in% c("github", "gitlab")) {
+    list(
+      has_subdir_pattern = paste0(repo_path, "/.+/", cfg$archive_path),
+      extract_subdir_pattern = paste0(
+        repo_path,
+        "/(.+)/",
+        cfg$archive_path,
+        ".*"
+      ),
+      archive_path = cfg$archive_path,
+      repo_url_short_pattern = paste0(
+        domain_prefix,
+        "/([^/]+/[^/]+).*"
+      ),
+      repo_pattern = paste0(
+        domain_prefix,
+        "/[^/]+/([^/]+).*"
+      ),
+      base_url = paste0("https://", cfg$name, ".com")
+    )
+  } else if (platform == "cran") {
+    list(
+      cran_pkg_archive_pattern = paste0(
+        domain_prefix,
+        cfg$archive_path,
+        "([^/]+).*"
+      )
+    )
+  }
 }
 
 #' Return the SRI hash of an URL with .tar.gz
@@ -133,13 +146,15 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
     platform <- "github"
   } else if (grepl("gitlab", url)) {
     platform <- "gitlab"
-  } else {
-    platform <- NULL
+  } else if (grepl("cran", url)) {
+    platform <- "cran"
   }
 
+  # Get regex patterns for the platform
+  patterns <- get_git_cran_regex(platform)
+
   # if GitHub or GitLab URL, extract repo name and commit
-  if (!is.null(platform)) {
-    patterns <- get_git_regex(platform)
+  if (platform %in% c("github", "gitlab")) {
     repo <- sub(patterns$repo_pattern, "\\1", url)
     # when fetching from GitHub archive; e.g.,
     # https://github.com/rap4all/housing/archive/1c860959310b80e67c41f7bbdc3e84cef00df18e.tar.gz")
@@ -173,10 +188,14 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
       root_url <- url
       path_to_r <- path_to_source_root
     }
-  } else {
-    # if CRAN archive URL
-    root_url <- url
+  } else if (platform == "cran") {
+    cran_pkg_archive <- sub(patterns$cran_pkg_archive_pattern, "\\1", url)
+    path_to_source_root <- file.path(
+      path_to_src,
+      cran_pkg_archive
+    )
     path_to_r <- path_to_source_root
+    root_url <- url
   }
 
   try_download(
@@ -189,8 +208,6 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
   untar(tar_file, exdir = path_to_src)
 
   sri_hash <- nix_sri_hash(path = path_to_source_root)
-
-  # Extract repo info for GitHub URLs
 
   paths <- list.files(
     path_to_r,
