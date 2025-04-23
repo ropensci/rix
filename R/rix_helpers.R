@@ -432,12 +432,13 @@ generate_shell <- function(
   shell = pkgs.mkShell {
     %s
     %s
+    %s
     buildInputs = [ %s %s %s %s system_packages %s %s ];
     %s
   };",
     generate_locale_archive(detect_os()),
     generate_locale_variables(),
-    generate_set_reticulate(),
+    generate_set_reticulate(flag_py_conf),
     flag_git_archive,
     flag_rpkgs,
     flag_tex_pkgs,
@@ -473,6 +474,10 @@ remove_empty_lines <- function(default.nix) {
 
 #' generate_set_reticulate Helper to set path to reticulate
 #' @noRd
-generate_set_reticulate <- function() {
-  sprintf("RETICULATE_PYTHON = '${pkgs.python312}/bin/python';\n")
+generate_set_reticulate <- function(flag_py_conf) {
+  if (flag_py_conf == "") {
+    NULL
+  } else {
+    sprintf("RETICULATE_PYTHON = '${pkgs.python312}/bin/python';\n")
+  }
 }

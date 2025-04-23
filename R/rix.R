@@ -385,12 +385,21 @@ for more details."
     "local_r_pkgs"
   }
 
-  # If there are Python packages, passes the string "local_r_pkgs" to buildInputs
-  flag_py_conf <- if (is.null(py_conf)) {
-    ""
-  } else {
-    "pyconf"
+  # If there are Python packages, passes the string "pyconf" to buildInputs
+
+  if (!is.null(py_conf)) {
+    if (!any(grepl("reticulate",
+                   c(cran_pkgs$rPackages, cran_pkgs$archive_pkgs)))) {
+      warning(
+        "Python packages have been requested, but 'reticulate' is not in your list of R packages. ",
+        "If you want to handle Python objects from your R session, consider adding 'reticulate' to the list of R packages."
+      )
+      flag_py_conf <- "pyconf"
+    } else {
+      flag_py_conf <- ""
+    }
   }
+
 
   # If there are wrapped packages (for example for RStudio), passes the "wrapped_pkgs"
   # to buildInputs
