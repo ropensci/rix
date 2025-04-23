@@ -2,8 +2,6 @@
 on:
   push:
     branches: [main, master]
-  pull_request:
-    branches: [main, master]
 
 name: update codemeta
 
@@ -21,10 +19,6 @@ jobs:
 
       - name: Create this folder to silence warning
         run: mkdir -p ~/.nix-defexpr/channels
-
-      - uses: r-lib/actions/pr-fetch@v2
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
