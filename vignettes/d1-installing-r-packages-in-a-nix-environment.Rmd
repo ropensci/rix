@@ -308,6 +308,30 @@ specifically the code as it is in the `fusen` branch; however the branch name is
 not required, as the commit is enough to pin the exact version of the code
 needed. The `{fusen}` package is also installed, as of commit `d617172447d`.
 
+If you want to install a package from GitHub, which store the R package in a subfolder,
+you should specify the subfolder in the `repo_url` argument. For example, if you want to
+install the R version of the package `{BPCells}`:
+
+```{r, eval = F}
+path_default_nix <- tempdir()
+
+rix(
+  r_ver = "4.5.0",
+  r_pkgs = c("dplyr"),
+  system_pkgs = NULL,
+  git_pkgs = list(
+    package_name = "BPCells",
+    repo_url = "https://github.com/bnprks/BPCells/r",
+    commit = "16faeade0a26b392637217b0caf5d7017c5bdf9b"
+  ),
+  ide = "none",
+  project_path = ".",
+  overwrite = TRUE,
+  print = TRUE
+)
+```
+
+
 ## Installing local archives
 
 It is also possible to install packages from a local `tar.gz` file. For this,

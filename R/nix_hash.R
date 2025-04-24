@@ -22,15 +22,72 @@ nix_hash <- function(repo_url, commit, ...) {
   }
 }
 
+#' Generate regex patterns for Git hosting platforms
+#'
+#' @param platform Either "github" or "gitlab"
+#' @return A list with regex patterns for the given platform:
+#' - `has_subdir_pattern`: Pattern to check if a URL has a subdirectory
+#' - `extract_subdir_pattern`: Pattern to extract the subdirectory from a URL
+#' - `archive_path`: Path segment used for archive URLs
+#' - `repo_url_short_pattern`: Pattern to extract username/repo from archive URLs
+#' - `base_url`: Base URL prefix for constructing repository archive URLs
+#' @noRd
+get_git_regex <- function(platform) {
+  # Define platform-specific parameters
+  platforms <- list(
+    github = list(
+      name = "github",
+      domain = "github\\.com",
+      archive_path = "archive/"
+    ),
+    gitlab = list(
+      name = "gitlab",
+      domain = "gitlab\\.com",
+      archive_path = "-/archive/"
+    )
+  )
+
+  # Get platform configuration or error if invalid
+  if (!platform %in% names(platforms)) {
+    stop("Platform must be 'github' or 'gitlab'", call. = FALSE)
+  }
+
+  cfg <- platforms[[platform]]
+
+  # Build base patterns for reuse
+  domain <- cfg$domain
+  domain_prefix <- paste0("https://", domain)
+  repo_path <- paste0(domain_prefix, "/[^/]+/[^/]+")
+
+  # Generate patterns dynamically based on the config
+  list(
+    has_subdir_pattern = paste0(repo_path, "/.+/", cfg$archive_path),
+    extract_subdir_pattern = paste0(
+      repo_path,
+      "/(.+)/",
+      cfg$archive_path,
+      ".*"
+    ),
+    archive_path = cfg$archive_path,
+    repo_url_short_pattern = paste0(
+      domain_prefix,
+      "/([^/]+/[^/]+).*"
+    ),
+    base_url = paste0("https://", cfg$name, ".com")
+  )
+}
+
 #' Return the SRI hash of an URL with .tar.gz
 #' @param url String with URL ending with `.tar.gz`
+#' @param repo_url URL to GitHub repository, NULL if CRAN archive
+#' @param commit Commit hash, NULL if CRAN archive
 #' @param ... Further arguments passed down to methods.
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a GitHub repo
 #'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
-hash_url <- function(url, ...) {
+hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
   tdir <- tempdir()
 
   tmpdir <- paste0(
@@ -65,8 +122,43 @@ hash_url <- function(url, ...) {
 
   tar_file <- file.path(path_to_tarfile, "package.tar.gz")
 
+  # Determine platform: github, gitlab,
+  if (grepl("github", url)) {
+    platform <- "github"
+  } else if (grepl("gitlab", url)) {
+    platform <- "gitlab"
+  } else if (grepl("cran", url)) {
+    platform <- "cran"
+  } else {
+    stop(
+      "repo_url argument should be a URL to a GitHub/GitLab repo or a CRAN archive.\n"
+    )
+  }
+
+  # set the root URL for the download
+  root_url <- url
+
+  # if GitHub or GitLab URL with a subdirectory, we need to adjust the root_url
+  # because only entire repos can be downloaded)
+  if (platform %in% c("github", "gitlab")) {
+    # Get regex patterns for the platform
+    patterns <- get_git_regex(platform)
+    username_repo <- sub(patterns$repo_url_short_pattern, "\\1", url)
+    has_subdir <- grepl(patterns$has_subdir_pattern, url)
+    if (has_subdir) {
+      base_repo_url <- paste0(patterns$base_url, "/", username_repo)
+      root_url <- paste0(
+        base_repo_url,
+        "/",
+        patterns$archive_path,
+        commit,
+        ".tar.gz"
+      )
+    }
+  }
+
   try_download(
-    url = url,
+    url = root_url,
     file = tar_file,
     handle = h,
     extra_diagnostics = extra_diagnostics
@@ -85,17 +177,29 @@ hash_url <- function(url, ...) {
 
   sri_hash <- nix_sri_hash(path = path_to_source_root)
 
-  paths <- list.files(path_to_src, full.names = TRUE, recursive = TRUE)
+  # set the path to the r folder containing the DESCRIPTION file
+  path_to_r <- path_to_source_root
+
+  # if GitHub or GitLab URL with a subdirectory, we need to adjust the path
+  if (platform %in% c("github", "gitlab") && has_subdir) {
+    url_subdir <- sub(patterns$extract_subdir_pattern, "\\1", url)
+    path_to_r <- file.path(path_to_source_root, url_subdir)
+  }
+
+  paths <- list.files(
+    path_to_r,
+    full.names = TRUE,
+    recursive = TRUE
+  )
+
   desc_path <- grep(
-    file.path(list.files(path_to_src), "DESCRIPTION"),
+    file.path(path_to_r, "DESCRIPTION"),
     paths,
     value = TRUE
   )
 
-  if (grepl("github", url)) {
-    repo_url_short <- paste(unlist(strsplit(url, "/"))[4:5], collapse = "/")
-    commit <- gsub(x = basename(url), pattern = ".tar.gz", replacement = "")
-    commit_date <- get_commit_date(repo_url_short, commit)
+  if (platform == "github") {
+    commit_date <- get_commit_date(username_repo, commit)
   }
 
   deps <- get_imports(desc_path, commit_date, ...)
@@ -216,7 +320,7 @@ hash_git <- function(repo_url, commit, ...) {
     url <- paste0(repo_url, slash, "-/archive/", commit, ".tar.gz")
   }
   # list contains `sri_hash` and `deps` elements
-  hash_url(url, ...)
+  hash_url(url, repo_url, commit, ...)
 }
 
 
