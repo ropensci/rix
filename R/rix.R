@@ -36,10 +36,15 @@
 #'   See the
 #'   `vignette("d2- installing-system-tools-and-texlive-packages-in-a-nix-environment")`
 #'   for more details.
-#' @param py_conf List. A list of two elements, `py_version` and `py_pkgs`.
-#'   `py_version` must be of the form `"3.12"` for Python 3.12 and `py_pkgs`
-#'   must be an atomic vector of packages names, for example
-#'   `py_pkgs = c("polars", "plotnine", "great-tables")`.
+#' @param py_conf List. A list containing two elements: `py_version` and
+#'   `py_pkgs`. `py_version` should be in the form `"3.12"` for Python 3.12, and
+#'   `py_pkgs` should be an atomic vector of package names
+#'   (e.g., `py_pkgs = c("polars", "plotnine", "great-tables")`).
+#'   If Python packages are requested but `{reticulate}` is not in the list of R
+#'   packages, the user will be warned that they may want to add it. When
+#'   `py_conf` packages are requested, the `RETICULATE_PYTHON` environment
+#'   variable is set to ensure the Nix environment does not use with a
+#'   system-wide Python installation.
 #' @param ide Character, defaults to "none". If you wish to use RStudio to work
 #'   interactively use "rstudio" or "rserver" for the server version. Use "code"
 #'   for Visual Studio Code or "codium" for Codium, or "positron" for Positron.
@@ -385,11 +390,20 @@ for more details."
     "local_r_pkgs"
   }
 
-  # If there are Python packages, passes the string "local_r_pkgs" to buildInputs
-  flag_py_conf <- if (is.null(py_conf)) {
-    ""
+  # If there are Python packages, passes the string "pyconf" to buildInputs
+
+  if (!is.null(py_conf)) {
+    if (
+      !any(grepl("reticulate", c(cran_pkgs$rPackages, cran_pkgs$archive_pkgs)))
+    ) {
+      warning(
+        "Python packages have been requested, but 'reticulate' is not in your list of R packages. ",
+        "If you want to handle Python objects from your R session, consider adding 'reticulate' to the list of R packages."
+      )
+    }
+    flag_py_conf <- "pyconf"
   } else {
-    "pyconf"
+    flag_py_conf <- ""
   }
 
   # If there are wrapped packages (for example for RStudio), passes the "wrapped_pkgs"
@@ -433,6 +447,7 @@ for more details."
       flag_git_archive,
       flag_rpkgs,
       flag_tex_pkgs,
+      py_conf,
       flag_py_conf,
       flag_local_r_pkgs,
       flag_wrapper,

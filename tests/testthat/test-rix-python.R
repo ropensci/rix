@@ -23,7 +23,7 @@ testthat::test_that("rix() with Python packages", {
   save_default_nix_test <- function(ide, path_default_nix) {
     rix(
       date = "2025-03-10",
-      r_pkgs = c("dplyr", "janitor"),
+      r_pkgs = c("dplyr", "janitor", "reticulate"),
       tex_pkgs = c("amsmath"),
       py_conf = list(
         py_version = "3.12",
@@ -42,5 +42,47 @@ testthat::test_that("rix() with Python packages", {
   testthat::expect_snapshot_file(
     path = save_default_nix_test(ide = "positron", path_default_nix),
     name = "python_default.nix",
+  )
+})
+
+
+testthat::test_that("rix() with Python packages warning if no reticulate", {
+  os_type <- Sys.info()["sysname"]
+  skip_if_not(nix_shell_available())
+  skip_if(os_type == "Darwin" || os_type == "Windows")
+
+  tmpdir <- tempdir()
+
+  path_default_nix <- paste0(
+    tmpdir,
+    paste0(sample(letters, 5), collapse = "")
+  )
+  dir.create(path_default_nix)
+  path_default_nix <- normalizePath(path_default_nix)
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+
+  testthat::expect_warning(
+    rix(
+      date = "2025-03-10",
+      r_pkgs = c("dplyr", "janitor"),
+      tex_pkgs = c("amsmath"),
+      py_conf = list(
+        py_version = "3.12",
+        py_pkgs = c("polars", "plotnine")
+      ),
+      ide = "none",
+      project_path = path_default_nix,
+      overwrite = TRUE,
+      message_type = "quiet",
+      shell_hook = NULL
+    ),
+    "Python packages have been requested.*reticulate.*"
   )
 })

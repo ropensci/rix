@@ -356,16 +356,14 @@ generate_locale_variables <- function() {
     )
   }
 
-  locale_vars <- paste(
+  locale_vars <-
     Map(
-      function(x, nm) paste0(nm, " = ", '"', x, '"'),
+      function(x, nm) paste0(nm, " = ", '"', x, '"', ";"),
       nm = names(locale_variables),
       x = locale_variables
-    ),
-    collapse = ";\n   "
-  )
+    )
 
-  paste0(locale_vars, ";\n")
+  paste(locale_vars, collapse = "\n    ")
 }
 
 
@@ -422,6 +420,7 @@ generate_shell <- function(
   flag_git_archive,
   flag_rpkgs,
   flag_tex_pkgs,
+  py_conf,
   flag_py_conf,
   flag_local_r_pkgs,
   flag_wrapper,
@@ -432,11 +431,13 @@ generate_shell <- function(
   shell = pkgs.mkShell {
     %s
     %s
+    %s
     buildInputs = [ %s %s %s %s system_packages %s %s ];
     %s
   };",
     generate_locale_archive(detect_os()),
     generate_locale_variables(),
+    generate_set_reticulate(py_conf, flag_py_conf),
     flag_git_archive,
     flag_rpkgs,
     flag_tex_pkgs,
@@ -468,4 +469,18 @@ remove_empty_lines <- function(default.nix) {
   keep <- !(default.nix == "" & c(FALSE, head(default.nix, -1) == ""))
 
   default.nix[keep]
+}
+
+#' generate_set_reticulate Helper to set path to reticulate
+#' @noRd
+generate_set_reticulate <- function(py_conf, flag_py_conf) {
+  if (flag_py_conf == "") {
+    ""
+  } else {
+    py_version <- paste0(
+      "python",
+      gsub("\\.", "", py_conf$py_version)
+    )
+    paste0('RETICULATE_PYTHON = "${pkgs.', py_version, '}/bin/python";\n')
+  }
 }
