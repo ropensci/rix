@@ -4,7 +4,7 @@
   now gets warned. The `RETICULATE_PYTHON` environment variable also
   gets set.
   (see https://github.com/ropensci/rix/pull/482)
-  
+
 - `rix()`: Github packages with subdirs can now be installed
   (see https://github.com/ropensci/rix/pull/473)
 
