@@ -8,8 +8,6 @@
 - `rix()`: Github packages with subdirs can now be installed
   (see https://github.com/ropensci/rix/pull/473)
 
-- `rix()`: `py_pkgs` argument renamed to `py_conf`.
-
 # rix 0.15.9 (2025-04-21)
 
 - `rix()`: choosing `code` or `codium` previously installed `vscode-fhs` and
