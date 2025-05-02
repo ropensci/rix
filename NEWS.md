@@ -1,3 +1,8 @@
+# rix 0.16.1 (2025-05-02)
+
+- `rix()`: If `{rmarkdown}` is added to list of R packages,
+  `pandoc` and `which` are automatically added to list of system packages.
+
 # rix 0.16.0 (2025-04-24)
 
 - `rix()`: If Python packages get added but not `{reticulate}`, the user

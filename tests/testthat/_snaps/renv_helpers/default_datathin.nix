@@ -394,7 +394,9 @@ let
     inherit (pkgs) 
       R
       glibcLocales
-      nix;
+      nix
+      pandoc
+      which;
   };
   
   shell = pkgs.mkShell {

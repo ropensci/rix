@@ -275,10 +275,12 @@ get_system_pkgs <- function(system_pkgs, r_pkgs, py_conf, ide) {
 
   # If the user wants the R {quarto} package, then the quarto software needs to
   # be installed
-  system_pkgs <- if (any(grepl("quarto", r_pkgs))) {
-    unique(c(system_pkgs, "quarto", "which", "pandoc"))
-  } else {
-    unique(system_pkgs)
+
+  if (any(grepl("quarto", r_pkgs))) {
+    system_pkgs <- unique(c(system_pkgs, "quarto", "which", "pandoc"))
+  }
+  if (any(grepl("rmarkdown", r_pkgs))) {
+    system_pkgs <- unique(c(system_pkgs, "pandoc", "which"))
   }
   paste(c("", system_pkgs), collapse = "\n      ")
 }
