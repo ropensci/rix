@@ -12,7 +12,6 @@
 - [Recommended reading](#recommended-reading)
 
 <!-- badges: start -->
-
 [![R-hub
 v2](https://github.com/ropensci/rix/actions/workflows/rhub.yaml/badge.svg)](https://github.com/ropensci/rix/actions/workflows/rhub.yaml/)
 [![CRAN](https://www.r-pkg.org/badges/version/rix)](https://CRAN.R-project.org/package=rix)
