@@ -164,6 +164,12 @@ following line in a terminal will drop you in an interactive R session that you
 can use to start generating expressions:
 
 ```
+nix-shell -p R rPackages.rix
+```
+
+or if you prefer the development version of `{rix}`:
+
+```
 nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/ropensci/rix/master/inst/extdata/default.nix)"
 ```
 
@@ -171,6 +177,8 @@ This should immediately start an R session inside your terminal. You can now run
 something like this:
 
 ```{r, eval = F}
+library(rix)
+
 rix(
   r_ver = "4.4.2",
   r_pkgs = c("dplyr", "ggplot2"),
