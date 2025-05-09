@@ -36,7 +36,7 @@ jobs:
           nix-shell --quiet -p R rPackages.{codetools,curl,jsonlite,sys,devtools} --run "Rscript -e \"devtools::load_all(); \
             rix(date = '2025-04-29', \
               git_pkgs = list(list(package_name = 'rix', repo_url = 'https://github.com/ropensci/rix/', commit = '${{ env.LATEST_COMMIT_HASH }}'), \
-                              list(package_name = 'rixpress', repo_url = 'https://github.com/b-rodrigues/rixpress/', commit = 'HEAD')), \
+                              list(package_name = 'rixpress', repo_url = 'https://github.com/b-rodrigues/rixpress/', commit = '51509d484fa9bc01650ce5c5e1774ea19be64acf')), \
                               ide = 'none', project_path = 'inst/extdata', overwrite = TRUE)\""
 
       - name: Check if PR exists
