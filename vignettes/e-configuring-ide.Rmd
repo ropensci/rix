@@ -143,22 +143,8 @@ type `rstudio` to start RStudio.
 
 If you plan to use RStudio on Ubuntu, then you need further configuration to
 make it work, because of newly introduced sandboxing features in Ubuntu 24.04.
-You will need to create an RStudio-specific AppArmor profile. Do so, by
-following these instructions:
-
-From project directory, open the Nix shell:
-
-```bash
-nix-shell
-```
-
-Find the path of the RStudio executable and make a note of it:
-
-```bash
-which rstudio
-```
-
-Create the apparmor profile:
+You will need to create an RStudio-specific AppArmor profile. To do so
+create this apparmor profile:
 
 ```bash
 sudo nano /etc/apparmor.d/nix.rstudio
