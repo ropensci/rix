@@ -139,13 +139,41 @@ command in the shell hook to start it immediately as you run `nix-shell`.
 
 To use RStudio on Linux or Windows simply use `ide = "rstudio"`. Then, build the
 environment using `nix-build` and drop into the shell using `nix-shell`. Then,
-type `rstudio` to start RStudio. On Windows, you need to have `WSLg` enabled,
-which should be the case on the latest versions of Windows. If you wish, you can
-even put the `rstudio` command in the shell hook to start it immediately as you
-run `nix-shell`.
+type `rstudio` to start RStudio.
 
-On Linux and WSL, depending on your desktop environment, you might see the
-following error message when trying to launch RStudio:
+If you plan to use RStudio on Ubuntu, then you need further configuration to
+make it work, because of newly introduced sandboxing features in Ubuntu 24.04.
+You will need to create an RStudio-specific AppArmor profile. To do so
+create this apparmor profile:
+
+```bash
+sudo nano /etc/apparmor.d/nix.rstudio
+```
+
+Populate it with:
+
+```
+profile nix.rstudio /nix/store/*-RStudio-*-wrapper/bin/rstudio flags=(unconfined) {
+    userns,
+}
+```
+
+Save it, load the profile and start RStudio:
+
+```bash
+sudo apparmor_parser -r /etc/apparmor.d/nix.rstudio
+sudo systemctl reload apparmor
+```
+
+You can now start RStudio from the activated Nix shell.
+
+On Windows, you need to have `WSLg` enabled, which should be the case on the
+latest versions of Windows. If you wish, you can even put the `rstudio` command
+in the shell hook to start it immediately as you run `nix-shell`.
+
+On Linux and WSL, depending on your desktop environment, and for older versions
+of RStudio, you might see the following error message when trying to launch
+RStudio:
 
 ```
 qt.glx: qglx_findConfig: Failed to finding matching FBConfig for QSurfaceFormat(version 2.0, options QFlags<QSurfaceFormat::FormatOption>(), depthBufferSize -1, redBufferSize 1, greenBufferSize 1, blueBufferSize 1, alphaBufferSize -1, stencilBufferSize -1, samples -1, swapBehavior QSurfaceFormat::SingleBuffer, swapInterval 1, colorSpace QSurfaceFormat::DefaultColorSpace, profile  QSurfaceFormat::NoProfile)
