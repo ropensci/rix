@@ -45,6 +45,11 @@
 #'   `py_conf` packages are requested, the `RETICULATE_PYTHON` environment
 #'   variable is set to ensure the Nix environment does not use with a
 #'   system-wide Python installation.
+#' @param jl_conf List. A list of two elements, `jl_version` and `jl_conf`.
+#'   `jl_version` must be of the form `"1.10"` for Julia 1.10. Leave empty to
+#'   use the latest version, or use `"lts"` for the long term support version.
+#'   `jl_conf` must be an atomic vector of packages names, for example `jl_conf
+#'   = c("TidierData", "TidierPlots")`.
 #' @param ide Character, defaults to "none". If you wish to use RStudio to work
 #'   interactively use "rstudio" or "rserver" for the server version. Use "code"
 #'   for Visual Studio Code or "codium" for Codium, or "positron" for Positron.
@@ -206,6 +211,7 @@ rix <- function(
   local_r_pkgs = NULL,
   tex_pkgs = NULL,
   py_conf = NULL,
+  jl_conf = NULL,
   ide = "none",
   project_path,
   overwrite = FALSE,
@@ -406,6 +412,12 @@ for more details."
     flag_py_conf <- ""
   }
 
+  if (!is.null(jl_conf)) {
+    flag_jl_conf <- "jlconf"
+  } else {
+    flag_jl_conf <- ""
+  }
+
   # If there are wrapped packages (for example for RStudio), passes the "wrapped_pkgs"
   # to buildInputs
   flag_wrapper <- if (ide %in% names(attrib) && flag_rpkgs != "")
@@ -434,6 +446,7 @@ for more details."
     ),
     generate_tex_pkgs(tex_pkgs),
     generate_py_conf(py_conf, flag_py_conf),
+    generate_jl_conf(jl_conf, flag_jl_conf),
     generate_local_r_pkgs(local_r_pkgs, flag_local_r_pkgs),
     generate_system_pkgs(system_pkgs, r_pkgs, py_conf, ide),
     generate_wrapped_pkgs(
@@ -449,6 +462,7 @@ for more details."
       flag_tex_pkgs,
       py_conf,
       flag_py_conf,
+      flag_jl_conf,
       flag_local_r_pkgs,
       flag_wrapper,
       shell_hook
