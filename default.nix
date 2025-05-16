@@ -1,5 +1,5 @@
 let
- pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2025-04-29.tar.gz") {};
+ pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2025-05-16.tar.gz") {};
  
   rpkgs = builtins.attrValues {
     inherit (pkgs.rPackages) 
@@ -28,6 +28,7 @@ let
   
   system_packages = builtins.attrValues {
     inherit (pkgs) 
+      aider-chat
       air-formatter
       glibcLocales
       glibcLocalesUtf8
