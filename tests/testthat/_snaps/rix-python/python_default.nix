@@ -22,7 +22,7 @@ let
       plotnine
       polars;
   };
-  
+   
   system_packages = builtins.attrValues {
     inherit (pkgs) 
       R
@@ -42,7 +42,7 @@ let
     LC_MEASUREMENT = "en_US.UTF-8";
     RETICULATE_PYTHON = "${pkgs.python312}/bin/python";
 
-    buildInputs = [  rpkgs tex pyconf system_packages   ];
+    buildInputs = [ rpkgs tex pyconf system_packages ];
     
   }; 
 in

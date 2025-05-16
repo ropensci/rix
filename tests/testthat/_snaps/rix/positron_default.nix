@@ -78,7 +78,7 @@ let
       scheme-small
       amsmath;
   });
-   
+    
   system_packages = builtins.attrValues {
     inherit (pkgs) 
       R
@@ -99,7 +99,7 @@ let
     LC_PAPER = "en_US.UTF-8";
     LC_MEASUREMENT = "en_US.UTF-8";
     
-    buildInputs = [ housing fusen AER rpkgs tex  system_packages   ];
+    buildInputs = [ housing fusen AER rpkgs tex system_packages ];
     
   }; 
 in

@@ -1,12 +1,25 @@
 
 let
-  pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/refs/heads/r-devel-bioc-devel.tar.gz") {};
+  pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2025-03-10.tar.gz") {};
  
   rpkgs = builtins.attrValues {
     inherit (pkgs.rPackages) 
-      dplyr;
+      dplyr
+      janitor
+      reticulate;
   };
-      
+  
+  tex = (pkgs.texlive.combine {
+    inherit (pkgs.texlive) 
+      scheme-small
+      amsmath;
+  });
+  
+  jlconf = pkgs.julia_110.withPackages [ 
+      "RDatasets"
+      "TidierData"
+  ];
+  
   system_packages = builtins.attrValues {
     inherit (pkgs) 
       R
@@ -23,7 +36,7 @@ let
     LC_PAPER = "en_US.UTF-8";
     LC_MEASUREMENT = "en_US.UTF-8";
     
-    buildInputs = [ rpkgs system_packages ];
+    buildInputs = [ rpkgs tex jlconf system_packages ];
     
   }; 
 in
