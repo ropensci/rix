@@ -271,28 +271,28 @@ rix <- function(
 
   if (
     !(message_type %in% c("simple", "quiet")) &&
-    r_ver %in%
-    c(
-      "bleeding-edge",
-      "frozen-edge",
-      "r-devel",
-      "bioc-devel",
-      "r-devel-bioc-devel"
-    )
+      r_ver %in%
+        c(
+          "bleeding-edge",
+          "frozen-edge",
+          "r-devel",
+          "bioc-devel",
+          "r-devel-bioc-devel"
+        )
   ) {
     warning(
       "You chose 'bleeding-edge', 'frozen-edge', 'r-devel', 'bioc-devel' or 'r-devel-bioc-devel'
 as the value for `r_ver`. Please read the vignette
 https://docs.ropensci.org/rix/articles/z-bleeding-edge.html
 before continuing."
-)
+    )
   }
 
   if (
     identical(ide, "rstudio") &&
-    is.null(r_pkgs) &&
-    is.null(git_pkgs) &&
-    is.null(local_r_pkgs)
+      is.null(r_pkgs) &&
+      is.null(git_pkgs) &&
+      is.null(local_r_pkgs)
   ) {
     stop(
       paste0(
@@ -304,8 +304,10 @@ before continuing."
   }
 
   if (!is.null(jl_conf)) {
-    warning("Julia support is experimental, because sometimes transitive Julia dependencies cannot be installed.
-If building the environment does not succeed, open an issue.")
+    warning(
+      "Julia support is experimental, because sometimes transitive Julia dependencies cannot be installed.
+If building the environment does not succeed, open an issue."
+    )
   }
 
   # Wrapper attributes to be used later
