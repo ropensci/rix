@@ -250,7 +250,7 @@ generate_jl_conf <- function(jl_conf, flag_jl_conf) {
   if (flag_jl_conf == "") {
     NULL
   } else {
-    if (jl_conf$jl_version == "") {
+    if (jl_conf$jl_version == "" || is.null(jl_conf$jl_version)) {
       jl_version <- "julia"
     } else if (jl_conf$jl_version == "lts") {
       jl_version <- "julia-lts"
