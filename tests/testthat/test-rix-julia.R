@@ -41,9 +41,9 @@ testthat::test_that("rix() with Julia packages", {
 
   suppressWarnings(
     testthat::expect_snapshot_file(
-                path = save_default_nix_test(ide = "none", path_default_nix),
-                name = "julia_default.nix",
-                )
+      path = save_default_nix_test(ide = "none", path_default_nix),
+      name = "julia_default.nix",
+    )
   )
 })
 
@@ -90,12 +90,12 @@ testthat::test_that("rix() with lts julia version", {
   }
 
   suppressWarnings(
-  testthat::expect_snapshot_file(
-    path = save_default_nix_test(ide = "none", path_default_nix),
-    name = "julia_default_lts_version.nix",
-  ))
+    testthat::expect_snapshot_file(
+      path = save_default_nix_test(ide = "none", path_default_nix),
+      name = "julia_default_lts_version.nix",
+    )
+  )
 })
-
 
 
 testthat::test_that("rix() with empty julia version", {
@@ -139,8 +139,9 @@ testthat::test_that("rix() with empty julia version", {
   }
 
   suppressWarnings(
-  testthat::expect_snapshot_file(
-    path = save_default_nix_test(ide = "none", path_default_nix),
-    name = "julia_default_empty_version.nix",
-  ))
+    testthat::expect_snapshot_file(
+      path = save_default_nix_test(ide = "none", path_default_nix),
+      name = "julia_default_empty_version.nix",
+    )
+  )
 })
