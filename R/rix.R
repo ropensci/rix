@@ -49,7 +49,8 @@
 #'   `jl_version` must be of the form `"1.10"` for Julia 1.10. Leave empty to
 #'   use the latest version, or use `"lts"` for the long term support version.
 #'   `jl_conf` must be an atomic vector of packages names, for example `jl_conf
-#'   = c("TidierData", "TidierPlots")`.
+#'   = c("TidierData", "TidierPlots")`. This feature is experimental, as the
+#'   Julia ecosystem on Nix requires further tweaks to be more robust.
 #' @param ide Character, defaults to "none". If you wish to use RStudio to work
 #'   interactively use "rstudio" or "rserver" for the server version. Use "code"
 #'   for Visual Studio Code or "codium" for Codium, or "positron" for Positron.
@@ -270,28 +271,28 @@ rix <- function(
 
   if (
     !(message_type %in% c("simple", "quiet")) &&
-      r_ver %in%
-        c(
-          "bleeding-edge",
-          "frozen-edge",
-          "r-devel",
-          "bioc-devel",
-          "r-devel-bioc-devel"
-        )
+    r_ver %in%
+    c(
+      "bleeding-edge",
+      "frozen-edge",
+      "r-devel",
+      "bioc-devel",
+      "r-devel-bioc-devel"
+    )
   ) {
     warning(
       "You chose 'bleeding-edge', 'frozen-edge', 'r-devel', 'bioc-devel' or 'r-devel-bioc-devel'
 as the value for `r_ver`. Please read the vignette
 https://docs.ropensci.org/rix/articles/z-bleeding-edge.html
 before continuing."
-    )
+)
   }
 
   if (
     identical(ide, "rstudio") &&
-      is.null(r_pkgs) &&
-      is.null(git_pkgs) &&
-      is.null(local_r_pkgs)
+    is.null(r_pkgs) &&
+    is.null(git_pkgs) &&
+    is.null(local_r_pkgs)
   ) {
     stop(
       paste0(
@@ -300,6 +301,11 @@ before continuing."
         "Consider adding R packages."
       )
     )
+  }
+
+  if (!is.null(jl_conf)) {
+    warning("Julia support is experimental, because sometimes transitive Julia dependencies cannot be installed.
+If building the environment does not succeed, open an issue.")
   }
 
   # Wrapper attributes to be used later
