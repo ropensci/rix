@@ -137,7 +137,7 @@ atomic character vector of Python (Julia) packages:
 
 ``` r
 rix(
-  date = "2025-03-17",
+  date = "2025-05-21",
   r_pkgs = "ggplot2",
   py_conf = list(
     py_version = "3.12",
