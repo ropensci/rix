@@ -38,13 +38,19 @@
 #'   for more details.
 #' @param py_conf List. A list containing two elements: `py_version` and
 #'   `py_pkgs`. `py_version` should be in the form `"3.12"` for Python 3.12, and
-#'   `py_pkgs` should be an atomic vector of package names
-#'   (e.g., `py_pkgs = c("polars", "plotnine", "great-tables")`).
-#'   If Python packages are requested but `{reticulate}` is not in the list of R
-#'   packages, the user will be warned that they may want to add it. When
-#'   `py_conf` packages are requested, the `RETICULATE_PYTHON` environment
-#'   variable is set to ensure the Nix environment does not use with a
-#'   system-wide Python installation.
+#'   `py_pkgs` should be an atomic vector of package names (e.g., `py_pkgs =
+#'   c("polars", "plotnine", "great-tables")`). If Python packages are requested
+#'   but `{reticulate}` is not in the list of R packages, the user will be
+#'   warned that they may want to add it. When `py_conf` packages are requested,
+#'   the `RETICULATE_PYTHON` environment variable is set to ensure the Nix
+#'   environment does not use with a system-wide Python installation.
+#' @param jl_conf List. A list of two elements, `jl_version` and `jl_conf`.
+#'   `jl_version` must be of the form `"1.10"` for Julia 1.10. Leave empty or
+#'   use an empty string to use the latest version, or use `"lts"` for the long
+#'   term support version. `jl_conf` must be an atomic vector of packages names,
+#'   for example `jl_conf = c("TidierData", "TidierPlots")`. This feature is
+#'   experimental, as the Julia ecosystem on Nix requires further tweaks to be
+#'   more robust.
 #' @param ide Character, defaults to "none". If you wish to use RStudio to work
 #'   interactively use "rstudio" or "rserver" for the server version. Use "code"
 #'   for Visual Studio Code or "codium" for Codium, or "positron" for Positron.
@@ -68,28 +74,10 @@
 #'   console.
 #' @param message_type Character. Message type, defaults to `"simple"`, which
 #'   gives minimal but sufficient feedback. Other values are currently
-#'   `"quiet`, which generates the files without message, and `"verbose"`,
-#'   displays all the messages.
-#' @param shell_hook Character of length 1, defaults to `NULL`. Commands added
-#'   to the `shellHook` variable are executed when the Nix shell starts. So by
-#'   default, using `nix-shell default.nix` will start a specific program,
-#'   possibly with flags (separated by space), and/or do shell actions. You can
-#'   for example use `shell_hook = R`, if you want to directly enter the
-#'   declared Nix R session when dropping into the Nix shell.
-#' @param ignore_remotes_cache Logical, defaults to FALSE. This variable is only
-#'   needed when adding packages from GitHub with remote dependencies, it can be
-#'   ignored otherwise. If `TRUE`, the cache of already processed GitHub remotes
-#'   will be ignored and all packages will be processed. If `FALSE`, the cache
-#'   will be used to skip already processed packages, which makes use of fewer
-#'   API calls. Setting this argument to `TRUE` can be useful for debugging.
-#' @details This function will write a `default.nix` and an `.Rprofile` in the
-#'   chosen path. Using the Nix package manager, it is then possible to build a
-#'   reproducible development environment using the `nix-build` command in the
-#'   path. This environment will contain the chosen version of R and packages,
-#'   and will not interfere with any other installed version (via Nix or not) on
-#'   your machine. Every dependency, including both R package dependencies but
-#'   also system dependencies like compilers will get installed as well in that
-#'   environment.
+#'   `"quiet`, which generates the files without message, and `"verbose"`, displays all the messages.
+#' @param shell_hook Character of length 1, defaults to `NULL`. Commands added to the `shellHook` variable are executed when the Nix shell starts. So by default, using `nix-shell default.nix` will start a specific program, possibly with flags (separated by space), and/or do shell actions. You can for example use `shell_hook = R`, if you want to directly enter the declared Nix R session when dropping into the Nix shell.
+#' @param ignore_remotes_cache Logical, defaults to FALSE. This variable is only needed when adding packages from GitHub with remote dependencies, it can be ignored otherwise. If `TRUE`, the cache of already processed GitHub remotes will be ignored and all packages will be processed. If `FALSE`, the cache will be used to skip already processed packages, which makes use of fewer API calls. Setting this argument to `TRUE` can be useful for debugging.
+#' @details This function will write a `default.nix` and an `.Rprofile` in the chosen path. Using the Nix package manager, it is then possible to build a reproducible development environment using the `nix-build` command in the path. This environment will contain the chosen version of R and packages, and will not interfere with any other installed version (via Nix or not) on your machine. Every dependency, including both R package dependencies but also system dependencies like compilers will get installed as well in that environment.
 #'
 #'   It is possible to use environments built with Nix interactively, either
 #'   from the terminal, or using an interface such as RStudio. If you want to
@@ -206,6 +194,7 @@ rix <- function(
   local_r_pkgs = NULL,
   tex_pkgs = NULL,
   py_conf = NULL,
+  jl_conf = NULL,
   ide = "none",
   project_path,
   overwrite = FALSE,
@@ -293,6 +282,13 @@ before continuing."
         " to the environment.\nThis expression will not build successfully. ",
         "Consider adding R packages."
       )
+    )
+  }
+
+  if (!is.null(jl_conf)) {
+    warning(
+      "Julia support is experimental, because sometimes transitive Julia dependencies cannot be installed.
+If building the environment does not succeed, open an issue."
     )
   }
 
@@ -406,6 +402,12 @@ for more details."
     flag_py_conf <- ""
   }
 
+  if (!is.null(jl_conf)) {
+    flag_jl_conf <- "jlconf"
+  } else {
+    flag_jl_conf <- ""
+  }
+
   # If there are wrapped packages (for example for RStudio), passes the "wrapped_pkgs"
   # to buildInputs
   flag_wrapper <- if (ide %in% names(attrib) && flag_rpkgs != "")
@@ -434,6 +436,7 @@ for more details."
     ),
     generate_tex_pkgs(tex_pkgs),
     generate_py_conf(py_conf, flag_py_conf),
+    generate_jl_conf(jl_conf, flag_jl_conf),
     generate_local_r_pkgs(local_r_pkgs, flag_local_r_pkgs),
     generate_system_pkgs(system_pkgs, r_pkgs, py_conf, ide),
     generate_wrapped_pkgs(
@@ -449,6 +452,7 @@ for more details."
       flag_tex_pkgs,
       py_conf,
       flag_py_conf,
+      flag_jl_conf,
       flag_local_r_pkgs,
       flag_wrapper,
       shell_hook

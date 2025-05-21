@@ -1,3 +1,9 @@
+# rix 0.17.0 (2025-05-21)
+
+- `rix()`: added support for the Julia programming language. This 
+  support is experimental. To add Julia and Julia package to the environment
+  use the `jl_conf` argument.
+
 # rix 0.16.1 (2025-05-02)
 
 - `rix()`: If `{rmarkdown}` is added to list of R packages,

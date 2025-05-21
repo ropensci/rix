@@ -237,6 +237,45 @@ generate_py_conf <- function(py_conf, flag_py_conf) {
   }
 }
 
+#' generate_jl_conf Internal function that generates the string containing the
+#' correct Nix expression to get Jlthon packages.
+#' @param jl_conf List. A list of two elements, `jl_version` and `jl_conf`.
+#'   `jl_version` must be of the form `"1.10"` for Julia 1.10. Leave empty to
+#'   use the latest version, or use `"lts"` for the long term support version.
+#'   `jl_conf` must be an atomic vector of packages names, for example `jl_conf
+#'   = c("TidierData", "TidierPlots")`.
+#' @param flag_jl_conf Character, are there any Jlthon packages at all?
+#' @noRd
+generate_jl_conf <- function(jl_conf, flag_jl_conf) {
+  if (flag_jl_conf == "") {
+    NULL
+  } else {
+    if (jl_conf$jl_version == "" || is.null(jl_conf$jl_version)) {
+      jl_version <- "julia"
+    } else if (jl_conf$jl_version == "lts") {
+      jl_version <- "julia-lts"
+    } else {
+      jl_version <- paste0(
+        "julia_",
+        gsub("\\.", "", jl_conf$jl_version)
+      )
+    }
+    jl_pkgs <- paste(
+      c("", sprintf("\"%s\"", sort(jl_conf$jl_pkgs))),
+      collapse = "\n      "
+    )
+
+    sprintf(
+      "
+  jlconf = pkgs.%s.withPackages [ %s
+  ];
+",
+      jl_version,
+      jl_pkgs
+    )
+  }
+}
+
 #' get_system_pkgs Internal function that formats the system package names
 #' correctly for Nix.
 #' @param system_pkgs Character, list of system packages to install.
@@ -414,6 +453,7 @@ generate_wrapped_pkgs <- function(
 #' @param flag_rpkgs Character, are there any R packages at all?
 #' @param flag_tex_pkgs Character, are there any LaTex packages at all?
 #' @param flag_py_conf Character, are there any Python packages at all?
+#' @param flag_jl_conf Character, are there any Julia packages at all?
 #' @param flag_local_r_pkgs Character, are there any wrapped packages at all?
 #' @param flag_wrapper Character, are there any wrapped packages at all?
 #' @param shell_hook Character, the mkShell's shellHook.
@@ -424,29 +464,36 @@ generate_shell <- function(
   flag_tex_pkgs,
   py_conf,
   flag_py_conf,
+  flag_jl_conf,
   flag_local_r_pkgs,
   flag_wrapper,
   shell_hook
 ) {
-  sprintf(
-    "
+  gsub(
+    "(?<=\\S) {2,}",
+    " ",
+    sprintf(
+      "
   shell = pkgs.mkShell {
     %s
     %s
     %s
-    buildInputs = [ %s %s %s %s system_packages %s %s ];
+    buildInputs = [ %s %s %s %s %s system_packages %s %s ];
     %s
   };",
-    generate_locale_archive(detect_os()),
-    generate_locale_variables(),
-    generate_set_reticulate(py_conf, flag_py_conf),
-    flag_git_archive,
-    flag_rpkgs,
-    flag_tex_pkgs,
-    flag_py_conf,
-    flag_local_r_pkgs,
-    flag_wrapper,
-    shell_hook
+      generate_locale_archive(detect_os()),
+      generate_locale_variables(),
+      generate_set_reticulate(py_conf, flag_py_conf),
+      flag_git_archive,
+      flag_rpkgs,
+      flag_tex_pkgs,
+      flag_py_conf,
+      flag_jl_conf,
+      flag_local_r_pkgs,
+      flag_wrapper,
+      shell_hook
+    ),
+    perl = TRUE
   )
 }
 
