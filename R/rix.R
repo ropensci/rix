@@ -27,9 +27,9 @@
 #'   \url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=}
 #' @param git_pkgs List. A list of packages to install from Git. See details for
 #'   more information.
-#' @param local_r_pkgs Vector of characters, paths to local packages to install. 
-#'   These packages need to be in the `.tar.gz` or `.zip` formats and must be in the same
-#'   folder as the generated "default.nix" file.
+#' @param local_r_pkgs Vector of characters, paths to local packages to install.
+#'   These packages need to be in the `.tar.gz` or `.zip` formats and must be in
+#'   the same folder as the generated "default.nix" file.
 #' @param tex_pkgs Vector of characters. A set of TeX packages to install. Use
 #'   this if you need to compile `.tex` documents, or build PDF documents using
 #'   Quarto. If you don't know which package to add, start by adding "amsmath".
@@ -75,9 +75,26 @@
 #' @param message_type Character. Message type, defaults to `"simple"`, which
 #'   gives minimal but sufficient feedback. Other values are currently
 #'   `"quiet`, which generates the files without message, and `"verbose"`, displays all the messages.
-#' @param shell_hook Character of length 1, defaults to `NULL`. Commands added to the `shellHook` variable are executed when the Nix shell starts. So by default, using `nix-shell default.nix` will start a specific program, possibly with flags (separated by space), and/or do shell actions. You can for example use `shell_hook = R`, if you want to directly enter the declared Nix R session when dropping into the Nix shell.
-#' @param ignore_remotes_cache Logical, defaults to FALSE. This variable is only needed when adding packages from GitHub with remote dependencies, it can be ignored otherwise. If `TRUE`, the cache of already processed GitHub remotes will be ignored and all packages will be processed. If `FALSE`, the cache will be used to skip already processed packages, which makes use of fewer API calls. Setting this argument to `TRUE` can be useful for debugging.
-#' @details This function will write a `default.nix` and an `.Rprofile` in the chosen path. Using the Nix package manager, it is then possible to build a reproducible development environment using the `nix-build` command in the path. This environment will contain the chosen version of R and packages, and will not interfere with any other installed version (via Nix or not) on your machine. Every dependency, including both R package dependencies but also system dependencies like compilers will get installed as well in that environment.
+#' @param shell_hook Character of length 1, defaults to `NULL`. Commands added
+#'   to the `shellHook` variable are executed when the Nix shell starts. So by
+#'   default, using `nix-shell default.nix` will start a specific program,
+#'   possibly with flags (separated by space), and/or do shell actions. You can
+#'   for example use `shell_hook = R`, if you want to directly enter the
+#'   declared Nix R session when dropping into the Nix shell.
+#' @param ignore_remotes_cache Logical, defaults to FALSE. This variable is only
+#'   needed when adding packages from GitHub with remote dependencies, it can be
+#'   ignored otherwise. If `TRUE`, the cache of already processed GitHub remotes
+#'   will be ignored and all packages will be processed. If `FALSE`, the cache
+#'   will be used to skip already processed packages, which makes use of fewer
+#'   API calls. Setting this argument to `TRUE` can be useful for debugging.
+#' @details This function will write a `default.nix` and an `.Rprofile` in the
+#'   chosen path. Using the Nix package manager, it is then possible to build a
+#'   reproducible development environment using the `nix-build` command in the
+#'   path. This environment will contain the chosen version of R and packages,
+#'   and will not interfere with any other installed version (via Nix or not) on
+#'   your machine. Every dependency, including both R package dependencies but
+#'   also system dependencies like compilers will get installed as well in that
+#'   environment.
 #'
 #'   It is possible to use environments built with Nix interactively, either
 #'   from the terminal, or using an interface such as RStudio. If you want to

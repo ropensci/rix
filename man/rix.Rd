@@ -52,8 +52,8 @@ example. You can look for available software on the NixOS website
 more information.}
 
 \item{local_r_pkgs}{Vector of characters, paths to local packages to install.
-These packages need to be in the \code{.tar.gz} or \code{.zip} formats and must be in the same
-folder as the generated "default.nix" file.}
+These packages need to be in the \code{.tar.gz} or \code{.zip} formats and must be in
+the same folder as the generated "default.nix" file.}
 
 \item{tex_pkgs}{Vector of characters. A set of TeX packages to install. Use
 this if you need to compile \code{.tex} documents, or build PDF documents using
@@ -64,7 +64,19 @@ for more details.}
 
 \item{py_conf}{List. A list containing two elements: \code{py_version} and
 \code{py_pkgs}. \code{py_version} should be in the form \code{"3.12"} for Python 3.12, and
+\code{py_pkgs} should be an atomic vector of package names (e.g., \code{py_pkgs = c("polars", "plotnine", "great-tables")}). If Python packages are requested
+but \code{{reticulate}} is not in the list of R packages, the user will be
+warned that they may want to add it. When \code{py_conf} packages are requested,
+the \code{RETICULATE_PYTHON} environment variable is set to ensure the Nix
+environment does not use with a system-wide Python installation.}
 
+\item{jl_conf}{List. A list of two elements, \code{jl_version} and \code{jl_conf}.
+\code{jl_version} must be of the form \code{"1.10"} for Julia 1.10. Leave empty or
+use an empty string to use the latest version, or use \code{"lts"} for the long
+term support version. \code{jl_conf} must be an atomic vector of packages names,
+for example \code{jl_conf = c("TidierData", "TidierPlots")}. This feature is
+experimental, as the Julia ecosystem on Nix requires further tweaks to be
+more robust.}
 
 \item{ide}{Character, defaults to "none". If you wish to use RStudio to work
 interactively use "rstudio" or "rserver" for the server version. Use "code"
@@ -95,9 +107,19 @@ console.}
 gives minimal but sufficient feedback. Other values are currently
 \verb{"quiet}, which generates the files without message, and \code{"verbose"}, displays all the messages.}
 
-\item{shell_hook}{Character of length 1, defaults to \code{NULL}. Commands added to the \code{shellHook} variable are executed when the Nix shell starts. So by default, using \verb{nix-shell default.nix} will start a specific program, possibly with flags (separated by space), and/or do shell actions. You can for example use \code{shell_hook = R}, if you want to directly enter the declared Nix R session when dropping into the Nix shell.}
+\item{shell_hook}{Character of length 1, defaults to \code{NULL}. Commands added
+to the \code{shellHook} variable are executed when the Nix shell starts. So by
+default, using \verb{nix-shell default.nix} will start a specific program,
+possibly with flags (separated by space), and/or do shell actions. You can
+for example use \code{shell_hook = R}, if you want to directly enter the
+declared Nix R session when dropping into the Nix shell.}
 
-\item{ignore_remotes_cache}{Logical, defaults to FALSE. This variable is only needed when adding packages from GitHub with remote dependencies, it can be ignored otherwise. If \code{TRUE}, the cache of already processed GitHub remotes will be ignored and all packages will be processed. If \code{FALSE}, the cache will be used to skip already processed packages, which makes use of fewer API calls. Setting this argument to \code{TRUE} can be useful for debugging.}
+\item{ignore_remotes_cache}{Logical, defaults to FALSE. This variable is only
+needed when adding packages from GitHub with remote dependencies, it can be
+ignored otherwise. If \code{TRUE}, the cache of already processed GitHub remotes
+will be ignored and all packages will be processed. If \code{FALSE}, the cache
+will be used to skip already processed packages, which makes use of fewer
+API calls. Setting this argument to \code{TRUE} can be useful for debugging.}
 }
 \value{
 Nothing, this function only has the side-effect of writing two files:
@@ -111,7 +133,14 @@ Nix environment cannot access local libraries, nor install packages using
 Generate a Nix expression that builds a reproducible development environment
 }
 \details{
-This function will write a \code{default.nix} and an \code{.Rprofile} in the chosen path. Using the Nix package manager, it is then possible to build a reproducible development environment using the \code{nix-build} command in the path. This environment will contain the chosen version of R and packages, and will not interfere with any other installed version (via Nix or not) on your machine. Every dependency, including both R package dependencies but also system dependencies like compilers will get installed as well in that environment.
+This function will write a \code{default.nix} and an \code{.Rprofile} in the
+chosen path. Using the Nix package manager, it is then possible to build a
+reproducible development environment using the \code{nix-build} command in the
+path. This environment will contain the chosen version of R and packages,
+and will not interfere with any other installed version (via Nix or not) on
+your machine. Every dependency, including both R package dependencies but
+also system dependencies like compilers will get installed as well in that
+environment.
 
 It is possible to use environments built with Nix interactively, either
 from the terminal, or using an interface such as RStudio. If you want to

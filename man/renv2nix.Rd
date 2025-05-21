@@ -51,8 +51,8 @@ install that are not R packages such as command line applications for
 example. You can look for available software on the NixOS website
 \url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=}}
     \item{\code{local_r_pkgs}}{Vector of characters, paths to local packages to install.
-These packages need to be in the \code{.tar.gz} or \code{.zip} formats and must be in the same
-folder as the generated "default.nix" file.}
+These packages need to be in the \code{.tar.gz} or \code{.zip} formats and must be in
+the same folder as the generated "default.nix" file.}
     \item{\code{tex_pkgs}}{Vector of characters. A set of TeX packages to install. Use
 this if you need to compile \code{.tex} documents, or build PDF documents using
 Quarto. If you don't know which package to add, start by adding "amsmath".
@@ -93,7 +93,12 @@ console.}
     \item{\code{message_type}}{Character. Message type, defaults to \code{"simple"}, which
 gives minimal but sufficient feedback. Other values are currently
 \verb{"quiet}, which generates the files without message, and \code{"verbose"}, displays all the messages.}
-    \item{\code{shell_hook}}{Character of length 1, defaults to \code{NULL}. Commands added to the \code{shellHook} variable are executed when the Nix shell starts. So by default, using \verb{nix-shell default.nix} will start a specific program, possibly with flags (separated by space), and/or do shell actions. You can for example use \code{shell_hook = R}, if you want to directly enter the declared Nix R session when dropping into the Nix shell.}
+    \item{\code{shell_hook}}{Character of length 1, defaults to \code{NULL}. Commands added
+to the \code{shellHook} variable are executed when the Nix shell starts. So by
+default, using \verb{nix-shell default.nix} will start a specific program,
+possibly with flags (separated by space), and/or do shell actions. You can
+for example use \code{shell_hook = R}, if you want to directly enter the
+declared Nix R session when dropping into the Nix shell.}
   }}
 }
 \value{
