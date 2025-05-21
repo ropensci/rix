@@ -131,7 +131,7 @@ let
           R6;
       } ++ [ distr6 CoxBoost mlr3proba survivalmodels param6 set6 ];
     });
-     
+      
   system_packages = builtins.attrValues {
     inherit (pkgs) 
       glibcLocales
@@ -148,7 +148,7 @@ let
     LC_PAPER = "en_US.UTF-8";
     LC_MEASUREMENT = "en_US.UTF-8";
     
-    buildInputs = [ mlr3extralearners rpkgs   system_packages   ];
+    buildInputs = [ mlr3extralearners rpkgs system_packages ];
     
   }; 
 in
