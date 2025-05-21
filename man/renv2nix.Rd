@@ -50,8 +50,8 @@ compared to the package versions. Can also be a date, check
 install that are not R packages such as command line applications for
 example. You can look for available software on the NixOS website
 \url{https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=}}
-    \item{\code{local_r_pkgs}}{List. A list of local packages to install. These packages
-need to be in the \code{.tar.gz} or \code{.zip} formats and must be in the same
+    \item{\code{local_r_pkgs}}{Vector of characters, paths to local packages to install.
+These packages need to be in the \code{.tar.gz} or \code{.zip} formats and must be in the same
 folder as the generated "default.nix" file.}
     \item{\code{tex_pkgs}}{Vector of characters. A set of TeX packages to install. Use
 this if you need to compile \code{.tex} documents, or build PDF documents using

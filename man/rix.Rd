@@ -51,8 +51,8 @@ example. You can look for available software on the NixOS website
 \item{git_pkgs}{List. A list of packages to install from Git. See details for
 more information.}
 
-\item{local_r_pkgs}{List. A list of local packages to install. These packages
-need to be in the \code{.tar.gz} or \code{.zip} formats and must be in the same
+\item{local_r_pkgs}{Vector of characters, paths to local packages to install.
+These packages need to be in the \code{.tar.gz} or \code{.zip} formats and must be in the same
 folder as the generated "default.nix" file.}
 
 \item{tex_pkgs}{Vector of characters. A set of TeX packages to install. Use
@@ -64,19 +64,7 @@ for more details.}
 
 \item{py_conf}{List. A list containing two elements: \code{py_version} and
 \code{py_pkgs}. \code{py_version} should be in the form \code{"3.12"} for Python 3.12, and
-\code{py_pkgs} should be an atomic vector of package names (e.g., \code{py_pkgs = c("polars", "plotnine", "great-tables")}). If Python packages are requested
-but \code{{reticulate}} is not in the list of R packages, the user will be
-warned that they may want to add it. When \code{py_conf} packages are requested,
-the \code{RETICULATE_PYTHON} environment variable is set to ensure the Nix
-environment does not use with a system-wide Python installation.}
 
-\item{jl_conf}{List. A list of two elements, \code{jl_version} and \code{jl_conf}.
-\code{jl_version} must be of the form \code{"1.10"} for Julia 1.10. Leave empty or
-use an empty string to use the latest version, or use \code{"lts"} for the long
-term support version. \code{jl_conf} must be an atomic vector of packages names,
-for example \code{jl_conf = c("TidierData", "TidierPlots")}. This feature is
-experimental, as the Julia ecosystem on Nix requires further tweaks to be
-more robust.}
 
 \item{ide}{Character, defaults to "none". If you wish to use RStudio to work
 interactively use "rstudio" or "rserver" for the server version. Use "code"
