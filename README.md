@@ -12,6 +12,7 @@
 - [Recommended reading](#recommended-reading)
 
 <!-- badges: start -->
+
 [![R-hub
 v2](https://github.com/ropensci/rix/actions/workflows/rhub.yaml/badge.svg)](https://github.com/ropensci/rix/actions/workflows/rhub.yaml/)
 [![CRAN](https://www.r-pkg.org/badges/version/rix)](https://CRAN.R-project.org/package=rix)
@@ -47,6 +48,7 @@ While Nix has a steep learning curve, `{rix}`
     finally to deploy software environments in production.
 
 <p>
+
 If you want to watch a 5-Minute video introduction, click the image
 below:
 </p>
@@ -127,22 +129,34 @@ rix(
 )
 ```
 
-It is also possible to add Python packages to an environment, by passing
-a list of two elements to the `py_conf` argument of `rix()`. This list
-needs to first specify a Python version, and then an atomic character
-vector of Python packages:
+It is also possible to add Python (and Python packages) and/or Julia
+(and Julia packages) to an environment, by passing a list of two
+elements to the `py_conf` argument of `rix()` (or `jl_conf` for Julia).
+This list needs to first specify a Python or Julia version, and then an
+atomic character vector of Python (Julia) packages:
 
 ``` r
 rix(
   date = "2025-03-17",
   r_pkgs = "ggplot2",
   py_conf = list(
-    py_version = "3.12", 
+    py_version = "3.12",
     py_pkgs = c("polars", "great-tables")
+  ),
+  jl_conf = list(
+    jl_version = "1.10",
+    py_pkgs = c("Arrow", "TidierData")
   ),
   overwrite = TRUE
 )
 ```
+
+It should be noted that while we offer the guarantee that most CRAN and
+Bioconductor packages are supported and installable through Nix (less
+than 5% of packages aren’t currently supported), the same cannot be said
+about Python or Julia packages. Should you require a Python or Julia but
+cannot successfully bulid the environment, do open an issue and we’ll
+see what we can do.
 
 The table below illustrates this all the different types of environment
 you can generate:
@@ -233,7 +247,9 @@ your best option.
 ## Quick-start for returning users
 
 <details>
+
 <summary>
+
 Click to expand
 </summary>
 

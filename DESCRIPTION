@@ -1,6 +1,6 @@
 Package: rix
 Title: Reproducible Data Science Environments with 'Nix'
-Version: 0.16.1
+Version: 0.17.0
 Authors@R: c(
     person(given = "Bruno", family = "Rodrigues", email = "bruno@brodrigues.co", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3211-3689")),
@@ -30,8 +30,9 @@ Description: Simplifies the creation of reproducible data science environments
     function generates a complete description of the environment as a
     `default.nix` file, which can then be built using 'Nix'. This results in
     project specific software environments with pinned versions of R, packages,
-    linked system dependencies, and other tools. Additional helpers make it easy
-    to run R code in 'Nix' software environments for testing and production.
+    linked system dependencies, and other tools or programming languages such
+    as Python or Julia. Additional helpers make it easy to run R code in
+    'Nix' software environments for testing and production.
 License: GPL (>= 3)
 URL: https://docs.ropensci.org/rix/
 BugReports: https://github.com/ropensci/rix/issues
