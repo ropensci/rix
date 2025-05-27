@@ -202,6 +202,32 @@ rix(
 )
 ```
 
+If you plan to use Positron on Ubuntu, then you need further configuration to
+make it work, because of newly introduced sandboxing features in Ubuntu 24.04.
+You will need to create an Positron-specific AppArmor profile. To do so
+create this apparmor profile:
+
+```bash
+sudo nano /etc/apparmor.d/nix.positron
+```
+
+Populate it with:
+
+```
+profile nix.positron /nix/store/*-positron-bin-*/bin/positron flags=(unconfined) {
+    userns,
+}
+```
+
+Save it, load the profile and start Positron:
+
+```bash
+sudo apparmor_parser -r /etc/apparmor.d/nix.positron
+sudo systemctl reload apparmor
+```
+
+You can now start Positron from the activated Nix shell.
+
 The advantage of letting Nix handle Positron is that you don't need to configure
 anything else. Simply build your environment using `nix-build`, then activate
 the shell using `nix-shell` and run `positron` to start using Positron in the
