@@ -443,7 +443,7 @@ generate_wrapped_pkgs <- function(
       flag_git_archive,
       flag_rpkgs,
       flag_local_r_pkgs,
-      set_radian_python_version_override(py_conf, flag_py_conf )
+      generate_radian_python_version_override(py_conf, flag_py_conf )
       
     )
   } else {
@@ -539,7 +539,7 @@ generate_set_reticulate <- function(py_conf, flag_py_conf) {
   }
 }
 
-set_radian_python_version_override <- function(py_conf, flag_py_conf){
+generate_radian_python_version_override <- function(py_conf, flag_py_conf){
   if (flag_py_conf == "") {
     ""
   } else {
