@@ -419,6 +419,11 @@ generate_locale_variables <- function() {
 #' @param flag_git_archive Character, are there R packages from GitHub at all?
 #' @param flag_rpkgs Character, are there any R packages at all?
 #' @param flag_local_r_pkgs Character, are there any local R packages at all?
+#' @param py_conf List. A list of two elements, `py_version` and `py_conf`.
+#'   `py_version` must be of the form `"3.12"` for Python 3.12 and `py_conf`
+#'   must be an atomic vector of packages names, for example
+#'   `py_conf = c("polars", "plotnine", "great-tables")`.
+#' @param flag_py_conf Character, are there any Python packages at all?
 #' @noRd
 generate_wrapped_pkgs <- function(
   ide,
@@ -539,6 +544,13 @@ generate_set_reticulate <- function(py_conf, flag_py_conf) {
   }
 }
 
+#' generate_radian_python_version_override Helper to set radian's python version to the same as the one from the python user-config in order to avoid reticulate falling back to radian's undesired python version
+#' @param py_conf List. A list of two elements, `py_version` and `py_conf`.
+#'   `py_version` must be of the form `"3.12"` for Python 3.12 and `py_conf`
+#'   must be an atomic vector of packages names, for example
+#'   `py_conf = c("polars", "plotnine", "great-tables")`.
+#' @param flag_py_conf Character, are there any Python packages at all?
+#' @noRd
 generate_radian_python_version_override <- function(py_conf, flag_py_conf){
   if (flag_py_conf == "") {
     ""
