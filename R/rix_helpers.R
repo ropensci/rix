@@ -425,7 +425,9 @@ generate_wrapped_pkgs <- function(
   attrib,
   flag_git_archive,
   flag_rpkgs,
-  flag_local_r_pkgs
+  flag_local_r_pkgs,
+  py_conf,
+  flag_py_conf
 ) {
   if (flag_rpkgs == "") {
     return(NULL)
@@ -434,12 +436,15 @@ generate_wrapped_pkgs <- function(
       "
   wrapped_pkgs = pkgs.%s.override {
     packages = [ %s %s %s ];
+    %s
   };
 ",
       attrib[ide],
       flag_git_archive,
       flag_rpkgs,
-      flag_local_r_pkgs
+      flag_local_r_pkgs,
+      set_radian_python_version_override(py_conf, flag_py_conf )
+      
     )
   } else {
     NULL
@@ -531,5 +536,17 @@ generate_set_reticulate <- function(py_conf, flag_py_conf) {
       gsub("\\.", "", py_conf$py_version)
     )
     paste0('RETICULATE_PYTHON = "${pkgs.', py_version, '}/bin/python";\n')
+  }
+}
+
+set_radian_python_version_override <- function(py_conf, flag_py_conf){
+  if (flag_py_conf == "") {
+    ""
+  } else {
+    py_version <- paste0(
+      "python",
+      gsub("\\.", "", py_conf$py_version)
+    )
+    paste0('radian = pkgs.', py_version, 'Packages.radian;\n')
   }
 }
