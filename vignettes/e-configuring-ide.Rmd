@@ -34,7 +34,8 @@ environments. To be recommended, a setup should:
 - not require any type of special maintenance.
 
 Regardless of your operating system, a general-purpose editor such as VS Code
-(or Codium), Emacs, or Neovim meets the above requirements. (Note: Neovim is not
+(or Codium), Emacs, or Neovim meets the above requirements. Recent releases of
+Positron also work quite well. (Note: Neovim is not
 covered here due to lack of experience—PRs welcome!) However, some editors
 perform better on certain platforms.
 
@@ -67,14 +68,13 @@ editors that either:
 
 We recommend to use an editor you can install directly on Windows and configure
 to interact nicely with WSL, and it turns out that this is mostly only VS Code
-(or Codium). There are ways to configure Positron to interact with WSL, but it
-requires significant effort and this is not discussed here. See
+(or Codium) or Positron. See
 [this section](#configuring-native-vs-codecodium-on-your-operating-system)
-to learn how to configure VS Code (or Codium).
+to learn how to configure VS Code (or Codium) or Positron.
 
-If you want to use RStudio or Positron, this is also possible but:
+If you want to use RStudio, this is also possible but:
 
-- RStudio or Positron should ideally be installed with Nix inside WSL;
+- RStudio should ideally be installed with Nix inside WSL;
 - your version of Windows needs to support
   [WSLg](https://learn.microsoft.com/en-us/windows/wsl/tutorials/gui-apps) which
   should be fine on Windows 11 or the very latest Windows 10 builds. WSLg allows
@@ -189,6 +189,86 @@ export QT_XCB_GL_INTEGRATION=none
 
 ## Positron
 
+### Configuring native Positron to interact with Nix shells
+
+The same instructions apply whether your host operating system is Linux, macOS
+or Windows. The first step is of course to install Positron on your operating system
+using the usual means of installing software.
+
+If you're on Windows, install Positron on Windows, not in WSL. Positron on Windows is
+able to interact with WSL seamlessly and before continuing here, please follow
+[these instructions](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode)
+(it’s mostly about installing the right extensions after having installed Positron).
+
+On macOS, start by installing Positron using the official `.dmg` installer. Start
+Positron, and then the command palette using `COMMAND-SHIFT-P`. In the search
+bar, type `"Install 'positron' command in PATH"` and click on it: this will make
+it possible to start Positron from a terminal. 
+
+Once Positron is installed, you need to install a piece of software called `direnv`: 
+`direnv` will automatically load Nix shells when you open a project that contains a
+`default.nix` file in an editor. It works on any operating system and many
+editors support it, including Positron. Follow the instructions for your operating
+system [here](https://direnv.net/docs/installation.html) but if you're using
+Windows, install `direnv` in WSL (even though you’ve just installed Positron 
+for Windows), so follow the instructions for whatever Linux
+distribution you're using there (likely Ubuntu), or use Nix to install `direnv`
+if you prefer (this is the way I recommend to install it on macOS, unless you
+already use `brew`):
+
+```
+nix-env -f '<nixpkgs>' -iA direnv
+```
+
+This will install `direnv` and make it available even outside of Nix shells!
+
+Then, we highly recommend to install the `nix-direnv` extension:
+
+```
+nix-env -f '<nixpkgs>' -iA nix-direnv
+```
+
+It is not mandatory to use `nix-direnv` if you already have `direnv`, but it'll
+make loading environments much faster and seamless. Finally, if you haven't used
+`direnv` before, don't forget [this last step](https://direnv.net/docs/hook.html).
+
+Then, in Positron, install the
+[direnv](https://github.com/direnv/direnv-vscode) extension (and also the
+WSL extension if you're on Windows, as explained in the official documentation
+linked above!). Finally, add a file called `.envrc` and simply write the 
+following two lines in it:
+
+```
+use nix
+mkdir $TMP
+```
+
+in it. Now, open the project's folder using `File > Open Folder...` and you will
+see a pop-up stating `direnv: /PATH/TO/PROJECT/.envrc is blocked` and a button
+to allow it. Click `Allow` and then open an R script. You might get another
+pop-up asking you to restart the extension, so click `Restart`. Be aware that at
+this point, `direnv` will run `nix-shell` and so will start building the
+environment. If that particular environment hasn't been built and cached yet, it
+might take some time before Positron will be able to interact with it. You might get
+yet another popup, this time from the R Code extension complaining that R can't
+be found. In this case, simply restart Code and open the project folder again:
+now it should work every time. For a new project, simply repeat this process:
+
+- Generate the project's `default.nix` file;
+- Build it using `nix-build`;
+- Create an `.envrc` and write the two lines from above in it;
+- Open the project's folder in Code and click allow when prompted;
+- Restart the extension and Code if necessary.
+
+Another option is to create the `.envrc` file and write `use nix` in it, then
+open a terminal, navigate to the project's folder, and run `direnv allow`. Doing
+this before opening Positron should not prompt you anymore.
+
+If you're on Windows, using Positron like this is particularly interesting, because
+it allows you to install Positron on Windows as usual, and then you can configure
+it to interact with a Nix shell, even if it's running from WSL. This is a very
+seamless experience.
+
 ### Letting Nix manage Positron on any operating system
 
 If you want to install Positron with Nix, you need a call that looks like this:
@@ -243,55 +323,6 @@ To avoid having different versions of Positron installed on your system, you can
 instead opt for the option where you install a single Positron instance on your
 system and use it with all the Nix shells.
 
-### Configuring Positron installed on macOS to interact with Nix shells
-
-If you prefer to use the Positron you have installed system-wide, then
-generate environments by setting `ide = "none"`:
-
-```{r, eval = FALSE}
-rix(
-  date = ...,
-  r_pkgs = c(...),
-  ide = "none",
-  ...
-)
-```
-
-Start by installing Positron using the official `.dmg` installer. Start
-Positron, and then the command palette using `COMMAND-SHIFT-P`. In the search
-bar, type `"Install 'positron' command in PATH"` and click on it: this will make
-it possible to start Positron from a terminal. Quit Positron completely. To use
-it with a Nix shell, open a terminal and navigate to the project's folder, then
-activate the shell using `nix-shell` and now start Positron by typing
-`positron`. In the top right corner of Positron, you will now be able to select
-the R interpreter defined in the Nix shell.
-
-### Configuring Positron installed on Linux or Windows to interact with Nix shells
-
-On Linux, simply install Positron using the installer (the `.deb` or `.rpm`
-package depending on your distribution) and on Windows **DO NOT INSTALL**
-Positron using the Windows installer! You need to install Positron in your WSL
-distribution. Assuming your distribution is Ubuntu, download `.deb` package
-and put it in a folder in your WSL distribution, or run the following
-from line from Ubuntu (change Positron's version to whatever is current):
-
-```
-wget https://github.com/posit-dev/positron/releases/download/2025.02.0-137/Positron-2025.02.0-137-x64.deb
-```
-
-then run:
-
-```
-sudo dpkg -i Positron-2025.02.0-137-x64.deb
-```
-
-This will install Positron in WSL.
-
-Then, navigate to your project's folder and start the Nix shell using
-`nix-shell` and then Positron by typing `positron`. On Linux, this will start
-your system-level Positron, on Windows, this will start the WSL Positron using
-WSLg. That WSL Positron is available for any Nix shells from WSL.
-
 ## VS Code/Codium
 
 You can use VS Code or Codium (henceforth, I'll refer to both these editors
@@ -318,41 +349,7 @@ it allows you to install Code on Windows as usual, and then you can configure
 it to interact with a Nix shell, even if it's running from WSL. This is a very
 seamless experience.
 
-### Letting Nix manage VS Code/Codium
-
-So, concretely, if you want to install Code with Nix, you need a call that looks
-like this:
-
-```{r, eval = FALSE}
-rix(
-  date = ...,
-  r_pkgs = ...,
-  ide = "code", # or "codium"
-  ...
-)
-```
-
-But if you prefer to use the Code you have installed system-wide, then you 
-need to add the `{languageserver}` 
-package and use `ide = "none"`:
-
-```{r, eval = FALSE}
-rix(
-  date = ...,
-  r_pkgs = c("languageserver", ...), # languageserver is needed
-  ide = "none",
-  ...
-)
-```
-
-The advantage of letting Nix handle Code is that you don't need to configure
-anything else. Simply build your environment using `nix-build`, then activate
-the shell using `nix-shell` and run `code` (for VS Code) or `codium` (for
-Codium). You can even put the `code` (or `codium`) command in the shell hook
-argument to have it start as soon as you drop in the development shell using
-`nix-shell`.
-
-### Configuring native VS Code/Codium on your operating system
+### Configuring native VS Code/Codium to interact with Nix shells
 
 The same instructions apply whether your host operating system is Linux, macOS
 or Windows. The first step is of course to install Code on your operating system
@@ -392,8 +389,15 @@ step](https://direnv.net/docs/hook.html).
 Then, in Code, install the
 [direnv](https://github.com/direnv/direnv-vscode) extension (and also the
 WSL extension if you're on Windows, as explained in the official documentation
-linked above!). Finally, add a file called `.envrc` and simply write `use nix`
-in it. Now, open the project's folder using `File > Open Folder...` and you will
+linked above!). Finally, add a file called `.envrc` and simply write the 
+following two lines in it:
+
+```
+use nix
+mkdir $TMP
+```
+
+Now, open the project's folder using `File > Open Folder...` and you will
 see a pop-up stating `direnv: /PATH/TO/PROJECT/.envrc is blocked` and a button
 to allow it. Click `Allow` and then open an R script. You might get another
 pop-up asking you to restart the extension, so click `Restart`. Be aware that at
@@ -406,44 +410,51 @@ now it should work every time. For a new project, simply repeat this process:
 
 - Generate the project's `default.nix` file;
 - Build it using `nix-build`;
-- Create an `.envrc` and write `use nix` in it;
+- Create an `.envrc` and write the two lines from above in it;
 - Open the project's folder in Code and click allow when prompted;
 - Restart the extension and Code if necessary.
 
-Another option is to create the `.envrc` file and write `use nix` in it, then
+Another option is to create the `.envrc` file and write the two lines from above in it, then
 open a terminal, navigate to the project's folder, and run `direnv allow`. Doing
 this before open Code should not prompt you anymore.
 
-## Emacs
+### Letting Nix manage VS Code/Codium
 
-### Letting Nix manage Emacs
-
-Emacs can be installed through Nix, but is not an option of the `ide` argument.
-This is because there are several versions of Emacs available through Nix (find
-these versions
-[here](https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=emacs))
-so install whatever version you want by putting it in `system_pkgs` like so:
+So, concretely, if you want to install Code with Nix, you need a call that looks
+like this:
 
 ```{r, eval = FALSE}
 rix(
   date = ...,
-  r_pkgs = c(...), # whatever packages you need
-  system_pkgs = "emacs",
+  r_pkgs = ...,
+  ide = "code", # or "codium"
   ...
 )
 ```
 
-This doesn't require any further configuration to use. Simply drop in the Nix
-shell using `nix-shell` and type `emacs`. You can set the `emacs` command as the
-shell hook so Emacs starts automatically upon entering the shell. On Windows, if
-WSLg is enabled, it'll start Emacs from WSL, if not, it'll start it as a
-terminal application. we recommend using Emacs as a terminal application instead
-of through WSLg, as there is a bug in WSLg that prevents modifier keys like
-[AltGr](https://github.com/microsoft/wslg/issues/890) from working properly. This is
-quite problematic with Emacs, so we recommend using it in cli mode using `emacs
--nw`.
+But if you prefer to use the Code you have installed system-wide, then you 
+need to add the `{languageserver}` 
+package and use `ide = "none"`:
 
-### Configuring native Emacs on your operating system
+```{r, eval = FALSE}
+rix(
+  date = ...,
+  r_pkgs = c("languageserver", ...), # languageserver is needed
+  ide = "none",
+  ...
+)
+```
+
+The advantage of letting Nix handle Code is that you don't need to configure
+anything else. Simply build your environment using `nix-build`, then activate
+the shell using `nix-shell` and run `code` (for VS Code) or `codium` (for
+Codium). You can even put the `code` (or `codium`) command in the shell hook
+argument to have it start as soon as you drop in the development shell using
+`nix-shell`.
+
+## Emacs
+
+### Configuring native Emacs to interact with Nix shells
 
 You can install Emacs on Linux and macOS and configure it to interact with Nix
 shells. Install Emacs using the usual means of installing software on your
@@ -496,8 +507,15 @@ make loading environments much faster and seamless. Finally, if you haven't used
 step](https://direnv.net/docs/hook.html).
 
 Then install the Emacs `direnv`
-[package](https://github.com/wbolster/emacs-direnv). Finally, add a file called
-`.envrc` and simply write `use nix` in it. Now, open the project's folder in a
+[package](https://github.com/wbolster/emacs-direnv). Finally,
+add a file called `.envrc` and simply write the  following two lines in it:
+
+```
+use nix
+mkdir $TMP
+```
+
+Now, open the project's folder in a
 terminal and type `direnv allow`. Be aware that at this point, `direnv` will run
 `nix-shell` and so will start building the environment. If that particular
 environment hasn't been built and cached yet, it might take some time. Starting
@@ -513,8 +531,35 @@ For a new project, simply repeat this process:
 
 - Generate the project's `default.nix` file;
 - Build it using `nix-build`;
-- Create an `.envrc` and write `use nix` in it;
+- Create an `.envrc` and write the two lines from above in it;
 - Open the project's folder in a terminal and run `direnv allow`.
+
+### Letting Nix manage Emacs
+
+Emacs can be installed through Nix, but is not an option of the `ide` argument.
+This is because there are several versions of Emacs available through Nix (find
+these versions
+[here](https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=emacs))
+so install whatever version you want by putting it in `system_pkgs` like so:
+
+```{r, eval = FALSE}
+rix(
+  date = ...,
+  r_pkgs = c(...), # whatever packages you need
+  system_pkgs = "emacs",
+  ...
+)
+```
+
+This doesn't require any further configuration to use. Simply drop in the Nix
+shell using `nix-shell` and type `emacs`. You can set the `emacs` command as the
+shell hook so Emacs starts automatically upon entering the shell. On Windows, if
+WSLg is enabled, it'll start Emacs from WSL, if not, it'll start it as a
+terminal application. we recommend using Emacs as a terminal application instead
+of through WSLg, as there is a bug in WSLg that prevents modifier keys like
+[AltGr](https://github.com/microsoft/wslg/issues/890) from working properly. This is
+quite problematic with Emacs, so we recommend using it in cli mode using `emacs
+-nw`.
 
 ## Making a launcher to start your editor
 
