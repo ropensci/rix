@@ -243,7 +243,7 @@ use nix
 mkdir $TMP
 ```
 
-in it. Now, open the project's folder using `File > Open Folder...` and you will
+in it. Now, *remotely connect to WSL* and open the project's folder using `File > Open Folder...` and you will
 see a pop-up stating `direnv: /PATH/TO/PROJECT/.envrc is blocked` and a button
 to allow it. Click `Allow` and then open an R script. You might get another
 pop-up asking you to restart the extension, so click `Restart`. Be aware that at
@@ -397,7 +397,7 @@ use nix
 mkdir $TMP
 ```
 
-Now, open the project's folder using `File > Open Folder...` and you will
+Now, *remotely connect to WSL* and open the project's folder using `File > Open Folder...` and you will
 see a pop-up stating `direnv: /PATH/TO/PROJECT/.envrc is blocked` and a button
 to allow it. Click `Allow` and then open an R script. You might get another
 pop-up asking you to restart the extension, so click `Restart`. Be aware that at
