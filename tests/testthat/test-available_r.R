@@ -36,7 +36,8 @@ testthat::test_that("available_r lists all available r versions", {
       "4.4.1",
       "4.4.2",
       "4.4.3",
-      "4.5.0"
+      "4.5.0",
+      "4.5.1"
     )
   )
 })
