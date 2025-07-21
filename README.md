@@ -1,4 +1,3 @@
-
 # rix: Reproducible Environments with Nix <a href="https://docs.ropensci.org/rix/"><img src="man/figures/logo.png" align="right" height="138" /></a>
 
 - [Introduction](#introduction)
