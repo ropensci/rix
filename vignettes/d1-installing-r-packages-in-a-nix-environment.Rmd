@@ -391,8 +391,8 @@ rix(
 )
 ```
 
-
-You then need to manually adjust the resuling `default.nix` with a shellHook.
+You then need to manually adjust the resulting `default.nix` with a shellHook and specify your Python packages
+in `requirements.txt`.
 
 ```nix
 ...
@@ -410,7 +410,7 @@ You then need to manually adjust the resuling `default.nix` with a shellHook.
       if [ ! -f pyproject.toml ]; then
         uv init --python 3.13.5
       fi
-        uv add --requirements requirements.txt
+      uv add --requirements requirements.txt
       # Create alias so 'python' uses uv's environment
       alias python="uv run python"
     '';
@@ -420,6 +420,10 @@ in
     inherit pkgs shell;
   }
 ```
+
+After running `nix-shell`, `uv` should initalize a Python project with the specified Python version
+and install the packages listed in `requirements.txt`. This will take place each time `nix-shell` is called,
+however this will be cached and not installed each time.
 
 ## Installing Julia packages
 
