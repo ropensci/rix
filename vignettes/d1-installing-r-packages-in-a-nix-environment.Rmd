@@ -375,11 +375,12 @@ This will install Python 3.12, the `polars` and `great-tables` packages, but als
 `ipykernel` and `pip` to ensure the Python interpreter works correctly with IDEs 
 such as Positron.
 
-## Installing Python packages not available via nixpkgs
+## Installing Python packages not available via nixpkgs (impure)
 Since many Python packages are not available via nixpkgs, you may need to install
-them manually. This could be done by using `uv` (which is 10-100x faster than pip
-and includes a lock file). The rix call needs to include `uv` while the python installation
-could be handled by `uv`.
+them manually. Note that this is impure and you should prefer using packages available in nixpkgs whenever possible.
+This solution uses a `shellHook` to set up the Python environment based on a requirements.txt file.
+You could use `uv`, which is 10-100x faster than pip and includes a lock file.
+The rix call needs to include `uv` while the python installation can be handled by `uv`.
 
 
 ```{r, eval = F}
