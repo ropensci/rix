@@ -375,6 +375,22 @@ This will install Python 3.12, the `polars` and `great-tables` packages, but als
 `ipykernel` and `pip` to ensure the Python interpreter works correctly with IDEs 
 such as Positron.
 
+## Installing Python packages not available via nixpkgs
+Since many Python packages are not available via nixpkgs, you may need to install
+them manually. This could be done by using `uv` (which is 10-100x faster than pip
+and includes a lock file). The rix call needs to include `uv` while the python installation
+could be handled by `uv`.
+
+
+```{r, eval = F}
+rix(
+  date = "2025-02-17",
+  r_pkgs = "ggplot2",
+  system_pkgs = c("uv"),
+  overwrite = TRUE
+)
+```
+
 ## Installing Julia packages
 
 Julia support is included as an experimental feature because Nix’s native
