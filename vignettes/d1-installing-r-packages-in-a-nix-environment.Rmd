@@ -391,6 +391,36 @@ rix(
 )
 ```
 
+
+You then need to manually adjust the resuling `default.nix` with a shellHook.
+
+```nix
+...
+  shell = pkgs.mkShell {
+    LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
+    LANG = "en_US.UTF-8";
+    LC_ALL = "en_US.UTF-8";
+    LC_TIME = "en_US.UTF-8";
+    LC_MONETARY = "en_US.UTF-8";
+    LC_PAPER = "en_US.UTF-8";
+    LC_MEASUREMENT = "en_US.UTF-8";
+    
+    buildInputs = [  rpkgs   system_packages   ];
+    shellHook = ''
+      if [ ! -f pyproject.toml ]; then
+        uv init --python 3.13.5
+      fi
+        uv add --requirements requirements.txt
+      # Create alias so 'python' uses uv's environment
+      alias python="uv run python"
+    '';
+  }; 
+in
+  {
+    inherit pkgs shell;
+  }
+```
+
 ## Installing Julia packages
 
 Julia support is included as an experimental feature because Nix’s native
