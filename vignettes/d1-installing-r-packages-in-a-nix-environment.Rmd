@@ -393,7 +393,7 @@ rix(
 ```
 
 You then need to manually adjust the resulting `default.nix` with a shellHook and specify your Python packages
-in `requirements.txt`. We would recommend to specify versions (e.g. `scanpy==1.11.4`).
+in `requirements.txt`. We recommend specifying explicit versions (e.g., `scanpy==1.11.4`).
 
 ```nix
 ...
