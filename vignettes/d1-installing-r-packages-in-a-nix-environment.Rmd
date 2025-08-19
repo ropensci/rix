@@ -393,7 +393,7 @@ rix(
 ```
 
 You then need to manually adjust the resulting `default.nix` with a shellHook and specify your Python packages
-in `requirements.txt`.
+in `requirements.txt`. We would recommend to specify versions (e.g. `scanpy==1.11.4`).
 
 ```nix
 ...
@@ -423,7 +423,7 @@ in
 ```
 
 After running `nix-shell`, `uv` should initalize a Python project with the specified Python version
-and install the packages listed in `requirements.txt`. This will take place each time `nix-shell` is called,
+and install the packages listed in `requirements.txt` within the nix environment. This will take place each time `nix-shell` is called,
 however this will be cached and not installed each time.
 
 ## Installing Julia packages
