@@ -331,7 +331,6 @@ rix(
 )
 ```
 
-
 ## Installing local archives
 
 It is also possible to install packages from a local `tar.gz` file. For this,
@@ -380,10 +379,10 @@ such as Positron.
 Not all Python packages can be installed through Nix; unlike CRAN, Pypi doesn’t
 get automatically mirrored and individual packages fixed by volunteers. Instead, specific Python
 packages get packaged individually for Nix. Thus, it could very well be the case that a specific
-Python package, or version of a Python package, that you need for a project is not 
+Python package (or version of a Python package) that you need for a project is not 
 available via nixpkgs.
 
-In this case, it is still possible to use Python-specific package manager, like `uv`, 
+In this case, it is still possible to use Python-specific package managers, like `uv`, 
 to install packages. This is also useful if you work on a project with colleagues that 
 use `uv` and that don’t want (yet) to use Nix. `uv`, is 10-100x faster than `pip` and
 also generates a lock file for improved reproducibility.
@@ -398,8 +397,8 @@ rix(
 )
 ```
 
-And then use `uv` from your shell as you would usually, but we recommend specifying Python packages
-in a `requirements.txt` file, and setting specifying explicit versions (e.g., `scanpy==1.11.4`).
+And then use `uv` from your shell as you would usually. We recommend specifying Python packages
+in a `requirements.txt` file, and specifying explicit versions (e.g., `scanpy==1.11.4`).
 Finally, we also recommend setting a shell hook to set up the virtual environment and install
 the packages from the `requirements.txt` when entering the shell (mind the quotes):
 
@@ -425,7 +424,7 @@ This will take place each time `nix-shell` is called, however this will be cache
 To make sure everything works fine, you could simply start a Python interpreter and try to load
 `numpy`. This should work fine, but if it doesn’t, the following error could be raised:
 
-```
+```bash
 ImportError:
 
 IMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!
@@ -453,7 +452,7 @@ That is an issue when using *wheels* (wheels are binaries of Python packages
 that get installed by default using `uv`). These wheels expect certain libraries to be 
 in certain places. One way to solve this is to add the following to your shell hook:
 
-```
+```r
 shellHook = ''
    # Export LD_LIBRARY is required for python packages that dynamically load libraries, such as numpy 
    export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath (with pkgs; [ zlib gcc.cc glibc stdenv.cc.cc ])}":LD_LIBRARY_PATH;
