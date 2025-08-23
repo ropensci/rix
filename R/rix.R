@@ -461,7 +461,9 @@ for more details."
       attrib,
       flag_git_archive,
       flag_rpkgs,
-      flag_local_r_pkgs
+      flag_local_r_pkgs,
+      py_conf,
+      flag_py_conf
     ),
     generate_shell(
       flag_git_archive,
