@@ -55,12 +55,12 @@ as an administrator in PowerShell:
 wsl --install
 ```
 
-You can find further installation notes at [this official MS
+You can find further installation notes at [this official Microsoft
 documentation](https://learn.microsoft.com/en-us/windows/wsl/install).
 
-We recommend to activate systemd in Ubuntu WSL2, mainly because this supports 
+We recommend to activate systemd in Ubuntu WSL2, mainly because this supports
 other users than `root` running Nix. To set this up, please do as outlined
-[this official Ubuntu blog entry](https://ubuntu.com/blog/ubuntu-wsl-enable-systemd):
+in [the official Microsoft WSL documentation](https://learn.microsoft.com/en-us/windows/wsl/systemd#how-to-enable-systemd):
 
 ```sh
 # in WSL2 Ubuntu shell
