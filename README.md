@@ -1,3 +1,4 @@
+
 # rix: Reproducible Environments with Nix <a href="https://docs.ropensci.org/rix/"><img src="man/figures/logo.png" align="right" height="138" /></a>
 
 - [Introduction](#introduction)
@@ -433,7 +434,8 @@ Hammill](https://github.com/cfhammill), [László
 Kupcsik](https://github.com/Kupac), [Simon
 Lackerbauer](https://github.com/ciil),
 [MrTarantoga](https://github.com/MrTarantoga) and every other person
-from the [Matrix Nixpkgs R channel](https://matrix.to/#/#r:nixos.org)).
+from the [Matrix Nixpkgs R
+channel](https://matrix.to/#/%23r:nixos.org)).
 
 Finally, thanks to [David Solito](https://www.davidsolito.com/about/)
 for creating `{rix}`’s logo!
