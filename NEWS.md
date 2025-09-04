@@ -1,6 +1,10 @@
+# rix 0.17.1 (2025-09-04)
+
+- `rix()`: Support for Julia is not experimental anymore.
+
 # rix 0.17.0 (2025-05-21)
 
-- `rix()`: added support for the Julia programming language. This 
+- `rix()`: added support for the Julia programming language. This
   support is experimental. To add Julia and Julia package to the environment
   use the `jl_conf` argument.
 

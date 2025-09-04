@@ -32,16 +32,16 @@ and Windows can be considered one system, and macOS another, separate, system.
 Because Windows is really running Linux under the hood thanks to WSL2, this
 means that WSL2 needs to be running on your Windows system before you attempt to
 install Nix. But it is important to know that you can run `{rix}` even if you
-don't have Nix installed, which means you can generate Nix expressions, you
-just can't build them. So if you can’t install Nix on your system, but have 
-R already installed, you can skip to the last section of this vignette to 
-simply install the `{rix}` package.
+don't have Nix installed, which means you can generate Nix expressions, you just
+can't build them. So if you can’t install Nix on your system, but have R already
+installed, you can skip to the last section of this vignette to simply install
+the `{rix}` package.
 
 ## Why rix *and* Nix?
 
 You don't have to install Nix to use `{rix}`: you can generate valid Nix
-expressions using `{rix}` even on a system where Nix isn't present. However, this
-means that you won't be able to build these expressions on that system.
+expressions using `{rix}` even on a system where Nix isn't present. However,
+this means that you won't be able to build these expressions on that system.
 
 ## Installing Nix
 
@@ -51,7 +51,7 @@ If you are on Windows, you need the Windows Subsystem for Linux 2 (WSL2) to run
 Nix. If you are on a recent version of Windows 10 or 11, you can simply run this
 as an administrator in PowerShell:
 
-```
+```bash
 wsl --install
 ```
 
@@ -63,7 +63,6 @@ other users than `root` running Nix. To set this up, please do as outlined
 [this official Ubuntu blog entry](https://ubuntu.com/blog/ubuntu-wsl-enable-systemd):
 
 ```sh
-
 # in WSL2 Ubuntu shell
 
 sudo -i
@@ -81,7 +80,7 @@ systemd=true
 Save the file with CTRL-O and then quit nano with CTRL-X.
 Then, type the following line in powershell:
 
-```
+```bash
 wsl --shutdown
 ```
 
@@ -94,17 +93,17 @@ Determinate Systems installer.
 
 You can use `{rix}` to generate Nix expressions even if you don't have Nix
 installed on your system, but obviously, you need to install Nix if you actually
-want to build the defined development environment and use them. 
+want to build the defined development environment and use them.
 
 Installing (and
 uninstalling) Nix is quite simple, thanks to the installer from [Determinate
 Systems](https://determinate.systems/posts/determinate-nix-installer), a company
 that provides services and tools built on Nix.
 
-Do not use your operating system’s package manager to install Nix. Instead, 
-simply open a terminal and run the following line (on Windows, if you cannot or 
-have decided not to activate systemd, then you have to append `--init none`
-to the command. You can find more details about this on [The Determinate Nix
+Do not use your operating system’s package manager to install Nix. Instead,
+simply open a terminal and run the following line (on Windows, if you cannot or
+have decided not to activate systemd, then you have to append `--init none` to
+the command. You can find more details about this on [The Determinate Nix
 Installer page](https://github.com/DeterminateSystems/nix-installer)):
 
 ```{sh parsermd-chunk-1, eval = FALSE}
@@ -135,15 +134,15 @@ the cache but it is recommended to use the `cachix` client instead. This is
 because `setup_cachix()` will not edit the files that require admin/root
 privileges and only edit the user-level files. This may not be enough depending
 on how you installed Nix. Using the `cachix` client takes care of everything.
-Use `setup_cachix()` when building a Docker image or if you somehow mess up
-the configuration file (which should be located in `~/.config/nix.conf`).
+Use `setup_cachix()` when building a Docker image or if you somehow mess up the
+configuration file (which should be located in `~/.config/nix.conf`).
 
 On Linux, once Nix is installed, all the software that will be installed through
 Nix will be saved to the `/nix` directory on the root partition. It is common
 for Linux users to have a separate partition for `/`, which may be small.
 Complete development environments built with Nix can take up much space, so if
-the available space on your root partition is limited, we advise you to mount the
-`/nix` folder on another partition with more space (for example, a secondary
+the available space on your root partition is limited, we advise you to mount
+the `/nix` folder on another partition with more space (for example, a secondary
 hard drive). For this, edit `/etc/fstab` and add the following line at the end:
 
 ```
@@ -193,11 +192,11 @@ rix(
 to generate a `default.nix`, and then use that file to generate an environment
 with R, `{dplyr}` and `{ggplot2}`. If you need to add packages for your project,
 rerun the command above, but add the needed packages to `r_pkgs`. Beware that if
-your already have a `default.nix` file in the working directory, running
-`rix()` with the `overwrite = TRUE` argument will overwrite it! So make sure
-that you are using a version control system for your projects to avoid bad surprises.
+your already have a `default.nix` file in the working directory, running `rix()`
+with the `overwrite = TRUE` argument will overwrite it! So make sure that you
+are using a version control system for your projects to avoid bad surprises.
 
-More details about managing project-specific `default.nix` are detailled in the 
+More details about managing project-specific `default.nix` are detailled in the
 vignette `vignette("d1-installing-r-packages-in-a-nix-environment")` and
 `vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")`.
 

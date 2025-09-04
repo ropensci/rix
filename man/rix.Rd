@@ -74,9 +74,7 @@ environment does not use with a system-wide Python installation.}
 \code{jl_version} must be of the form \code{"1.10"} for Julia 1.10. Leave empty or
 use an empty string to use the latest version, or use \code{"lts"} for the long
 term support version. \code{jl_conf} must be an atomic vector of packages names,
-for example \code{jl_conf = c("TidierData", "TidierPlots")}. This feature is
-experimental, as the Julia ecosystem on Nix requires further tweaks to be
-more robust.}
+for example \code{jl_conf = c("TidierData", "TidierPlots")}.}
 
 \item{ide}{Character, defaults to "none". If you wish to use RStudio to work
 interactively use "rstudio" or "rserver" for the server version. Use "code"

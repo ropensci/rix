@@ -48,9 +48,7 @@
 #'   `jl_version` must be of the form `"1.10"` for Julia 1.10. Leave empty or
 #'   use an empty string to use the latest version, or use `"lts"` for the long
 #'   term support version. `jl_conf` must be an atomic vector of packages names,
-#'   for example `jl_conf = c("TidierData", "TidierPlots")`. This feature is
-#'   experimental, as the Julia ecosystem on Nix requires further tweaks to be
-#'   more robust.
+#'   for example `jl_conf = c("TidierData", "TidierPlots")`.
 #' @param ide Character, defaults to "none". If you wish to use RStudio to work
 #'   interactively use "rstudio" or "rserver" for the server version. Use "code"
 #'   for Visual Studio Code or "codium" for Codium, or "positron" for Positron.
@@ -302,10 +300,10 @@ before continuing."
     )
   }
 
-  if (!is.null(jl_conf)) {
+  if (!is.null(jl_conf) && date < as.Date("2025-09-04")) {
     warning(
-      "Julia support is experimental, because sometimes transitive Julia dependencies cannot be installed.
-If building the environment does not succeed, open an issue."
+      "Julia support is only guaranteed from 2025-09-04 onward.",
+      "If environment building fails, try using a later date."
     )
   }
 
@@ -321,7 +319,7 @@ If building the environment does not succeed, open an issue."
       Sys.info()["sysname"] == "Darwin" &&
       ide == "rstudio" &&
       ((r_ver < "4.4.3" && is.null(date)) ||
-        (is.null(r_ver) && date < "2025-02-28"))
+        (is.null(r_ver) && date < as.Date("2025-02-28")))
   ) {
     warning(
       "Your operating system is detected as macOS, but you selected 'rstudio'
@@ -427,8 +425,11 @@ for more details."
 
   # If there are wrapped packages (for example for RStudio), passes the "wrapped_pkgs"
   # to buildInputs
-  flag_wrapper <- if (ide %in% names(attrib) && flag_rpkgs != "")
-    "wrapped_pkgs" else ""
+  flag_wrapper <- if (ide %in% names(attrib) && flag_rpkgs != "") {
+    "wrapped_pkgs"
+  } else {
+    ""
+  }
 
   # Correctly formats shellHook for Nix's mkShell
   shell_hook <- if (!is.null(shell_hook) && nzchar(shell_hook)) {

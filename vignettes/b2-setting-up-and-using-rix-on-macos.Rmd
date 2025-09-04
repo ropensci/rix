@@ -31,21 +31,43 @@ running Linux thanks to WSL2. In practice this means that Linux distributions
 and Windows can be considered one system, and macOS another, separate, system,
 with its own idiosyncrasies. This vignette details these.
 
+Nix on macOS does not have full feature parity with Linux. Because macOS relies
+on proprietary system frameworks and Xcode’s SDKs, reproducibility cannot always
+be guaranteed. For example, many builds implicitly depend on the macOS SDK from
+Xcode; when Apple updates Xcode or the system frameworks, a pinned nixpkgs
+revision that used to build may stop working. This kind of “SDK drift” is not an
+issue on Linux, where Nix controls the full dependency graph.
+
+In practice, this means an environment that worked on macOS may stop building
+after a system update or when using older pinned snapshots. We recommend
+committing the generated `default.nix` to version control and updating the
+pinned date if you encounter build failures.
+
+As a mitigation, consider setting up your own private binary cache (e.g. with
+Cachix, using `ga_cachix()`). This allows you to reuse builds you know work on
+your system, avoiding repeated recompilation and insulating you somewhat from
+upstream cache gaps.
+
+These problems are less common with recent snapshots, as macOS support in Nix
+continues to improve. Still, if you need to work with older versions of R (or
+other software sensitive to system SDK changes), you should be aware of this
+limitation.
+
 ## Why rix *and* Nix?
 
 You don't have to install Nix to use `{rix}`: you can generate valid Nix
-expressions using `{rix}` even on a system where Nix isn't present. However, this
-means that you won't be able to build these expressions on that system.
+expressions using `{rix}` even on a system where Nix isn't present. However,
+this means that you won't be able to build these expressions on that system.
 
 ## Installing Nix
 
 You can use `{rix}` to generate Nix expressions even if you don't have Nix
 installed on your system, but obviously, you need to install Nix if you actually
 want to build the defined development environment and use them. Installing (and
-uninstalling) Nix is quite simple, thanks to the installer from
-[Determinate Systems](https://determinate.systems/posts/determinate-nix-installer),
-a company that provides services and tools built on Nix. Simply open a terminal
-and run the following line:
+uninstalling) Nix is quite simple, thanks to the installer from [Determinate
+Systems](https://determinate.systems/posts/determinate-nix-installer), a company
+that provides services and tools built on Nix. Simply open a terminal and run
+the following line:
 
 
 ```{sh parsermd-chunk-1, eval = FALSE}
@@ -91,20 +113,20 @@ expressions and build them. But you could also install R using Nix. Running the
 following line in a terminal will drop you in an interactive R session that you
 can use to start generating expressions:
 
-```
+```bash
 nix-shell -p R rPackages.rix
 ```
 
 or if you prefer the development version of `{rix}`:
 
-```
+```bash
 nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/ropensci/rix/main/inst/extdata/default.nix)"
 ```
 
 After downloading some package, an R session will start inside your terminal.
 You can now run something like this:
 
-```
+```r
 rix(date = "2025-02-03",
     r_pkgs = c("dplyr", "ggplot2"),
     system_pkgs = NULL,
