@@ -30,3 +30,5 @@ video_thumbnail.png
 ^flint$
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
+
+^.*\.aider.*$
