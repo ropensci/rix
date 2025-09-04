@@ -1,14 +1,15 @@
-## 04-09-2025 Submission, version 0.17.1
 
-R CMD check using R-devel with win-builder:
+## 04-09-2025 Submission, version 0.17.1 second attempt
+
+First submission resulted in this note:
 
 ```
 Found the following (possibly) invalid URLs:
   URL: https://matrix.to/#/#r:nixos.org
 ```
 
-This url is however correct.
-Nothing on other platforms.
+This url is however correct, but replacing the second `#`
+with %23 solved it.
 
 ## 24-04-2025 Submission, version 0.16.0
 
