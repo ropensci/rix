@@ -1,3 +1,15 @@
+## 04-09-2025 Submission, version 0.17.1
+
+R CMD check using R-devel with win-builder:
+
+```
+Found the following (possibly) invalid URLs:
+  URL: https://matrix.to/#/#r:nixos.org
+```
+
+This url is however correct.
+Nothing on other platforms.
+
 ## 24-04-2025 Submission, version 0.16.0
 
 R CMD check using R-devel with win-builder:
