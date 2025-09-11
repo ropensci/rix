@@ -69,7 +69,7 @@ testthat::test_that("rix() with Julia packages, older date", {
 
   testthat::expect_warning(
     rix(
-      date = "2025-04-04",
+      date = "2025-04-29",
       r_pkgs = c("dplyr", "janitor", "reticulate"),
       tex_pkgs = c("amsmath"),
       jl_conf = list(
