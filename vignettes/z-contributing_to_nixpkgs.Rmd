@@ -68,8 +68,8 @@ git reset --hard upstream/master
 Always make sure to create a new branch to fix a package, don't work from `master`,
 you'll just be asking for trouble!
 
-You might also want to join our Matrix chat room to coordinate efforts. You can
-join it [here](https://matrix.to/#/#r:nixos.org).
+You might also want to join our Matrix chat room to coordinate efforts:
+`https://matrix.​to/#/#r:nixos.org`.
 
 ## Where to find packages to fix
 
