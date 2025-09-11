@@ -1,3 +1,10 @@
+## 11-09-2025 Submission, version 0.17.2
+
+R CMD check using R-devel and release on win-builder:
+
+```
+OK
+```
 
 ## 04-09-2025 Submission, version 0.17.1 second attempt
 
