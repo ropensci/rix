@@ -76,7 +76,7 @@ testthat::test_that("rix() with Julia packages, older date", {
         jl_version = "1.10",
         jl_pkgs = c("TidierData", "RDatasets")
       ),
-      ide = ide,
+      ide = "none",
       project_path = path_default_nix,
       overwrite = TRUE,
       message_type = "quiet",

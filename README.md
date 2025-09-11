@@ -435,8 +435,7 @@ Hammill](https://github.com/cfhammill), [László
 Kupcsik](https://github.com/Kupac), [Simon
 Lackerbauer](https://github.com/ciil),
 [MrTarantoga](https://github.com/MrTarantoga) and every other person
-from the [Matrix Nixpkgs R
-channel](https://matrix.to/#/%23r:nixos.org)).
+from the Matrix Nixpkgs R channel: `https://matrix.​to/#/#r:nixos.org`.
 
 Finally, thanks to [David Solito](https://www.davidsolito.com/about/)
 for creating `{rix}`’s logo!
