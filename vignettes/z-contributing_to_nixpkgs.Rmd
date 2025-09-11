@@ -69,7 +69,7 @@ Always make sure to create a new branch to fix a package, don't work from `maste
 you'll just be asking for trouble!
 
 You might also want to join our Matrix chat room to coordinate efforts:
-`https://matrix.​to/#/#r:nixos.org`.
+`https://matrix.​to/#/%23r:nixos.org`.
 
 ## Where to find packages to fix
 
