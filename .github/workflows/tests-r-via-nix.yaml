@@ -39,6 +39,9 @@ jobs:
         with:
           name: rstats-on-nix
 
+      - name: Build dev-env
+        run: nix-shell --quiet --pure -p cacert nix R rPackages.covr rPackages.codetools rPackages.xml2 rPackages.sys rPackages.devtools --run "Rscript -e \"sessionInfo()\""
+
       - name: devtools::test() via nix-shell
         run: nix-shell --quiet --pure -p cacert nix R rPackages.covr rPackages.codetools rPackages.xml2 rPackages.sys rPackages.devtools --run "Rscript -e \"devtools::test(stop_on_failure = TRUE)\""
 
