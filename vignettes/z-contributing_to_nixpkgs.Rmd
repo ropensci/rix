@@ -413,8 +413,8 @@ example](https://github.com/NixOS/nixpkgs/pull/305301), you'll see that
 The best way to learn, is to read what has already been done by others. While this guide
 can hopefully get you started quickly, I highly recommend that you check out
 all the PRs that have been opened and merged [here](https://github.com/NixOS/nixpkgs/pulls?q=is%3Apr+rPackages).
-As stated already, don't hesitate to join our Matrix channel [here](https://matrix.to/#/#r:nixos.org)
-if you need help to get started!
+As stated already, don't hesitate to join the R maintainers for NixOS Matrix channel
+on following link: `https://matrix.​to/#/%23r:nixos.org` if you need help to get started!
 
 ## Broken packages
 
