@@ -99,7 +99,11 @@ add_to_existing_nix_conf_file <- function(nix_conf_path) {
       collapse = " "
     )
 
-    writeLines(enc2utf8(nix_conf_content), nix_conf_file, useBytes = TRUE)
+    writeLines(
+      enc2utf8(c(nix_conf_content, "")),
+      nix_conf_file,
+      useBytes = TRUE
+    )
     if (identical(Sys.getenv("TESTTHAT"), "false")) {
       message("Added rstats-on-nix as a substituter to ", nix_conf_file)
     }

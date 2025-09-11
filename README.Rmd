@@ -139,7 +139,7 @@ packages:
 
 ```{r, eval = F}
 rix(
-  date = "2025-05-21",
+  date = "2025-09-04",
   r_pkgs = "ggplot2",
   py_conf = list(
     py_version = "3.12",
@@ -147,8 +147,9 @@ rix(
   ),
   jl_conf = list(
     jl_version = "1.10",
-    py_pkgs = c("Arrow", "TidierData")
+    jl_pkgs = c("Arrow", "TidierData")
   ),
+  project_path = path_default_nix,
   overwrite = TRUE
 )
 ```
