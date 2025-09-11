@@ -450,8 +450,6 @@ for creating `{rix}`’s logo!
   environments with Nix](https://www.youtube.com/watch?v=c1LhgeTTxaI)
 - [nix.dev
   tutorials](https://nix.dev/tutorials/first-steps/towards-reproducibility-pinning-nixpkgs#pinning-nixpkgs)
-- [INRIA’s Nix
-  tutorial](https://nix-tutorial.gitlabpages.inria.fr/nix-tutorial/installation.html)
 - [Nix pills](https://nixos.org/guides/nix-pills/)
 - [Nix for Data
   Science](https://github.com/nix-community/nix-data-science)
