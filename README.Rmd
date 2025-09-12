@@ -387,8 +387,8 @@ path_default_nix <- "."
 
 rix(
   r_ver = "4.3.3",                # Change to whatever R version you need
-  r_pkgs = c("dplyr", "ggplot2")  # Change to whatever packages you need
-  system_pkgs = NULL
+  r_pkgs = c("dplyr", "ggplot2"),  # Change to whatever packages you need
+  system_pkgs = NULL,
   git_pkgs = NULL,
   ide = "code",
   project_path = path_default_nix,
