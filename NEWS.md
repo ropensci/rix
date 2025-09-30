@@ -1,3 +1,7 @@
+# rix 0.17.3 (2025-09-30)
+
+- Fixes for issue #544
+
 # rix 0.17.2 (2025-09-11)
 
 - Changed the matrix channel url that was causing a NOTE and added a final
