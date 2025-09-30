@@ -282,13 +282,14 @@ get_imports <- function(path, commit_date, ...) {
   # Get imports from NAMESPACE
   namespace_path <- gsub("DESCRIPTION", "NAMESPACE", desc_path)
   namespace_raw <- readLines(namespace_path)
-  namespace_imports <- namespace_raw[grepl("importFrom", namespace_raw)]
+  namespace_imports <- grep("^import", namespace_raw, value = TRUE)
 
   if (length(namespace_imports) > 0) {
-    # Get package names from `importFrom` statements
-    namespace_imports_pkgs <- gsub(
-      "importFrom\\(([^,]+).*",
-      "\\1",
+    # Extract the package name (first argument inside parentheses)
+    namespace_imports_pkgs <- sub(
+      # capture word or quoted string before first comma or closing paren
+      '^import(?:From)?\\(([^,\\)]+).*', 
+      '\\1',
       namespace_imports
     )
     # Remove quotes, which is sometimes necessary
