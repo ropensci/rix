@@ -283,7 +283,11 @@ get_imports <- function(path, commit_date, ...) {
   namespace_path <- gsub("DESCRIPTION", "NAMESPACE", desc_path)
   namespace_raw <- readLines(namespace_path)
   # Keep only lines that start with "import(" or "importFrom("
-  namespace_imports <- grep("^(import|importFrom)\\(", namespace_raw, value = TRUE)
+  namespace_imports <- grep(
+    "^(import|importFrom)\\(",
+    namespace_raw,
+    value = TRUE
+  )
 
   if (length(namespace_imports) > 0) {
     # Extract the package name (first argument inside parentheses)
