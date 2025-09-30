@@ -341,7 +341,9 @@ classify_globals <- function(globals_expr, args_vec) {
     pkgs = pkgs_to_attach
   )
   globs_null <- all(vapply(globs_classified, is.null, logical(1L)))
-  if (globs_null) globs_classified <- NULL
+  if (globs_null) {
+    globs_classified <- NULL
+  }
 
   return(globs_classified)
 }

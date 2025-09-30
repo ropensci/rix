@@ -282,13 +282,19 @@ get_imports <- function(path, commit_date, ...) {
   # Get imports from NAMESPACE
   namespace_path <- gsub("DESCRIPTION", "NAMESPACE", desc_path)
   namespace_raw <- readLines(namespace_path)
-  namespace_imports <- namespace_raw[grepl("importFrom", namespace_raw)]
+  # Keep only lines that start with "import(" or "importFrom("
+  namespace_imports <- grep(
+    "^(import|importFrom)\\(",
+    namespace_raw,
+    value = TRUE
+  )
 
   if (length(namespace_imports) > 0) {
-    # Get package names from `importFrom` statements
-    namespace_imports_pkgs <- gsub(
-      "importFrom\\(([^,]+).*",
-      "\\1",
+    # Extract the package name (first argument inside parentheses)
+    namespace_imports_pkgs <- sub(
+      # capture word or quoted string before first comma or closing paren
+      '^import(?:From)?\\(([^,\\)]+).*',
+      '\\1',
       namespace_imports
     )
     # Remove quotes, which is sometimes necessary
@@ -388,8 +394,11 @@ fetchgits <- function(git_pkgs, ...) {
   # Check if ignore_remotes_cache was passed
   # If not passed, ignore_remotes_cache is FALSE
   args <- list(...)
-  ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache))
-    args$ignore_remotes_cache else FALSE
+  ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache)) {
+    args$ignore_remotes_cache
+  } else {
+    FALSE
+  }
 
   if (!ignore_remotes_cache) {
     cache_file <- get_cache_file()
@@ -471,8 +480,11 @@ fetchzips <- function(archive_pkgs) {
 #' @noRd
 fetchpkgs <- function(git_pkgs, archive_pkgs, ...) {
   args <- list(...)
-  ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache))
-    args$ignore_remotes_cache else FALSE
+  ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache)) {
+    args$ignore_remotes_cache
+  } else {
+    FALSE
+  }
 
   # Initialize cache if git packages are present and not ignoring cache
   if (!is.null(git_pkgs) && !ignore_remotes_cache) {
@@ -592,11 +604,15 @@ download_all_commits <- function(repo, date) {
         }
 
         commits <- fromJSON(rawToChar(response$content))
-        if (!is.list(commits) || length(commits) == 0) break
+        if (!is.list(commits) || length(commits) == 0) {
+          break
+        }
 
         # if no commits are found, break the loop
         n_commits <- length(commits$sha)
-        if (n_commits == 0) break
+        if (n_commits == 0) {
+          break
+        }
 
         idx <- (commit_count + 1):(commit_count + n_commits)
         all_commits$sha[idx] <- commits$sha
@@ -661,8 +677,11 @@ resolve_package_commit <- function(
 
   # Check if ignore_remotes_cache was passed, otherwise set to FALSE
   args <- list(...)
-  ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache))
-    args$ignore_remotes_cache else FALSE
+  ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache)) {
+    args$ignore_remotes_cache
+  } else {
+    FALSE
+  }
 
   # Check if package is already in cache
   if (!ignore_remotes_cache) {

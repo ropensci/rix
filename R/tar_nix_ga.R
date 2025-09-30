@@ -41,6 +41,7 @@ tar_nix_ga <- function() {
     message("GitHub Actions workflow file saved to: ", path)
   }
 
-  if (identical(Sys.getenv("TESTTHAT"), "true"))
+  if (identical(Sys.getenv("TESTTHAT"), "true")) {
     paste0(path, "/run-pipeline.yaml")
+  }
 }
