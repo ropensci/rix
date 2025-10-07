@@ -41,6 +41,12 @@ jobs:
         run: |
           wget -O mlr3_default.nix https://raw.githubusercontent.com/ropensci/rix/refs/heads/main/tests/testthat/testdata/remote-pkgs/mlr3_default.nix
 
+      - name: Check out default.nix
+        run: cat default.nix
+
+      - name: Check out test default.nix without dups
+        run: cat mlr3_default.nix
+
       - name: Remove lines starting with `#` from generated expression
         run: sed -i '/^#/d' default.nix
 
