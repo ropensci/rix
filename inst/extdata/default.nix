@@ -65,7 +65,7 @@ let
     LC_PAPER = "en_US.UTF-8";
     LC_MEASUREMENT = "en_US.UTF-8";
     
-    buildInputs = [ rix rixpress system_packages ];
+    buildInputs = [ rix rixpress rPackages.usethis system_packages ];
     
   }; 
 in
