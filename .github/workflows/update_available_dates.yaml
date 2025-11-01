@@ -32,7 +32,7 @@ jobs:
 
     - name: Update available_df.csv
       run: |
-          echo "\"${{ env.year_date }}\",\"4.5.2\",\"3.21\",\"${{ env.branch_date }}\",\"supported\",\"supported\",\"might work\"" >> inst/extdata/available_df.csv
+          echo "\"${{ env.year_date }}\",\"4.5.2\",\"3.22\",\"${{ env.branch_date }}\",\"supported\",\"supported\",\"might work\"" >> inst/extdata/available_df.csv
 
     - name: Push changes to update_default.nix branch
       run: |
