@@ -1,0 +1,151 @@
+---
+title: "Developing packages with rix"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{g-developing-packages-with-rix-environments}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Why bring `{rix}` into your package workflow?
+
+This vignette walks through a recommended development loop for package
+authors:
+
+1. Declare the package dependencies with `{rix}`.
+2. Commit the resulting `default.nix` to the repository.
+3. Use the same definition locally and in CI/CD (for example GitHub
+   Actions).
+4. Refresh the snapshot frequently so that you notice upstream changes
+   early.
+
+## Declaring your package environment
+
+Start by calling `rix()` from your package root. List the R packages and
+system tools that your package requires for development, testing, or
+vignette builds:
+
+```{r, eval = FALSE}
+rix(
+  r_ver = "bleeding-edge",
+  r_pkgs = c(
+    "devtools", "rcmdcheck", "roxygen2", # package development helpers
+    "jsonlite", "httr"                    # package runtime deps
+  ),
+  system_pkgs = c("pandoc"), # or anything else
+  ide = "none",
+  path = "default.nix",
+  overwrite = TRUE
+)
+```
+
+A few tips when shaping the environment:
+
+- Prefer `r_ver = "bleeding-edge"` (or at least a very recent
+  date). This aligns your local setup with what users will experience
+  soon and surfaces compatibility problems early.
+  See `vignette("z-bleeding_edge.Rmd")` for more
+  details on using `"bleeding-edge"`.
+- If you use a fixed date, then keep `date` current. Updating it every few 
+  weeks lets you track CRAN, nixpkgs, and system toolchain updates. 
+  If the new snapshot fails you can fix issues right away instead of 
+  facing a large backlog later, or you could always revert to an earlier
+  working date.
+
+## Committing the environment to your repository
+
+Place the `default.nix` file at the root of the package repository so
+that contributors can run:
+
+```sh
+nix-shell
+```
+
+This drops them into a shell with the right environment for contributing.
+
+To simplify onboarding, document in `README.md` (or a contributing guide)
+that contributors should run `nix-shell` before working on the
+package. 
+
+Because the environment is pinned, collaborators and CI jobs execute the
+same versions of your dependencies, eliminating “works on my machine”
+bugs.
+
+## Keeping the snapshot fresh
+
+You could setp up a CI action to update the environment frequently, which would
+then trigger unit tests on CI as well. If the tests fail you can immediately address 
+incompatibilities introduced by recent CRAN changes.
+
+## Using `{rix}` in GitHub Actions
+
+Because `default.nix` captures the entire toolchain, you should use it as
+the basis for your CI workflow. Below is a minimal GitHub Actions configuration
+thatruns your package’s unit tests:
+
+```yaml
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: devtools-tests-via-r-nix
+
+permissions:
+  contents: read
+
+jobs:
+  devtools_test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create this folder to silence warning
+        run: mkdir -p ~/.nix-defexpr/channels
+
+      - name: Create .Renviron
+        run: |
+          echo "GITHUB_PAT=${{ secrets.GITHUB_TOKEN }}" >> ~/.Renviron
+        shell: bash
+
+      - uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=https://github.com/rstats-on-nix/nixpkgs/archive/refs/heads/r-daily.tar.gz
+
+      - uses: cachix/cachix-action@v14
+        with:
+          name: rstats-on-nix
+
+      - name: devtools::test() via nix-shell
+        run: nix-shell --run "Rscript -e \"devtools::test(stop_on_failure = TRUE)\""
+
+```
+
+The workflow builds the same shell you use locally and uses our `rstats-on-nix`
+binary cache for fast, reproducible builds. Any failure signals that
+newly published CRAN may be incompatible. Having the tests run on a schedule
+is a safe way to catch them very early and avoid the dreaded 2 weeks notice 
+from CRAN to fix your package!
+
+## Summary
+
+By defining your package environment with `{rix}`, committing the
+`default.nix`, and reusing it across local development and CI/CD, you
+build confidence that your package remains compatible with the evolving
+R ecosystem. Regularly updating the snapshot keeps you close to the
+latest CRAN state while still benefiting from the reproducibility that
+Nix provides.
