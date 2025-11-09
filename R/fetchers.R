@@ -583,7 +583,7 @@ download_all_commits <- function(repo, date) {
   }
   # Limit to 10 pages of 100 commits each, so 1000 commits in total
   per_page <- 100
-  max_pages <- 10
+  max_pages <- 30
   max_commits <- per_page * max_pages
 
   # Pre-allocate results data frame

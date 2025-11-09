@@ -244,11 +244,10 @@ manually look for the right commit of `C` that works with both `A` and `B`.
 
 ### Authenticating to GitHub
 
-Note: `{rix}` will only be able to fetch a maximum of 1000 commits. That means
+Note: `{rix}` will only be able to fetch a maximum of 3000 commits. That means
 if the commit you provided is rather old or if the package has many commits,
-this will fail and fallback to the `HEAD` of the repository. We have not
-observed this in practice yet, but if this happens you should see a message like
-this:
+this will fail and fallback to the `HEAD` of the repository. 
+If this happens you should see a message like this:
 
 ```
 Failed to get commit date for <<< satijalab/seurat-wrappers >>> No commits found before or on the target date
