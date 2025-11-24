@@ -110,6 +110,11 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
   path_to_tarfile <- normalizePath(path_to_tarfile)
 
   h <- curl::new_handle(failonerror = TRUE, followlocation = TRUE)
+  token <- Sys.getenv("GITHUB_PAT")
+  token_pattern <- "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$"
+  if (grepl(token_pattern, token)) {
+    handle_setheaders(h, Authorization = paste("token", token))
+  }
 
   # extra diagnostics
   extra_diagnostics <-
