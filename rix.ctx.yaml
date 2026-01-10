@@ -22,7 +22,6 @@ arguments:
   return_rix_call: Logical, return the generated rix function call instead of evaluating it this is for debugging purposes, defaults to FALSE
 returns: Nothing, this function is called for its side effects only, unless return_rix_call = TRUE in which case an unevaluated call to rix() is returned
 examples:
-- code: \dontrun{
 - code: |-
     renv2nix(
     renv_lock_path = "path/to/original/renv_project/renv.lock",
@@ -67,9 +66,7 @@ arguments:
   path_default: String, relative path (from the root directory of your project) to the default.nix to build.
 returns: Nothing, copies file to a directory.
 examples:
-- code: \dontrun{
 - code: ga_cachix("my-cachix", path_default = "default.nix")
-- code: '}'
 ---
 kind: function
 name: rix_init
@@ -82,9 +79,14 @@ arguments:
   rprofile_action: Character. Action to take with .Rprofile file destined for project_path folder. Possible values include "create_missing", which only writes .Rprofile if it does not yet exist (otherwise does nothing) - this is the action set when using rix() - ; "create_backup", which copies the existing .Rprofile to a new backup file, generating names with POSIXct-derived strings that include the time zone information. A new .Rprofile file will be written with default code from rix::rix_init(); "overwrite" overwrites the .Rprofile file if it does exist; "append" appends the existing file with code that is tailored to an isolated Nix-R project setup.
 returns: Nothing, this function only has the side-effect of writing a file called ".Rprofile" to the specified path.
 examples:
-- code: \dontrun{
 - code: project_path <- "./sub_shell"
 - code: if (!dir.exists(project_path)) dir.create(project_path)
+- code: |-
+    rix_init(
+    project_path = project_path,
+    rprofile_action = "create_missing",
+    message_type = c("simple")
+    )
 ---
 kind: function
 name: with_nix
@@ -97,12 +99,16 @@ arguments:
   project_path: Path to the folder where the default.nix file resides. The default is ".", which is the working directory in the current R session. This approach also useful when you have different subfolders with separate software environments defined in different default.nix files.
 returns: '\itemize{ \item if program = "R", R object returned by function given in expr when evaluated via the R environment in nix-shell defined by Nix expression. \item if program = "shell", list with the following elements: \itemize{ \item status: exit code \item stdout: character vector with standard output \item stderr: character vector with standard error of expr command sent to a command line interface provided by a Nix package.'
 examples:
-- code: \dontrun{
 - code: project_path <- "./sub_shell"
 - code: |-
     rix_init(
     project_path = project_path,
     rprofile_action = "create_missing"
+    )
+- code: |-
+    rix(
+    r_ver = "4.2.0",
+    project_path = project_path
     )
 ---
 kind: function
@@ -128,7 +134,6 @@ arguments:
   tex_pkgs: Vector of characters. A set of TeX packages to install. Use this if you need to compile .tex documents, or build PDF documents using Quarto. If you don't know which package to add, start by adding "amsmath". See the vignette("d2- installing-system-tools-and-texlive-packages-in-a-nix-environment") for more details.
 returns: 'Nothing, this function only has the side-effect of writing two files: default.nix and .Rprofile in the working directory. default.nix contains a Nix expression to build a reproducible environment using the Nix package manager, and .Rprofile ensures that a running R session from a Nix environment cannot access local libraries, nor install packages using install.packages() (nor remove nor update them).'
 examples:
-- code: \dontrun{
 - code: |-
     rix(
     r_ver = "latest-upstream",
@@ -144,7 +149,6 @@ examples:
     shell_hook = NULL,
     ignore_remotes_cache = FALSE
     )
-- code: '}'
 ---
 kind: function
 name: make_launcher
@@ -167,7 +171,6 @@ arguments:
   project_path: Path to the folder where the default.nix file resides.
 returns: Integer of the process ID (PID) of the nix-build shell command launched, if the nix_build() call is assigned to an R object. Otherwise, it will be returned invisibly.
 examples:
-- code: \dontrun{
 - code: nix_build()
 - code: nix_build(args = c("--max-jobs", "2", "--quiet"))
 ---
@@ -179,9 +182,7 @@ arguments:
   nix_conf_path: Character, path to folder containing 'nix.conf' file. Defaults to "~/.config/nix".
 returns: Nothing; changes a file in the user's home directory.
 examples:
-- code: \dontrun{
 - code: setup_cachix()
-- code: '}'
 ---
 kind: function
 name: tar_nix_ga
@@ -189,6 +190,4 @@ exported: true
 signature: tar_nix_ga()
 returns: Nothing, copies file to a directory.
 examples:
-- code: \dontrun{
 - code: tar_nix_ga()
-- code: '}'
