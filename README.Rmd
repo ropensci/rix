@@ -435,6 +435,10 @@ code without hallucinating function names or arguments. The file is automaticall
 on each push to stay in sync with the package API. To use it, simply copy the contents 
 into your chat with Claude, ChatGPT, or any other LLM when asking it to help you write `{rix}` code.
 
+If you want to use `pkgctx` for your own package, just re-use the `pkgctx.yaml` action file.
+You can also use `pkgctx` to generate context files for any package available on CRAN, PyPi
+and GitHub.
+
 ## Thanks
 
 Thanks to the [Nix community](https://nixos.org/community/) for making Nix
