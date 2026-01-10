@@ -17,9 +17,16 @@ arguments:
   renv_lock_path: Character, path of the renv.lock file, defaults to
 returns: Nothing, this function is called for its side effects only, unless return_rix_call = TRUE in which case an unevaluated call to rix() is returned
 examples:
-- code: '# if the lock file is in another folder'
-- code: renv2nix(
-- code: renv_lock_path = "path/to/original/renv_project/renv.lock",
+- code: |-
+    renv2nix(
+    renv_lock_path = "path/to/original/renv_project/renv.lock",
+    project_path = "path/to/rix_project"
+    )
+- code: |-
+    renv2nix(
+    renv_lock_path = "path/to/rix_project/renv.lock",
+    project_path = "path/to/rix_project"
+    )
 ---
 kind: function
 name: available_df
@@ -65,9 +72,14 @@ arguments:
   project_path: Character with the folder path to the isolated nix-R
 returns: Nothing, this function only has the side-effect of writing a file called ".Rprofile" to the specified path.
 examples:
-- code: '# create an isolated, runtime-pure R setup via Nix'
 - code: project_path <- "./sub_shell"
 - code: if (!dir.exists(project_path)) dir.create(project_path)
+- code: |-
+    rix_init(
+    project_path = project_path,
+    rprofile_action = "create_missing",
+    message_type = c("simple")
+    )
 ---
 kind: function
 name: with_nix
@@ -77,9 +89,17 @@ arguments:
   expr: Single R function or call, or character vector of length one with
 returns: '\itemize{ \item if program = "R", R object returned by function given in expr when evaluated via the R environment in nix-shell defined by Nix expression. \item if program = "shell", list with the following elements: \itemize{ \item status: exit code \item stdout: character vector with standard output \item stderr: character vector with standard error of expr command sent to a command line interface provided by a Nix package.'
 examples:
-- code: '# create an isolated, runtime-pure R setup via Nix'
 - code: project_path <- "./sub_shell"
-- code: rix_init(
+- code: |-
+    rix_init(
+    project_path = project_path,
+    rprofile_action = "create_missing"
+    )
+- code: |-
+    rix(
+    r_ver = "4.2.0",
+    project_path = project_path
+    )
 ---
 kind: function
 name: rix
@@ -89,9 +109,21 @@ arguments:
   r_ver: Character. The required R version, for example "4.0.0". You can
 returns: 'Nothing, this function only has the side-effect of writing two files: default.nix and .Rprofile in the working directory. default.nix contains a Nix expression to build a reproducible environment using the Nix package manager, and .Rprofile ensures that a running R session from a Nix environment cannot access local libraries, nor install packages using install.packages() (nor remove nor update them).'
 examples:
-- code: '# Build an environment with the latest version of R available from Nixpkgs'
-- code: '# and the dplyr and ggplot2 packages'
-- code: rix(
+- code: |-
+    rix(
+    r_ver = "latest-upstream",
+    r_pkgs = c("dplyr", "ggplot2"),
+    system_pkgs = NULL,
+    git_pkgs = NULL,
+    local_r_pkgs = NULL,
+    ide = "code",
+    project_path = path_default_nix,
+    overwrite = TRUE,
+    print = TRUE,
+    message_type = "simple",
+    shell_hook = NULL,
+    ignore_remotes_cache = FALSE
+    )
 ---
 kind: function
 name: make_launcher
@@ -113,9 +145,8 @@ arguments:
   project_path: Path to the folder where the default.nix file resides.
 returns: Integer of the process ID (PID) of the nix-build shell command launched, if the nix_build() call is assigned to an R object. Otherwise, it will be returned invisibly.
 examples:
-- code: '# Run nix-build with default arguments (project directory)'
 - code: nix_build()
-- code: '# Run nix-build with custom arguments'
+- code: nix_build(args = c("--max-jobs", "2", "--quiet"))
 ---
 kind: function
 name: setup_cachix
