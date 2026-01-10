@@ -1,0 +1,136 @@
+---
+kind: context_header
+llm_instructions: This is an LLM-optimized API specification for the R package 'rix'. Use this context to write correct code using rix functions. Each 'function' record describes a public function with its signature, arguments, and purpose. The 'package' record contains metadata. All listed functions are part of the public API.
+---
+kind: package
+schema_version: '1.1'
+name: rix
+version: 0.17.3
+language: R
+description: Reproducible Data Science Environments with 'Nix'
+---
+kind: function
+name: renv2nix
+exported: true
+signature: renv2nix(renv_lock_path = "renv.lock",project_path,return_rix_call = FALSE,method = c("fast", "accurate"),override_r_ver = NULL,...)
+arguments:
+  renv_lock_path: Character, path of the renv.lock file, defaults to
+returns: Nothing, this function is called for its side effects only, unless return_rix_call = TRUE in which case an unevaluated call to rix() is returned
+examples:
+- code: '# if the lock file is in another folder'
+- code: renv2nix(
+- code: renv_lock_path = "path/to/original/renv_project/renv.lock",
+---
+kind: function
+name: available_df
+exported: true
+signature: available_df()
+returns: A data frame
+examples:
+- code: available_dates()
+---
+kind: function
+name: available_r
+exported: true
+signature: available_r()
+returns: A character vector containing the available R versions.
+examples:
+- code: available_r()
+---
+kind: function
+name: available_dates
+exported: true
+signature: available_dates()
+returns: A character vector containing the available dates
+examples:
+- code: available_dates()
+---
+kind: function
+name: ga_cachix
+exported: true
+signature: ga_cachix(cache_name, path_default)
+arguments:
+  cache_name: String, name of your cache.
+  path_default: String, relative path (from the root directory of your project)
+returns: Nothing, copies file to a directory.
+examples:
+- code: ga_cachix("my-cachix", path_default = "default.nix")
+---
+kind: function
+name: rix_init
+exported: true
+signature: rix_init(project_path,rprofile_action = c("create_missing","create_backup","overwrite","append"),message_type = c("simple", "quiet", "verbose")) {message_type <- match.arg(message_type,choices = c("simple", "quiet", "verbose"))is_quiet <- message_type == "quiet"rprofile_action <- match.arg(rprofile_action,choices = c("create_missing", "create_backup", "overwrite", "append"))stopifnot("`project_path` needs to be character of length 1" = is.character(project_path) &&length(project_path) == 1L)if (isFALSE(is_quiet) && identical(Sys.getenv("TESTTHAT"), "false"))
+purpose: Initiate and maintain an isolated, project-specific, and runtime-pure R setup via Nix.
+arguments:
+  project_path: Character with the folder path to the isolated nix-R
+returns: Nothing, this function only has the side-effect of writing a file called ".Rprofile" to the specified path.
+examples:
+- code: '# create an isolated, runtime-pure R setup via Nix'
+- code: project_path <- "./sub_shell"
+- code: if (!dir.exists(project_path)) dir.create(project_path)
+---
+kind: function
+name: with_nix
+exported: true
+signature: with_nix(expr,program = c("R", "shell"),project_path = ".",message_type = c("simple", "quiet", "verbose"))
+arguments:
+  expr: Single R function or call, or character vector of length one with
+returns: '\itemize{ \item if program = "R", R object returned by function given in expr when evaluated via the R environment in nix-shell defined by Nix expression. \item if program = "shell", list with the following elements: \itemize{ \item status: exit code \item stdout: character vector with standard output \item stderr: character vector with standard error of expr command sent to a command line interface provided by a Nix package.'
+examples:
+- code: '# create an isolated, runtime-pure R setup via Nix'
+- code: project_path <- "./sub_shell"
+- code: rix_init(
+---
+kind: function
+name: rix
+exported: true
+signature: rix(r_ver = NULL,date = NULL,r_pkgs = NULL,system_pkgs = NULL,git_pkgs = NULL,local_r_pkgs = NULL,tex_pkgs = NULL,py_conf = NULL,jl_conf = NULL,ide = "none",project_path,overwrite = FALSE,print = FALSE,message_type = "simple",shell_hook = NULL,ignore_remotes_cache = FALSE)
+arguments:
+  r_ver: Character. The required R version, for example "4.0.0". You can
+returns: 'Nothing, this function only has the side-effect of writing two files: default.nix and .Rprofile in the working directory. default.nix contains a Nix expression to build a reproducible environment using the Nix package manager, and .Rprofile ensures that a running R session from a Nix environment cannot access local libraries, nor install packages using install.packages() (nor remove nor update them).'
+examples:
+- code: '# Build an environment with the latest version of R available from Nixpkgs'
+- code: '# and the dplyr and ggplot2 packages'
+- code: rix(
+---
+kind: function
+name: make_launcher
+exported: true
+signature: make_launcher(editor, project_path)
+arguments:
+  editor: Character, the command to launch the editor. See the "Details" section below for more information.
+  project_path: Character, where to write the launcher, for example
+returns: Nothing, writes a script.
+examples:
+- code: available_dates()
+---
+kind: function
+name: nix_build
+exported: true
+signature: nix_build(project_path = getwd(),message_type = c("simple", "quiet", "verbose"),args = NULL)
+arguments:
+  message_type: Character vector with messaging type. Either "simple"
+  project_path: Path to the folder where the default.nix file resides.
+returns: Integer of the process ID (PID) of the nix-build shell command launched, if the nix_build() call is assigned to an R object. Otherwise, it will be returned invisibly.
+examples:
+- code: '# Run nix-build with default arguments (project directory)'
+- code: nix_build()
+- code: '# Run nix-build with custom arguments'
+---
+kind: function
+name: setup_cachix
+exported: true
+signature: setup_cachix(nix_conf_path = "~/.config/nix")
+arguments:
+  nix_conf_path: Character, path to folder containing 'nix.conf' file.
+returns: Nothing; changes a file in the user's home directory.
+examples:
+- code: setup_cachix()
+---
+kind: function
+name: tar_nix_ga
+exported: true
+signature: tar_nix_ga()
+returns: Nothing, copies file to a directory.
+examples:
+- code: tar_nix_ga()
