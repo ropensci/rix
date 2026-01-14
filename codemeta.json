@@ -4,7 +4,7 @@
   "identifier": "rix",
   "description": "Simplifies the creation of reproducible data science environments using the 'Nix' package manager, as described in Dolstra (2006) <ISBN 90-393-4130-3>. The included `rix()` function generates a complete description of the environment as a `default.nix` file, which can then be built using 'Nix'. This results in project specific software environments with pinned versions of R, packages, linked system dependencies, and other tools or programming languages such as Python or Julia. Additional helpers make it easy to run R code in 'Nix' software environments for testing and production.",
   "name": "rix: Reproducible Data Science Environments with 'Nix'",
-  "codeRepository": "https://github.com/ropensci/rix",
+  "codeRepository": "https://github.com/JonathanMatthewSamson/rix",
   "issueTracker": "https://github.com/ropensci/rix/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
   "version": "0.17.3",
@@ -13,7 +13,7 @@
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.5.1 (2025-06-13)",
+  "runtimePlatform": "R version 4.5.2 (2025-10-31)",
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
@@ -182,15 +182,14 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "2121.695KB",
+  "fileSize": "2149.64KB",
   "relatedLink": ["https://docs.ropensci.org/rix/", "https://CRAN.R-project.org/package=rix"],
-  "releaseNotes": "https://github.com/ropensci/rix/blob/master/NEWS.md",
-  "readme": "https://github.com/ropensci/rix/blob/main/README.md",
+  "releaseNotes": "https://github.com/JonathanMatthewSamson/rix/blob/main/NEWS.md",
+  "readme": "https://github.com/JonathanMatthewSamson/rix/blob/main/README.md",
   "contIntegration": "https://github.com/ropensci/rix/actions/workflows/rhub.yaml/",
   "review": {
     "@type": "Review",
     "url": "https://github.com/ropensci/software-review/issues/625",
     "provider": "https://ropensci.org"
-  },
-  "keywords": ["nix", "peer-reviewed", "reproducibility", "reproducible-research"]
+  }
 }
