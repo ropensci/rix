@@ -1,7 +1,9 @@
 #' fetchgit Downloads and installs a package hosted of Git
-#' @param git_pkg A list of three elements: "package_name", the name of the
+#' @param git_pkg A list of four elements: "package_name", the name of the
 #'   package, "repo_url", the repository's url, "commit", the commit hash of
-#'   interest.
+#'   interest, "ref", the reference to a version (usually a tag or branch name).
+#'   One of "commit" or "ref" must not be NULL. If both have values, ref will
+#'   be prioritized.
 #' @param ... Further arguments passed down to methods.
 #' @return A character. The Nix definition to download and build the R package
 #'   from GitHub.
@@ -10,6 +12,7 @@ fetchgit <- function(git_pkg, ...) {
   package_name <- git_pkg$package_name
   repo_url <- git_pkg$repo_url
   commit <- git_pkg$commit
+  ref <- git_pkg$ref
   output <- nix_hash(repo_url, commit, ...)
   sri_hash <- output$sri_hash
 
@@ -23,6 +26,7 @@ fetchgit <- function(git_pkg, ...) {
     package_name,
     repo_url,
     commit,
+    ref,
     sri_hash,
     imports,
     remotes
@@ -47,12 +51,14 @@ fetchgit <- function(git_pkg, ...) {
   output
 }
 
-#' generate_git_nix_expression Generate Nix expression for fetchgit()
+#' generate_git_nix_expression Generate Nix expression for builtins.fetchGit()
 #' @param package_name A character, Git package name.
 #' @param repo_url A character, Git repo url.
-#' @param commit A character, Git commit.
-#' @param sri_hash A character, hash of Git repo.
-#' @param imports A list of pcakages, can be empty list
+#' @param commit A character, Git commit. Required if ref not supplied.
+#' @param ref A character, Git reference to look for the requested revision 
+#'   (often branch or tag name). Required if commit not supplied, prioritized 
+#'   over commit if both are supplied.
+#' @param imports A list of packages, can be empty list
 #' @param remotes A list of remotes dependencies, can be empty list
 #' @return A character. Part of the Nix definition to download and build the R package
 #' from the CRAN archives.
@@ -60,8 +66,8 @@ fetchgit <- function(git_pkg, ...) {
 generate_git_nix_expression <- function(
   package_name,
   repo_url,
-  commit,
-  sri_hash,
+  commit = NULL,
+  ref = NULL,
   imports,
   remotes = NULL
 ) {
@@ -73,15 +79,24 @@ generate_git_nix_expression <- function(
     remote_pkgs_names <- sapply(remotes, function(x) x$package_name)
     paste0(" ++ [ ", paste0(remote_pkgs_names, collapse = " "), " ]")
   }
+  
+  if(!is.null(ref)) {
+    git_version_string = sprintf('ref = \"%s\"',
+                                 ref)
+  } else if (!is.null(commit)) {
+    git_version_string = sprintf('rev = \"%s\"',
+                                 commit)
+  } else {
+    stop("Github packages require one of 'commit' or 'ref'")
+  }
 
   sprintf(
     '
     %s = (pkgs.rPackages.buildRPackage {
       name = \"%s\";
-      src = pkgs.fetchgit {
+      src = builtins.fetchGit {
         url = \"%s\";
-        rev = \"%s\";
-        sha256 = \"%s\";
+        %s;
       };
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) %s;
@@ -91,8 +106,7 @@ generate_git_nix_expression <- function(
     package_name,
     package_name,
     repo_url,
-    commit,
-    sri_hash,
+    git_version_string,
     imports,
     flag_remote_deps
   )
@@ -386,6 +400,12 @@ fetchlocals <- function(local_r_pkgs) {
 #' @param git_pkgs A list of three elements: "package_name", the name of the
 #' package, "repo_url", the repository's url and "commit", the commit hash of
 #' interest. This argument can also be a list of lists of these three elements.
+#' @param git_pkg A list of four elements: "package_name", the name of the
+#'   package, "repo_url", the repository's url, "commit", the commit hash of
+#'   interest, "ref", the reference to a version (usually a tag or branch name).
+#'   One of "commit" or "ref" must not be NULL. If both have values, ref will
+#'   be prioritized. This argument can also be a list of lists of these four
+#'   elements.
 #' @param ... Further arguments passed down to methods.
 #' @return A character. The Nix definition to download and build the R package
 #' from GitHub.
@@ -473,7 +493,8 @@ fetchzips <- function(archive_pkgs) {
 }
 
 #' fetchpkgs Downloads and installs packages from CRAN archives or GitHub
-#' @param git_pkgs List of Git packages with name, url and commit
+#' @param git_pkgs List of Git packages with name, url, commit and ref. One of
+#'   commit or ref can be NULL.
 #' @param archive_pkgs Vector of CRAN archive package names
 #' @param ... Further arguments passed down to methods.
 #' @return Nix definition string for building the packages

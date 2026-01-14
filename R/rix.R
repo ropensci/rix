@@ -116,9 +116,11 @@
 #'   set `ide = "none"` and refer to the `vignette("e-configuring-ide")` for
 #'   more details on how to set up your editor to work with Nix shells.
 #'
-#'   Packages to install from GitHub or Gitlab must be provided in a list of 3
-#'   elements: "package_name", "repo_url" and "commit". To install several
-#'   packages, provide a list of lists of these 3 elements, one per package to
+#'   Packages to install from GitHub or Gitlab must be provided in a list of 4
+#'   elements: "package_name", "repo_url", "commit", and "ref". Only one of 
+#'   "commit" or "ref" need to be supplied, but at least one is required. If
+#'   both are supplied, "ref" will be used, not "commit". To install several
+#'   packages, provide a list of lists of these 4 elements, one per package to
 #'   install. It is also possible to install old versions of packages by
 #'   specifying a version. For example, to install the latest version of `{AER}`
 #'   but an old version of `{ggplot2}`, you could write: `r_pkgs = c("AER",
@@ -129,7 +131,8 @@
 #'   have looked at the time of `{ggplot2}`'s version 2.2.1 release, then use
 #'   the Nix revision closest to that date, by setting `r_ver = "3.1.0"`, which
 #'   was the version of R current at the time. This ensures that Nix builds a
-#'   completely coherent environment. For security purposes, users that wish to
+#'   completely coherent environment.
+#'   For security purposes, users that wish to
 #'   install packages from GitHub/GitLab or from the CRAN archives must provide
 #'   a security hash for each package. `{rix}` automatically precomputes this
 #'   hash for the source directory of R packages from GitHub/Gitlab or from the
