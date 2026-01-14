@@ -132,16 +132,6 @@
 #'   the Nix revision closest to that date, by setting `r_ver = "3.1.0"`, which
 #'   was the version of R current at the time. This ensures that Nix builds a
 #'   completely coherent environment.
-#'   For security purposes, users that wish to
-#'   install packages from GitHub/GitLab or from the CRAN archives must provide
-#'   a security hash for each package. `{rix}` automatically precomputes this
-#'   hash for the source directory of R packages from GitHub/Gitlab or from the
-#'   CRAN archives, to make sure the expected trusted sources that match the
-#'   precomputed hashes in the `default.nix` are downloaded, but only if Nix
-#'   is installed. If you need to generate an expression with such packages,
-#'   but are working on a system where you can't install Nix, consider generating
-#'   the expression using a continuous integration service, such as GitHub
-#'   Actions.
 #'
 #'   Note that installing packages from Git or old versions using the `"@"`
 #'   notation or local packages, does not leverage Nix's capabilities for
@@ -167,6 +157,7 @@
 #'   It is possible to use `"bleeding-edge`" or `"frozen-edge`" as the value for
 #'   the `r_ver` argument. This will create an environment with the very latest
 #'   R packages. `"bleeding-edge`" means that every time you will build the
+#'   environment, the packages will get updated. This is especially useful for
 #'   environment, the packages will get updated. This is especially useful for
 #'   environments that need to be constantly updated, for example when
 #'   developing a package. In contrast, `"frozen-edge`" will create an
