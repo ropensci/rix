@@ -419,13 +419,20 @@ generate_locale_variables <- function() {
 #' @param flag_git_archive Character, are there R packages from GitHub at all?
 #' @param flag_rpkgs Character, are there any R packages at all?
 #' @param flag_local_r_pkgs Character, are there any local R packages at all?
+#' @param py_conf List. A list of two elements, `py_version` and `py_conf`.
+#'   `py_version` must be of the form `"3.12"` for Python 3.12 and `py_conf`
+#'   must be an atomic vector of packages names, for example
+#'   `py_conf = c("polars", "plotnine", "great-tables")`.
+#' @param flag_py_conf Character, are there any Python packages at all?
 #' @noRd
 generate_wrapped_pkgs <- function(
   ide,
   attrib,
   flag_git_archive,
   flag_rpkgs,
-  flag_local_r_pkgs
+  flag_local_r_pkgs,
+  py_conf,
+  flag_py_conf
 ) {
   if (flag_rpkgs == "") {
     return(NULL)
@@ -434,12 +441,15 @@ generate_wrapped_pkgs <- function(
       "
   wrapped_pkgs = pkgs.%s.override {
     packages = [ %s %s %s ];
+    %s
   };
 ",
       attrib[ide],
       flag_git_archive,
       flag_rpkgs,
-      flag_local_r_pkgs
+      flag_local_r_pkgs,
+      generate_radian_python_version_override(py_conf, flag_py_conf )
+      
     )
   } else {
     NULL
@@ -531,5 +541,24 @@ generate_set_reticulate <- function(py_conf, flag_py_conf) {
       gsub("\\.", "", py_conf$py_version)
     )
     paste0('RETICULATE_PYTHON = "${pkgs.', py_version, '}/bin/python";\n')
+  }
+}
+
+#' generate_radian_python_version_override Helper to set radian's python version to the same as the one from the python user-config in order to avoid reticulate falling back to radian's undesired python version
+#' @param py_conf List. A list of two elements, `py_version` and `py_conf`.
+#'   `py_version` must be of the form `"3.12"` for Python 3.12 and `py_conf`
+#'   must be an atomic vector of packages names, for example
+#'   `py_conf = c("polars", "plotnine", "great-tables")`.
+#' @param flag_py_conf Character, are there any Python packages at all?
+#' @noRd
+generate_radian_python_version_override <- function(py_conf, flag_py_conf){
+  if (flag_py_conf == "") {
+    ""
+  } else {
+    py_version <- paste0(
+      "python",
+      gsub("\\.", "", py_conf$py_version)
+    )
+    paste0('radian = pkgs.', py_version, 'Packages.radian;\n')
   }
 }
