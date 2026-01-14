@@ -2,15 +2,16 @@
 #' available locally
 #' @param repo_url URL to Git repository
 #' @param commit Commit hash (SHA-1)
+#' @param ref Ref to release or branch
 #' @param ... Further arguments passed down to methods.
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a GitHub repo
 #'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
-nix_hash <- function(repo_url, commit, ...) {
+nix_hash <- function(repo_url, commit, ref, ...) {
   if (grepl("(github)|(gitlab)", repo_url)) {
-    hash_git(repo_url = repo_url, commit, ...)
+    hash_git(repo_url = repo_url, commit, ref, ...)
   } else if (grepl("cran.*Archive.*", repo_url)) {
     hash_cran(repo_url = repo_url)
   } else {
@@ -305,13 +306,14 @@ hash_cran <- function(repo_url) {
 #' NAR
 #' @param repo_url URL to GitHub repository
 #' @param commit Commit hash
+#' @param ref Release or branch reference
 #' @param ... Further arguments passed down to methods.
 #' @return list with following elements:
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a GitHub repo
 #'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
-hash_git <- function(repo_url, commit, ...) {
+hash_git <- function(repo_url, commit, ref, ...) {
   trailing_slash <- grepl("/$", repo_url)
   if (isTRUE(trailing_slash)) {
     slash <- ""
@@ -319,10 +321,15 @@ hash_git <- function(repo_url, commit, ...) {
     slash <- "/"
   }
 
+  if(!is.null(ref)) {
+    url_extension <- ref
+  } else if(!is.null(commit)) {
+    url_extension <- commit
+  }
   if (grepl("github", repo_url)) {
-    url <- paste0(repo_url, slash, "archive/", commit, ".tar.gz")
+    url <- paste0(repo_url, slash, "archive/", url_extension, ".tar.gz")
   } else if (grepl("gitlab", repo_url)) {
-    url <- paste0(repo_url, slash, "-/archive/", commit, ".tar.gz")
+    url <- paste0(repo_url, slash, "-/archive/", url_extension, ".tar.gz")
   }
   # list contains `sri_hash` and `deps` elements
   hash_url(url, repo_url, commit, ...)
