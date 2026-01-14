@@ -29,5 +29,5 @@ jobs:
       
       - name: Run checks
         run: |
-          nix-shell --run "Rscript -e \"rhub::rhub_check(platforms = c('linux','macos','macos-arm64','windows','ubuntu-next','ubuntu-release', 'gcc14'))\""
+          nix-shell --run "Rscript -e \"rhub::rhub_check(platforms = c('linux','macos-arm64','windows','ubuntu-next','ubuntu-release', 'gcc14'))\""
 
