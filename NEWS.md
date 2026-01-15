@@ -9,7 +9,16 @@
   to add yourself to `trusted-users` on Linux and macOS. Also added NixOS
   instructions for declarative configuration via `configuration.nix` or Home
   Manager. This approach works for both standard Nix and Determinate Nix
-  installations. Fixes issue #569
+  installations.
+
+- `rix()`: Python QoL improvements:
+  - If `"uv"` is in `system_pkgs`, `LD_LIBRARY_PATH` is automatically configured
+    in the shell hook for dynamic library loading (required by packages like
+    numpy that load shared libraries at runtime).
+  - New `py_src_dir` element in `py_conf` for Python package development. Set
+    this to your package's source directory (e.g., `"src"` or `"mypackage/src"`)
+    to add `PYTHONPATH` to the shell hook, enabling editable-install-like
+    behavior in Nix shells.
 
 
 # rix 0.17.3 (2025-09-30)
