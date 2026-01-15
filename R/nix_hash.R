@@ -322,7 +322,8 @@ hash_git <- function(repo_url, commit, ref, ...) {
   }
 
   if(!is.null(ref)) {
-    url_extension <- ref
+    url_extension <- sprintf("tree/%s",
+                             ref)
   } else if(!is.null(commit)) {
     url_extension <- commit
   }
