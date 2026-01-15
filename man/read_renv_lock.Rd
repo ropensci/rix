@@ -15,3 +15,4 @@ the result of reading renv.lock with \link[jsonlite:read_json]{jsonlite::read_js
 \description{
 Reads renv.lock if it exists and can be parsed as json.
 }
+\keyword{internal}

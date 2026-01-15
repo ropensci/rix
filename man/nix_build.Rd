@@ -42,3 +42,8 @@ If no custom arguments are provided, only the project directory is passed.
   nix_build(args = c("--max-jobs", "2", "--quiet"))
 }
 }
+\seealso{
+Other Nix execution: 
+\code{\link{with_nix}()}
+}
+\concept{Nix execution}

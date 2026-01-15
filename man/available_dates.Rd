@@ -15,3 +15,9 @@ List available dates.
 \examples{
 available_dates()
 }
+\seealso{
+Other available versions: 
+\code{\link{available_df}()},
+\code{\link{available_r}()}
+}
+\concept{available versions}

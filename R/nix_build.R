@@ -12,6 +12,7 @@
 #'   Users can supply any flags supported by `nix-build` via the `args` parameter.
 #'   If no custom arguments are provided, only the project directory is passed.
 #' @importFrom tools pskill
+#' @family Nix execution
 #' @export
 #' @examples
 #' \dontrun{

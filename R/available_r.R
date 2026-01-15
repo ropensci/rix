@@ -1,5 +1,6 @@
 #' Return data frame with R, Bioc versions and supported platforms
 #' @return A data frame
+#' @family available versions
 #' @export
 #' @importFrom utils read.csv
 #'
@@ -15,6 +16,7 @@ available_df <- function() {
 
 #' List available R versions from the rstats-on-nix fork of Nixpkgs
 #' @return A character vector containing the available R versions.
+#' @family available versions
 #' @export
 #'
 #' @examples
@@ -34,6 +36,7 @@ available_r <- function() {
 
 #' List available dates.
 #' @return A character vector containing the available dates
+#' @family available versions
 #' @export
 #'
 #' @examples

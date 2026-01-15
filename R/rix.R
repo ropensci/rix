@@ -187,6 +187,7 @@
 #'   the vignette titled
 #'   "z - Advanced topic: Understanding the rPackages set release cycle and
 #'   using bleeding edge packages".
+#' @family core functions
 #' @export
 #' @examples
 #' \dontrun{

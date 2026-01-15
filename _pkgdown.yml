@@ -42,16 +42,22 @@ reference:
 - title: Core functions
   desc: >
     The main functions for generating and initializing Nix environments.
-  contents:
-  - rix
-  - rix_init
+  contents: has_concept("core functions")
 
-- title: Building environments
+- title: Nix execution
   desc: >
     Functions to build Nix expressions and run code inside Nix environments.
-  contents:
-  - nix_build
-  - with_nix
+  contents: has_concept("Nix execution")
+
+- title: Available versions
+  desc: >
+    Functions to query available R versions and dates for environment generation.
+  contents: has_concept("available versions")
+
+- title: CI/CD integration
+  desc: >
+    Functions for integrating rix with GitHub Actions and Cachix.
+  contents: has_concept("CI/CD")
 
 - title: Project setup
   desc: >
@@ -60,18 +66,3 @@ reference:
   - renv2nix
   - setup_cachix
   - make_launcher
-
-- title: Data and utilities
-  desc: >
-    Functions to query available R versions and dates for environment generation.
-  contents:
-  - available_r
-  - available_dates
-  - available_df
-
-- title: CI/CD integration
-  desc: >
-    Functions for integrating rix with GitHub Actions and Cachix.
-  contents:
-  - ga_cachix
-  - tar_nix_ga

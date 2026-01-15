@@ -253,3 +253,8 @@ rix(
 )
 }
 }
+\seealso{
+Other core functions: 
+\code{\link{rix_init}()}
+}
+\concept{core functions}

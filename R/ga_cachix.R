@@ -10,6 +10,7 @@
 #' @param path_default String, relative path (from the root directory of your project)
 #'   to the `default.nix` to build.
 #' @return Nothing, copies file to a directory.
+#' @family CI/CD
 #' @export
 #' @examples
 #' \dontrun{

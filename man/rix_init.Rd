@@ -112,4 +112,8 @@ rix_init(
 }
 \seealso{
 \code{\link[=with_nix]{with_nix()}}
+
+Other core functions: 
+\code{\link{rix}()}
 }
+\concept{core functions}

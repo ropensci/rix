@@ -32,3 +32,8 @@ read and write permissions to the GitHub Actions bot.
 ga_cachix("my-cachix", path_default = "default.nix")
 }
 }
+\seealso{
+Other CI/CD: 
+\code{\link{tar_nix_ga}()}
+}
+\concept{CI/CD}

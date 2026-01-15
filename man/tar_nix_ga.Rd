@@ -24,3 +24,8 @@ sure to give read and write permissions to the GitHub Actions bot.
 tar_nix_ga()
 }
 }
+\seealso{
+Other CI/CD: 
+\code{\link{ga_cachix}()}
+}
+\concept{CI/CD}

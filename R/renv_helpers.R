@@ -7,6 +7,7 @@
 #' @return the result of reading renv.lock with [jsonlite::read_json]
 #'
 #' @importFrom jsonlite read_json
+#' @keywords internal
 read_renv_lock <- function(renv_lock_path = "renv.lock") {
   if (!file.exists(renv_lock_path)) {
     stop(renv_lock_path, " does not exist!")
@@ -39,6 +40,7 @@ read_renv_lock <- function(renv_lock_path = "renv.lock") {
 #' \dontrun{
 #' renv_remote_pkgs(read_renv_lock()$Packages)
 #' }
+#' @keywords internal
 renv_remote_pkgs <- function(
   renv_lock_remote_pkgs,
   host = NULL
@@ -269,6 +271,7 @@ renv2nix <- function(
 #' \dontrun{
 #' rix(r_ver = renv_lock_r_ver())
 #' }
+#' @keywords internal
 renv_lock_r_ver <- function(renv_lock, override_r_ver = NULL) {
   if (is.null(override_r_ver)) {
     renv_lock$R$Version
