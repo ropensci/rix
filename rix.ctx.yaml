@@ -5,43 +5,9 @@ llm_instructions: This is an LLM-optimized API specification for the R package '
 kind: package
 schema_version: '1.1'
 name: rix
-version: 0.17.2
+version: 0.17.3
 language: R
 description: Reproducible Data Science Environments with 'Nix'
----
-kind: function
-name: setup_cachix
-exported: true
-signature: setup_cachix(nix_conf_path = "~/.config/nix")
-arguments:
-  nix_conf_path: Character, path to folder containing 'nix.conf' file. Defaults to "~/.config/nix".
-returns: Nothing; changes a file in the user's home directory.
-examples:
-- code: setup_cachix()
----
-kind: function
-name: available_df
-exported: true
-signature: available_df()
-returns: A data frame
-examples:
-- code: available_dates()
----
-kind: function
-name: available_r
-exported: true
-signature: available_r()
-returns: A character vector containing the available R versions.
-examples:
-- code: available_r()
----
-kind: function
-name: available_dates
-exported: true
-signature: available_dates()
-returns: A character vector containing the available dates
-examples:
-- code: available_dates()
 ---
 kind: function
 name: renv2nix
@@ -66,6 +32,30 @@ examples:
     renv_lock_path = "path/to/rix_project/renv.lock",
     project_path = "path/to/rix_project"
     )
+---
+kind: function
+name: available_df
+exported: true
+signature: available_df()
+returns: A data frame
+examples:
+- code: available_dates()
+---
+kind: function
+name: available_r
+exported: true
+signature: available_r()
+returns: A character vector containing the available R versions.
+examples:
+- code: available_r()
+---
+kind: function
+name: available_dates
+exported: true
+signature: available_dates()
+returns: A character vector containing the available dates
+examples:
+- code: available_dates()
 ---
 kind: function
 name: ga_cachix
@@ -97,38 +87,6 @@ examples:
     rprofile_action = "create_missing",
     message_type = c("simple")
     )
----
-kind: function
-name: nix_build
-exported: true
-signature: nix_build(project_path = getwd(),message_type = c("simple", "quiet", "verbose"),args = NULL)
-arguments:
-  args: A character vector of additional arguments to be passed directly to the nix-build command. If the project directory (i.e. project_path) is not included in args, it will be appended automatically.
-  message_type: Character vector with messaging type. Either "simple" (default), "quiet" for no messaging, or "verbose".
-  project_path: Path to the folder where the default.nix file resides.
-returns: Integer of the process ID (PID) of the nix-build shell command launched, if the nix_build() call is assigned to an R object. Otherwise, it will be returned invisibly.
-examples:
-- code: nix_build()
-- code: nix_build(args = c("--max-jobs", "2", "--quiet"))
----
-kind: function
-name: make_launcher
-exported: true
-signature: make_launcher(editor, project_path)
-arguments:
-  editor: Character, the command to launch the editor. See the "Details" section below for more information.
-  project_path: Character, where to write the launcher, for example "/home/path/to/project". The file will thus be written to the file "/home/path/to/project/start-editor.sh". If the folder does not exist, it will be created.
-returns: Nothing, writes a script.
-examples:
-- code: available_dates()
----
-kind: function
-name: tar_nix_ga
-exported: true
-signature: tar_nix_ga()
-returns: Nothing, copies file to a directory.
-examples:
-- code: tar_nix_ga()
 ---
 kind: function
 name: with_nix
@@ -191,3 +149,45 @@ examples:
     shell_hook = NULL,
     ignore_remotes_cache = FALSE
     )
+---
+kind: function
+name: make_launcher
+exported: true
+signature: make_launcher(editor, project_path)
+arguments:
+  editor: Character, the command to launch the editor. See the "Details" section below for more information.
+  project_path: Character, where to write the launcher, for example "/home/path/to/project". The file will thus be written to the file "/home/path/to/project/start-editor.sh". If the folder does not exist, it will be created.
+returns: Nothing, writes a script.
+examples:
+- code: available_dates()
+---
+kind: function
+name: nix_build
+exported: true
+signature: nix_build(project_path = getwd(),message_type = c("simple", "quiet", "verbose"),args = NULL)
+arguments:
+  args: A character vector of additional arguments to be passed directly to the nix-build command. If the project directory (i.e. project_path) is not included in args, it will be appended automatically.
+  message_type: Character vector with messaging type. Either "simple" (default), "quiet" for no messaging, or "verbose".
+  project_path: Path to the folder where the default.nix file resides.
+returns: Integer of the process ID (PID) of the nix-build shell command launched, if the nix_build() call is assigned to an R object. Otherwise, it will be returned invisibly.
+examples:
+- code: nix_build()
+- code: nix_build(args = c("--max-jobs", "2", "--quiet"))
+---
+kind: function
+name: setup_cachix
+exported: true
+signature: setup_cachix(nix_conf_path = "~/.config/nix")
+arguments:
+  nix_conf_path: Character, path to folder containing 'nix.conf' file. Defaults to "~/.config/nix".
+returns: Nothing; changes a file in the user's home directory.
+examples:
+- code: setup_cachix()
+---
+kind: function
+name: tar_nix_ga
+exported: true
+signature: tar_nix_ga()
+returns: Nothing, copies file to a directory.
+examples:
+- code: tar_nix_ga()
