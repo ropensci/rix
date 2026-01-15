@@ -25,6 +25,7 @@ create_dev_env.R
 ^.envrc$
 ^.direnv$
 video_thumbnail.png
+rix.ctx.yaml
 
 # flint files
 ^flint$

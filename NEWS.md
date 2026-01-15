@@ -1,4 +1,4 @@
-# rix 0.17.4 (2026-01-)
+# rix 0.17.4 (2026-01-15)
 
 - Fix evaluation warning: ‘system’ has been renamed to/replaced by
   ‘stdenv.hostPlatform.system’`](https://discourse.nixos.org/t/how-to-fix-evaluation-warning-system-has-been-renamed-to-replaced-by-stdenv-hostplatform-system/72120)
