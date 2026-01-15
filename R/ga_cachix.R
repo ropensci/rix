@@ -4,7 +4,7 @@
 #'   projects `default.nix` file to generate the development environment on
 #'   GitHub Actions and will then cache the created binaries in Cachix. Create a
 #'   free account on Cachix to use this action. Refer to
-#'   `vignette("z-binary_cache")` for detailed instructions. Make sure to give
+#'   `vignette("binary-cache")` for detailed instructions. Make sure to give
 #'   read and write permissions to the GitHub Actions bot.
 #' @param cache_name String, name of your cache.
 #' @param path_default String, relative path (from the root directory of your project)

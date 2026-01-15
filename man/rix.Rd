@@ -92,7 +92,7 @@ project-specific version of the chosen editor which will be differrent than
 the one already present in your system (if any). For other editors or if
 you want to use an editor already installed on your system (which will
 require some configuration to make it work seamlessly with Nix shells see
-the \code{vignette("e-configuring-ide")} for configuration examples), use
+the \code{vignette("configuring-ide")} for configuration examples), use
 "none". Please be aware that VS Code and Positron are not free software. To
 facilitate their installation, \code{rix()} automatically enables a required
 setting without prompting the user for confirmation. See the "Details"
@@ -167,7 +167,7 @@ have already installed on your system, with the exception of RStudio which
 must be managed by Nix to "see" Nix environments. Positron must also be
 heavily configured to work with Nix shells, so we recommend installing it
 using Nix. To use an editor that you already have installed on your system,
-set \code{ide = "none"} and refer to the \code{vignette("e-configuring-ide")} for
+set \code{ide = "none"} and refer to the \code{vignette("configuring-ide")} for
 more details on how to set up your editor to work with Nix shells.
 
 Packages to install from GitHub or Gitlab must be provided in a list of 3
@@ -202,7 +202,7 @@ repository.
 If GitHub packages have dependencies on GitHub as well, \code{{rix}} will
 attempt to generate the correct expression, but we highly recommend you
 read the
-\code{vignette("z-advanced-topic-handling-packages-with-remote-dependencies")}
+\code{vignette("remote-dependencies")}
 Vignette.
 
 By default, the Nix shell will be configured with \code{"en_US.UTF-8"} for the

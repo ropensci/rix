@@ -23,8 +23,8 @@ To proceed, install Nix or use a system where it is available."
     packageStartupMessage(
       "To speed up builds, configure the rstats-on-nix cache by running:
   rix::setup_cachix()
-See vignette(\"b1-setting-up-and-using-rix-on-linux-and-windows\") or
-vignette(\"b2-setting-up-and-using-rix-on-macos\") for full instructions.
+See vignette(\"setting-up-linux-windows\") or
+vignette(\"setting-up-macos\") for full instructions.
 (You only need to do this once per machine.)"
     )
   }
@@ -33,8 +33,8 @@ vignette(\"b2-setting-up-and-using-rix-on-macos\") for full instructions.
     packageStartupMessage(
       "To speed up builds, configure the rstats-on-nix cache by running:
   rix::setup_cachix()
-See vignette(\"b1-setting-up-and-using-rix-on-linux-and-windows\") or
-vignette(\"b2-setting-up-and-using-rix-on-macos\") for full instructions.
+See vignette(\"setting-up-linux-windows\") or
+vignette(\"setting-up-macos\") for full instructions.
 (You only need to do this once per machine.)"
     )
   }

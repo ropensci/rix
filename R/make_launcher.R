@@ -12,7 +12,7 @@
 #'   creation, so you need to make it executable first by running
 #'   `chmod +x start-editor.sh` (replace `editor` with whichever editor you use).
 #'   You don’t need this launcher if you use `direnv`;
-#'   see `vignette("e-configuring-ide")` for more details.
+#'   see `vignette("configuring-ide")` for more details.
 #'
 #' @return Nothing, writes a script.
 #' @export
