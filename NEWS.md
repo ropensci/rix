@@ -1,6 +1,20 @@
+# rix 0.17.4 (2026-01-)
+
+- Fix evaluation warning: ‘system’ has been renamed to/replaced by
+  ‘stdenv.hostPlatform.system’`](https://discourse.nixos.org/t/how-to-fix-evaluation-warning-system-has-been-renamed-to-replaced-by-stdenv-hostplatform-system/72120)
+  (https://github.com/ropensci/rix/pull/570)
+
+- `setup_cachix()`: is now the recommended primary approach for configuring the
+  `rstats-on-nix` binary cache. Documentation updated with one-liner commands
+  to add yourself to `trusted-users` on Linux and macOS. Also added NixOS
+  instructions for declarative configuration via `configuration.nix` or Home
+  Manager. This approach works for both standard Nix and Determinate Nix
+  installations. Fixes issue #569
+
+
 # rix 0.17.3 (2025-09-30)
 
-- Fixes for issue #544
+- Fix for issues #544
 
 # rix 0.17.2 (2025-09-11)
 

@@ -215,6 +215,11 @@ also from the dedicated `rstats-on-nix` cache. Our cache also contains the
 latest version of R, which sometimes can also lag behind on the official
 `nixpkgs` repository.
 
+**Determinate Nix users**: If you installed Nix using the Determinate Systems
+installer, run `rix::setup_cachix()` in R instead, and ensure you've added
+yourself to `trusted-users` in `/etc/nix/nix.custom.conf`. See
+`vignette("b1-setting-up-and-using-rix-on-linux-and-windows")` for details.
+
 When building an environment, if you see the following message:
 
 ```

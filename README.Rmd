@@ -262,28 +262,31 @@ though):
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 ```
 
-Then, install the `cachix` client and configure our `rstats-on-nix` cache; this will install
-binary versions of many R packages which will speed up the building process of
-environments:
+Then, configure the `rstats-on-nix` binary cache to speed up builds. The
+recommended approach is to use `rix::setup_cachix()` from R:
 
 ```bash
-nix-env -iA cachix -f https://cachix.org/api/v1/install
+nix-shell -p R rPackages.rix  # Start R with rix
 ```
 
-then use the cache:
+```r
+rix::setup_cachix()
+```
+
+Then add yourself as a trusted user:
 
 ```bash
-cachix use rstats-on-nix
+# Linux:
+echo "trusted-users = root $USER" | sudo tee -a /etc/nix/nix.custom.conf && sudo systemctl restart nix-daemon
+
+# macOS:
+echo "trusted-users = root $USER" | sudo tee -a /etc/nix/nix.custom.conf && sudo launchctl kickstart -k system/org.nixos.nix-daemon
 ```
 
-You only need to do this once per machine you want to use `{rix}` on. Many thanks
-to [Cachix](https://www.cachix.org/) for sponsoring the `rstats-on-nix` cache!
-
-`{rix}` also includes a function called `setup_cachix()` which will configure
-the cache but it is recommended to use the `cachix` client instead. This is
-because `setup_cachix()` will not edit the files that require admin/root
-privileges and only edit the user-level files. This may not be enough depending
-on how you installed Nix. Using the `cachix` client takes care of everything.
+Many thanks to [Cachix](https://www.cachix.org/) for sponsoring the
+`rstats-on-nix` cache! See `vignette("b1-setting-up-and-using-rix-on-linux-and-windows")`
+or `vignette("b2-setting-up-and-using-rix-on-macos")` for alternative
+approaches and NixOS instructions.
 
 You can then use `{rix}` to build and enter a Nix-based R environment:
 
