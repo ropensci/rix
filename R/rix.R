@@ -36,14 +36,21 @@
 #'   See the
 #'   `vignette("d2- installing-system-tools-and-texlive-packages-in-a-nix-environment")`
 #'   for more details.
-#' @param py_conf List. A list containing two elements: `py_version` and
-#'   `py_pkgs`. `py_version` should be in the form `"3.12"` for Python 3.12, and
-#'   `py_pkgs` should be an atomic vector of package names (e.g., `py_pkgs =
-#'   c("polars", "plotnine", "great-tables")`). If Python packages are requested
-#'   but `{reticulate}` is not in the list of R packages, the user will be
-#'   warned that they may want to add it. When `py_conf` packages are requested,
-#'   the `RETICULATE_PYTHON` environment variable is set to ensure the Nix
-#'   environment does not use with a system-wide Python installation.
+#' @param py_conf List. A list containing two or three elements: `py_version`,
+#'   `py_pkgs`, and optionally `py_src_dir`. `py_version` should be in the form
+#'   `"3.12"` for Python 3.12, and `py_pkgs` should be an atomic vector of
+#'   package names (e.g., `py_pkgs = c("polars", "plotnine", "great-tables")`).
+#'   If Python packages are requested but `{reticulate}` is not in the list of R
+#'   packages, the user will be warned that they may want to add it. When
+#'   `py_conf` packages are requested, the `RETICULATE_PYTHON` environment
+#'   variable is set to ensure the Nix environment does not use a system-wide
+#'   Python installation. If you are developing a Python package, set
+#'   `py_src_dir` to the path of your package's source directory (e.g.,
+#'   `"mypackage/src"` or just `"src"`). This adds `PYTHONPATH` to the shell
+#'   hook so your package can be imported without installation. This is the Nix
+#'   equivalent of `pip install -e .` (editable install). Note: if `"uv"` is in
+#'   `system_pkgs`, `LD_LIBRARY_PATH` is automatically configured for dynamic
+#'   library loading (required by packages like numpy).
 #' @param jl_conf List. A list of two elements, `jl_version` and `jl_conf`.
 #'   `jl_version` must be of the form `"1.10"` for Julia 1.10. Leave empty or
 #'   use an empty string to use the latest version, or use `"lts"` for the long
@@ -431,9 +438,9 @@ for more details."
     ""
   }
 
-  # Correctly formats shellHook for Nix's mkShell
+  # shell_hook is now processed in generate_shell along with Python-specific hooks
   shell_hook <- if (!is.null(shell_hook) && nzchar(shell_hook)) {
-    paste0('shellHook = "', shell_hook, '";')
+    shell_hook
   } else {
     ""
   }
@@ -473,7 +480,8 @@ for more details."
       flag_jl_conf,
       flag_local_r_pkgs,
       flag_wrapper,
-      shell_hook
+      shell_hook,
+      system_pkgs
     ),
     generate_inherit(),
     collapse = "\n"

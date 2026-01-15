@@ -457,6 +457,7 @@ generate_wrapped_pkgs <- function(
 #' @param flag_local_r_pkgs Character, are there any wrapped packages at all?
 #' @param flag_wrapper Character, are there any wrapped packages at all?
 #' @param shell_hook Character, the mkShell's shellHook.
+#' @param system_pkgs Character, list of system packages (to check for uv).
 #' @noRd
 generate_shell <- function(
   flag_git_archive,
@@ -467,8 +468,25 @@ generate_shell <- function(
   flag_jl_conf,
   flag_local_r_pkgs,
   flag_wrapper,
-  shell_hook
+  shell_hook,
+  system_pkgs = NULL
 ) {
+  # Generate Python-specific shell hooks (LD_LIBRARY_PATH for uv, PYTHONPATH for py_src_dir)
+  py_shell_hook <- generate_py_shell_hook(py_conf, system_pkgs)
+
+  # Combine shell hooks
+  all_hooks <- c(py_shell_hook, shell_hook)
+  all_hooks <- all_hooks[nzchar(all_hooks)]
+  combined_hook <- if (length(all_hooks) > 0) {
+    paste0(
+      "shellHook = ''\n    ",
+      paste(all_hooks, collapse = "\n    "),
+      "\n  '';"
+    )
+  } else {
+    ""
+  }
+
   gsub(
     "(?<=\\S) {2,}",
     " ",
@@ -491,7 +509,7 @@ generate_shell <- function(
       flag_jl_conf,
       flag_local_r_pkgs,
       flag_wrapper,
-      shell_hook
+      combined_hook
     ),
     perl = TRUE
   )
@@ -531,5 +549,43 @@ generate_set_reticulate <- function(py_conf, flag_py_conf) {
       gsub("\\.", "", py_conf$py_version)
     )
     paste0('RETICULATE_PYTHON = "${pkgs.', py_version, '}/bin/python";\n')
+  }
+}
+
+#' generate_py_shell_hook Helper to generate Python-specific shell hooks
+#' @param py_conf Python configuration list
+#' @param system_pkgs System packages list (to check for uv)
+#' @noRd
+generate_py_shell_hook <- function(py_conf, system_pkgs) {
+  hooks <- c()
+
+  # Add LD_LIBRARY_PATH if uv is in system_pkgs
+  # Required for Python packages that dynamically load libraries (e.g., numpy)
+  if ("uv" %in% system_pkgs) {
+    ld_library_hook <- paste0(
+      "export LD_LIBRARY_PATH=",
+      '"${pkgs.lib.makeLibraryPath (with pkgs; [ zlib gcc.cc glibc stdenv.cc.cc ])}":$LD_LIBRARY_PATH;'
+    )
+    hooks <- c(hooks, ld_library_hook)
+  }
+
+  # Add PYTHONPATH if py_src_dir is specified (for local package development)
+  if (
+    !is.null(py_conf) &&
+      !is.null(py_conf$py_src_dir) &&
+      nzchar(py_conf$py_src_dir)
+  ) {
+    pythonpath_hook <- paste0(
+      'export PYTHONPATH=$PWD/',
+      py_conf$py_src_dir,
+      ':$PYTHONPATH;'
+    )
+    hooks <- c(hooks, pythonpath_hook)
+  }
+
+  if (length(hooks) > 0) {
+    paste(hooks, collapse = "\n    ")
+  } else {
+    ""
   }
 }

@@ -1,0 +1,239 @@
+---
+title: "z - Advanced topic: Packaging Your Code in R and Python with rix"
+author: "Bruno Rodrigues"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{z - Advanced topic: Packaging Your Code in R and Python with rix}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Packaging your code is the most reliable way to ensure reproducibility and
+reusability. Instead of relying on loose scripts, packaging encourages you to
+organize your functions, document them, and test them. This vignette
+demonstrates how to create packages in R and Python within a Nix environment
+managed by `{rix}`.
+
+We will cover:
+1.  Creating an R package using `{devtools}` and `{usethis}`.
+2.  Creating a Python package using `uv`.
+3.  Defining the correct Nix environments to develop and use these packages.
+
+## Part 1: R Packages with `{usethis}` and `{devtools}`
+
+The R ecosystem provides excellent tools for package development. We will use
+`{usethis}` to set up the package structure and `{devtools}` for documentation
+and testing.
+
+### Setting up the Development Environment
+
+Start by generating a `default.nix` that includes the necessary development
+tools:
+
+```r
+library(rix)
+
+rix(
+  r_ver = "frozen-edge",
+  r_pkgs = c("devtools", "usethis", "roxygen2", "testthat"),
+  ide = "rstudio",  # or "code", "none"
+  project_path = ".",
+  overwrite = TRUE
+)
+```
+
+Build the environment with `nix-shell`.
+
+### Initializing the Package
+
+From inside your Nix shell (or RStudio started from Nix), create a new package:
+
+```r
+usethis::create_package("~/Documents/projects/cleanR")
+```
+
+This creates the standard R package directory structure (`R/`, `DESCRIPTION`,
+`NAMESPACE`).
+
+### Workflow Basics
+
+1.  **Create a function**:
+    ```r
+    usethis::use_r("clean_names")
+    ```
+    Add your function to `R/clean_names.R` and use `roxygen2` comments (`#'`)
+    for documentation.
+
+2.  **Document**:
+    ```r
+    devtools::document()
+    ```
+    This generates the `man/*.Rd` files and updates `NAMESPACE`.
+
+3.  **Test**:
+    ```r
+    usethis::use_testthat()
+    usethis::use_test("clean_names")
+    ```
+    Write unit tests in `tests/testthat/test-clean_names.R`, then run them:
+    ```r
+    devtools::test()
+    ```
+
+4.  **Check**:
+    ```r
+    devtools::check()
+    ```
+    This runs the standard R package check to ensure everything is correct.
+
+### Using Your Package in a Nix Environment
+
+Once your package is hosted on GitHub, you can use it in other project-specific
+Nix environments by adding it to the `git_pkgs` argument in `rix()`:
+
+```r
+rix(
+  r_ver = "frozen-edge",
+  r_pkgs = c("dplyr"),
+  git_pkgs = list(
+    package_name = "cleanR",
+    repo_url = "https://github.com/yourusername/cleanR",
+    commit = "commit_hash_here"
+  ),
+  ide = "rstudio",
+  project_path = ".",
+  overwrite = TRUE
+)
+```
+
+## Part 2: Python Packages with `uv`
+
+For Python, we will use `uv` to manage the project configuration (`pyproject.toml`) and build process, while Nix manages the actual Python interpreter and environment.
+
+### Setting up the Development Environment
+
+Generate a `default.nix` with Python, `uv`, and your package's dependencies:
+
+```r
+library(rix)
+
+rix(
+  date = "2025-10-07",
+  py_conf = list(
+    py_version = "3.12",
+    py_pkgs = c("pytest", "pandas", "numpy") # Runtime and test deps
+  ),
+  system_pkgs = "uv",
+  ide = "none",
+  project_path = ".",
+  overwrite = TRUE
+)
+```
+
+### Initializing the Package
+
+Inside the Nix shell, create a directory and initialize the project components:
+
+```bash
+mkdir pyclean
+cd pyclean
+uv init --bare
+mkdir -p src/pyclean tests
+touch src/pyclean/__init__.py
+```
+
+`uv init --bare` creates a `pyproject.toml` without creating a virtual
+environment (since we are using Nix).
+
+### Configuring `pyproject.toml`
+
+Edit `pyproject.toml` to define dependencies and test configuration. Critical
+sections include:
+
+```toml
+[project]
+name = "pyclean"
+version = "0.1.0"
+dependencies = [
+    "pandas>=2.0.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+]
+
+# Essential for running pytest from source layout
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+```
+
+### Development Workflow
+
+1.  **Write Code**: Add functions to `src/pyclean/`.
+2.  **Write Tests**: Add tests to `tests/`.
+3.  **Run Tests**:
+    ```bash
+    pytest
+    ```
+4.  **Build**:
+    ```bash
+    uv build
+    ```
+    This produces a wheel in `dist/`.
+
+### Local Development Loop
+
+When developing a Python package locally within a Nix shell, you want changes to
+be reflected immediately. Update your `default.nix` `shellHook` to add your
+source directory to `PYTHONPATH`.
+
+`rix` (>= 0.17.4) makes this easy with the `py_src_dir` argument:
+
+```r
+rix(
+  date = "2025-10-07",
+  py_conf = list(
+    py_version = "3.12",
+    py_pkgs = c("pytest", "pandas"),
+    py_src_dir = "src"  # Adds src/ to PYTHONPATH automatically
+  ),
+  system_pkgs = "uv",
+  # ...
+)
+```
+
+This injects `export PYTHONPATH=$PWD/src:$PYTHONPATH` into the shell hook,
+allowing you to `import pyclean` and run tests against the live source code.
+
+### Using Your Package in a Nix Environment
+
+To use your Python package in another Nix environment (e.g., for an analysis
+project), use `pkgs.python3Packages.buildPythonPackage` in your `default.nix`.
+You can point to a GitHub repository:
+
+```nix
+pyclean = pkgs.python313Packages.buildPythonPackage rec {
+  pname = "pyclean";
+  version = "0.1.0";
+  src = pkgs.fetchgit {
+    url = "https://github.com/yourusername/pyclean";
+    rev = "commit_hash";
+    sha256 = "sha256-hash";
+  };
+  pyproject = true;
+  propagatedBuildInputs = [
+    pkgs.python313Packages.pandas
+  ];
+};
+```
+
+Then add `pyclean` to the `buildInputs` list alongside your other Python packages.
