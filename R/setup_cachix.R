@@ -173,7 +173,7 @@ is_cachix_configured <- function(nix_conf_content) {
 #' @noRd
 #' @return Logical, TRUE if on NixOS
 is_nixos <- function() {
- # NixOS has a special file at /etc/NIXOS
+  # NixOS has a special file at /etc/NIXOS
   if (file.exists("/etc/NIXOS")) {
     return(TRUE)
   }
