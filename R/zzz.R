@@ -39,4 +39,3 @@ vignette(\"b2-setting-up-and-using-rix-on-macos\") for full instructions.
     )
   }
 }
-

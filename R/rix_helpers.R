@@ -478,7 +478,11 @@ generate_shell <- function(
   all_hooks <- c(py_shell_hook, shell_hook)
   all_hooks <- all_hooks[nzchar(all_hooks)]
   combined_hook <- if (length(all_hooks) > 0) {
-    paste0("shellHook = ''\n    ", paste(all_hooks, collapse = "\n    "), "\n  '';")
+    paste0(
+      "shellHook = ''\n    ",
+      paste(all_hooks, collapse = "\n    "),
+      "\n  '';"
+    )
   } else {
     ""
   }
@@ -566,9 +570,15 @@ generate_py_shell_hook <- function(py_conf, system_pkgs) {
   }
 
   # Add PYTHONPATH if py_src_dir is specified (for local package development)
-  if (!is.null(py_conf) && !is.null(py_conf$py_src_dir) && nzchar(py_conf$py_src_dir)) {
+  if (
+    !is.null(py_conf) &&
+      !is.null(py_conf$py_src_dir) &&
+      nzchar(py_conf$py_src_dir)
+  ) {
     pythonpath_hook <- paste0(
-      'export PYTHONPATH=$PWD/', py_conf$py_src_dir, ':$PYTHONPATH;'
+      'export PYTHONPATH=$PWD/',
+      py_conf$py_src_dir,
+      ':$PYTHONPATH;'
     )
     hooks <- c(hooks, pythonpath_hook)
   }
@@ -579,4 +589,3 @@ generate_py_shell_hook <- function(py_conf, system_pkgs) {
     ""
   }
 }
-

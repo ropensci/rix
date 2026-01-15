@@ -254,4 +254,3 @@ testthat::test_that("rix() without uv or py_src_dir has no extra shellHook", {
   testthat::expect_false(grepl("PYTHONPATH", nix_text))
   testthat::expect_false(grepl("shellHook", nix_text))
 })
-
