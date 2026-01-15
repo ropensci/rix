@@ -154,3 +154,8 @@ out <- with_nix(
 ## Other option: running system commands through `nix-shell` environment.
 }
 }
+\seealso{
+Other Nix execution: 
+\code{\link{nix_build}()}
+}
+\concept{Nix execution}

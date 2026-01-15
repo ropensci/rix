@@ -284,8 +284,8 @@ echo "trusted-users = root $USER" | sudo tee -a /etc/nix/nix.custom.conf && sudo
 ```
 
 Many thanks to [Cachix](https://www.cachix.org/) for sponsoring the
-`rstats-on-nix` cache! See `vignette("b1-setting-up-and-using-rix-on-linux-and-windows")`
-or `vignette("b2-setting-up-and-using-rix-on-macos")` for alternative
+`rstats-on-nix` cache! See `vignette("setting-up-linux-windows")`
+or `vignette("setting-up-macos")` for alternative
 approaches and NixOS instructions.
 
 You can then use `{rix}` to build and enter a Nix-based R environment:
@@ -334,7 +334,7 @@ start using them.
 
 ## Getting started for new users
 
-New to `{rix}` and Nix? Start by reading the `vignette("a-getting-started")`
+New to `{rix}` and Nix? Start by reading the `vignette("getting-started")`
 ([online
 documentation](https://docs.ropensci.org/rix/articles/a-getting-started.html)).
 to learn how to set up and use Nix smoothly.
@@ -342,7 +342,7 @@ to learn how to set up and use Nix smoothly.
 ### Docker
 
 Try Nix inside Docker by following this
-`vignette("z-advanced-topic-using-nix-inside-docker")`
+`vignette("nix-inside-docker")`
 [vignette](https://github.com/ropensci/rix/blob/HEAD/vignettes/z-advanced-topic-using-nix-inside-docker.Rmd).
 
 ## How is Nix different from Docker+renv/{groundhog}/{rang}/(Ana/Mini)Conda/Guix? or Why Nix?

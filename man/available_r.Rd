@@ -15,3 +15,9 @@ List available R versions from the rstats-on-nix fork of Nixpkgs
 \examples{
 available_r()
 }
+\seealso{
+Other available versions: 
+\code{\link{available_dates}()},
+\code{\link{available_df}()}
+}
+\concept{available versions}

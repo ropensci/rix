@@ -20,6 +20,16 @@
     to add `PYTHONPATH` to the shell hook, enabling editable-install-like
     behavior in Nix shells.
 
+- Improved startup message detection for cachix configuration: now checks NixOS
+  (skips message if on NixOS), `/etc/nix/nix.conf`, `~/.config/nix/nix.conf`,
+  and `/etc/nix/nix.custom.conf` (Determinate Nix). NixOS users will no longer
+  see the setup_cachix message if they have it configured via `configuration.nix`.
+
+- Documentation reorganization: renamed all vignettes to remove letter prefixes
+  (e.g., `a-getting-started` → `getting-started`), created comprehensive
+  `_pkgdown.yml` with article and function reference groupings, and added
+  `@family` tags to function documentation for improved cross-referencing.
+
 
 # rix 0.17.3 (2025-09-30)
 

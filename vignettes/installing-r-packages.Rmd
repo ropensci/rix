@@ -1,8 +1,8 @@
 ---
-title: "d1 - Installing R and Python packages in a Nix environment"
+title: "Installing R and Python packages in a Nix environment"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{d1-installing-r-packages-in-a-nix-environment}
+  %\VignetteIndexEntry{Installing R and Python packages in a Nix environment}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -498,7 +498,7 @@ also install the long-term support version of Julia by using `"lts"` as the
 ## Converting from an renv.lock file
 
 `{rix}` also includes an `renv2nix()` function that converts an `renv.lock`
-file into a valid Nix expression. Read the vignette `vignette("f-renv2nix")`
+file into a valid Nix expression. Read the vignette `vignette("renv2nix")`
 to learn more.
 
 ## A complete example
@@ -649,7 +649,7 @@ rix(
 ```
 
 The next vignette,
-`vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")`,
+`vignette("installing-system-tools")`,
 explains how you can install tools such as text editors, git, Quarto, TexLive
 packages, and any other tool available through `nixpkgs` for your development
 environments.

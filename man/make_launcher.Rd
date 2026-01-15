@@ -28,7 +28,7 @@ to run the IDE. For security reasons, this script is not executable upon
 creation, so you need to make it executable first by running
 \verb{chmod +x start-editor.sh} (replace \code{editor} with whichever editor you use).
 You don’t need this launcher if you use \code{direnv};
-see \code{vignette("e-configuring-ide")} for more details.
+see \code{vignette("configuring-ide")} for more details.
 }
 \examples{
 available_dates()

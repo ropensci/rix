@@ -77,6 +77,7 @@
 #' either `"simple"` (default), `"quiet` or `"verbose"`, which shows the script
 #' that runs via `nix-shell`.
 #' @importFrom codetools findGlobals checkUsage
+#' @family Nix execution
 #' @export
 #' @return
 #' - if `program = "R"`, R object returned by function given in `expr`

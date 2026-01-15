@@ -15,3 +15,9 @@ Return data frame with R, Bioc versions and supported platforms
 \examples{
 available_dates()
 }
+\seealso{
+Other available versions: 
+\code{\link{available_dates}()},
+\code{\link{available_r}()}
+}
+\concept{available versions}

@@ -1,8 +1,8 @@
 ---
-title: "z - Advanced topic: Building an environment for literate programming"
+title: "Building an environment for literate programming"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{z-advanced-topic-building-an-environment-for-literate-programming}
+  %\VignetteIndexEntry{Building an environment for literate programming}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

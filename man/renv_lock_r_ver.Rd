@@ -26,3 +26,4 @@ renv_lock_r_ver
 rix(r_ver = renv_lock_r_ver())
 }
 }
+\keyword{internal}

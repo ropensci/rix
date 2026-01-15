@@ -78,6 +78,7 @@
 #'   which writes `.Rprofile` without message, and `"verbose"`, which displays
 #'   the mechanisms implemented to achieve fully controlled R project
 #'   environments in Nix.
+#' @family core functions
 #' @export
 #' @seealso [with_nix()]
 #' @return Nothing, this function only has the side-effect of writing a file

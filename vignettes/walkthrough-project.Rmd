@@ -1,8 +1,8 @@
 ---
-title: "z - Advanced topic: A complete end-to-end walkthrough to set up a project"
+title: "A complete end-to-end walkthrough to set up a project"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{z-advanced-topic-walkthrough-project}
+  %\VignetteIndexEntry{A complete end-to-end walkthrough to set up a project}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -23,7 +23,7 @@ library(rix)
 This vignette walks you through setting up an entire project using Nix and
 `{rix}`. We assume you already installed Nix on your system and configured the
 `rstats-on-nix` cache. If not, go back to the vignette
-`vignette("a-getting-started")`.
+`vignette("getting-started")`.
 
 First, we strongly recommend uninstalling any locally installed R versions and
 using Nix exclusively to manage your R environments. This prevents conflicts
@@ -98,7 +98,7 @@ type `nix-build`. This will start building your environment.
 Once the build process is done, you can start using your environment. By typing
 `nix-shell` you will get dropped in that environment. From there, start your IDE
 by typing the appropriate command (`rstudio` for RStudio, an so on... refer to
-the vignette `vignette("e-configuring-ide")` for more details). If you need to
+the vignette `vignette("configuring-ide")` for more details). If you need to
 add packages to the environment, we recommend adding them to the `gen_env.R`
 script, and regenerate your environment. You may even add `{rix}` itself to your
 environment so you don't need to use the temporary shell as explained above.

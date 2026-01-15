@@ -168,3 +168,58 @@ is_cachix_configured <- function(nix_conf_content) {
   substituter_line <- grep("substituters", nix_conf_content)
   any((grepl("rstats-on-nix", nix_conf_content[substituter_line])))
 }
+
+#' Check if running on NixOS
+#' @noRd
+#' @return Logical, TRUE if on NixOS
+is_nixos <- function() {
+  # NixOS has a special file at /etc/NIXOS
+  if (file.exists("/etc/NIXOS")) {
+    return(TRUE)
+  }
+  # Also check os-release as a fallback
+  if (file.exists("/etc/os-release")) {
+    os_release <- readLines("/etc/os-release", warn = FALSE)
+    if (any(grepl("ID=nixos", os_release, ignore.case = TRUE))) {
+      return(TRUE)
+    }
+  }
+  FALSE
+}
+
+#' Check if rstats-on-nix cache is configured anywhere
+#' @noRd
+#' @return Logical, TRUE if cachix is configured in any known location
+is_cachix_configured_anywhere <- function() {
+  # On NixOS, assume it's configured system-wide (users typically set it in
+  # configuration.nix which we can't easily read)
+  if (is_nixos()) {
+    return(TRUE)
+  }
+
+  # Check system-wide nix.conf
+  system_nix_conf <- "/etc/nix/nix.conf"
+  if (nix_conf_exists(system_nix_conf)) {
+    if (is_cachix_configured(readLines(system_nix_conf, warn = FALSE))) {
+      return(TRUE)
+    }
+  }
+
+  # Check user-level nix.conf
+  user_nix_conf <- "~/.config/nix/nix.conf"
+  if (nix_conf_exists(user_nix_conf)) {
+    if (is_cachix_configured(readLines(user_nix_conf, warn = FALSE))) {
+      return(TRUE)
+    }
+  }
+
+  # Check Determinate Nix custom conf
+  custom_nix_conf <- "/etc/nix/nix.custom.conf"
+  if (nix_conf_exists(custom_nix_conf)) {
+    if (is_cachix_configured(readLines(custom_nix_conf, warn = FALSE))) {
+      return(TRUE)
+    }
+  }
+
+  FALSE
+}

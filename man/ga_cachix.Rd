@@ -24,7 +24,7 @@ folders on the root of your project. This workflow file will use the
 projects \code{default.nix} file to generate the development environment on
 GitHub Actions and will then cache the created binaries in Cachix. Create a
 free account on Cachix to use this action. Refer to
-\code{vignette("z-binary_cache")} for detailed instructions. Make sure to give
+\code{vignette("binary-cache")} for detailed instructions. Make sure to give
 read and write permissions to the GitHub Actions bot.
 }
 \examples{
@@ -32,3 +32,8 @@ read and write permissions to the GitHub Actions bot.
 ga_cachix("my-cachix", path_default = "default.nix")
 }
 }
+\seealso{
+Other CI/CD: 
+\code{\link{tar_nix_ga}()}
+}
+\concept{CI/CD}

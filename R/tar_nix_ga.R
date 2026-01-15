@@ -5,6 +5,7 @@
 #' GitHub Actions and will then run the projects \{targets\} pipeline. Make
 #' sure to give read and write permissions to the GitHub Actions bot.
 #' @return Nothing, copies file to a directory.
+#' @family CI/CD
 #' @export
 #' @examples
 #' \dontrun{
