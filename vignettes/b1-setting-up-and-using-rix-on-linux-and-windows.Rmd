@@ -126,6 +126,9 @@ First, start R from a Nix shell:
 nix-shell -p R rPackages.rix
 ```
 
+On first use, this may take a few minutes (up to 5 minutes) as Nix downloads R
+and required packages. Be patient! Subsequent runs will be instant.
+
 Then run:
 
 ```r

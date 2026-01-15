@@ -266,7 +266,7 @@ Then, configure the `rstats-on-nix` binary cache to speed up builds. The
 recommended approach is to use `rix::setup_cachix()` from R:
 
 ```bash
-nix-shell -p R rPackages.rix  # Start R with rix
+nix-shell -p R rPackages.rix  # Start R with rix (may take a few minutes on first use)
 ```
 
 ```r
