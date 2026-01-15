@@ -37,9 +37,9 @@ jobs:
         run: |
           nix-shell --quiet default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = c('tidyverse', 'mlr3', 'qs', 'matrixStats', 'prospectr', 'Cubist', 'checkmate', 'mlr3misc', 'paradox'), git_pkgs = list(package_name = 'mlr3extralearners', repo_url = 'https://github.com/mlr-org/mlr3extralearners/', commit = '6e2af9ef9ecd420d2be44e9aa2488772bb9f7080'), ide = 'none', project_path = '.', overwrite = TRUE, print = FALSE, ignore_remotes_cache = FALSE)\""
 
-      - name: Download test default.nix without dups
+      - name: Copy test default.nix without dups from repo
         run: |
-          wget -O mlr3_default.nix https://raw.githubusercontent.com/ropensci/rix/refs/heads/main/tests/testthat/testdata/remote-pkgs/mlr3_default.nix
+          cp tests/testthat/testdata/remote-pkgs/mlr3_default.nix mlr3_default.nix
 
       - name: Check out default.nix
         run: cat default.nix
