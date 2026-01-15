@@ -59,13 +59,21 @@ Quarto. If you don't know which package to add, start by adding "amsmath".
 See the
 \code{vignette("d2- installing-system-tools-and-texlive-packages-in-a-nix-environment")}
 for more details.}
-    \item{\code{py_conf}}{List. A list containing two elements: \code{py_version} and
-\code{py_pkgs}. \code{py_version} should be in the form \code{"3.12"} for Python 3.12, and
-\code{py_pkgs} should be an atomic vector of package names (e.g., \code{py_pkgs = c("polars", "plotnine", "great-tables")}). If Python packages are requested
-but \code{{reticulate}} is not in the list of R packages, the user will be
-warned that they may want to add it. When \code{py_conf} packages are requested,
-the \code{RETICULATE_PYTHON} environment variable is set to ensure the Nix
-environment does not use with a system-wide Python installation.}
+    \item{\code{py_conf}}{List. A list containing two or three elements: \code{py_version},
+\code{py_pkgs}, and optionally \code{py_src_dir}. \code{py_version} should be in the form
+\code{"3.12"} for Python 3.12, and \code{py_pkgs} should be an atomic vector of
+package names (e.g., \code{py_pkgs = c("polars", "plotnine", "great-tables")}).
+If Python packages are requested but \code{{reticulate}} is not in the list of R
+packages, the user will be warned that they may want to add it. When
+\code{py_conf} packages are requested, the \code{RETICULATE_PYTHON} environment
+variable is set to ensure the Nix environment does not use a system-wide
+Python installation. If you are developing a Python package, set
+\code{py_src_dir} to the path of your package's source directory (e.g.,
+\code{"mypackage/src"} or just \code{"src"}). This adds \code{PYTHONPATH} to the shell
+hook so your package can be imported without installation. This is the Nix
+equivalent of \verb{pip install -e .} (editable install). Note: if \code{"uv"} is in
+\code{system_pkgs}, \code{LD_LIBRARY_PATH} is automatically configured for dynamic
+library loading (required by packages like numpy).}
     \item{\code{jl_conf}}{List. A list of two elements, \code{jl_version} and \code{jl_conf}.
 \code{jl_version} must be of the form \code{"1.10"} for Julia 1.10. Leave empty or
 use an empty string to use the latest version, or use \code{"lts"} for the long
