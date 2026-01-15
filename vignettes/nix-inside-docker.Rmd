@@ -1,8 +1,8 @@
 ---
-title: "z - Advanced topic: Using Nix inside Docker"
+title: "Using Nix inside Docker"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{z-advanced-topic-using-nix-inside-docker}
+  %\VignetteIndexEntry{Using Nix inside Docker}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

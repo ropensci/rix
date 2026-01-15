@@ -1,8 +1,8 @@
 ---
-title: "z - Advanced topic: Contributing to nixpkgs"
+title: "Contributing to nixpkgs"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{z-advanced-topic-contributing-to-nixpkgs}
+  %\VignetteIndexEntry{Contributing to nixpkgs}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

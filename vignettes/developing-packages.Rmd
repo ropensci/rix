@@ -2,7 +2,7 @@
 title: "Developing packages with rix"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{g-developing-packages-with-rix-environments}
+  %\VignetteIndexEntry{Developing packages with rix}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -51,7 +51,7 @@ A few tips when shaping the environment:
 - Prefer `r_ver = "bleeding-edge"` (or at least a very recent
   date). This aligns your local setup with what users will experience
   soon and surfaces compatibility problems early.
-  See `vignette("z-bleeding_edge.Rmd")` for more
+  See `vignette("bleeding-edge")` for more
   details on using `"bleeding-edge"`.
 - If you use a fixed date, then keep `date` current. Updating it every few 
   weeks lets you track CRAN, nixpkgs, and system toolchain updates. 

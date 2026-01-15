@@ -1,3 +1,77 @@
 url: https://docs.ropensci.org/rix/
 template:
   bootstrap: 5
+
+articles:
+- title: Getting Started
+  navbar: Getting Started
+  contents:
+  - getting-started
+  - setting-up-linux-windows
+  - setting-up-macos
+
+- title: Core Usage
+  navbar: Core Usage
+  contents:
+  - project-environments
+  - installing-r-packages
+  - installing-system-tools
+  - configuring-ide
+
+- title: Workflows
+  navbar: Workflows
+  contents:
+  - renv2nix
+  - developing-packages
+
+- title: Advanced Topics
+  navbar: Advanced Topics
+  contents:
+  - literate-programming
+  - remote-dependencies
+  - packaging-your-code
+  - reproducible-pipelines
+  - running-code-in-nix
+  - nix-inside-docker
+  - walkthrough-project
+  - binary-cache
+  - bleeding-edge
+  - contributing-to-nixpkgs
+
+reference:
+- title: Core functions
+  desc: >
+    The main functions for generating and initializing Nix environments.
+  contents:
+  - rix
+  - rix_init
+
+- title: Building environments
+  desc: >
+    Functions to build Nix expressions and run code inside Nix environments.
+  contents:
+  - nix_build
+  - with_nix
+
+- title: Project setup
+  desc: >
+    Functions for converting renv projects, setting up caches, and creating launchers.
+  contents:
+  - renv2nix
+  - setup_cachix
+  - make_launcher
+
+- title: Data and utilities
+  desc: >
+    Functions to query available R versions and dates for environment generation.
+  contents:
+  - available_r
+  - available_dates
+  - available_df
+
+- title: CI/CD integration
+  desc: >
+    Functions for integrating rix with GitHub Actions and Cachix.
+  contents:
+  - ga_cachix
+  - tar_nix_ga

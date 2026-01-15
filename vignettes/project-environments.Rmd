@@ -1,8 +1,8 @@
 ---
-title: "c - Using rix to build project specific environments"
+title: "Using rix to build project specific environments"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{c-using-rix-to-build-project-specific-environments}
+  %\VignetteIndexEntry{Using rix to build project specific environments}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -27,7 +27,7 @@ The ideal workflow when using `{rix}` is to create a new, separate environment
 at the start of a project. Let's say that you wish to analyse some data set, and
 need `{dplyr}` and `{ggplot2}`. Let's also suppose that you use VS Code as your
 IDE (there will be more discussion on editors in the vignette
-`vignette("e-configuring-ide")` but for now, let’s assume that you use VS Code).
+`vignette("configuring-ide")` but for now, let’s assume that you use VS Code).
 With the `rix::rix()` function, you can easily generate the right `default.nix`
 file. You need to provide the following inputs to `rix()`:
 
@@ -38,14 +38,14 @@ file. You need to provide the following inputs to `rix()`:
    release of Bioconductor at that date are also provided. Check available dates
    using `available_dates()`;
 - `r_pkgs`: the required R packages. For example "dplyr" (more on this in the
-  vignette `vignette("d1-installing-r-packages-in-a-nix-environment")`);
+  vignette `vignette("installing-r-packages")`);
 - `system_pkgs`: the required system packages, if needed. For example "quarto",
   or a Python interpreter (more on this in the vignette
-  `vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")`);
+  `vignette("installing-system-tools")`);
 - `git_pkgs`: list of git packages to add (more on this in the vignette
-  `vignette("d1-installing-r-packages-in-a-nix-environment")`);
+  `vignette("installing-r-packages")`);
 - `ide`: the integrated development editor to use (more on this in the vignette
-  `vignette("e-configuring-ide")`)
+  `vignette("configuring-ide")`)
 - `path`: the path where to save the `default.nix` file.
 - `overwrite`: whether to overwrite the `default.nix` file or not.
 - `print`: whether to print the `default.nix` file to the console or not.
@@ -112,7 +112,7 @@ file. This file is a symlink to the software installed by Nix. `{rix}` also
 provides a `nix_build()` function to build Nix environments from within an
 interactive R session, but it is not always guaranteed to succeed, due to
 differences in platforms. This is explained in more detail in the following
-vignette `vignette("z-advanced-topic-running-r-or-shell-code-in-nix-from-r")`.
+vignette `vignette("running-code-in-nix")`.
 In case of doubt, run `nix-build` from your usual terminal application.
 
 To now use the environment, type in the same terminal as before:
@@ -124,7 +124,7 @@ nix-shell
 This will activate the environment. If you have VS Code installed you can start
 it from this environment and VS Code will use this specific R version library of
 packages. We will explore this in greater detail in the vignette
-`vignette("e-configuring-ide")`.
+`vignette("configuring-ide")`.
 
 ## Which `r_ver` should you choose?
 
@@ -340,7 +340,7 @@ versions and package versions are always coupled when using Nix. However, if you
 need a specific version of R, but also a specific version of a package that is
 not available in that particular Nix revision, one solution is to install that
 package from GitHub or from the CRAN archives. Read the vignette
-`vignette("d1-installing-r-packages-in-a-nix-environment")` to know more about
+`vignette("installing-r-packages")` to know more about
 this.
 
 `available_df()` provides an overview of available R and Bioconductor releases,
@@ -372,7 +372,7 @@ cd /absolute/path/to/housing/ && nix-shell default.nix --run "Rscript -e 'target
 It is also possible to run single functions in an isolated environment from an
 active R session using `with_nix()` and get the output of that function loaded
 into the current session. Refer to this vignette 
-`vignette("z-advanced-topic-running-r-or-shell-code-in-nix-from-r")` for
+`vignette("running-code-in-nix")` for
 more details on how to achieve this. Concretely this means that you could be
 running R version 4.3.2 (installed via Nix, or not), and execute a function on R
 version 4.0.0 for example in a subshell (or execute a function that requires an

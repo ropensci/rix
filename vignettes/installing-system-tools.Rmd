@@ -1,8 +1,8 @@
 ---
-title: "d2 - Installing system tools and TexLive packages in a Nix environment"
+title: "Installing system tools and TexLive packages in a Nix environment"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{d2-installing-system-tools-and-texlive-packages-in-a-nix-environment}
+  %\VignetteIndexEntry{Installing system tools and TexLive packages in a Nix environment}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -190,12 +190,12 @@ rix(
 This will automically add the *small* TexLive distribution available through
 `nixpkgs` with the `amsmath` LaTex package. To know more about setting up
 environments for literate programming, refer to the vignette
-`vignette("z-advanced-topic-building-an-environment-for-literate-programming")`.
+`vignette("literate-programming")`.
 
 ## Installing IDEs
 
 Environments built with Nix are not completely cut off from the rest of your
 system, and as such, you should be able to use your usual IDE to interact with
 Nix environments. The only exception is RStudio. Everything will be explained in
-greater detail in the vignette `vignette("e-configuring-ide")`.
+greater detail in the vignette `vignette("configuring-ide")`.
 

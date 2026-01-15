@@ -1,8 +1,8 @@
 ---
-title: "e - Using an IDE with Nix shells"
+title: "Using an IDE with Nix shells"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{e-configuring-ide}
+  %\VignetteIndexEntry{Using an IDE with Nix shells}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -22,7 +22,7 @@ editor you wish to use, different settings must be configured.
 
 It is also possible to evaluate single functions inside a dedicated, separate,
 environment from another, main, interactive R session. For more details
-regarding this, refer to the vignette `vignette("z-advanced-topic-running-r-or-shell-code-in-nix-from-r")`.
+regarding this, refer to the vignette `vignette("running-code-in-nix")`.
 
 ### Our recommendation
 

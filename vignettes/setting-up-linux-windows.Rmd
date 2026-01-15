@@ -1,8 +1,8 @@
 ---
-title: "b1 - Setting up and using Nix and rix on Linux and Windows"
+title: "Setting up and using Nix and rix on Linux and Windows"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{b1-setting-up-and-using-rix-on-linux-and-windows}
+  %\VignetteIndexEntry{Setting up and using Nix and rix on Linux and Windows}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -20,7 +20,7 @@ library(rix)
 
 *This vignette will discuss Linux and Windows-specific topics. If you're not
 using either of these systems, you can ignore this vignette, and read the
-`vignette("b2-setting-up-and-using-rix-on-macos")`
+`vignette("setting-up-macos")`
 vignette instead.*
 
 ## Introduction
@@ -255,8 +255,8 @@ with the `overwrite = TRUE` argument will overwrite it! So make sure that you
 are using a version control system for your projects to avoid bad surprises.
 
 More details about managing project-specific `default.nix` are detailled in the
-vignette `vignette("d1-installing-r-packages-in-a-nix-environment")` and
-`vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")`.
+vignette `vignette("installing-r-packages")` and
+`vignette("installing-system-tools")`.
 
 You could also include `{rix}` in your project-specific environments, by
 generating a `default.nix` like so:
@@ -301,15 +301,15 @@ install.packages("rix", repos = c(
 ```
 
 You can then use the `{rix}` package to generate expressions. Consult the next
-vignette `vignette("c-using-rix-to-build-project-specific-environments")` to
+vignette `vignette("project-environments")` to
 learn more.
 
 ## Configuring an IDE
 
 We recommend you continue with the next vignettes vignette
-`vignette("d1-installing-r-packages-in-a-nix-environment")` and
-`vignette("d2-installing-system-tools-and-texlive-packages-in-a-nix-environment")`,
-and also `vignette("e-configuring-ide")` which will guide you through setting
+`vignette("installing-r-packages")` and
+`vignette("installing-system-tools")`,
+and also `vignette("configuring-ide")` which will guide you through setting
 you your editor to use Nix shells effectively.
 
 ## Other "Nix"es

@@ -1,8 +1,8 @@
 ---
-title: "a - Getting started"
+title: "Getting started"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{a-getting-started}
+  %\VignetteIndexEntry{Getting started}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -174,7 +174,7 @@ It is important at this stage to understand that you should not call
 `install.packages()` from a running Nix environment. If you want to add packages
 to a Nix environment while analyzing data, you need to add it the `default.nix`
 expression and rebuild the environment. This is explained in greater detail in
-`vignette("d1-installing-r-packages-in-a-nix-environment")`.
+`vignette("installing-r-packages")`.
 
 To avoid interference between your main R library of packages and your Nix
 environments, calling `rix()` will also run `rix_init()`, which will create a
@@ -210,7 +210,7 @@ the latest version of R included in the upstream `nixpkgs`, with the `{dplyr}`
 and `{chronicler}` packages.
 
 Take note of the `ide = "none"` argument: this argument, and the values it
-can take, are further discussed in the vignette `vignette("e-configuring-ide")`
+can take, are further discussed in the vignette `vignette("configuring-ide")`
 but continue reading this vignette and then vignettes numbered by a "d".
 
 You can instead provide a specific R version:
@@ -247,7 +247,7 @@ package versions than in the upstream `nixpkgs` repository.
 ### Converting from an renv.lock file
 
 `{rix}` also includes an `renv2nix()` function that converts an `renv.lock`
-file into a valid Nix expression. Read the vignette `vignette("f-renv2nix")`
+file into a valid Nix expression. Read the vignette `vignette("renv2nix")`
 to learn more.
 
 ### Using default.nix files
@@ -300,6 +300,5 @@ the orphaned packages.
 Now that you know more about Nix and `{rix}`, it is time to get these tools
 installed on your system.
 
-- If you're running either Linux or Windows, read the Linux or Windows vignette: `vignette("b1-setting-up-and-using-rix-on-linux-and-windows")`
-- If you're running macOS, read the macOS vignette: `vignette("b2-setting-up-and-using-rix-on-macos")`
-
+- If you're running either Linux or Windows, read the Linux or Windows vignette: `vignette("setting-up-linux-windows")`
+- If you're running macOS, read the macOS vignette: `vignette("setting-up-macos")`

@@ -1,10 +1,10 @@
 ---
-title: "z - Advanced topic: Packaging Your Code in R and Python with rix"
+title: "Packaging Your Code in R and Python with rix"
 author: "Bruno Rodrigues"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{z - Advanced topic: Packaging Your Code in R and Python with rix}
+  %\VignetteIndexEntry{Packaging Your Code in R and Python with rix}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
