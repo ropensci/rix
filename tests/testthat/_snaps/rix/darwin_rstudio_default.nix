@@ -1,24 +1,23 @@
 
 let
-  pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2023-10-30.tar.gz") {};
+  pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2025-02-28.tar.gz") {};
  
   rpkgs = builtins.attrValues {
     inherit (pkgs.rPackages) 
-      data_table
-      dplyr
-      quarto;
+      dplyr;
   };
       
   system_packages = builtins.attrValues {
     inherit (pkgs) 
       R
       glibcLocales
-      nix
-      quarto
-      which
-      pandoc;
+      nix;
   };
-  
+ 
+  wrapped_pkgs = pkgs.rstudioWrapper.override {
+    packages = [  rpkgs  ];
+  };
+ 
   shell = pkgs.mkShell {
     LOCALE_ARCHIVE = if pkgs.stdenv.hostPlatform.system == "x86_64-linux" then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
     LANG = "en_US.UTF-8";
@@ -28,7 +27,7 @@ let
     LC_PAPER = "en_US.UTF-8";
     LC_MEASUREMENT = "en_US.UTF-8";
     
-    buildInputs = [ rpkgs system_packages ];
+    buildInputs = [ rpkgs system_packages wrapped_pkgs ];
     
   }; 
 in
