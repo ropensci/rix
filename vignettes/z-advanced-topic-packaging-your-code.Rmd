@@ -1,0 +1,725 @@
+---
+title: "z - Advanced topic: A Short Intro to Packaging Your Code in R and Python"
+author: "Bruno Rodrigues"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{z - Advanced topic: A Short Intro to Packaging Your Code in R and Python}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# A Short Intro to Packaging Your Code in R and Python
+
+<div style="text-align:center;">
+```{r, echo = F}
+# knitr::include_graphics("img/packaging.png")
+```
+</div>
+
+What you'll learn by the end of this chapter:
+
+*   Why organizing your code into a formal package is the ultimate form of
+    reproducibility and reusability.
+*   How to create, document, and test a basic R package using `{devtools}` and
+    `{usethis}`.
+*   How to create, document, and test a modern Python package using `uv` and
+    `pytest`.
+*   How to install your own packages directly from GitHub, enabling you to share
+    your tools with colleagues and your future self.
+
+## Introduction: Why Bother Packaging?
+
+So far, we have built a robust workflow based on three pillars: reproducible
+environments with Nix, reproducible history with Git, and reproducible logic
+with functional programming. We've organized our code into functions, which are
+a massive improvement over messy scripts.
+
+The final, logical step in this journey is to treat our collection of functions
+not just as a set of helper scripts, but as a formal **package**. A package is
+more than just a folder of code; it's a self-contained, distributable, and
+installable unit of software that bundles together code, data, documentation,
+and tests.
+
+You might think, "I'm a data scientist, not a software engineer. Isn't this
+overkill?" The answer is a definitive **no**. Packaging your code, even for an
+internal analysis project, provides enormous benefits:
+
+1.  **Reusability:** Instead of copying and pasting your `clean_data()` function
+    from project to project, you can simply `import mypackage` or
+    `library(mypackage)` and use a single, trusted version.
+
+2.  **Distribution & Collaboration:** How do you share your work with a
+    colleague? Emailing a zip file of scripts is a recipe for disaster. Sending
+    them a single command—`devtools::install_github("my_repo")`—is robust and
+    professional.
+
+3.  **Documentation:** Packaging forces you into a standardized way of
+    documenting your functions. This makes your code understandable to others
+    and, more importantly, to yourself six months from now.
+
+4.  **Testing:** A package provides a formal framework for running unit tests,
+    ensuring that your functions work as expected and giving you the confidence
+    to make changes without breaking things.
+
+5.  **Dependency Management:** A package explicitly declares all of its
+    dependencies (e.g., "this package needs `dplyr` version 1.1.0 or newer").
+    This solves a huge source of reproducibility errors.
+
+In this chapter, we will walk through the process of creating a simple package
+in both R and Python. The goal is not to become an expert package developer, but
+to understand the structure and benefits so you can apply this powerful
+"packaging mindset" to all your future projects.
+
+## Part 1: Creating an R Package with `{usethis}` and `{devtools}`
+
+The R community has developed an outstanding set of tools that make package
+development incredibly streamlined. The two essential packages are:
+
+*   **`{devtools}`:** Provides core development tools like `install()`,
+    `test()`, and `check()`.
+*   **`{usethis}`:** A workflow package that automates all the boilerplate. It
+    creates files, sets up infrastructure, and guides you through the process.
+
+Let's build a package called `cleanR`, which will contain a function to
+standardize column names. Create folder called `cleanR` and `cd` into it.
+
+### Step 1: Project Setup
+
+First, make sure you have the necessary tools installed. Create a Nix environment
+that contains the following R packages: `{devtools}`, `{usethis}` and `{roxygen2}`.
+
+Drop into this Nix shell, and let `{usethis}` create the package structure for you. 
+From your R console, run:
+
+```R
+usethis::create_package("~/Documents/projects/cleanR")
+```
+
+This will create a new `cleanR` directory with all the necessary files and
+subdirectories. It will also open a new RStudio session for that project. The
+key components are:
+
+*   `R/`: This is where your R source code files will live.
+*   `DESCRIPTION`: A metadata file describing your package, its author, license,
+    and dependencies.
+*   `NAMESPACE`: A file that declares which functions your package exports for
+    users and which functions it imports from other packages. **You should never
+    edit this file by hand.** `{roxygen2}` will manage it for you.
+
+### Step 2: Write and Document a Function
+
+Let's create our function. `{usethis}` helps with this too:
+
+```R
+usethis::use_r("clean_names")
+```
+
+This creates a new file `R/clean_names.R` and opens it for editing. Let's add
+our function, including special comments for documentation. These `#'` comments
+are used by the `{roxygen2}` package to automatically generate the official
+documentation.
+
+```R
+# In R/clean_names.R
+
+#' Clean and Standardize Column Names
+#'
+#' This function takes a data frame and returns a new data frame with
+#' cleaned-up column names (lowercase, with underscores instead of spaces
+#' or periods).
+#'
+#' @param df A data frame.
+#' @return A data frame with standardized column names.
+#' @export
+#' @examples
+#' messy_df <- data.frame("First Name" = c("Ada", "Bob"), "Last.Name" = c("Lovelace", "Ross"))
+#' clean_names(messy_df)
+clean_names <- function(df) {
+  old_names <- names(df)
+  new_names <- tolower(old_names)
+  new_names <- gsub("[ .]", "_", new_names)
+  names(df) <- new_names
+  return(df)
+}
+```
+
+The key tags here are:
+
+*   `@param`: Describes a function argument.
+*   `@return`: Describes what the function returns.
+*   `@export`: This is crucial. It tells R that you want this function to be
+    available to users when they load your package with `library(cleanR)`.
+*   `@examples`: Provides runnable examples that will appear in the help file.
+
+Now, run the magic command to process these comments:
+
+```R
+devtools::document()
+```
+
+This updates the `NAMESPACE` file and creates the help file
+(`man/clean_names.Rd`). You can now see your function's help page with
+`?clean_names`.
+
+### Step 3: Add Unit Tests
+
+A package without tests is a package waiting to break. `{usethis}` makes setting
+up tests trivial.
+
+```R
+usethis::use_testthat() # Sets up the tests/testthat/ directory
+usethis::use_test("clean_names") # Creates tests/testthat/test-clean_names.R
+```
+
+Now, edit the test file to add your expectations.
+
+```R
+# In tests/testthat/test-clean_names.R
+test_that("clean_names works with spaces and periods", {
+  messy_df <- data.frame("First Name" = c("A"), "Last.Name" = c("B"))
+  cleaned_df <- clean_names(messy_df)
+
+  expected_names <- c("first_name", "last_name")
+
+  expect_equal(names(cleaned_df), expected_names)
+})
+
+test_that("clean_names handles already clean names", {
+  clean_df <- data.frame(a = 1, b = 2)
+  # The function should not change anything
+  expect_equal(names(clean_names(clean_df)), c("a", "b"))
+})
+```
+
+To run all the tests for your package, use:
+
+```R
+devtools::test()
+```
+
+### Step 4: Check and Install
+
+The final step before sharing is to run the official R CMD check, the gold
+standard for package quality. This command runs all tests, checks documentation,
+and looks for common problems.
+
+```R
+devtools::check()
+```
+
+If your package passes with 0 errors, 0 warnings, and 0 notes, you are in great
+shape. If your package raises NOTEs or WARNINGs during the check phase, you can
+*most of the time* safely ignore these, especially if the package is only intented
+for internal usage. However, I would recommend that you still take care of the
+WARNINGs at the very least.
+
+As a next step, you could edit the DESCRIPTION file. This is where you will list
+yourself as the package author, list the dependencies of the package and so on.
+I won’t got into detail here, but learning how to edit the DESCRIPTION file is important
+for actual package development (especially listing dependencies is key).
+
+To use your package within a project, the simplest way is to host it on GitHub or build
+a `.tar.gz` file and install it locally.
+
+### Step 5: Install from GitHub
+
+If you can publicly host your package, hosting it on GitHub is a good way to easily share
+your code, and install the package in your projects without needed to publish it on CRAN.
+
+1.  Create a new, empty repository on GitHub (e.g., `cleanR`).
+2.  In your local project, follow the instructions GitHub provides to link your
+    local repository and push your code. This usually involves commands like:
+
+    ```bash
+    git remote add origin git@github.com:yourusername/cleanR.git
+    git branch -M main
+    git push -u origin main
+    ```
+
+3.  Now, anyone (including you on a different machine) can install your package
+    with a single command (**if you don’t use Nix**):
+
+    ```R
+    # You might need to install {remotes} first
+    # install.packages("remotes")
+    remotes::install_github("yourusername/cleanR")
+    ```
+
+If you want to create an environment using Nix that includes this package,
+use the `git_pkgs` argument of `rix::rix()` to generate the right
+`default.nix` file.
+
+Congratulations, you have created and shared a fully functional R package!
+
+### Step 5bis: Install it locally
+
+If you can’t share your package on GitHub, the alternative is to build it
+locally using:
+
+```r
+devtools::build()
+```
+
+which will create a `.tar.gz` package. You can then install it using either
+`devtools::install_local()` if you don’t use Nix or the `local_r_pkgs` argument
+of `rix::rix()`.
+
+## Part 2: Creating a Minimal Python Package with uv
+
+The Python packaging ecosystem is rapidly modernizing. While we use Nix to
+manage our overall environment, we still need to define the metadata and
+structure for our Python package. We will use **`uv`**, an extremely fast and
+modern tool, for one specific purpose: initializing our project's configuration
+file. We will **not** use `uv` to manage a virtual environment, as Nix already
+handles that for us (unless you absolutely want to: however, you should then
+make sure that `uv` itself is being managed by Nix to ensure reproducibility).
+
+Let's build a Python package called `pyclean`, the equivalent of our R package.
+
+### Step 1: Project Setup with uv
+
+First, ensure `uv` is installed in your Nix environment:
+
+```r
+library(rix)
+
+rix(
+  date = "2025-10-07",
+  py_conf = list(
+    py_version = "3.13",
+    py_pkgs = c("pytest", "pandas")
+  ),
+  system_pkgs = "uv",
+  ide = "none",
+  project_path = ".",
+  overwrite = TRUE
+)
+
+```
+
+Then, create a
+directory for your new package and initialize it:
+
+```bash
+mkdir pyclean
+cd pyclean
+uv init --bare
+```
+
+The `--bare` flag is perfect for our Nix workflow. It creates only the essential
+`pyproject.toml` file without creating a virtual environment or extra
+directories. This leaves us with a clean slate.
+
+Now, we must create the source and test directories manually. We'll use the
+standard `src` layout:
+
+```bash
+mkdir -p src/pyclean
+mkdir tests
+touch src/pyclean/__init__.py
+```
+
+Your project structure should now look like this (check it using the `tree`
+command):
+
+```
+pyclean/
+├── pyproject.toml
+├── src/
+│   └── pyclean/
+│       └── __init__.py
+└── tests/
+```
+
+### Step 2: Write a Function and Declare Dependencies
+
+Let's create our `clean_names` function inside a new file,
+`src/pyclean/formatters.py`.
+
+```python
+# In src/pyclean/formatters.py
+import pandas as pd
+
+def clean_names(df: pd.DataFrame) -> pd.DataFrame:
+    """Clean and standardize column names of a DataFrame.
+
+    Args:
+        df: The input pandas DataFrame.
+
+    Returns:
+        A pandas DataFrame with standardized column names.
+    """
+    new_df = df.copy()
+    new_cols = {col: col.lower().replace(" ", "_").replace(".", "_") for col in new_df.columns}
+    new_df = new_df.rename(columns=new_cols)
+    return new_df
+```
+
+To make this function easily importable, we expose it in
+`src/pyclean/__init__.py`:
+
+```python
+# In src/pyclean/__init__.py
+from .formatters import clean_names
+
+__all__ = ["clean_names"]
+```
+
+Next, we must declare our dependencies by manually editing `pyproject.toml`. We
+need `pandas` for our function and `pytest` for our tests.
+
+```toml
+# In pyproject.toml
+[project]
+name = "pyclean"
+version = "0.1.0"
+description = "A simple package to clean data."
+dependencies = [
+    "pandas>=2.0.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+]
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "src"
+]
+```
+
+The `pythonpath = ["src"]` line is the key. Without it, you’d first need to
+install your `pyclean` library in editable mode using `pip` before running the
+tests. By adding this block, simply running `pytest` from the command line will
+work.
+
+### Step 3: Add Unit Tests
+
+Create a new test file, `tests/test_formatters.py`, and add your tests.
+
+```python
+# In tests/test_formatters.py
+import pandas as pd
+from pyclean import clean_names
+
+def test_clean_names_happy_path():
+    messy_df = pd.DataFrame({"First Name": ["Ada"], "Last.Name": ["Lovelace"]})
+    cleaned_df = clean_names(messy_df)
+    expected_cols = ["first_name", "last_name"]
+    assert list(cleaned_df.columns) == expected_cols
+
+def test_clean_names_is_idempotent():
+    clean_df = pd.DataFrame({"first_name": ["a"], "last_name": ["b"]})
+    still_clean_df = clean_names(clean_df)
+    assert list(still_clean_df.columns) == list(clean_df.columns)
+```
+
+Since your Nix environment provides all the tools, you can run tests directly
+from your terminal:
+
+```bash
+pytest
+```
+
+### Step 4: Build and Install
+
+To package your code, you need a build tool. It turns out that `uv` bundles a
+build tool with it, so we only need to call `uv build`:
+
+```bash
+# In your terminal, from the root of the 'pyclean' project
+uv build
+```
+
+This creates a `dist/` directory containing a source distribution (`.tar.gz`)
+and a compiled wheel (`.whl`). The wheel is the modern standard for
+distribution.
+
+Outside of a Nix shell, to use your package during development, you can install
+it in "editable" mode. This creates a link to your source code, so any changes
+you make are immediately reflected without needing to reinstall.
+
+```bash
+# Install the package and its test dependencies
+pip install -e .[test]
+```
+
+But we are working from a Nix shell. Instead, we will simply edit our
+`default.nix` to update the `PYTHONPATH` environment variable, so our package
+can easily be found. If you look at the `default.nix` file of the course you’ve
+been using, you’ll see the following at the bottom:
+
+```nix
+shellHook = ''
+  export PYTHONPATH=$PWD/src:$PYTHONPATH
+'';
+```
+
+(you may need to adapt the path depending on where you’re developing the
+package). With this, dropping into the Nix shell, starting the Python
+interpreter and then typing `import pyclean` will work without any issues.
+
+### Step 5: Install from GitHub
+
+Sharing via GitHub is the most common way to distribute packages that aren't on
+the official Python Package Index (PyPI):
+
+1. Create a new, empty repository on GitHub.
+2. Push your local project to the remote repository.
+3. Now, anyone can install your package directly from GitHub using `pip`, which
+is smart enough to find and process your `pyproject.toml` file:
+    ```bash
+    pip install git+https://github.com/yourusername/pyclean.git
+    ```
+
+For Nix environments, add this to your `default.nix`:
+
+```nix
+pyclean = pkgs.python313Packages.buildPythonPackage rec {
+  pname = "pyclean";
+  version = "0.1.0";
+  src = pkgs.fetchgit {
+    url = "https://github.com/b-rodrigues/pyclean";
+    rev = "174d4d482d400536bb0d987a3e25ae80cd81ef3c";
+    sha256 = "sha256-xTYydkuduPpZsCXE2fv5qZCnYYCRoNFpV7lQBM3LMSg=";
+  };
+  pyproject = true;
+  propagatedBuildInputs = [ pkgs.python313Packages.pandas pkgs.python313Packages.setuptools ];
+  # Add more dependencies to propagatedBuildInputs as needed
+};
+```
+
+You need to add the `rev`, which corresponds to the commit that want, and the
+`sha256`. To find the right `sha256`, start with an empty one (`sha256 = "";`)
+and try to build the package. The error message will give you the right
+`sha256`. Also not that this isn’t the the most idiomatic way to build a Python
+package for Nix, but it’s good enough for our purposes.
+
+Finally, add `pyclean` to the `buildInputs` of the shell:
+
+```nix
+  buildInputs = [ rpkgs pyconf pyclean tex system_packages github_pkgs ];
+```
+
+This process is naturally more involved than simply calling `pip install`, but
+it has the advantage of being entirely reproducible.
+
+## Conclusion: The Packaging Mindset in the Age of AI
+
+You have now successfully created, tested, documented, and shared a basic
+package in both R and Python. While there is much more to learn about advanced
+package development, you have already mastered the most important part: the
+**packaging mindset**.
+
+From now on, when you start a new analysis project, think of it as a small,
+internal package.
+
+* Put your reusable logic into functions.
+* Place those functions in the `R/` or `mypackage/` source directory.
+* Document them.
+* Write a few simple tests to prove they work.
+* Manage dependencies formally in `DESCRIPTION` or `pyproject.toml`.
+
+Adopting this structure will make your work more robust, easier to share, and
+fundamentally more reproducible. It is the bridge between writing one-off
+scripts and building reliable, professional data science tools.
+
+This packaging mindset becomes even more powerful when you introduce a modern
+collaborator: the LLM. The structured, component-based nature of a package is
+the perfect way to interact with AI assistants.
+
+A package provides a clear contract and a well-defined structure that LLMs
+thrive on. Instead of a vague prompt like, "Refactor my messy analysis script,"
+you can now make precise, targeted requests:
+
+*   "Here is my function `clean_names`. Please write three `pytest` unit tests
+    for it, including one for the happy path, one for an empty DataFrame, and
+    one for names that are already clean."
+*   "Generate the roxygen2 documentation skeleton for this R function, including
+    `@param`, `@return`, and `@examples` tags."
+*   "I need a function in my `pyclean/utils.py` module that calculates the
+    Z-score for a pandas Series. Please generate the function and its
+    docstring."
+
+This synergy is a two-way street. Not only does the structure help you write
+better prompts, but LLMs excel at generating the very boilerplate that makes
+packaging robust. Tedious tasks like writing standard documentation headers,
+creating skeleton unit test files, or even generating a first draft of a
+function based on a clear description become near-instantaneous.
+
+This elevates your role from a writer of code to an **architect and a
+reviewer**. Your job is to design the components (the functions), prompt the LLM
+to generate the implementation, and then—most critically—use the testing
+framework you just built to rigorously verify that the AI-generated code is
+correct, efficient, and robust. You are the final authority, and the package
+structure gives you the tools to enforce quality control.
+
+By combining the discipline of packaging with the power of LLMs, you lower the
+barrier to adopting best practices like comprehensive testing and documentation.
+This combination doesn't just make you faster; it makes you a more reliable and
+professional data scientist, capable of producing tools that are truly
+reproducible and built to last.
+
+While a full guide to package development is beyond the scope of this course, it
+is the natural next step in your journey as a data scientist who produces
+reliable tools. When you are ready to take that step, here are the definitive
+resources to guide you:
+
+*   **For R:** The "R Packages" (2e) book by Hadley Wickham and Jennifer Bryan
+    is the essential, comprehensive guide. It covers everything from initial
+    setup with `{usethis}` to testing, documentation, and submission to CRAN.
+    [**Read it online here.**](https://r-pkgs.org/)
+*   **For Python:** The official [**Python Packaging User
+    Guide**](https://packaging.python.org/en/latest/tutorials/packaging-projects/)
+    is the place to start. For a more modern and streamlined approach that
+    handles dependency management and publishing, many developers use tools like
+    [**Poetry**](https://python-poetry.org/docs/) or
+    [**Hatch**](https://hatch.pypa.io/latest/).
+
+Treating your data analysis project like a small, internal software
+package, complete with functions and tests, is a powerful mindset that will
+elevate the quality and reliability of your work.
+
+Here are two new exercises to add to the end of the chapter.
+
+## Hands-on Exercises
+
+### Exercise 1: Build Your First Python Package with Nix
+
+**Goal:** To build a complete, testable, and documented Python package and make
+it available in a reproducible Nix environment.
+
+You will create a small Python package called `statstools`. This package will
+contain a single function that calculates descriptive statistics for a list of
+numbers.
+
+**Requirements:**
+
+1.  **Project Structure:** Create the following directory structure for your package:
+
+    ```bash
+    statstools/
+    ├── pyproject.toml
+    ├── default.nix
+    ├── src/
+    │   └── statstools/
+    │       ├── __init__.py
+    │       └── calculations.py
+    └── tests/
+        └── test_calculations.py
+    ```
+
+2.  **Functionality:** In `src/statstools/calculations.py`, create a function
+    `descriptive_stats(numbers: list) -> dict`. This function should take a list
+    of numbers and return a dictionary containing the mean and standard
+    deviation. Use the `numpy` library for the calculations.
+
+3.  **Documentation:** Write a clear docstring for your `descriptive_stats`
+    function explaining what it does, its parameters (`Args`), and what it
+    returns (`Returns`).
+
+4.  **Dependencies:** In your `pyproject.toml` file:
+    *   Define the project name as `statstools` and give it a version of `0.1.0`.
+    *   Add `numpy` as a runtime dependency.
+    *   Add `pytest` as an optional dependency for testing.
+    *   Add the `[tool.pytest.ini_options]` block to set the `pythonpath`
+        correctly so `pytest` can find your `src` directory.
+
+5.  **Unit Tests:** In `tests/test_calculations.py`, write at least two tests for your function using `pytest`:
+    *   A "happy path" test with a simple list like `[1, 2, 3, 4, 5]`.
+    *   A test with negative numbers and floats.
+
+6.  **GitHub Repository:** Push your completed package to a new public repository on GitHub.
+
+7.  **Nix Expression:** This is the most critical part. Create a `default.nix`
+    file in the root of your project. This file should:
+    *   Fetch your package's source code from your GitHub repository using
+        `pkgs.fetchgit`. You will need to get the commit hash (`rev`) and the
+        `sha256` hash (remember, you can get the correct `sha256` from the error
+        message when you first try to build with an empty `sha256 = "";`).
+    *   Define your package using `pkgs.python3Packages.buildPythonPackage`.
+        Ensure you set `pyproject = true;` and list its dependencies (`numpy`,
+        `pytest`) in `propagatedBuildInputs`.
+    *   Create a reproducible shell using `pkgs.mkShell` that includes both your
+        `statstools` package and the Python interpreter.
+    *   **Hint:** Look closely at the `default.nix` file from the main course
+        repository for a complete example of how a Python package is fetched
+        from GitHub and built.
+
+**To verify your work:**
+*   Run `pytest` from within the Nix shell to ensure all your tests pass.
+*   Start a Python interpreter inside the Nix shell and successfully run `from
+    statstools import descriptive_stats`.
+
+### Exercise 2: Build and Package an R Tool with Nix
+
+**Goal:** To apply R's best practices for package development (`usethis`,
+`devtools`, `roxygen2`) and integrate the final product into a reproducible Nix
+environment.
+
+You will create a small R package called `datasummary`. This package will
+provide a function to quickly summarize a data frame.
+
+**Requirements:**
+
+1.  **Project Setup:** Use `usethis::create_package("datasummary")` to generate
+    the standard R package structure.
+
+2.  **Functionality:**
+    *   Use `usethis::use_r("summarize_df")` to create a new file for your function.
+    *   The function, `summarize_df(df)`, should take a data frame as input.
+    *   It should return a new data frame with two columns: `column_name` and
+        `missing_values`, showing the count of `NA`s in each column of the input
+        data frame.
+    *   This function will require the `{dplyr}` package. Use
+        `usethis::use_package("dplyr")` to declare this dependency in your
+        `DESCRIPTION` file.
+
+3.  **Documentation:**
+    *   Use `roxygen2` comments to document your `summarize_df` function.
+    *   Include `@param`, `@return`, and `@export` tags.
+    *   Provide a working example in the `@examples` tag.
+    *   Since your function will use functions from `{dplyr}`, add the
+        appropriate `@importFrom` tags (e.g., `@importFrom dplyr %>%
+        summarise_all`).
+    *   Run `devtools::document()` to generate the documentation.
+
+4.  **Unit Tests:**
+    *   Set up testing with `usethis::use_testthat()`.
+    *   Create a test file with `usethis::use_test("summarize_df")`.
+    *   In the test file, write at least one test using `test_that()` that
+        creates a sample data frame with missing values and checks if your
+        function returns the correct counts.
+    *   Run `devtools::test()` to execute your tests.
+
+5.  **Quality Check:** Run `devtools::check()` to ensure your package is free of errors, warnings, and notes.
+
+6.  **GitHub Repository:** Push your completed R package to a new public repository on GitHub.
+
+7.  **Nix Expression:** Create a `default.nix` file in the root of your
+    `datasummary` project. This file must:
+    *   Define a custom R environment.
+    *   Define your `datasummary` package by using `buildRPackage`. Fetch the
+        source from your GitHub repository using `pkgs.fetchgit` (you will need
+        the `rev` and `sha256`).
+    *   Make sure to list its R dependencies (like `{dplyr}` and its own
+        dependencies) in `propagatedBuildInputs`.
+    *   Create a final shell with `pkgs.mkShell` that drops you into an R session where your `datasummary` package is installed and available.
+    *   **Hint:** Refer to the main course repository's `default.nix` file to
+        see how R packages are defined with `buildRPackage` and included in the
+        final R environment. Using `{rix}` is also an option.
+
+**To verify your work:**
+*   Drop into the Nix shell provided by your `default.nix`.
+*   Start an R session.
+*   Successfully run `library(datasummary)` and test your `summarize_df()`
+    function on a data frame like `iris`.
