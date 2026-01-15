@@ -88,7 +88,6 @@ testthat::test_that("rix() with Python packages warning if no reticulate", {
 })
 
 
-
 testthat::test_that("rix() with uv adds LD_LIBRARY_PATH to shellHook", {
   os_type <- Sys.info()["sysname"]
   skip_if_not(nix_shell_available())
