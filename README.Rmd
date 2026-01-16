@@ -343,7 +343,7 @@ to learn how to set up and use Nix smoothly.
 
 Try Nix inside Docker by following this
 `vignette("nix-inside-docker")`
-[vignette](https://github.com/ropensci/rix/blob/HEAD/vignettes/z-advanced-topic-using-nix-inside-docker.Rmd).
+[vignette](https://docs.ropensci.org/rix/articles/nix-inside-docker.html).
 
 ## How is Nix different from Docker+renv/{groundhog}/{rang}/(Ana/Mini)Conda/Guix? or Why Nix?
 
@@ -418,7 +418,7 @@ any issues.
 `{rix}` is getting a little sister package, `{rixpress}`, which is heavily
 inspired by `{targets}`. If you want to build polyglot data science pipelines
 with the power of Nix, give `{rixpress}` [a
-try](https://github.com/b-rodrigues/rixpress)!
+try](https://github.com/ropensci/rixpress)!
 
 ## Contributing
 
