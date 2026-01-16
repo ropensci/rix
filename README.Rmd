@@ -255,7 +255,7 @@ If you're already familiar with Nix and `{rix}`, install Nix using the
 [Determinate Systems
 installer](https://determinate.systems/posts/determinate-nix-installer): (if
 you're using WSL, do check out the [detailed installation
-instructions](https://docs.ropensci.org/rix/articles/b1-setting-up-and-using-rix-on-linux-and-windows.html#windows-pre-requisites)
+instructions](https://docs.ropensci.org/rix/articles/setting-up-linux-windows.html#windows-pre-requisites)
 though):
 
 ```bash
@@ -284,9 +284,11 @@ echo "trusted-users = root $USER" | sudo tee -a /etc/nix/nix.custom.conf && sudo
 ```
 
 Many thanks to [Cachix](https://www.cachix.org/) for sponsoring the
-`rstats-on-nix` cache! See `vignette("setting-up-linux-windows")`
-or `vignette("setting-up-macos")` for alternative
-approaches and NixOS instructions.
+`rstats-on-nix` cache! See
+[`vignette("setting-up-linux-windows")`](https://docs.ropensci.org/rix/articles/setting-up-linux-windows.html)
+or
+[`vignette("setting-up-macos")`](https://docs.ropensci.org/rix/articles/setting-up-macos.html)
+for alternative approaches and NixOS instructions.
 
 You can then use `{rix}` to build and enter a Nix-based R environment:
 
@@ -336,7 +338,7 @@ start using them.
 
 New to `{rix}` and Nix? Start by reading the `vignette("getting-started")`
 ([online
-documentation](https://docs.ropensci.org/rix/articles/a-getting-started.html)).
+documentation](https://docs.ropensci.org/rix/articles/getting-started.html)).
 to learn how to set up and use Nix smoothly.
 
 ### Docker

@@ -258,7 +258,7 @@ If you’re already familiar with Nix and `{rix}`, install Nix using the
 [Determinate Systems
 installer](https://determinate.systems/posts/determinate-nix-installer):
 (if you’re using WSL, do check out the [detailed installation
-instructions](https://docs.ropensci.org/rix/articles/b1-setting-up-and-using-rix-on-linux-and-windows.html#windows-pre-requisites)
+instructions](https://docs.ropensci.org/rix/articles/setting-up-linux-windows.html#windows-pre-requisites)
 though):
 
 ``` bash
@@ -288,9 +288,10 @@ echo "trusted-users = root $USER" | sudo tee -a /etc/nix/nix.custom.conf && sudo
 
 Many thanks to [Cachix](https://www.cachix.org/) for sponsoring the
 `rstats-on-nix` cache! See
-`vignette("setting-up-linux-windows")` or
-`vignette("setting-up-macos")` for alternative
-approaches and NixOS instructions.
+[`vignette("setting-up-linux-windows")`](https://docs.ropensci.org/rix/articles/setting-up-linux-windows.html)
+or
+[`vignette("setting-up-macos")`](https://docs.ropensci.org/rix/articles/setting-up-macos.html)
+for alternative approaches and NixOS instructions.
 
 You can then use `{rix}` to build and enter a Nix-based R environment:
 
@@ -336,14 +337,13 @@ and start using them.
 
 New to `{rix}` and Nix? Start by reading the
 `vignette("getting-started")` ([online
-documentation](https://docs.ropensci.org/rix/articles/a-getting-started.html)).
+documentation](https://docs.ropensci.org/rix/articles/getting-started.html)).
 to learn how to set up and use Nix smoothly.
 
 ### Docker
 
-Try Nix inside Docker by following this
-`vignette("nix-inside-docker")`
-[vignette](https://github.com/ropensci/rix/blob/HEAD/vignettes/z-advanced-topic-using-nix-inside-docker.Rmd).
+Try Nix inside Docker by following this `vignette("nix-inside-docker")`
+[vignette](https://docs.ropensci.org/rix/articles/nix-inside-docker.html).
 
 ## How is Nix different from Docker+renv/{groundhog}/{rang}/(Ana/Mini)Conda/Guix? or Why Nix?
 
@@ -415,7 +415,7 @@ files to version control to avoid any issues.
 `{rix}` is getting a little sister package, `{rixpress}`, which is
 heavily inspired by `{targets}`. If you want to build polyglot data
 science pipelines with the power of Nix, give `{rixpress}` [a
-try](https://github.com/b-rodrigues/rixpress)!
+try](https://github.com/ropensci/rixpress)!
 
 ## Contributing
 
