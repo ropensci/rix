@@ -123,9 +123,11 @@
 #'   set `ide = "none"` and refer to the `vignette("configuring-ide")` for
 #'   more details on how to set up your editor to work with Nix shells.
 #'
-#'   Packages to install from GitHub or Gitlab must be provided in a list of 3
-#'   elements: "package_name", "repo_url" and "commit". To install several
-#'   packages, provide a list of lists of these 3 elements, one per package to
+#'   Packages to install from GitHub or Gitlab must be provided in a list of 4
+#'   elements: "package_name", "repo_url", "commit", and "ref". Only one of 
+#'   "commit" or "ref" need to be supplied, but at least one is required. If
+#'   both are supplied, "ref" will be used, not "commit". To install several
+#'   packages, provide a list of lists of these 4 elements, one per package to
 #'   install. It is also possible to install old versions of packages by
 #'   specifying a version. For example, to install the latest version of `{AER}`
 #'   but an old version of `{ggplot2}`, you could write: `r_pkgs = c("AER",
@@ -136,16 +138,7 @@
 #'   have looked at the time of `{ggplot2}`'s version 2.2.1 release, then use
 #'   the Nix revision closest to that date, by setting `r_ver = "3.1.0"`, which
 #'   was the version of R current at the time. This ensures that Nix builds a
-#'   completely coherent environment. For security purposes, users that wish to
-#'   install packages from GitHub/GitLab or from the CRAN archives must provide
-#'   a security hash for each package. `{rix}` automatically precomputes this
-#'   hash for the source directory of R packages from GitHub/Gitlab or from the
-#'   CRAN archives, to make sure the expected trusted sources that match the
-#'   precomputed hashes in the `default.nix` are downloaded, but only if Nix
-#'   is installed. If you need to generate an expression with such packages,
-#'   but are working on a system where you can't install Nix, consider generating
-#'   the expression using a continuous integration service, such as GitHub
-#'   Actions.
+#'   completely coherent environment.
 #'
 #'   Note that installing packages from Git or old versions using the `"@"`
 #'   notation or local packages, does not leverage Nix's capabilities for
@@ -171,6 +164,7 @@
 #'   It is possible to use `"bleeding-edge`" or `"frozen-edge`" as the value for
 #'   the `r_ver` argument. This will create an environment with the very latest
 #'   R packages. `"bleeding-edge`" means that every time you will build the
+#'   environment, the packages will get updated. This is especially useful for
 #'   environment, the packages will get updated. This is especially useful for
 #'   environments that need to be constantly updated, for example when
 #'   developing a package. In contrast, `"frozen-edge`" will create an
