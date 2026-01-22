@@ -95,6 +95,14 @@ get_right_commit <- function(r_version) {
   # handle to get error for status code 404
   h <- curl::new_handle(failonerror = TRUE)
 
+  # Add GitHub token if available to avoid rate limiting
+  token <- Sys.getenv("GITHUB_PAT")
+  token_pattern <- "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$"
+
+  if (grepl(token_pattern, token)) {
+    curl::handle_setheaders(h, Authorization = paste("token", token))
+  }
+
   req <- try_get_request(url = api_url, handle = h)
 
   curl::handle_reset(h)
@@ -106,17 +114,45 @@ get_right_commit <- function(r_version) {
 }
 
 
+#' Helper function to create GitHub rate limit error message
+#' @noRd
+github_rate_limit_message <- function() {
+  paste0(
+    "GitHub API rate limit exceeded.\n",
+    "To use r_ver = 'latest-upstream', you have two options:\n",
+    "  1. Set a GITHUB_PAT environment variable (recommended):\n",
+    "     - Create a token at: https://github.com/settings/tokens\n",
+    "     - Set it: Sys.setenv(GITHUB_PAT = 'your_token')\n",
+    "  2. Use a specific R version instead:\n",
+    "     - Use r_ver = '4.4.2' or another version from available_r()\n"
+  )
+}
+
 #' Fetch contents from an URL into memory
 #'
 #' Fetch if available and stop with propagating the curl error. Also show URL
 #' for context
 #' @noRd
 try_get_request <- function(url, handle, extra_diagnostics = NULL) {
+  is_github_api <- grepl("api.github.com", url)
+
   tryCatch(
     {
       req <- curl::curl_fetch_memory(url, handle)
+
+      # Check for rate limiting (403)
+      if (req$status_code == 403 && is_github_api) {
+        stop(github_rate_limit_message(), call. = FALSE)
+      }
+
+      req
     },
     error = function(e) {
+      # Check if this is a rate limit error
+      if (grepl("403", e$message) && is_github_api) {
+        stop(github_rate_limit_message(), call. = FALSE)
+      }
+
       stop(
         "Request `curl::curl_fetch_memory(",
         paste0("url = ", "'", url, "'", ")` "),

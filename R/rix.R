@@ -123,7 +123,8 @@
 #'   set `ide = "none"` and refer to the `vignette("configuring-ide")` for
 #'   more details on how to set up your editor to work with Nix shells.
 #'
-#'   Packages to install from GitHub or Gitlab must be provided in a list of 3
+#'   Packages to install from GitHub, GitLab, or other custom Git hosts
+#'   (Forgejo, Gitea, cgit, etc.) must be provided in a list of 3
 #'   elements: "package_name", "repo_url" and "commit". To install several
 #'   packages, provide a list of lists of these 3 elements, one per package to
 #'   install. It is also possible to install old versions of packages by
@@ -137,9 +138,9 @@
 #'   the Nix revision closest to that date, by setting `r_ver = "3.1.0"`, which
 #'   was the version of R current at the time. This ensures that Nix builds a
 #'   completely coherent environment. For security purposes, users that wish to
-#'   install packages from GitHub/GitLab or from the CRAN archives must provide
-#'   a security hash for each package. `{rix}` automatically precomputes this
-#'   hash for the source directory of R packages from GitHub/Gitlab or from the
+#'   install packages from GitHub, GitLab, or other Git hosts, or from the CRAN
+#'   archives must provide a security hash for each package. `{rix}` automatically
+#'   precomputes this hash for the source directory of R packages from Git hosts or from the
 #'   CRAN archives, to make sure the expected trusted sources that match the
 #'   precomputed hashes in the `default.nix` are downloaded, but only if Nix
 #'   is installed. If you need to generate an expression with such packages,
@@ -380,11 +381,11 @@ for more details."
   flag_git_archive <- if (
     !is.null(git_pkgs) || !is.null(cran_pkgs$archive_pkgs)
   ) {
-    # If git_pkgs is a list of lists, then sapply will succeed
+    # If git_pkgs is a list of lists, then vapply will succeed
     # if not, then we can access "package_name" directly
     git_pkgs_names <- if (!is.null(git_pkgs)) {
       tryCatch(
-        sapply(git_pkgs, function(x) x$package_name),
+        vapply(git_pkgs, function(x) x$package_name, character(1)),
         error = function(e) git_pkgs$package_name
       )
     }
@@ -394,7 +395,7 @@ for more details."
     # which will be the name of the package
     cran_archive_names <- if (!is.null(cran_pkgs$archive_pkgs)) {
       pkgs <- strsplit(cran_pkgs$archive_pkgs, split = "@")
-      sapply(pkgs, function(x) x[[1]])
+      vapply(pkgs, function(x) x[[1]], character(1))
     }
 
     paste0(c(git_pkgs_names, cran_archive_names), collapse = " ")
