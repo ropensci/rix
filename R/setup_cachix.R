@@ -1,4 +1,4 @@
-#' setup_cachix Setup up the rstats-on-nix binary repository
+#' Configure the rstats-on-nix Binary Cache
 #' @param nix_conf_path Character, path to folder containing 'nix.conf' file.
 #'   Defaults to "~/.config/nix".
 #' @details This function edits `~/.config/nix/nix.conf` to add the
