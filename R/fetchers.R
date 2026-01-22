@@ -502,29 +502,51 @@ fetchpkgs <- function(git_pkgs, archive_pkgs, ...) {
 
 
 #' get_commit_date Retrieves the date of a commit from a Git repository
-#' @param repo The GitHub repository (e.g. "r-lib/usethis")
-#' @param  commit_sha The commit hash of interest
+#' @param repo The repository (e.g. "r-lib/usethis" or "owner/repo")
+#' @param commit_sha The commit hash of interest
+#' @param platform Platform type: "github", "gitlab", or "git" (Forgejo/Gitea)
+#' @param base_url Base URL for the Git platform (only for platform="git")
 #' @return A character. The date of the commit.
 #' @importFrom curl new_handle handle_setheaders curl_fetch_memory
 #' @importFrom jsonlite fromJSON
 #' @noRd
-get_commit_date <- function(repo, commit_sha) {
-  url <- paste0("https://api.github.com/repos/", repo, "/commits/", commit_sha)
+get_commit_date <- function(repo, commit_sha, platform = "github", base_url = NULL) {
+  # Construct API URL based on platform
+  if (platform == "github") {
+    url <- paste0("https://api.github.com/repos/", repo, "/commits/", commit_sha)
+  } else if (platform == "gitlab") {
+    # GitLab API uses project ID or URL-encoded path
+    url <- paste0("https://gitlab.com/api/v4/projects/",
+                  utils::URLencode(repo, reserved = TRUE),
+                  "/repository/commits/", commit_sha)
+  } else if (platform == "git") {
+    # Forgejo/Gitea API
+    if (is.null(base_url)) {
+      stop("base_url is required for platform='git'", call. = FALSE)
+    }
+    url <- paste0(base_url, "/api/v1/repos/", repo, "/git/commits/", commit_sha)
+  } else {
+    stop("Unsupported platform: ", platform, call. = FALSE)
+  }
+
   h <- new_handle()
 
-  token <- Sys.getenv("GITHUB_PAT")
-  token_pattern <- "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$"
+  # Only use GitHub token for GitHub
+  if (platform == "github") {
+    token <- Sys.getenv("GITHUB_PAT")
+    token_pattern <- "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$"
 
-  if (grepl(token_pattern, token)) {
-    handle_setheaders(h, Authorization = paste("token", token))
-  } else {
-    message(
-      paste0(
-        "When fetching the commit date from GitHub from <<< ",
-        repo,
-        " >>>, no GitHub Personal Access Token found.\nPlease set GITHUB_PAT in your environment.\nFalling back to unauthenticated API request.\n"
+    if (grepl(token_pattern, token)) {
+      handle_setheaders(h, Authorization = paste("token", token))
+    } else {
+      message(
+        paste0(
+          "When fetching the commit date from GitHub from <<< ",
+          repo,
+          " >>>, no GitHub Personal Access Token found.\nPlease set GITHUB_PAT in your environment.\nFalling back to unauthenticated API request.\n"
+        )
       )
-    )
+    }
   }
 
   tryCatch(
@@ -534,10 +556,28 @@ get_commit_date <- function(repo, commit_sha) {
         stop("API request failed with status code: ", response$status_code)
       }
       commit_data <- fromJSON(rawToChar(response$content))
-      if (is.null(commit_data$commit$committer$date)) {
-        stop("Invalid response format: missing commit date")
+
+      # Extract date based on platform-specific response structure
+      if (platform == "github") {
+        if (is.null(commit_data$commit$committer$date)) {
+          stop("Invalid response format: missing commit date")
+        }
+        commit_data$commit$committer$date
+      } else if (platform == "gitlab") {
+        if (is.null(commit_data$committed_date)) {
+          stop("Invalid response format: missing commit date")
+        }
+        commit_data$committed_date
+      } else if (platform == "git") {
+        # Forgejo/Gitea response structure
+        if (!is.null(commit_data$committer$date)) {
+          commit_data$committer$date
+        } else if (!is.null(commit_data$created)) {
+          commit_data$created
+        } else {
+          stop("Invalid response format: missing commit date")
+        }
       }
-      commit_data$commit$committer$date
     },
     error = function(e) {
       message(
