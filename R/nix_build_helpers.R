@@ -163,7 +163,7 @@ nix_build_exit_msg <- function(x) {
     "101" = "build timeout (101).",
     "102" = "hash mismatch (102).",
     "104" = "not deterministic (104).",
-    stop("general exit code ", x_char, ".")
+    stop(paste0("general exit code ", x_char, "."))
   )
 
   return(err_msg)

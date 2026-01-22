@@ -11,8 +11,7 @@ renv_remote_pkgs(renv_lock_remote_pkgs, host = NULL)
 
 \item{host}{the host of remote package, defaults to NULL meaning the RemoteHost of the
 renv entry will be used.
-currently supported hosts in renv.lock: 'api.github.com' 'gitlab.com'
-For custom Git hosts (Forgejo, Gitea, cgit, etc.), use git_pkgs parameter directly in rix().
+currently supported hosts: 'api.github.com' 'gitlab.com'
 see \href{https://remotes.r-lib.org/}{remotes} for more.}
 }
 \value{

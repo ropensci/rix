@@ -9,24 +9,22 @@
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
 nix_hash <- function(repo_url, commit, ...) {
-  if (grepl("cran.*Archive.*", repo_url)) {
-    hash_cran(repo_url = repo_url)
-  } else if (grepl("^https://", repo_url)) {
+  if (grepl("(github)|(gitlab)", repo_url)) {
     hash_git(repo_url = repo_url, commit, ...)
+  } else if (grepl("cran.*Archive.*", repo_url)) {
+    hash_cran(repo_url = repo_url)
   } else {
     stop(
-      "repo_url argument is wrong. Please provide a URL to a Git repository",
-      " (GitHub, GitLab, or other Git https host), or to the CRAN Archive to install a",
-      " package from the CRAN archive."
+      "repo_url argument is wrong. Please provide an url to a GitHub repo",
+      "to install a package from GitHub, or to the CRAN Archive to install a",
+      "package from the CRAN archive."
     )
   }
 }
 
 #' Generate regex patterns for Git hosting platforms
 #'
-#' @param platform Either "github", "gitlab", or "git" for custom Git hosting
-#' platforms
-#' @param url String with URL to the repository (required for "git" platform)
+#' @param platform Either "github" or "gitlab"
 #' @return A list with regex patterns for the given platform:
 #' - `has_subdir_pattern`: Pattern to check if a URL has a subdirectory
 #' - `extract_subdir_pattern`: Pattern to extract the subdirectory from a URL
@@ -34,7 +32,7 @@ nix_hash <- function(repo_url, commit, ...) {
 #' - `repo_url_short_pattern`: Pattern to extract username/repo from archive URLs
 #' - `base_url`: Base URL prefix for constructing repository archive URLs
 #' @noRd
-get_git_regex <- function(platform, url = NULL) {
+get_git_regex <- function(platform) {
   # Define platform-specific parameters
   platforms <- list(
     github = list(
@@ -46,44 +44,19 @@ get_git_regex <- function(platform, url = NULL) {
       name = "gitlab",
       domain = "gitlab\\.com",
       archive_path = "-/archive/"
-    ),
-    git = list(
-      name = "git",
-      domain = NULL, # Will be extracted from URL
-      archive_path = "archive/" # Default to GitHub-style
     )
   )
 
   # Get platform configuration or error if invalid
   if (!platform %in% names(platforms)) {
-    stop("Platform must be 'github', 'gitlab', or 'git'", call. = FALSE)
+    stop("Platform must be 'github' or 'gitlab'", call. = FALSE)
   }
 
   cfg <- platforms[[platform]]
 
-  # For custom Git hosts, extract domain from URL
-  if (platform == "git") {
-    if (is.null(url)) {
-      stop("URL parameter is required for 'git' platform", call. = FALSE)
-    }
-    # Extract domain from URL (e.g., "codefloe.com" from "https://codefloe.com/...")
-    domain_match <- regmatches(
-      url,
-      regexpr("https://([^/]+)", url, perl = TRUE)
-    )
-    domain_raw <- sub("https://", "", domain_match)
-    # Escape dots for regex
-    domain <- gsub("\\.", "\\\\.", domain_raw)
-    # Set domain and base_url
-    cfg$domain <- domain
-    cfg$base_url <- paste0("https://", domain_raw)
-  } else {
-    cfg$base_url <- paste0("https://", cfg$name, ".com")
-  }
-
   # Build base patterns for reuse
   domain <- cfg$domain
-  domain_prefix <- paste0("https://", gsub("\\\\\\.", ".", domain))
+  domain_prefix <- paste0("https://", domain)
   repo_path <- paste0(domain_prefix, "/[^/]+/[^/]+")
 
   # Generate patterns dynamically based on the config
@@ -100,7 +73,7 @@ get_git_regex <- function(platform, url = NULL) {
       domain_prefix,
       "/([^/]+/[^/]+).*"
     ),
-    base_url = cfg$base_url
+    base_url = paste0("https://", cfg$name, ".com")
   )
 }
 
@@ -149,43 +122,28 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
 
   tar_file <- file.path(path_to_tarfile, "package.tar.gz")
 
-  # Determine platform: github, gitlab, or generic git
+  # Determine platform: github, gitlab,
   if (grepl("github", url)) {
     platform <- "github"
   } else if (grepl("gitlab", url)) {
     platform <- "gitlab"
   } else if (grepl("cran", url)) {
     platform <- "cran"
-  } else if (grepl("^https://", url) && grepl("archive/.*\\.tar\\.gz$", url)) {
-    # Generic Git host (Forgejo, Gitea, cgit, etc.)
-    platform <- "git"
   } else {
     stop(
-      "repo_url argument should be a URL to a Git repository ",
-      "(GitHub, GitLab, or other Git host) or a CRAN archive.\n"
+      "repo_url argument should be a URL to a GitHub/GitLab repo or a CRAN archive.\n"
     )
   }
 
   # set the root URL for the download
   root_url <- url
 
-  # if GitHub, GitLab, or other Git URL with a subdirectory, we need to adjust the root_url
+  # if GitHub or GitLab URL with a subdirectory, we need to adjust the root_url
   # because only entire repos can be downloaded)
-  if (platform %in% c("github", "gitlab", "git")) {
+  if (platform %in% c("github", "gitlab")) {
     # Get regex patterns for the platform
-    # For custom Git hosts, pass the URL to extract domain
-    # Use repo_url if available (from hash_git), otherwise use url
-    url_for_pattern <- if (!is.null(repo_url)) repo_url else url
-    if (platform == "git") {
-      patterns <- get_git_regex(platform, url = url_for_pattern)
-    } else {
-      patterns <- get_git_regex(platform)
-    }
-    username_repo <- sub(
-      patterns$repo_url_short_pattern,
-      "\\1",
-      url_for_pattern
-    )
+    patterns <- get_git_regex(platform)
+    username_repo <- sub(patterns$repo_url_short_pattern, "\\1", url)
     has_subdir <- grepl(patterns$has_subdir_pattern, url)
     if (has_subdir) {
       base_repo_url <- paste0(patterns$base_url, "/", username_repo)
@@ -222,9 +180,8 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
   # set the path to the r folder containing the DESCRIPTION file
   path_to_r <- path_to_source_root
 
-  # if GitHub, GitLab, or other Git platform URL with a subdirectory, we need to
-  # adjust the path
-  if (platform %in% c("github", "gitlab", "git") && has_subdir) {
+  # if GitHub or GitLab URL with a subdirectory, we need to adjust the path
+  if (platform %in% c("github", "gitlab") && has_subdir) {
     url_subdir <- sub(patterns$extract_subdir_pattern, "\\1", url)
     path_to_r <- file.path(path_to_source_root, url_subdir)
   }
@@ -242,20 +199,7 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
   )
 
   if (platform == "github") {
-    commit_date <- get_commit_date(username_repo, commit, platform = "github")
-  } else if (platform == "gitlab") {
-    commit_date <- get_commit_date(username_repo, commit, platform = "gitlab")
-  } else if (platform == "git") {
-    # For Forgejo/Gitea platforms, use their API
-    commit_date <- get_commit_date(
-      username_repo,
-      commit,
-      platform = "git",
-      base_url = patterns$base_url
-    )
-  } else {
-    # For other platforms without API support, use current date as fallback
-    commit_date <- Sys.Date()
+    commit_date <- get_commit_date(username_repo, commit)
   }
 
   deps <- get_imports(desc_path, commit_date, ...)
@@ -374,10 +318,6 @@ hash_git <- function(repo_url, commit, ...) {
     url <- paste0(repo_url, slash, "archive/", commit, ".tar.gz")
   } else if (grepl("gitlab", repo_url)) {
     url <- paste0(repo_url, slash, "-/archive/", commit, ".tar.gz")
-  } else {
-    # For other Git hosts (Forgejo, Gitea, cgit, etc.), try GitHub-style first
-    # as it's the most common pattern
-    url <- paste0(repo_url, slash, "archive/", commit, ".tar.gz")
   }
   # list contains `sri_hash` and `deps` elements
   hash_url(url, repo_url, commit, ...)
