@@ -42,21 +42,6 @@ testthat::test_that("Test fetchgit works with gitlab packages", {
   )
 })
 
-testthat::test_that("Test fetchgit works with custom Git hosts (Forgejo/Gitea)", {
-  testthat::skip_on_cran()
-  skip_if_not(nix_shell_available())
-  testthat::expect_equal(
-    fetchgit(
-      list(
-        package_name = "opusreader2",
-        repo_url = "https://codefloe.com/spectral-cockpit/opusreader2",
-        commit = "36a9b82835d42c039dc5e202337beb290bba7f85"
-      )
-    ),
-    "\n    opusreader2 = (pkgs.rPackages.buildRPackage {\n      name = \"opusreader2\";\n      src = pkgs.fetchgit {\n        url = \"https://codefloe.com/spectral-cockpit/opusreader2\";\n        rev = \"36a9b82835d42c039dc5e202337beb290bba7f85\";\n        sha256 = \"sha256-XGfHKhxeoVC5nvkW0OF0PPNBat8RtWWmF5s8Oc3jtBY=\";\n      };\n      propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.rPackages) ;\n      };\n    });\n"
-  )
-})
-
 testthat::test_that("Test fetchgit works with packages with empty imports", {
   testthat::skip_on_cran()
   skip_if_not(nix_shell_available())
@@ -328,17 +313,6 @@ testthat::test_that("get_commit_date tells you when no GitHub token is found", {
     ),
     "When fetching the commit date from GitHub from <<< ropensci/rix >>>, no GitHub Personal Access Token found"
   )
-})
-
-testthat::test_that("get_commit_date works with Forgejo/Gitea platforms", {
-  testthat::skip_on_cran()
-  date <- get_commit_date(
-    repo = "spectral-cockpit/opusreader2",
-    commit_sha = "36a9b82835d42c039dc5e202337beb290bba7f85",
-    platform = "git",
-    base_url = "https://codefloe.com"
-  )
-  testthat::expect_match(date, "2026-01-21T08:42:18Z")
 })
 
 testthat::test_that("Test download_all_commits works with valid repo", {

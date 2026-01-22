@@ -30,8 +30,7 @@ read_renv_lock <- function(renv_lock_path = "renv.lock") {
 #' @param renv_lock_remote_pkgs the list of package information from an renv.lock file.
 #' @param host the host of remote package, defaults to NULL meaning the RemoteHost of the
 #' renv entry will be used.
-#' currently supported hosts in renv.lock: 'api.github.com' 'gitlab.com'
-#' For custom Git hosts (Forgejo, Gitea, cgit, etc.), use git_pkgs parameter directly in rix().
+#' currently supported hosts: 'api.github.com' 'gitlab.com'
 #' see [remotes](https://remotes.r-lib.org/) for more.
 #'
 #' @return a list of lists with three elements named:
@@ -206,8 +205,7 @@ renv2nix <- function(
           " has the unsupported remote host ",
           renv_lock$Packages[[i]]$RemoteHost,
           " and will not be included in the Nix expression.",
-          "\n For custom Git hosts (Forgejo, Gitea, cgit, SourceHut, etc.), manually specify",
-          " the package using the git_pkgs parameter in rix()."
+          "\n Consider manually specifying the git remote or a local package install."
         )
       }
     }
