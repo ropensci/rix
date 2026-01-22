@@ -49,8 +49,8 @@ get_git_regex <- function(platform, url = NULL) {
     ),
     git = list(
       name = "git",
-      domain = NULL,  # Will be extracted from URL
-      archive_path = "archive/"  # Default to GitHub-style
+      domain = NULL, # Will be extracted from URL
+      archive_path = "archive/" # Default to GitHub-style
     )
   )
 
@@ -67,7 +67,10 @@ get_git_regex <- function(platform, url = NULL) {
       stop("URL parameter is required for 'git' platform", call. = FALSE)
     }
     # Extract domain from URL (e.g., "codefloe.com" from "https://codefloe.com/...")
-    domain_match <- regmatches(url, regexpr("https://([^/]+)", url, perl = TRUE))
+    domain_match <- regmatches(
+      url,
+      regexpr("https://([^/]+)", url, perl = TRUE)
+    )
     domain_raw <- sub("https://", "", domain_match)
     # Escape dots for regex
     domain <- gsub("\\.", "\\\\.", domain_raw)
@@ -178,7 +181,11 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
     } else {
       patterns <- get_git_regex(platform)
     }
-    username_repo <- sub(patterns$repo_url_short_pattern, "\\1", url_for_pattern)
+    username_repo <- sub(
+      patterns$repo_url_short_pattern,
+      "\\1",
+      url_for_pattern
+    )
     has_subdir <- grepl(patterns$has_subdir_pattern, url)
     if (has_subdir) {
       base_repo_url <- paste0(patterns$base_url, "/", username_repo)

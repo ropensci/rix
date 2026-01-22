@@ -510,15 +510,28 @@ fetchpkgs <- function(git_pkgs, archive_pkgs, ...) {
 #' @importFrom curl new_handle handle_setheaders curl_fetch_memory
 #' @importFrom jsonlite fromJSON
 #' @noRd
-get_commit_date <- function(repo, commit_sha, platform = "github", base_url = NULL) {
+get_commit_date <- function(
+  repo,
+  commit_sha,
+  platform = "github",
+  base_url = NULL
+) {
   # Construct API URL based on platform
   if (platform == "github") {
-    url <- paste0("https://api.github.com/repos/", repo, "/commits/", commit_sha)
+    url <- paste0(
+      "https://api.github.com/repos/",
+      repo,
+      "/commits/",
+      commit_sha
+    )
   } else if (platform == "gitlab") {
     # GitLab API uses project ID or URL-encoded path
-    url <- paste0("https://gitlab.com/api/v4/projects/",
-                  utils::URLencode(repo, reserved = TRUE),
-                  "/repository/commits/", commit_sha)
+    url <- paste0(
+      "https://gitlab.com/api/v4/projects/",
+      utils::URLencode(repo, reserved = TRUE),
+      "/repository/commits/",
+      commit_sha
+    )
   } else if (platform == "git") {
     # Forgejo/Gitea API
     if (is.null(base_url)) {
