@@ -381,11 +381,11 @@ for more details."
   flag_git_archive <- if (
     !is.null(git_pkgs) || !is.null(cran_pkgs$archive_pkgs)
   ) {
-    # If git_pkgs is a list of lists, then sapply will succeed
+    # If git_pkgs is a list of lists, then vapply will succeed
     # if not, then we can access "package_name" directly
     git_pkgs_names <- if (!is.null(git_pkgs)) {
       tryCatch(
-        sapply(git_pkgs, function(x) x$package_name),
+        vapply(git_pkgs, function(x) x$package_name, character(1)),
         error = function(e) git_pkgs$package_name
       )
     }
@@ -395,7 +395,7 @@ for more details."
     # which will be the name of the package
     cran_archive_names <- if (!is.null(cran_pkgs$archive_pkgs)) {
       pkgs <- strsplit(cran_pkgs$archive_pkgs, split = "@")
-      sapply(pkgs, function(x) x[[1]])
+      vapply(pkgs, function(x) x[[1]], character(1))
     }
 
     paste0(c(git_pkgs_names, cran_archive_names), collapse = " ")
