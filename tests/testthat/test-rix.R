@@ -535,6 +535,64 @@ testthat::test_that("rix(), only one GitHub package", {
 })
 
 
+testthat::test_that("rix(), multiple git packages from different forges", {
+  os_type <- Sys.info()["sysname"]
+  skip_if(os_type == "Windows")
+  skip_if_not(nix_shell_available())
+
+  tmpdir <- tempdir()
+
+  path_default_nix <- paste0(
+    tmpdir,
+    paste0(sample(letters, 5), collapse = "")
+  )
+  dir.create(path_default_nix)
+  path_default_nix <- normalizePath(path_default_nix)
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+
+  save_default_nix_test <- function(path_default_nix) {
+    rix(
+      r_ver = "4.4.2",
+      git_pkgs = list(
+        list(
+          package_name = "fifo",
+          repo_url = "https://codeberg.org/adamhsparks/fifo/",
+          commit = "85a15cc3cc7d5e3e127155b6c5c2716f81ed54d1"
+        ),
+        list(
+          package_name = "nert",
+          repo_url = "https://github.com/AAGI-AUS/nert/",
+          commit = "05d08aa660d47856bd897faa2d2d4c2dbdbbaa53"
+        ),
+        list(
+          package_name = "read.abares",
+          repo_url = "https://github.com/ropensci/read.abares/",
+          commit = "38b8bcc86af93fb70f656a27b9ddfc8362f962ea"
+        )
+      ),
+      ide = "none",
+      project_path = path_default_nix,
+      message_type = "quiet",
+      overwrite = TRUE
+    )
+
+    file.path(path_default_nix, "default.nix")
+  }
+
+  testthat::expect_snapshot_file(
+    path = save_default_nix_test(path_default_nix),
+    name = "multiple_forges_default.nix",
+  )
+})
+
+
 testthat::test_that("rix(), conclusion message", {
   tmpdir <- tempdir()
   path_default_nix <- paste0(
