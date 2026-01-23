@@ -1,62 +1,20 @@
 
 let
-  pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2024-12-14.tar.gz") {};
- 
+ pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2025-02-24.tar.gz") {};
+
   rpkgs = builtins.attrValues {
-    inherit (pkgs.rPackages) 
+    inherit (pkgs.rPackages)
+      abind
       AsioHeaders
+      askpass
+      backports
+      base64enc
+      bestNormalize
       BH
       Biobase
       BiocGenerics
       BiocManager
       BiocVersion
-      DBI
-      DT
-      DiceDesign
-      FNN
-      GPfit
-      ICD10gm
-      KMsurv
-      KernSmooth
-      LambertW
-      MASS
-      Matrix
-      MatrixModels
-      Polychrome
-      R_cache
-      R_methodsS3
-      R_oo
-      R_utils
-      R6
-      RANN
-      RApiSerialize
-      RColorBrewer
-      ROCR
-      RProtoBufLib
-      RSpectra
-      Rcpp
-      RcppAnnoy
-      RcppArmadillo
-      RcppEigen
-      RcppHNSW
-      RcppParallel
-      RcppProgress
-      RcppTOML
-      Rhdf5lib
-      Rtsne
-      S4Vectors
-      SQUAREM
-      Seurat
-      SeuratObject
-      SoupX
-      SparseM
-      VGAM
-      WRS2
-      abind
-      askpass
-      backports
-      base64enc
-      bestNormalize
       bit
       bit64
       bitops
@@ -67,11 +25,11 @@ let
       broom
       bslib
       butcher
-      caTools
       cachem
       callr
       car
       carData
+      caTools
       cellranger
       class
       cli
@@ -93,11 +51,13 @@ let
       cytolib
       data_table
       datawizard
+      DBI
       dbplyr
       deldir
       desc
       diagram
       dials
+      DiceDesign
       dichromat
       diffobj
       digest
@@ -108,6 +68,7 @@ let
       dotCall64
       dplyr
       dqrng
+      DT
       dtplyr
       ellipsis
       emmeans
@@ -122,6 +83,7 @@ let
       finetune
       fitdistrplus
       flowCore
+      FNN
       fontawesome
       forcats
       foreach
@@ -147,6 +109,7 @@ let
       googledrive
       googlesheets4
       gower
+      GPfit
       gplots
       gridExtra
       gridtext
@@ -163,6 +126,7 @@ let
       httpuv
       httr
       ica
+      ICD10gm
       ids
       igraph
       infer
@@ -176,9 +140,12 @@ let
       jpeg
       jquerylib
       jsonlite
+      KernSmooth
       km_ci
+      KMsurv
       knitr
       labeling
+      LambertW
       lamW
       languageserver
       later
@@ -198,6 +165,9 @@ let
       mapproj
       maps
       markdown
+      MASS
+      Matrix
+      MatrixModels
       matrixStats
       maxstat
       mclust
@@ -235,6 +205,7 @@ let
       plotly
       plyr
       png
+      Polychrome
       polyclip
       polynom
       praise
@@ -248,8 +219,24 @@ let
       purrr
       qs
       quantreg
+      R_cache
+      R_methodsS3
+      R_oo
+      R_utils
+      R6
       ragg
+      RANN
+      RApiSerialize
       rappdirs
+      RColorBrewer
+      Rcpp
+      RcppAnnoy
+      RcppArmadillo
+      RcppEigen
+      RcppHNSW
+      RcppParallel
+      RcppProgress
+      RcppTOML
       readr
       readxl
       recipes
@@ -263,45 +250,56 @@ let
       reshape2
       reticulate
       rex
+      Rhdf5lib
       rlang
       rmarkdown
       rngtools
+      ROCR
       roxygen2
       rpart
       rprojroot
+      RProtoBufLib
       rsample
+      RSpectra
       rstatix
       rstudioapi
+      Rtsne
       rvest
+      S4Vectors
       sass
       scales
       scattermore
       scatterplot3d
       sctransform
       selectr
+      Seurat
+      SeuratObject
       shape
       shiny
       sitmo
       skimr
       slider
       snakecase
+      SoupX
       sourcetools
       sp
       spam
+      SparseM
       spatstat_data
       spatstat_explore
       spatstat_geom
       spatstat_random
       spatstat_sparse
       spatstat_utils
+      SQUAREM
       stringdist
       stringfish
       stringi
       stringr
       styler
-      survMisc
       survival
       survminer
+      survMisc
       sys
       systemfonts
       tensor
@@ -312,8 +310,8 @@ let
       tidyr
       tidyselect
       tidyverse
-      timeDate
       timechange
+      timeDate
       tinytex
       tune
       tzdb
@@ -323,6 +321,7 @@ let
       uuid
       uwot
       vctrs
+      VGAM
       vip
       viridis
       viridisLite
@@ -333,6 +332,7 @@ let
       workflows
       workflowsets
       writexl
+      WRS2
       xfun
       xgboost
       xml2
@@ -342,7 +342,7 @@ let
       yardstick
       zoo;
   };
- 
+
     CSFAtlasTools = (pkgs.rPackages.buildRPackage {
       name = "CSFAtlasTools";
       src = pkgs.fetchgit {
@@ -351,7 +351,7 @@ let
         sha256 = "sha256-q9qBYrGrn96lG5I9xUuWCLw0CSnh7BA5Qs9AAcRtz0E=";
       };
       propagatedBuildInputs = builtins.attrValues {
-        inherit (pkgs.rPackages) 
+        inherit (pkgs.rPackages)
           dplyr
           glue
           readr
@@ -367,11 +367,12 @@ let
           WRS2
           Seurat
           abind
+          datathin
           mclust
           tune
           yardstick
           ggsignif;
-      } ++ [ datathin ];
+      };
     });
 
     datathin = (pkgs.rPackages.buildRPackage {
@@ -382,23 +383,23 @@ let
         sha256 = "sha256-rtRpwFI+JggX8SwnfH4SPDaMPK2yLhJFTgzvWT+Zll4=";
       };
       propagatedBuildInputs = builtins.attrValues {
-        inherit (pkgs.rPackages) 
+        inherit (pkgs.rPackages)
           VGAM
           knitr
           extraDistr
           mvtnorm;
       };
     });
-      
+
   system_packages = builtins.attrValues {
-    inherit (pkgs) 
-      R
+    inherit (pkgs)
       glibcLocales
       nix
+      R
       pandoc
       which;
   };
-  
+
   shell = pkgs.mkShell {
     LOCALE_ARCHIVE = if pkgs.stdenv.hostPlatform.system == "x86_64-linux" then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
     LANG = "en_US.UTF-8";
@@ -407,10 +408,10 @@ let
     LC_MONETARY = "en_US.UTF-8";
     LC_PAPER = "en_US.UTF-8";
     LC_MEASUREMENT = "en_US.UTF-8";
-    
+
     buildInputs = [ CSFAtlasTools datathin rpkgs system_packages ];
-    
-  }; 
+
+  };
 in
   {
     inherit pkgs shell;

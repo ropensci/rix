@@ -39,7 +39,7 @@ jobs:
 
       - name: Build default.nix with 2 packages
         run: |
-          nix-shell --quiet default.nix --run "Rscript -e \"devtools::load_all();renv2nix(renv_lock_path = 'renv_datathin.lock', override_r_ver = '2025-02-10',  project_path = '.', message_type = 'quiet', overwrite = TRUE)\""
+          nix-shell --quiet default.nix --run "Rscript -e \"devtools::load_all();renv2nix(renv_lock_path = 'renv_datathin.lock', override_r_ver = '2025-02-24',  project_path = '.', message_type = 'quiet', overwrite = TRUE)\""
 
       - name: Check generated default.nix
         run: cat default.nix
