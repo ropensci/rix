@@ -1,6 +1,5 @@
-
 let
-  pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2025-02-24.tar.gz") {};
+ pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2025-02-24.tar.gz") {};
   
     fifo = (pkgs.rPackages.buildRPackage {
       name = "fifo";
@@ -16,14 +15,12 @@ let
           data_table
           httr2
           lifecycle
-          nert
           purrr
-          read_abares
           rlang
           sf
           terra
           weatherOz;
-      };
+      } ++ [ nert read.abares ];
     });
 
     nert = (pkgs.rPackages.buildRPackage {
@@ -77,9 +74,10 @@ let
       
   system_packages = builtins.attrValues {
     inherit (pkgs) 
-      R
       glibcLocales
-      nix;
+      nix
+      quarto
+      R;
   };
   
   shell = pkgs.mkShell {
