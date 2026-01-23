@@ -372,7 +372,9 @@ get_imports <- function(path, commit_date, ...) {
 
   # Remote packages are included in imports, so we need
   # remove remotes from imports
-  output_imports <- setdiff(output, remote_pkgs_names)
+  # Also convert remote package names to underscores to match
+  remote_pkgs_names_underscore <- gsub("\\.", "_", remote_pkgs_names)
+  output_imports <- setdiff(output, remote_pkgs_names_underscore)
 
   list(
     "package" = imports_df$Package,
