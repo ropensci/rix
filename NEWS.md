@@ -1,3 +1,50 @@
+<!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
+
+# rix 0.18.0 (2026-01-23)
+
+## New features
+
+- `rix()`: now supports [Forgejo](https://forgejo.org/) and Gitea based git
+  platforms for the `git_pkgs` argument. Currently, as of Forgejo release
+  v14.0.1, we follow `/api/v1`. We updated the tooling around "fetchers" and
+  `nix_hash()` including its helpers.
+  - The "remote dependencies" vignettes explains the API additions in more
+    detail.
+  - `git_pkgs` hosted on [Codeberg](https://codeberg.org) and also on
+    [Codefloe](https://codefloe.com) work now.
+
+## Bug fixes
+
+- Fixed a bug in `rix_init()` that prevented from writing .Rprofile files.
+
+## Maintenance
+
+- `setup_cachix()`:
+  - `trusted-users` is now the recommended approach for all users
+  - Added one-liner command for trusted-users on Linux and macOS
+- Added NixOS instructions for declarative config via `configuration.nix` or
+  Home Manager setup
+- Updated package startup message to point to correct vignettes and mention
+  `setup_cachix()`
+- Added patience note about first-time bootstrap taking up to 5 minutes
+- Restructured cachix sections in vignettes with 'Recommended' and 'Alternative'
+  subsections
+- `renv2nix()`:
+  - allow overriding with a `date`
+  - converts an `renv.lock` file into a Nix expression. For now, only deals with
+    the R version, package versions are not matched.
+- `rix()`: deal with empty imports
+- `renv2nix()`:
+  - switch from `RemoteType` to `RemoteHost` in `renv.lock` files to detect
+    packages to be added from Github or Gitlab
+  - added new argument, `override_r_ver`, to manually set R version in generated
+    Nix expression
+  - add `return_rix_call` argument
+- rename `renv_remote_pkgs()` to `renv_remote_pkg()` as it only handles single
+  pkgs
+  - factors out generating `git_pkgs` information
+- add `renv_lock_r_ver()` function
+
 # rix 0.17.4 (2026-01-15)
 
 - Fix evaluation warning: ‘system’ has been renamed to/replaced by
