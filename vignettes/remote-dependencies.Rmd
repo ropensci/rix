@@ -21,12 +21,13 @@ library(rix)
 ## Introduction
 
 Packages published on CRAN must have their dependencies on either CRAN or
-Bioconductor, but not on GitHub. However, there are many packages available on
-GitHub that never get published on CRAN, and some of these packages may even
-depend on other packages that are also only available on GitHub. `{rix}` makes
-it possible to install packages from GitHub and if these packages have
-dependencies that are also on GitHub, these also get correctly added to the
-generated `default.nix`.
+Bioconductor, but not on Git hosting platforms. However, there are many packages
+available on GitHub, GitLab, Forgejo, Gitea and other Git hosting platforms that
+never get published on CRAN, and some of these packages may even depend on other
+packages that are also only available on these platforms. `{rix}` makes it
+possible to install packages from these Git hosting platforms, and if these
+packages have dependencies that are also on GitHub, these also get correctly
+added to the generated `default.nix`.
 
 There are however certain caveats you should be aware of.
 
@@ -192,9 +193,10 @@ Remotes:
     hadley/memoise
 ```
 
-`{rix}` uses the GitHub API to fetch the commits of these remote packages and
-will attempt to select the commit of the remote packages, whose date is closest
-to (always before, never after) the date of the commit provided by the user.
+`{rix}` uses the APIs of supported Git hosting platforms (GitHub, GitLab,
+Forgejo, Gitea) to fetch the commits of these remote packages and will attempt
+to select the commit of the remote packages, whose date is closest to (always
+before, never after) the date of the commit provided by the user.
 
 ## Caveats
 
@@ -212,18 +214,19 @@ and will try to fetch the closest commit (see above).
 Let's say package `A` depends on package `B` and `C`, but package `B` also
 depends on package `C`. Then this would usually result in a duplicate entry of
 package `C` in the `default.nix` file. To avoid this, `{rix}` will cache all
-packages that have been fetched from GitHub and will not fetch them again if
-they are already in the cache. This also avoids unnecessary API calls to GitHub.
-If you would like to disable this feature, you can set `ignore_remotes_cache =
-TRUE` in the `rix()` call, which might be useful for debugging purposes. Be
-aware that you need to manually remove the duplicates from the `default.nix`
-file before `nix-build` will work in this case.
+packages that have been fetched from Git hosting platforms and will not fetch
+them again if they are already in the cache. This also avoids unnecessary API
+calls. If you would like to disable this feature, you can set
+`ignore_remotes_cache = TRUE` in the `rix()` call, which might be useful for
+debugging purposes. Be aware that you need to manually remove the duplicates
+from the `default.nix` file before `nix-build` will work in this case.
 
-Unlike with packages hosted on CRAN, packages hosted on GitHub or GitLab may
-incorrectly specify their dependencies. `{rix}` will always try to generate
-syntactically correct expressions, but if dependencies are not correctly
-specified (for example, if a remote dependency got updated in a way that breaks
-the main package), you will need to manually inspect and fix the file.
+Unlike with packages hosted on CRAN, packages hosted on Git platforms (GitHub,
+GitLab, Forgejo, Gitea, etc.) may incorrectly specify their dependencies.
+`{rix}` will always try to generate syntactically correct expressions, but if
+dependencies are not correctly specified (for example, if a remote dependency
+got updated in a way that breaks the main package), you will need to manually
+inspect and fix the file.
 
 Consider the following scenario: let's say the commit of package `A` that you
 specify in the `rix()` call was committed on the 1st of January 2025. Then
@@ -499,14 +502,75 @@ GitHub on Windows: you would need to build it from source and thus make sure
 that you have the required system-level dependencies to build it. Instead, it is
 easier to install a pre-compiled binary from CRAN).
 
+## Custom Git hosting platforms
+
+In addition to GitHub and GitLab, `{rix}` also supports packages hosted on
+custom Git platforms based on Forgejo, Gitea, cgit, and other Git hosting
+services. The usage is identical to GitHub and GitLab --- simply provide the
+full repository URL and commit hash:
+
+```{r, eval = F}
+path_default_nix <- tempdir()
+
+rix(
+  r_ver = "latest-upstream",
+  r_pkgs = c("dplyr"),
+  git_pkgs = list(
+    list(
+      package_name = "opusreader2",
+      repo_url = "https://codefloe.com/spectral-cockpit/opusreader2",
+      commit = "36a9b82835d42c039dc5e202337beb290bba7f85"
+    )
+  ),
+  ide = "none",
+  project_path = path_default_nix,
+  overwrite = TRUE
+)
+```
+
+This example installs a package from a repository hosted on codefloe.com, which
+runs Forgejo. `{rix}` automatically detects the Git hosting platform and
+constructs the appropriate archive download URL. Most Git hosting platforms
+follow either the GitHub-style archive URL format (`/archive/<commit>.tar.gz`)
+or the GitLab-style format (`/-/archive/<commit>.tar.gz`), and `{rix}` will use
+the GitHub-style format by default for unknown platforms, which works for most
+(self-)hosted Git instances.
+
+**Supported Git hosting platforms:**
+
+`{rix}` has full support for the following Git hosting platforms, including
+automatic commit date fetching via their APIs:
+
+- **GitHub** (github.com)
+- **GitLab** (gitlab.com)
+- **Forgejo** (e.g., codefloe.com, codeberg.org)
+- **Gitea** (self-hosted instances)
+
+For other custom Git hosts without standardized APIs, `{rix}` will still attempt
+to download the package source but will use the current date as a fallback for
+commit dates.
+
+**Important notes:**
+
+- Remote dependencies listed in the `Remotes` field of DESCRIPTION files are
+  assumed to be on GitHub. If your package has remote dependencies on other
+  platforms, you'll need to specify them manually in the `git_pkgs` list.
+- Make sure the Git hosting platform is publicly accessible, as Nix will need to
+  download the source code during the build process.
+- When using `r_ver = "latest-upstream"`, a GitHub Personal Access Token
+  (GITHUB_PAT) is recommended to avoid API rate limiting when querying the
+  NixOS/nixpkgs repository. Alternatively, use a specific R version instead.
+
 ## Conclusion
 
-In conclusion, `{rix}` makes it easier to build packages from GitHub which have
-themselves dependencies hosted on GitHub, you should however make sure that the
-expression that is generated uses fixed commits instead of `HEAD` for the
-packages being built from GitHub (if `{rix}` wasn't able to automatically fetch
-the right commit for you), and you should also decide if you want to use the
-version of a packages hosted on GitHub instead of the CRAN release. These are
-decisions that `{rix}` cannot take for you.
-
+In conclusion, `{rix}` makes it easier to build packages from GitHub, GitLab,
+Forgejo, Gitea, and other custom Git hosts which have themselves dependencies
+hosted on these platforms. `{rix}` automatically fetches commit dates from
+supported platforms (GitHub, GitLab, Forgejo, Gitea) to ensure reproducible
+builds. You should however make sure that the expression that is generated
+uses fixed commits instead of `HEAD` for the packages being built from Git (if
+`{rix}` wasn't able to automatically fetch the right commit for you), and you
+should also decide if you want to use the version of a package hosted on Git
+instead of the CRAN release. These are decisions that `{rix}` cannot take for
+you.
 

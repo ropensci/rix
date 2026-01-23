@@ -367,11 +367,12 @@ let
           WRS2
           Seurat
           abind
+          datathin
           mclust
           tune
           yardstick
           ggsignif;
-      } ++ [ datathin ];
+      };
     });
 
     datathin = (pkgs.rPackages.buildRPackage {

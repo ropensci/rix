@@ -70,7 +70,7 @@ generate_git_nix_expression <- function(
     ""
   } else {
     # Extract package names
-    remote_pkgs_names <- sapply(remotes, function(x) x$package_name)
+    remote_pkgs_names <- vapply(remotes, function(x) x$package_name, character(1))
     paste0(" ++ [ ", paste0(remote_pkgs_names, collapse = " "), " ]")
   }
 
@@ -223,7 +223,7 @@ get_imports <- function(path, commit_date, ...) {
     remotes <- gsub("github::", "", remotes)
     remotes <- gsub("gitlab::", "", remotes)
     # Only keep part after @ if it is a commit sha(7-40 hex chars)
-    remotes <- unname(sapply(remotes, function(x) {
+    remotes <- unname(vapply(remotes, function(x) {
       parts <- strsplit(x, "@")[[1]]
       if (length(parts) == 1) {
         return(parts[1])
@@ -233,27 +233,67 @@ get_imports <- function(path, commit_date, ...) {
         return(x)
       }
       return(parts[1])
-    }))
-    # Get user names
-    remote_pkgs_usernames <- sapply(strsplit(remotes, "/"), function(x) x[[1]])
-    # Remove user names
-    remote_pkgs_names_and_refs <- sub(".*?/", "", remotes)
-    # Get tag or commit using "@" character
-    remote_pkgs_names_and_refs <- strsplit(remote_pkgs_names_and_refs, "@")
-    # Get package names
-    remote_pkgs_names <- sapply(remote_pkgs_names_and_refs, function(x) x[[1]])
+    }, character(1)))
 
-    # try to get commit hash for each package if not already provided
-    remote_pkgs_refs <- lapply(remote_pkgs_names_and_refs, function(x) {
-      resolve_package_commit(x, commit_date, remotes, ...)
+    # Process remotes - handle both short format (username/repo) and full URLs
+    urls <- vapply(remotes, function(remote) {
+      # Check if this is already a full URL
+      if (grepl("^https://", remote)) {
+        # Extract the URL without the @commit part
+        url_parts <- strsplit(remote, "@")[[1]]
+        return(url_parts[1])
+      } else {
+        # Short format like "username/repo" - assume GitHub
+        parts <- strsplit(remote, "@")[[1]]
+        return(paste0("https://github.com/", parts[1]))
+      }
+    }, character(1))
+
+    # Extract package names and refs from remotes
+    remote_pkgs_names_and_refs <- lapply(remotes, function(remote) {
+      # Remove URL prefix if present
+      if (grepl("^https://", remote)) {
+        # Extract username/repo part from URL
+        remote <- sub("^https://[^/]+/", "", remote)
+      }
+      # Now split by / to get the repo name
+      parts <- strsplit(remote, "/")[[1]]
+      if (length(parts) >= 2) {
+        # Get the last part (repo name, potentially with @commit)
+        repo_and_ref <- parts[length(parts)]
+        # Split by @ to separate name and ref
+        name_ref <- strsplit(repo_and_ref, "@")[[1]]
+        return(list(name_ref))
+      } else {
+        return(list(parts))
+      }
     })
 
-    urls <- paste0(
-      "https://github.com/",
-      remote_pkgs_usernames,
-      "/",
-      remote_pkgs_names
-    )
+    # Get package names
+    remote_pkgs_names <- vapply(remote_pkgs_names_and_refs, function(x) x[[1]][1], character(1))
+
+    # Check which packages are already in cache to avoid unnecessary warnings
+    cache_file <- get_cache_file()
+    cache <- readRDS(cache_file)
+
+    # Filter out packages already seen
+    packages_to_resolve <- !remote_pkgs_names %in% cache$seen_packages
+
+    # try to get commit hash for each package if not already provided and not in cache
+    remote_pkgs_refs <- lapply(seq_along(remote_pkgs_names_and_refs), function(i) {
+      if (packages_to_resolve[i]) {
+        resolve_package_commit(remote_pkgs_names_and_refs[[i]][[1]], commit_date, remotes, ...)
+      } else {
+        # Package already provided, skip resolution to avoid warnings
+        "SKIP"
+      }
+    })
+
+    # Filter out skipped packages
+    valid_indices <- remote_pkgs_refs != "SKIP"
+    remote_pkgs_names <- remote_pkgs_names[valid_indices]
+    urls <- urls[valid_indices]
+    remote_pkgs_refs <- remote_pkgs_refs[valid_indices]
 
     remote_pkgs <- lapply(seq_along(remote_pkgs_names), function(i) {
       list(
@@ -412,18 +452,19 @@ fetchgits <- function(git_pkgs, ...) {
       fetchgit(git_pkgs, ...)
     } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
       # Re-order list of git packages by "package name"
-      git_pkgs <- git_pkgs[order(sapply(git_pkgs, "[[", "package_name"))]
+      git_pkgs <- git_pkgs[order(vapply(git_pkgs, "[[", character(1), "package_name"))]
       # Filter out already processed packages
       git_pkgs <- git_pkgs[
-        !sapply(
+        !vapply(
           git_pkgs,
-          function(x) x$package_name %in% cache$seen_packages
+          function(x) x$package_name %in% cache$seen_packages,
+          logical(1)
         )
       ]
 
       cache$seen_packages <- c(
         cache$seen_packages,
-        sapply(git_pkgs, "[[", "package_name")
+        vapply(git_pkgs, "[[", character(1), "package_name")
       )
 
       saveRDS(cache, cache_file)
@@ -439,7 +480,7 @@ fetchgits <- function(git_pkgs, ...) {
     if (!all(vapply(git_pkgs, is.list, logical(1)))) {
       fetchgit(git_pkgs, ...)
     } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
-      git_pkgs <- git_pkgs[order(sapply(git_pkgs, "[[", "package_name"))]
+      git_pkgs <- git_pkgs[order(vapply(git_pkgs, "[[", character(1), "package_name"))]
       paste(lapply(git_pkgs, fetchgit, ...), collapse = "\n")
     } else {
       stop(
@@ -502,29 +543,64 @@ fetchpkgs <- function(git_pkgs, archive_pkgs, ...) {
 
 
 #' get_commit_date Retrieves the date of a commit from a Git repository
-#' @param repo The GitHub repository (e.g. "r-lib/usethis")
-#' @param  commit_sha The commit hash of interest
+#' @param repo The repository (e.g. "r-lib/usethis" or "owner/repo")
+#' @param commit_sha The commit hash of interest
+#' @param platform Platform type: "github", "gitlab", or "git" (Forgejo/Gitea)
+#' @param base_url Base URL for the Git platform (only for platform="git")
 #' @return A character. The date of the commit.
 #' @importFrom curl new_handle handle_setheaders curl_fetch_memory
 #' @importFrom jsonlite fromJSON
 #' @noRd
-get_commit_date <- function(repo, commit_sha) {
-  url <- paste0("https://api.github.com/repos/", repo, "/commits/", commit_sha)
+get_commit_date <- function(
+  repo,
+  commit_sha,
+  platform = "github",
+  base_url = NULL
+) {
+  # Construct API URL based on platform
+  if (platform == "github") {
+    url <- paste0(
+      "https://api.github.com/repos/",
+      repo,
+      "/commits/",
+      commit_sha
+    )
+  } else if (platform == "gitlab") {
+    # GitLab API uses project ID or URL-encoded path
+    url <- paste0(
+      "https://gitlab.com/api/v4/projects/",
+      utils::URLencode(repo, reserved = TRUE),
+      "/repository/commits/",
+      commit_sha
+    )
+  } else if (platform == "git") {
+    # Forgejo/Gitea API
+    if (is.null(base_url)) {
+      stop("base_url is required for platform='git'", call. = FALSE)
+    }
+    url <- paste0(base_url, "/api/v1/repos/", repo, "/git/commits/", commit_sha)
+  } else {
+    stop("Unsupported platform: ", platform, call. = FALSE)
+  }
+
   h <- new_handle()
 
-  token <- Sys.getenv("GITHUB_PAT")
-  token_pattern <- "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$"
+  # Only use GitHub token for GitHub
+  if (platform == "github") {
+    token <- Sys.getenv("GITHUB_PAT")
+    token_pattern <- "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$"
 
-  if (grepl(token_pattern, token)) {
-    handle_setheaders(h, Authorization = paste("token", token))
-  } else {
-    message(
-      paste0(
-        "When fetching the commit date from GitHub from <<< ",
-        repo,
-        " >>>, no GitHub Personal Access Token found.\nPlease set GITHUB_PAT in your environment.\nFalling back to unauthenticated API request.\n"
+    if (grepl(token_pattern, token)) {
+      handle_setheaders(h, Authorization = paste("token", token))
+    } else {
+      message(
+        paste0(
+          "When fetching the commit date from GitHub from <<< ",
+          repo,
+          " >>>, no GitHub Personal Access Token found.\nPlease set GITHUB_PAT in your environment.\nFalling back to unauthenticated API request.\n"
+        )
       )
-    )
+    }
   }
 
   tryCatch(
@@ -534,10 +610,28 @@ get_commit_date <- function(repo, commit_sha) {
         stop("API request failed with status code: ", response$status_code)
       }
       commit_data <- fromJSON(rawToChar(response$content))
-      if (is.null(commit_data$commit$committer$date)) {
-        stop("Invalid response format: missing commit date")
+
+      # Extract date based on platform-specific response structure
+      if (platform == "github") {
+        if (is.null(commit_data$commit$committer$date)) {
+          stop("Invalid response format: missing commit date")
+        }
+        commit_data$commit$committer$date
+      } else if (platform == "gitlab") {
+        if (is.null(commit_data$committed_date)) {
+          stop("Invalid response format: missing commit date")
+        }
+        commit_data$committed_date
+      } else if (platform == "git") {
+        # Forgejo/Gitea response structure
+        if (!is.null(commit_data$committer$date)) {
+          commit_data$committer$date
+        } else if (!is.null(commit_data$created)) {
+          commit_data$created
+        } else {
+          stop("Invalid response format: missing commit date")
+        }
       }
-      commit_data$commit$committer$date
     },
     error = function(e) {
       message(
