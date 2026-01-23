@@ -70,7 +70,11 @@ generate_git_nix_expression <- function(
     ""
   } else {
     # Extract package names
-    remote_pkgs_names <- vapply(remotes, function(x) x$package_name, character(1))
+    remote_pkgs_names <- vapply(
+      remotes,
+      function(x) x$package_name,
+      character(1)
+    )
     paste0(" ++ [ ", paste0(remote_pkgs_names, collapse = " "), " ]")
   }
 
@@ -223,31 +227,39 @@ get_imports <- function(path, commit_date, ...) {
     remotes <- gsub("github::", "", remotes)
     remotes <- gsub("gitlab::", "", remotes)
     # Only keep part after @ if it is a commit sha(7-40 hex chars)
-    remotes <- unname(vapply(remotes, function(x) {
-      parts <- strsplit(x, "@")[[1]]
-      if (length(parts) == 1) {
+    remotes <- unname(vapply(
+      remotes,
+      function(x) {
+        parts <- strsplit(x, "@")[[1]]
+        if (length(parts) == 1) {
+          return(parts[1])
+        }
+        ref <- parts[2]
+        if (grepl("^[0-9a-f]{7,40}$", ref)) {
+          return(x)
+        }
         return(parts[1])
-      }
-      ref <- parts[2]
-      if (grepl("^[0-9a-f]{7,40}$", ref)) {
-        return(x)
-      }
-      return(parts[1])
-    }, character(1)))
+      },
+      character(1)
+    ))
 
     # Process remotes - handle both short format (username/repo) and full URLs
-    urls <- vapply(remotes, function(remote) {
-      # Check if this is already a full URL
-      if (grepl("^https://", remote)) {
-        # Extract the URL without the @commit part
-        url_parts <- strsplit(remote, "@")[[1]]
-        return(url_parts[1])
-      } else {
-        # Short format like "username/repo" - assume GitHub
-        parts <- strsplit(remote, "@")[[1]]
-        return(paste0("https://github.com/", parts[1]))
-      }
-    }, character(1))
+    urls <- vapply(
+      remotes,
+      function(remote) {
+        # Check if this is already a full URL
+        if (grepl("^https://", remote)) {
+          # Extract the URL without the @commit part
+          url_parts <- strsplit(remote, "@")[[1]]
+          return(url_parts[1])
+        } else {
+          # Short format like "username/repo" - assume GitHub
+          parts <- strsplit(remote, "@")[[1]]
+          return(paste0("https://github.com/", parts[1]))
+        }
+      },
+      character(1)
+    )
 
     # Extract package names and refs from remotes
     remote_pkgs_names_and_refs <- lapply(remotes, function(remote) {
@@ -270,7 +282,11 @@ get_imports <- function(path, commit_date, ...) {
     })
 
     # Get package names
-    remote_pkgs_names <- vapply(remote_pkgs_names_and_refs, function(x) x[[1]][1], character(1))
+    remote_pkgs_names <- vapply(
+      remote_pkgs_names_and_refs,
+      function(x) x[[1]][1],
+      character(1)
+    )
 
     # Check which packages are already in cache to avoid unnecessary warnings
     cache_file <- get_cache_file()
@@ -280,14 +296,22 @@ get_imports <- function(path, commit_date, ...) {
     packages_to_resolve <- !remote_pkgs_names %in% cache$seen_packages
 
     # try to get commit hash for each package if not already provided and not in cache
-    remote_pkgs_refs <- lapply(seq_along(remote_pkgs_names_and_refs), function(i) {
-      if (packages_to_resolve[i]) {
-        resolve_package_commit(remote_pkgs_names_and_refs[[i]][[1]], commit_date, remotes, ...)
-      } else {
-        # Package already provided, skip resolution to avoid warnings
-        "SKIP"
+    remote_pkgs_refs <- lapply(
+      seq_along(remote_pkgs_names_and_refs),
+      function(i) {
+        if (packages_to_resolve[i]) {
+          resolve_package_commit(
+            remote_pkgs_names_and_refs[[i]][[1]],
+            commit_date,
+            remotes,
+            ...
+          )
+        } else {
+          # Package already provided, skip resolution to avoid warnings
+          "SKIP"
+        }
       }
-    })
+    )
 
     # Filter out skipped packages
     valid_indices <- remote_pkgs_refs != "SKIP"
@@ -452,7 +476,12 @@ fetchgits <- function(git_pkgs, ...) {
       fetchgit(git_pkgs, ...)
     } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
       # Re-order list of git packages by "package name"
-      git_pkgs <- git_pkgs[order(vapply(git_pkgs, "[[", character(1), "package_name"))]
+      git_pkgs <- git_pkgs[order(vapply(
+        git_pkgs,
+        "[[",
+        character(1),
+        "package_name"
+      ))]
       # Filter out already processed packages
       git_pkgs <- git_pkgs[
         !vapply(
@@ -480,7 +509,12 @@ fetchgits <- function(git_pkgs, ...) {
     if (!all(vapply(git_pkgs, is.list, logical(1)))) {
       fetchgit(git_pkgs, ...)
     } else if (all(vapply(git_pkgs, is.list, logical(1)))) {
-      git_pkgs <- git_pkgs[order(vapply(git_pkgs, "[[", character(1), "package_name"))]
+      git_pkgs <- git_pkgs[order(vapply(
+        git_pkgs,
+        "[[",
+        character(1),
+        "package_name"
+      ))]
       paste(lapply(git_pkgs, fetchgit, ...), collapse = "\n")
     } else {
       stop(
