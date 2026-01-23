@@ -307,18 +307,15 @@ get_imports <- function(path, commit_date, ...) {
             ...
           )
         } else {
-          # Package already provided, skip resolution to avoid warnings
-          "SKIP"
+          # Package already processed - we still need to include it in remotes
+          # so it gets added to propagatedBuildInputs with ++ [ pkg_name ]
+          # Use empty string as placeholder since commit isn't used for this purpose
+          ""
         }
       }
     )
 
-    # Filter out skipped packages
-    valid_indices <- remote_pkgs_refs != "SKIP"
-    remote_pkgs_names <- remote_pkgs_names[valid_indices]
-    urls <- urls[valid_indices]
-    remote_pkgs_refs <- remote_pkgs_refs[valid_indices]
-
+    # Build remote_pkgs list (keep all packages, including cached ones)
     remote_pkgs <- lapply(seq_along(remote_pkgs_names), function(i) {
       list(
         "package_name" = remote_pkgs_names[i],
