@@ -1,5 +1,6 @@
+
 let
- pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2025-02-24.tar.gz") {};
+  pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2025-02-24.tar.gz") {};
   
     fifo = (pkgs.rPackages.buildRPackage {
       name = "fifo";
@@ -74,10 +75,9 @@ let
       
   system_packages = builtins.attrValues {
     inherit (pkgs) 
+      R
       glibcLocales
-      nix
-      quarto
-      R;
+      nix;
   };
   
   shell = pkgs.mkShell {
