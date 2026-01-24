@@ -5,8 +5,8 @@
 #' - `bioc_version`: character; Bioconducotr version, e.g., `"3.22"`
 #' - `date`: character; in format `<yyyy>-<mm>-<dd>`
 #' - `Linux/wsl`: character; `"supported"`, `"unsupported"`, or `"might work"``
-#' - `Apple Silicon`: character; `"supported"`, `"unsupported"`, or
-#'   `"might work"`
+#' - `Apple Silicon`: character; `"supported"`, `"unsupported"`, `"might work"`,
+#'   or `"supported (Rstudio broken)"`
 #' - `Intel Mac`: character; `"supported"`, `"unsupported"`, or `"might work"``
 #' @family available versions
 #' @export
