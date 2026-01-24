@@ -34,7 +34,7 @@ available_r <- function() {
   )
 }
 
-#' List available dates.
+#' List available dates for R and Bioconductor releases
 #' @return A character vector containing the available dates
 #' @family available versions
 #' @export
