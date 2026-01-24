@@ -2,7 +2,7 @@
 % Please edit documentation in R/renv_helpers.R
 \name{renv2nix}
 \alias{renv2nix}
-\title{renv2nix}
+\title{Convert an \code{renv.lock} File to a Nix Expression}
 \usage{
 renv2nix(
   renv_lock_path = "renv.lock",
@@ -113,7 +113,7 @@ Nothing, this function is called for its side effects only, unless
 returned
 }
 \description{
-renv2nix
+Convert an \code{renv.lock} File to a Nix Expression
 }
 \details{
 In order for this function to work properly, we recommend not

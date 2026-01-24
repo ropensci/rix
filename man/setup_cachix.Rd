@@ -2,19 +2,19 @@
 % Please edit documentation in R/setup_cachix.R
 \name{setup_cachix}
 \alias{setup_cachix}
-\title{setup_cachix Setup up the rstats-on-nix binary repository}
+\title{Configure the rstats-on-nix Binary Cache}
 \usage{
 setup_cachix(nix_conf_path = "~/.config/nix")
 }
 \arguments{
 \item{nix_conf_path}{Character, path to folder containing 'nix.conf' file.
-Defaults to "~/.config/nix".}
+Defaults to \code{"~/.config/nix"}.}
 }
 \value{
 Nothing; changes a file in the user's home directory.
 }
 \description{
-setup_cachix Setup up the rstats-on-nix binary repository
+Configure the rstats-on-nix Binary Cache
 }
 \details{
 This function edits \verb{~/.config/nix/nix.conf} to add the
