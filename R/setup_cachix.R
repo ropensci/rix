@@ -1,6 +1,6 @@
 #' Configure the rstats-on-nix Binary Cache
 #' @param nix_conf_path Character, path to folder containing 'nix.conf' file.
-#'   Defaults to "~/.config/nix".
+#'   Defaults to `"~/.config/nix"`.
 #' @details This function edits `~/.config/nix/nix.conf` to add the
 #'   `rstats-on-nix` public cache as a substituter. The `rstats-on-nix` public
 #'   cache, hosted on Cachix, contains many prebuild binaries of R and R
