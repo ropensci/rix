@@ -1,5 +1,13 @@
 #' Return data frame with R, Bioc versions and supported platforms
-#' @return A data frame
+#' @return A data frame with columns:
+#' - `year`: character
+#' - `R.version`: character; e.g., `"3.5.3"``
+#' - `bioc_version`: character; Bioconducotr version, e.g., `"3.22"`
+#' - `date`: character; in format `<yyyy>-<mm>-<dd>`
+#' - `Linux/wsl`: character; `"supported"`, `"unsupported"`, or `"might work"``
+#' - `Apple Silicon`: character; `"supported"`, `"unsupported"`, or
+#'   `"might work"`
+#' - `Intel Mac`: character; `"supported"`, `"unsupported"`, or `"might work"``
 #' @family available versions
 #' @export
 #' @importFrom utils read.csv
