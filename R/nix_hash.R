@@ -165,6 +165,9 @@ hash_url <- function(
     platform <- "cran"
   } else if (grepl("pypi.org", url) || grepl("pythonhosted.org", url)) {
     platform <- "pypi"
+  } else if (grepl("^https://", url) && grepl("archive/.*\\.tar\\.gz$", url)) {
+    # Generic Git host (Forgejo, Gitea, cgit, etc.)
+    platform <- "git"
   } else {
     stop(
       "repo_url argument should be a URL to a Git repository ",
