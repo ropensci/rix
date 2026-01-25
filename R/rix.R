@@ -45,12 +45,14 @@
 #'   `py_conf` packages are requested, the `RETICULATE_PYTHON` environment
 #'   variable is set to ensure the Nix environment does not use a system-wide
 #'   Python installation. If you are developing a Python package, set
-#'   `py_src_dir` to the path of your package's source directory (e.g.,
 #'   `"mypackage/src"` or just `"src"`). This adds `PYTHONPATH` to the shell
 #'   hook so your package can be imported without installation. This is the Nix
 #'   equivalent of `pip install -e .` (editable install). Note: if `"uv"` is in
 #'   `system_pkgs`, `LD_LIBRARY_PATH` is automatically configured for dynamic
-#'   library loading (required by packages like numpy).
+#'   library loading (required by packages like numpy). You can also install packages
+#'   from git or PyPI by adding `git_pkgs` (list of lists with `package_name`, `repo_url`, `commit`)
+#'   and `pypi_pkgs` (vector of package names, optionally with version `name@version`) to 
+#'   the `py_conf` list.
 #' @param jl_conf List. A list of two elements, `jl_version` and `jl_conf`.
 #'   `jl_version` must be of the form `"1.10"` for Julia 1.10. Leave empty or
 #'   use an empty string to use the latest version, or use `"lts"` for the long

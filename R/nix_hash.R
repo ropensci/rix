@@ -156,13 +156,12 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
     platform <- "gitlab"
   } else if (grepl("cran", url)) {
     platform <- "cran"
-  } else if (grepl("^https://", url) && grepl("archive/.*\\.tar\\.gz$", url)) {
-    # Generic Git host (Forgejo, Gitea, cgit, etc.)
-    platform <- "git"
+  } else if (grepl("pypi.org", url) || grepl("pythonhosted.org", url)) {
+    platform <- "pypi"
   } else {
     stop(
       "repo_url argument should be a URL to a Git repository ",
-      "(GitHub, GitLab, or other Git host) or a CRAN archive.\n"
+      "(GitHub, GitLab, or other Git host), a CRAN archive, or a PyPI package.\n"
     )
   }
 
@@ -240,6 +239,11 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
     paths,
     value = TRUE
   )
+  
+  # For Python/PyPI, we don't have DESCRIPTION, so desc_path might be empty
+  if (length(desc_path) == 0 && platform == "pypi") {
+    desc_path <- NULL
+  }
 
   if (platform == "github") {
     commit_date <- get_commit_date(username_repo, commit, platform = "github")
@@ -258,7 +262,11 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, ...) {
     commit_date <- Sys.Date()
   }
 
-  deps <- get_imports(desc_path, commit_date, ...)
+  if (!is.null(desc_path)) {
+    deps <- get_imports(desc_path, commit_date, ...)
+  } else {
+    deps <- list(package = NULL, imports = NULL, remotes = NULL)
+  }
 
   return(
     list(
