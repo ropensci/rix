@@ -888,3 +888,194 @@ get_cache_file <- function() {
   }
   return(cache_file)
 }
+
+#' fetch_py_git Downloads and installs a Python package hosted on Git
+#' @param git_pkg A list with package_name, repo_url, commit
+#' @param py_ver_attr String, e.g. "python312Packages"
+#' @noRd
+fetch_py_git <- function(git_pkg, py_ver_attr, ...) {
+  package_name <- git_pkg$package_name
+  repo_url <- git_pkg$repo_url
+  commit <- git_pkg$commit
+  output <- nix_hash(repo_url, commit, is_python = TRUE, ...)
+  sri_hash <- output$sri_hash
+
+  # Python packages from git usually don't need 'imports' derived from DESCRIPTION
+  # We assume dependencies are handled by other means or propagatedBuildInputs manually added
+  imports <- output$deps$imports
+  if (!is.null(imports) && length(imports) > 0 && imports != "") {
+    imports_string <- paste(imports, collapse = " ")
+    propagated_inputs <- sprintf(
+      "propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.%%s) %s;\n      };",
+      imports_string
+    )
+  } else {
+    propagated_inputs <- "propagatedBuildInputs = [ ];"
+  }
+
+  pkg_attr <- gsub("[^a-zA-Z0-9]", "_", package_name)
+
+  sprintf(
+    '
+    %s = (pkgs.%s.buildPythonPackage {
+      pname = "%s";
+      version = "%s-git";
+      src = pkgs.fetchgit {
+        url = "%s";
+        rev = "%s";
+        sha256 = "%s";
+      };
+      pyproject = true;
+      build-system = [ pkgs.%s.setuptools ];
+      doCheck = false;
+      %s
+    });
+',
+    pkg_attr,
+    py_ver_attr,
+    package_name,
+    substring(commit, 1, 7),
+    repo_url,
+    commit,
+    sri_hash,
+    py_ver_attr,
+    sprintf(propagated_inputs, py_ver_attr)
+  )
+}
+
+#' fetch_py_gits
+#' @noRd
+fetch_py_gits <- function(git_pkgs, py_ver_attr, ...) {
+  if (is.null(git_pkgs)) {
+    return("")
+  }
+
+  # normalize to list of lists if needed
+  if (!all(vapply(git_pkgs, is.list, logical(1)))) {
+    git_pkgs <- list(git_pkgs)
+  }
+
+  paste(
+    lapply(git_pkgs, function(pkg) fetch_py_git(pkg, py_ver_attr, ...)),
+    collapse = "\n"
+  )
+}
+
+#' fetch_pypi
+#' @noRd
+fetch_pypi <- function(pkg_descriptor, py_ver_attr, ...) {
+  # Parse pkg_descriptor "name" or "name@version"
+  parts <- strsplit(pkg_descriptor, "@")[[1]]
+  pname <- parts[1]
+  version <- if (length(parts) > 1) parts[2] else "latest"
+
+  # Get metadata from PyPI
+  meta <- get_pypi_meta(pname, version)
+  real_version <- meta$version
+  url <- meta$url
+
+  # We use hash_url from nix_hash.R. It returns SRI (NAR) hash.
+  # So we use fetchzip.
+  output <- hash_url(url, is_python = TRUE)
+  sri_hash <- output$sri_hash
+
+  imports <- output$deps$imports
+  if (!is.null(imports) && length(imports) > 0 && imports != "") {
+    imports_string <- paste(imports, collapse = " ")
+    propagated_inputs <- sprintf(
+      "propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.%%s) %s;\n      };",
+      imports_string
+    )
+  } else {
+    propagated_inputs <- "propagatedBuildInputs = [ ];"
+  }
+
+  pkg_attr <- gsub("[^a-zA-Z0-9]", "_", pname)
+
+  sprintf(
+    '
+    %s = (pkgs.%s.buildPythonPackage {
+      pname = "%s";
+      version = "%s";
+      src = pkgs.fetchzip {
+        url = "%s";
+        sha256 = "%s";
+      };
+      pyproject = true;
+      build-system = [ pkgs.%s.setuptools ];
+      doCheck = false;
+      %s
+    });
+',
+    pkg_attr,
+    py_ver_attr,
+    pname,
+    real_version,
+    url,
+    sri_hash,
+    py_ver_attr,
+    sprintf(propagated_inputs, py_ver_attr)
+  )
+}
+
+#' fetch_pypis
+#' @noRd
+fetch_pypis <- function(pypi_pkgs, py_ver_attr, ...) {
+  if (is.null(pypi_pkgs)) {
+    return("")
+  }
+  paste(
+    lapply(pypi_pkgs, function(pkg) fetch_pypi(pkg, py_ver_attr, ...)),
+    collapse = "\n"
+  )
+}
+
+#' get_pypi_meta
+#' @importFrom jsonlite fromJSON
+#' @noRd
+get_pypi_meta <- function(pname, version) {
+  base_url <- sprintf("https://pypi.org/pypi/%s/json", pname)
+  resp <- tryCatch(
+    jsonlite::fromJSON(base_url),
+    error = function(e) {
+      stop(paste("Failed to fetch metadata for", pname, "from PyPI"))
+    }
+  )
+
+  if (version == "latest") {
+    version <- resp$info$version
+  }
+
+  releases <- resp$releases[[version]]
+  if (is.null(releases)) {
+    stop(paste("Version", version, "not found on PyPI for package", pname))
+  }
+
+  # Find sdist
+  if (is.data.frame(releases)) {
+    sdist <- releases[releases$packagetype == "sdist", ]
+    if (nrow(sdist) == 0) {
+      stop(paste(
+        "No source distribution (sdist) found for",
+        pname,
+        "version",
+        version
+      ))
+    }
+    url <- sdist$url[1]
+  } else {
+    # Fallback if jsonlite didn't simplify to data frame
+    sdist <- Filter(function(x) x$packagetype == "sdist", releases)
+    if (length(sdist) == 0) {
+      stop(paste(
+        "No source distribution (sdist) found for",
+        pname,
+        "version",
+        version
+      ))
+    }
+    url <- sdist[[1]]$url
+  }
+
+  list(version = version, url = url)
+}

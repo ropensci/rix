@@ -220,19 +220,55 @@ generate_py_conf <- function(py_conf, flag_py_conf) {
     )
 
     # I'm adding pip and ipykernel because Positron complains otherwise
-    py_conf <- paste(
+    py_pkgs_str <- paste(
       c("", "pip", "ipykernel", sort(py_conf$py_pkgs)),
       collapse = "\n      "
     )
 
+    # Python packages from git
+    py_git_pkgs_str <- if (!is.null(py_conf$git_pkgs)) {
+      fetch_py_gits(py_conf$git_pkgs, py_version)
+    } else {
+      ""
+    }
+
+    # Python packages from PyPI
+    py_pypi_pkgs_str <- if (!is.null(py_conf$pypi_pkgs)) {
+      fetch_pypis(py_conf$pypi_pkgs, py_version)
+    } else {
+      ""
+    }
+
+    extra_pkgs_defs <- paste(py_git_pkgs_str, py_pypi_pkgs_str, collapse = "\n")
+
+    # Extract names of extra packages to add to the list
+    # Matches "  name = ("
+    extra_pkgs_names <- unlist(regmatches(
+      extra_pkgs_defs,
+      gregexpr(
+        "(?<=\\s)[a-zA-Z0-9_]+(?=\\s*=\\s*\\()",
+        extra_pkgs_defs,
+        perl = TRUE
+      )
+    ))
+
+    extra_pkgs_list <- if (length(extra_pkgs_names) > 0) {
+      paste0(" ++ [ ", paste(extra_pkgs_names, collapse = " "), " ]")
+    } else {
+      ""
+    }
+
     sprintf(
       "
+%s
   pyconf = builtins.attrValues {
     inherit (pkgs.%s) %s;
-  };
+  }%s;
 ",
+      extra_pkgs_defs,
       py_version,
-      py_conf
+      py_pkgs_str,
+      extra_pkgs_list
     )
   }
 }

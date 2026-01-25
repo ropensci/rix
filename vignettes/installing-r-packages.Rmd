@@ -374,6 +374,12 @@ This will install Python 3.12, the `polars` and `great-tables` packages, but als
 `ipykernel` and `pip` to ensure the Python interpreter works correctly with IDEs 
 such as Positron.
 
+It is also possible to install packages from Git (using `git_pkgs`) or PyPI (using `pypi_pkgs`, 
+see `?rix`), but there is no guarantee that it will work. This is because these packages will 
+be installed from source, which might fail. Also, installing from Git or PyPI will **only** 
+work if the project uses a `pyproject.toml` file. If the package you want to install uses 
+a `setup.py` or `requirements.txt` file, it will not work.
+
 ## Installing Python packages not available via nixpkgs (impure)
 
 Not all Python packages can be installed through Nix; unlike CRAN, Pypi doesn’t
