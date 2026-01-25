@@ -1,5 +1,12 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.18.1 (2026-01-25)
+
+- `rix()`: It is now possible to install Python packages from PyPI and Git (e.g. GitHub).
+  This feature requires the Python package to use a `pyproject.toml` file, which is parsed
+  to automatically find and propagate dependencies. Packages using only `setup.py` or
+  `requirements.txt` are not supported.
+
 # rix 0.18.0 (2026-01-23)
 
 ## New features
