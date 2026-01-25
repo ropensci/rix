@@ -295,3 +295,49 @@ testthat::test_that("rix() with pypi package", {
     name = "python_pypi_default.nix"
   )
 })
+
+testthat::test_that("rix() with python git package", {
+  os_type <- Sys.info()["sysname"]
+  skip_if_not(nix_shell_available())
+  skip_if(os_type == "Darwin" || os_type == "Windows")
+
+  tmpdir <- tempdir()
+  path_default_nix <- paste0(
+    tmpdir,
+    paste0(sample(letters, 5), collapse = "")
+  )
+  dir.create(path_default_nix)
+  path_default_nix <- normalizePath(path_default_nix)
+  on.exit(
+    unlink(path_default_nix, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+
+  save_default_nix_test <- function(path_default_nix) {
+    suppressWarnings(
+      rix(
+        date = "2025-03-10",
+        py_conf = list(
+          py_version = "3.12",
+          git_pkgs = list(
+            list(
+              package_name = "pyclean",
+              repo_url = "https://github.com/b-rodrigues/pyclean",
+              commit = "174d4d482d400536bb0d987a3e25ae80cd81ef3c"
+            )
+          )
+        ),
+        ide = "none",
+        project_path = path_default_nix,
+        overwrite = TRUE,
+        message_type = "quiet"
+      )
+    )
+    file.path(path_default_nix, "default.nix")
+  }
+
+  testthat::expect_snapshot_file(
+    path = save_default_nix_test(path_default_nix),
+    name = "python_git_default.nix"
+  )
+})

@@ -897,11 +897,21 @@ fetch_py_git <- function(git_pkg, py_ver_attr, ...) {
   package_name <- git_pkg$package_name
   repo_url <- git_pkg$repo_url
   commit <- git_pkg$commit
-  output <- nix_hash(repo_url, commit, ...)
+  output <- nix_hash(repo_url, commit, is_python = TRUE, ...)
   sri_hash <- output$sri_hash
   
   # Python packages from git usually don't need 'imports' derived from DESCRIPTION
   # We assume dependencies are handled by other means or propagatedBuildInputs manually added
+  imports <- output$deps$imports
+  if (!is.null(imports) && length(imports) > 0 && imports != "") {
+      imports_string <- paste(imports, collapse = " ")
+      propagated_inputs <- sprintf(
+        "propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.%%s) %s;\n      };", 
+        imports_string
+      )
+  } else {
+      propagated_inputs <- "propagatedBuildInputs = [ ];"
+  }
   
   pkg_attr <- gsub("[^a-zA-Z0-9]", "_", package_name)
   
@@ -918,7 +928,7 @@ fetch_py_git <- function(git_pkg, py_ver_attr, ...) {
       pyproject = true;
       build-system = [ pkgs.%s.setuptools ];
       doCheck = false;
-      propagatedBuildInputs = [ ];
+      %s
     });
 ',
     pkg_attr,
@@ -928,7 +938,8 @@ fetch_py_git <- function(git_pkg, py_ver_attr, ...) {
     repo_url,
     commit,
     sri_hash,
-    py_ver_attr
+    py_ver_attr,
+    sprintf(propagated_inputs, py_ver_attr)
   )
 }
 
@@ -960,7 +971,19 @@ fetch_pypi <- function(pkg_descriptor, py_ver_attr, ...) {
   
   # We use hash_url from nix_hash.R. It returns SRI (NAR) hash.
   # So we use fetchzip.
-  sri_hash <- hash_url(url)$sri_hash
+  output <- hash_url(url, is_python = TRUE)
+  sri_hash <- output$sri_hash
+  
+  imports <- output$deps$imports
+  if (!is.null(imports) && length(imports) > 0 && imports != "") {
+      imports_string <- paste(imports, collapse = " ")
+      propagated_inputs <- sprintf(
+        "propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.%%s) %s;\n      };", 
+        imports_string
+      )
+  } else {
+      propagated_inputs <- "propagatedBuildInputs = [ ];"
+  }
   
   pkg_attr <- gsub("[^a-zA-Z0-9]", "_", pname)
   
@@ -976,7 +999,7 @@ fetch_pypi <- function(pkg_descriptor, py_ver_attr, ...) {
       pyproject = true;
       build-system = [ pkgs.%s.setuptools ];
       doCheck = false;
-      propagatedBuildInputs = [ ]; 
+      %s
     });
 ',
     pkg_attr,
@@ -985,7 +1008,8 @@ fetch_pypi <- function(pkg_descriptor, py_ver_attr, ...) {
     real_version,
     url,
     sri_hash,
-    py_ver_attr
+    py_ver_attr,
+    sprintf(propagated_inputs, py_ver_attr)
   )
 }
 
