@@ -51,7 +51,7 @@
 #'   `system_pkgs`, `LD_LIBRARY_PATH` is automatically configured for dynamic
 #'   library loading (required by packages like numpy). You can also install packages
 #'   from git or PyPI by adding `git_pkgs` (list of lists with `package_name`, `repo_url`, `commit`)
-#'   and `pypi_pkgs` (vector of package names, optionally with version `name@version`) to 
+#'   and `pypi_pkgs` (vector of package names, optionally with version `name@version`) to
 #'   the `py_conf` list.
 #' @param jl_conf List. A list of two elements, `jl_version` and `jl_conf`.
 #'   `jl_version` must be of the form `"1.10"` for Julia 1.10. Leave empty or

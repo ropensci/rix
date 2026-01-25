@@ -115,7 +115,13 @@ get_git_regex <- function(platform, url = NULL) {
 #'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
 #' @noRd
-hash_url <- function(url, repo_url = NULL, commit = NULL, is_python = FALSE, ...) {
+hash_url <- function(
+  url,
+  repo_url = NULL,
+  commit = NULL,
+  is_python = FALSE,
+  ...
+) {
   tdir <- tempdir()
 
   tmpdir <- paste0(
@@ -237,7 +243,7 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, is_python = FALSE, ...
 
   # For Python/PyPI, we don't have DESCRIPTION, so desc_path might be empty
   if (isTRUE(is_python)) {
-     desc_path <- NULL
+    desc_path <- NULL
   } else {
     desc_path <- grep(
       file.path(path_to_r, "DESCRIPTION"),
@@ -251,20 +257,22 @@ hash_url <- function(url, repo_url = NULL, commit = NULL, is_python = FALSE, ...
 
   # Check for pyproject.toml if we are in python mode
   if (isTRUE(is_python)) {
-     pyproject_path <- grep(
-       file.path(path_to_r, "pyproject.toml"),
-       paths,
-       value = TRUE
-     )
-     if (length(pyproject_path) > 0) {
-        # Check if it's the root pyproject.toml
-        # We prefer the one at the root
-        pyproject_path <- pyproject_path[which.min(nchar(pyproject_path))]
-     } else {
-        stop("Python packages from GitHub and PyPI are only available if they use pyproject.toml")
-     }
+    pyproject_path <- grep(
+      file.path(path_to_r, "pyproject.toml"),
+      paths,
+      value = TRUE
+    )
+    if (length(pyproject_path) > 0) {
+      # Check if it's the root pyproject.toml
+      # We prefer the one at the root
+      pyproject_path <- pyproject_path[which.min(nchar(pyproject_path))]
+    } else {
+      stop(
+        "Python packages from GitHub and PyPI are only available if they use pyproject.toml"
+      )
+    }
   } else {
-     pyproject_path <- NULL
+    pyproject_path <- NULL
   }
 
   if (platform == "github") {
@@ -448,59 +456,59 @@ try_download <- function(
 #' @noRd
 get_py_imports <- function(path) {
   lines <- readLines(path)
-  
+
   # Simple parser for [project] dependencies
   # We look for "dependencies = [" and then read until "]"
-  
+
   # Find start of dependencies
   start_idx <- grep("^dependencies\\s*=\\s*\\[", lines)
-  
+
   if (length(start_idx) == 0) {
     return(list(package = NULL, imports = NULL, remotes = NULL))
   }
-  
+
   # Use the first occurrence (usually under [project])
   start_idx <- start_idx[1]
-  
+
   # Collect lines until we find the closing bracket
   deps_content <- lines[start_idx]
   curr_idx <- start_idx
-  
+
   while (!grepl("\\]", lines[curr_idx]) && curr_idx < length(lines)) {
     curr_idx <- curr_idx + 1
     deps_content <- paste(deps_content, lines[curr_idx])
   }
-  
+
   # Extract strings inside the list
   # Remove "dependencies =" part
   deps_content <- sub("^dependencies\\s*=\\s*", "", deps_content)
-  
+
   # Remove brackets
   deps_content <- gsub("\\[|\\]", "", deps_content)
-  
+
   # Split by comma
   deps <- strsplit(deps_content, ",")[[1]]
-  
+
   # Clean up: remove quotes and whitespace
   deps <- gsub("[\"']", "", deps)
-  
+
   # Remove comments if any (e.g. "package # comment")
   deps <- sub("#.*", "", deps)
-  
+
   deps <- trimws(deps)
-  
+
   # Remove empty strings
   deps <- deps[deps != ""]
-  
+
   # Handle version specifiers (e.g. "numpy>=1.20")
   # We just want the package name for Nix (usually)
   # But Nix python packages often align with PyPI names.
   # We just need the names to look them up in pkgs.python3packages
-  
+
   # Basic extraction of name (everything before >=, ==, <, >, etc., but also space)
   # Some might be "package ; sys_platform..."
   deps <- sub("([a-zA-Z0-9_.-]+).*", "\\1", deps)
-  
+
   return(list(
     package = NULL, # We could extract name from pyproject.toml too if needed
     imports = deps,
