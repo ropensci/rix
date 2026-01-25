@@ -15,6 +15,7 @@ let
       amsmath;
   });
  
+ 
   pyconf = builtins.attrValues {
     inherit (pkgs.python312Packages) 
       pip

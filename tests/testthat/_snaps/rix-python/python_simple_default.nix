@@ -2,6 +2,7 @@
 let
   pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2025-03-10.tar.gz") {};
     
+ 
   pyconf = builtins.attrValues {
     inherit (pkgs.python312Packages) 
       pip

@@ -915,6 +915,8 @@ fetch_py_git <- function(git_pkg, py_ver_attr, ...) {
         rev = "%s";
         sha256 = "%s";
       };
+      pyproject = true;
+      build-system = [ pkgs.%s.setuptools ];
       doCheck = false;
       propagatedBuildInputs = [ ];
     });
@@ -925,7 +927,8 @@ fetch_py_git <- function(git_pkg, py_ver_attr, ...) {
     substring(commit, 1, 7),
     repo_url,
     commit,
-    sri_hash
+    sri_hash,
+    py_ver_attr
   )
 }
 
@@ -970,6 +973,8 @@ fetch_pypi <- function(pkg_descriptor, py_ver_attr, ...) {
         url = "%s";
         sha256 = "%s";
       };
+      pyproject = true;
+      build-system = [ pkgs.%s.setuptools ];
       doCheck = false;
       propagatedBuildInputs = [ ]; 
     });
@@ -979,7 +984,8 @@ fetch_pypi <- function(pkg_descriptor, py_ver_attr, ...) {
     pname,
     real_version,
     url,
-    sri_hash
+    sri_hash,
+    py_ver_attr
   )
 }
 

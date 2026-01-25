@@ -10,6 +10,8 @@ let
         url = "https://files.pythonhosted.org/packages/6c/8c/e5d5bbb805d8caf814c6348eaa3d4d14f6049d1637ec63b26d1c31eec940/ryxpress-0.1.1.tar.gz";
         sha256 = "sha256-V6BnAV2sMWPhjR+zVkjjNgqsP2II1ZjdRQFcuuQ/0Z4=";
       };
+      pyproject = true;
+      build-system = [ pkgs.python312Packages.setuptools ];
       doCheck = false;
       propagatedBuildInputs = [ ]; 
     });
