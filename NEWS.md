@@ -6,6 +6,8 @@
   This feature requires the Python package to use a `pyproject.toml` file, which is parsed
   to automatically find and propagate dependencies. Packages using only `setup.py` or
   `requirements.txt` are not supported.
+- Improved and clarified package documentation, including more detailed return values,
+  clearer titles/descriptions, and cleanup of internal helpers from the public manual.
 
 # rix 0.18.0 (2026-01-23)
 
