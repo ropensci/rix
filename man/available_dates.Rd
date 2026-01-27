@@ -2,7 +2,7 @@
 % Please edit documentation in R/available_r.R
 \name{available_dates}
 \alias{available_dates}
-\title{List available dates.}
+\title{List available dates for R and Bioconductor releases}
 \usage{
 available_dates()
 }
@@ -10,7 +10,7 @@ available_dates()
 A character vector containing the available dates
 }
 \description{
-List available dates.
+List available dates for R and Bioconductor releases
 }
 \examples{
 available_dates()

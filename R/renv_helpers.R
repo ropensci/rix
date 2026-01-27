@@ -1,13 +1,14 @@
-#' read_renv_lock
+#' Read and Parse an `renv.lock`` File
 #'
-#' Reads renv.lock if it exists and can be parsed as json.
+#' Reads `renv.lock` if it exists and can be parsed as json.
 #'
-#' @param renv_lock_path location of the renv.lock file, defaults to "renv.lock"
+#' @param renv_lock_path location of the `renv.lock` file, defaults to
+#' `"renv.lock"`
 #'
-#' @return the result of reading renv.lock with [jsonlite::read_json]
+#' @return the result of reading `renv.lock` with [jsonlite::read_json]
 #'
 #' @importFrom jsonlite read_json
-#' @keywords internal
+#' @noRd
 read_renv_lock <- function(renv_lock_path = "renv.lock") {
   if (!file.exists(renv_lock_path)) {
     stop(renv_lock_path, " does not exist!")
@@ -21,26 +22,27 @@ read_renv_lock <- function(renv_lock_path = "renv.lock") {
   renv_lock
 }
 
-#' renv_remote_pkgs
+#' Extract Remote Package Information from `renv.lock`
 #'
 #' Construct a list to be passed the git_pkgs argument of [rix]
 #' The list returned contains the information necessary to have nix attempt to
 #' build the packages from their external repositories.
 #'
-#' @param renv_lock_remote_pkgs the list of package information from an renv.lock file.
-#' @param host the host of remote package, defaults to NULL meaning the RemoteHost of the
-#' renv entry will be used.
+#' @param renv_lock_remote_pkgs the list of package information from an
+#' `renv.lock` file.
+#' @param host the host of remote package, defaults to NULL meaning the
+#' `RemoteHost` of the renv entry will be used.
 #' currently supported hosts: 'api.github.com' 'gitlab.com'
 #' see [remotes](https://remotes.r-lib.org/) for more.
 #'
 #' @return a list of lists with three elements named:
-#'  "package_name", "repo_url", "commit"
+#'  `"package_name"`, `"repo_url"`, `"commit"`
 #'
 #' @examples
 #' \dontrun{
 #' renv_remote_pkgs(read_renv_lock()$Packages)
 #' }
-#' @keywords internal
+#' @noRd
 renv_remote_pkgs <- function(
   renv_lock_remote_pkgs,
   host = NULL
@@ -120,7 +122,7 @@ renv_remote_pkgs <- function(
   git_pkgs
 }
 
-#' renv2nix
+#' Convert an `renv.lock` File to a Nix Expression
 #'
 #' @param renv_lock_path Character, path of the renv.lock file, defaults to
 #'   "renv.lock"
@@ -256,9 +258,9 @@ renv2nix <- function(
   }
 }
 
-#' renv_lock_r_ver
+#' Extract R Version from `renv.lock`
 #'
-#' @param renv_lock renv.lock file from which to get the R version
+#' @param renv_lock `renv.lock` file from which to get the R version
 #' @param override_r_ver Character, override the R version defined in the
 #'   `renv.lock` file with another version. This is especially useful if
 #'   the `renv.lock` file lists a version of R not (yet) available through Nix.
@@ -271,7 +273,7 @@ renv2nix <- function(
 #' \dontrun{
 #' rix(r_ver = renv_lock_r_ver())
 #' }
-#' @keywords internal
+#' @noRd
 renv_lock_r_ver <- function(renv_lock, override_r_ver = NULL) {
   if (is.null(override_r_ver)) {
     renv_lock$R$Version

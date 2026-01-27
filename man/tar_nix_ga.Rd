@@ -2,7 +2,7 @@
 % Please edit documentation in R/tar_nix_ga.R
 \name{tar_nix_ga}
 \alias{tar_nix_ga}
-\title{tar_nix_ga Run a \{targets\}  pipeline on GitHub Actions.}
+\title{Run a targets Pipeline on GitHub Actions}
 \usage{
 tar_nix_ga()
 }
@@ -10,7 +10,7 @@ tar_nix_ga()
 Nothing, copies file to a directory.
 }
 \description{
-tar_nix_ga Run a \{targets\}  pipeline on GitHub Actions.
+Run a targets Pipeline on GitHub Actions
 }
 \details{
 This function puts a \code{.yaml} file inside the \verb{.github/workflows/}

@@ -7,7 +7,17 @@
 available_df()
 }
 \value{
-A data frame
+A data frame with columns:
+\itemize{
+\item \code{year}: character
+\item \code{R.version}: character; e.g., `"3.5.3"``
+\item \code{bioc_version}: character; Bioconducotr version, e.g., \code{"3.22"}
+\item \code{date}: character; in format \verb{<yyyy>-<mm>-<dd>}
+\item \code{Linux/wsl}: character; \code{"supported"}, \code{"unsupported"}, or `"might work"``
+\item \verb{Apple Silicon}: character; \code{"supported"}, \code{"unsupported"}, \code{"might work"},
+or \code{"supported (Rstudio broken)"}
+\item \verb{Intel Mac}: character; \code{"supported"}, \code{"unsupported"}, or `"might work"``
+}
 }
 \description{
 Return data frame with R, Bioc versions and supported platforms
