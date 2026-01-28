@@ -72,7 +72,7 @@ kind: function
 name: rix_init
 exported: true
 signature: rix_init(project_path,rprofile_action = c("create_missing","create_backup","overwrite","append"),message_type = c("simple", "quiet", "verbose")) {message_type <- match.arg(message_type,choices = c("simple", "quiet", "verbose"))is_quiet <- message_type == "quiet"rprofile_action <- match.arg(rprofile_action,choices = c("create_missing", "create_backup", "overwrite", "append"))stopifnot("`project_path` needs to be character of length 1" = is.character(project_path) &&length(project_path) == 1L)if (isFALSE(is_quiet) && identical(Sys.getenv("TESTTHAT"), "false"))
-purpose: Initiate and maintain an isolated, project-specific, and runtime-pure R setup via Nix.
+purpose: Initiate and Maintain an Isolated, Project-Specific, and Runtime-Pure R setup via Nix.
 arguments:
   message_type: Character. Message type, defaults to "simple", which gives minimal but sufficient feedback. Other values are currently "quiet, which writes .Rprofile without message, and "verbose", which displays the mechanisms implemented to achieve fully controlled R project environments in Nix.
   project_path: Character with the folder path to the isolated nix-R project. If the folder does not exist yet, it will be created.
