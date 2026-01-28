@@ -1,4 +1,4 @@
-#' Create a startup script to launch an editor inside of a Nix shell
+#' Create a Startup Script to Launch an Editor Inside of a Nix Shell
 #' @param editor Character, the command to launch the editor. See the "Details" section below for more information.
 #' @param project_path Character, where to write the launcher, for example
 #'   "/home/path/to/project". The file will thus be written to the file

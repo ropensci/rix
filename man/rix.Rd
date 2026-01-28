@@ -2,7 +2,7 @@
 % Please edit documentation in R/rix.R
 \name{rix}
 \alias{rix}
-\title{Generate a Nix expression that builds a reproducible development environment}
+\title{Generate a Nix Expression That Builds a Reproducible Development Environment}
 \usage{
 rix(
   r_ver = NULL,

@@ -1,4 +1,4 @@
-#' Evaluate function in R or shell command via `nix-shell` environment
+#' Evaluate Function in R or Shell Command via `nix-shell` Environment
 #'
 #' This function needs an installation of Nix. `with_nix()` has two effects
 #' to run code in isolated and reproducible environments.
