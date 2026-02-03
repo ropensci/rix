@@ -1,8 +1,8 @@
 # Tests for flake helper functions
 
 # Tests for list_templates()
-test_that("list_templates returns all available templates", {
-  templates <- list_templates()
+test_that("flake_templates returns all available templates", {
+  templates <- flake_templates()
 
   expect_type(templates, "character")
   expect_true("minimal" %in% templates)
@@ -14,7 +14,7 @@ test_that("list_templates returns all available templates", {
   expect_length(templates, 6)
 })
 
-test_that("list_templates returns character(0) if templates missing", {
+test_that("flake_templates returns character(0) if templates missing", {
   # This test would require mocking, skipping for now
   skip("Would require mocking system.file")
 })
@@ -103,7 +103,7 @@ test_that("is_file_tracked returns FALSE for non-git repos", {
 })
 
 # Tests for nix_flake_update()
-test_that("nix_flake_update errors without Nix", {
+test_that("flake_update errors without Nix", {
   skip_if(nix_shell_available())
 
   expect_error(
@@ -112,7 +112,7 @@ test_that("nix_flake_update errors without Nix", {
   )
 })
 
-test_that("nix_flake_update errors without flake.nix", {
+test_that("flake_update errors without flake.nix", {
   skip_if_not(nix_shell_available())
 
   tmpdir <- tempdir()
@@ -123,7 +123,7 @@ test_that("nix_flake_update errors without flake.nix", {
   )
 })
 
-test_that("nix_flake_update works with valid flake", {
+test_that("flake_update works with valid flake", {
   skip_if_not(nix_shell_available())
   skip_on_cran()  # Network/git dependent
 
@@ -158,7 +158,7 @@ test_that("nix_flake_update works with valid flake", {
 })
 
 # Tests for nix_flake_check()
-test_that("nix_flake_check errors without Nix", {
+test_that("flake_check errors without Nix", {
   skip_if(nix_shell_available())
 
   expect_error(
@@ -167,7 +167,7 @@ test_that("nix_flake_check errors without Nix", {
   )
 })
 
-test_that("nix_flake_check errors without flake.nix", {
+test_that("flake_check errors without flake.nix", {
   skip_if_not(nix_shell_available())
 
   tmpdir <- tempdir()
@@ -178,7 +178,7 @@ test_that("nix_flake_check errors without flake.nix", {
   )
 })
 
-test_that("nix_flake_check validates valid flake", {
+test_that("flake_check validates valid flake", {
   skip_if_not(nix_shell_available())
   skip_on_cran()  # Network/git dependent
 
@@ -211,7 +211,7 @@ test_that("nix_flake_check validates valid flake", {
   expect_type(result, "logical")
 })
 
-test_that("nix_flake_check returns FALSE for invalid flake", {
+test_that("flake_check returns FALSE for invalid flake", {
   skip_if_not(nix_shell_available())
 
   tmpdir <- tempdir()
@@ -235,23 +235,23 @@ test_that("nix_flake_check returns FALSE for invalid flake", {
   expect_false(result)
 })
 
-# Tests for nix_flake_metadata()
-test_that("nix_flake_metadata errors without Nix", {
+# Tests for flake_metadata()
+test_that("flake_metadata errors without Nix", {
   skip_if(nix_shell_available())
 
   expect_error(
-    nix_flake_metadata(),
+    flake_metadata(),
     regexp = "Nix is not installed"
   )
 })
 
-test_that("nix_flake_metadata errors without flake.nix", {
+test_that("flake_metadata errors without flake.nix", {
   skip_if_not(nix_shell_available())
 
   tmpdir <- tempdir()
 
   expect_error(
-    nix_flake_metadata(tmpdir),
+    flake_metadata(tmpdir),
     regexp = "No flake.nix found"
   )
 })

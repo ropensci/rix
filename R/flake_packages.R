@@ -2,7 +2,7 @@
 # This internal function separates package generation from file writing
 
 #' generate_packages_data Internal function to generate structured package data
-#' that can be used by both rix() and init_flake()
+#' that can be used by both rix() and flake()
 #' @param r_ver Character. R version or special value like "bleeding-edge"
 #' @param date Character. Date string for nixpkgs snapshot
 #' @param r_pkgs Character vector. R packages to install

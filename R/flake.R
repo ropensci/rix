@@ -8,7 +8,7 @@
 #'
 #' This function is **experimental** and complements the existing `rix()`
 #' function. While `rix()` generates a `default.nix` file compatible with
-#' traditional Nix workflows, `init_flake()` generates a `flake.nix` that
+#' traditional Nix workflows, `flake()` generates a `flake.nix` that
 #' provides additional features like lock files, multiple shells, and
 #' integration with the modern Nix ecosystem.
 #'
@@ -30,14 +30,14 @@
 #' @examples
 #' \dontrun{
 #' # Initialize a minimal flake
-#' init_flake(
+#' flake(
 #'   r_ver = "4.3.1",
 #'   r_pkgs = c("dplyr", "ggplot2"),
 #'   project_path = "."
 #' )
 #'
 #' # Initialize a flake with radian for interactive use
-#' init_flake(
+#' flake(
 #'   r_ver = "4.3.1",
 #'   r_pkgs = c("dplyr", "ggplot2"),
 #'   system_pkgs = c("pandoc"),
@@ -46,14 +46,14 @@
 #' )
 #'
 #' # Initialize a flake with Docker support
-#' init_flake(
+#' flake(
 #'   r_ver = "4.3.1",
 #'   r_pkgs = c("dplyr", "ggplot2", "plumber"),
 #'   template = "docker",
 #'   project_path = "."
 #' )
 #' }
-init_flake <- function(
+flake <- function(
   r_ver = NULL,
   date = NULL,
   r_pkgs = NULL,
@@ -224,7 +224,7 @@ init_flake <- function(
       "\nAvailable shells:\n",
       "  nix develop          # Default shell\n",
       if (template == "docker") "  nix build .#docker   # Build container\n",
-      "\nLearn more: ?init_flake"
+      "\nLearn more: ?flake"
     )
   }
 
@@ -334,13 +334,13 @@ customize_flake_template <- function(template_lines, pkg_data, template) {
 #' List available flake templates
 #'
 #' @description
-#' Lists all available flake templates that can be used with `init_flake()`.
+#' Lists all available flake templates that can be used with `flake()`.
 #'
 #' @return Character vector of available template names.
 #' @export
 #' @examples
-#' list_templates()
-list_templates <- function() {
+#' flake_templates()
+flake_templates <- function() {
   template_dir <- system.file("flake_templates", package = "rix")
 
   if (!dir.exists(template_dir)) {
@@ -368,12 +368,12 @@ list_templates <- function() {
 #' @examples
 #' \dontrun{
 #' # Update flake.lock in current directory
-#' nix_flake_update()
+#' flake_update()
 #'
 #' # Update in specific project
-#' nix_flake_update("~/my-project")
+#' flake_update("~/my-project")
 #' }
-nix_flake_update <- function(
+flake_update <- function(
   project_path = ".",
   message_type = "simple"
 ) {
@@ -442,12 +442,12 @@ nix_flake_update <- function(
 #' @examples
 #' \dontrun{
 #' # Check flake in current directory
-#' nix_flake_check()
+#' flake_check()
 #'
 #' # Check with verbose output
-#' nix_flake_check("~/my-project", message_type = "verbose")
+#' flake_check("~/my-project", message_type = "verbose")
 #' }
-nix_flake_check <- function(
+flake_check <- function(
   project_path = ".",
   message_type = "simple"
 ) {
@@ -516,9 +516,9 @@ nix_flake_check <- function(
 #' @family flake helpers
 #' @examples
 #' \dontrun{
-#' nix_flake_metadata()
+#' flake_metadata()
 #' }
-nix_flake_metadata <- function(project_path = ".") {
+flake_metadata <- function(project_path = ".") {
   # Check if Nix is installed
   if (!has_nix_installed()) {
     stop("Nix is not installed. Install Nix to use flakes.")
