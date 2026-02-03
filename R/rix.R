@@ -1,4 +1,4 @@
-#' Generate a Nix expression that builds a reproducible development environment
+#' Generate a Nix Expression That Builds a Reproducible Development Environment
 #' @return Nothing, this function only has the side-effect of writing two files:
 #'   `default.nix` and `.Rprofile` in the working directory. `default.nix`
 #'   contains a Nix expression to build a reproducible environment using the Nix

@@ -1,5 +1,5 @@
 ---
-title: "Understanding the rPackages set release cycle and using bleeding edge packages"
+title: "Understanding the rPackages Set Release Cycle and Using Bleeding Edge Packages"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Understanding the rPackages set release cycle and using bleeding edge packages}

@@ -1,5 +1,5 @@
 ---
-title: "Installing system tools and TexLive packages in a Nix environment"
+title: "Installing System Tools and TexLive Packages in a Nix Environment"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Installing system tools and TexLive packages in a Nix environment}

@@ -1,4 +1,4 @@
-#' generate_header Internal function used to generate the header of the
+#' Internal Function Used to Generate the Header of the
 #' `default.nix` file.
 #' @param nix_repo Character. nixpkgs reop to use (upstream or rstats-on-nix
 #' fork) with latest commit hash.
@@ -84,7 +84,7 @@ let
   }
 }
 
-#' generate_rix_call Internal function used to generate the call to `rix()` as
+#' Internal function used to generate the call to `rix()` as
 #' shown in `default.nix`
 #' @param rix_call Character, call to rix().
 #' @param nix_repo Character. nixpkgs reop to use (upstream or rstats-on-nix
@@ -103,7 +103,7 @@ generate_rix_call <- function(rix_call, nix_repo) {
 }
 
 
-#' Internal function that formats the R package names correctly for Nix.
+#' Internal Function That Formats the R Package Names Correctly for Nix.
 #' @param r_pkgs Character, list of R packages to install.
 #' @noRd
 get_rpkgs <- function(r_pkgs, ide) {
@@ -138,7 +138,7 @@ get_rpkgs <- function(r_pkgs, ide) {
   )
 }
 
-#' generate_rpkgs Internal function that generates the string containing the
+#' Internal function that generates the string containing the
 #' correct Nix expression to get R packages.
 #' @param rPackages Character, list of R packages to install.
 #' @param flag_rpkgs Character, are there any R packages at all?
@@ -160,7 +160,7 @@ generate_rpkgs <- function(rPackages, flag_rpkgs) {
 }
 # nolint end
 
-#' generate_local_r_pkgs Internal function that generates the string containing
+#' Internal function that generates the string containing
 #' the correct Nix expression for installing local packages
 #' @param local_r_pkgs Character, list of local R packages to install.
 #' @param flag_local_r_pkgs Character, are there any local R packages at all?
@@ -180,7 +180,7 @@ generate_local_r_pkgs <- function(local_r_pkgs, flag_local_r_pkgs) {
   }
 }
 
-#' generate_tex_pkgs Internal function that generates the string containing the
+#' Internal function that generates the string containing the
 #' correct Nix expression to get LaTeX packages.
 #' @param tex_pkgs Character, list of LaTeX packages to install.
 #' @noRd
@@ -201,7 +201,7 @@ generate_tex_pkgs <- function(tex_pkgs) {
   }
 }
 
-#' generate_py_conf Internal function that generates the string containing the
+#' Internal function that generates the string containing the
 #' correct Nix expression to get Python packages.
 #' @param py_conf List. A list of two elements, `py_version` and `py_conf`.
 #'   `py_version` must be of the form `"3.12"` for Python 3.12 and `py_conf`
@@ -273,7 +273,7 @@ generate_py_conf <- function(py_conf, flag_py_conf) {
   }
 }
 
-#' generate_jl_conf Internal function that generates the string containing the
+#' Internal function that generates the string containing the
 #' correct Nix expression to get Jlthon packages.
 #' @param jl_conf List. A list of two elements, `jl_version` and `jl_conf`.
 #'   `jl_version` must be of the form `"1.10"` for Julia 1.10. Leave empty to
@@ -312,7 +312,7 @@ generate_jl_conf <- function(jl_conf, flag_jl_conf) {
   }
 }
 
-#' get_system_pkgs Internal function that formats the system package names
+#' Internal function that formats the system package names
 #' correctly for Nix.
 #' @param system_pkgs Character, list of system packages to install.
 #' @param r_pkgs Character, list of R packages to install.
@@ -361,7 +361,7 @@ get_system_pkgs <- function(system_pkgs, r_pkgs, py_conf, ide) {
 }
 
 
-#' generate_system_pkgs Internal function that generates the string containing
+#' Internal function that generates the string containing
 #' the correct Nix expression to get system packages.
 #' @param system_pkgs Character, list of system packages to install.
 #' @param r_pkgs Character, list of R packages packages to install.
@@ -383,7 +383,7 @@ generate_system_pkgs <- function(system_pkgs, r_pkgs, py_conf, ide) {
 }
 
 
-#' generate_git_archived_pkgs Internal function that generates the string
+#' Internal function that generates the string
 #' containing the correct Nix expression to get system packages.
 #' @param git_pkgs Character, list of R packages to install from GitHub.
 #' @param archive_pkgs Character, list of R packages to install from the CRAN
@@ -404,7 +404,7 @@ generate_git_archived_pkgs <- function(
   }
 }
 
-#' generate_locale_variables Internal function that generates the string
+#' Internal function that generates the string
 #' containing the correct Nix expression to set locales.
 #' @noRd
 generate_locale_variables <- function() {
@@ -444,7 +444,7 @@ generate_locale_variables <- function() {
 }
 
 
-#' generate_wrapped_pkgs Internal function that generates the string containing
+#' Internal function that generates the string containing
 #' the correct Nix expression to get wrapped packages.
 #' @param ide Character, defaults to "other". If you wish to use RStudio to work
 #'   interactively use "rstudio" or "rserver" for the server version. Use "code"
@@ -483,7 +483,7 @@ generate_wrapped_pkgs <- function(
 }
 
 
-#' generate_wrapped_pkgs Internal function that generates the string containing
+#' Internal function that generates the string containing
 #' the correct Nix expression to get wrapped packages.
 #' @param flag_git_archive Character, are there R packages from GitHub at all?
 #' @param flag_rpkgs Character, are there any R packages at all?
@@ -551,7 +551,7 @@ generate_shell <- function(
   )
 }
 
-#' generate_inherit Inherit pkgs shell for compatibility with rixpress
+#' Inherit pkgs shell for compatibility with rixpress
 #' @noRd
 generate_inherit <- function() {
   sprintf(
@@ -563,7 +563,7 @@ in
   )
 }
 
-#' remove_empty_lines Internal function to post-processes `default.nix`
+#' Internal function to post-processes `default.nix`
 #' files. Remove 2+ consecutive empty lines, only leaving one.
 #' @param default.nix Character, default.nix lines.
 #' @importFrom utils head

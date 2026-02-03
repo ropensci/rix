@@ -1,5 +1,5 @@
 ---
-title: "Rolling out your own binary cache"
+title: "Rolling Out Your Own Binary Cache"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Rolling out your own binary cache}

@@ -1,4 +1,4 @@
-#' Read and Parse an `renv.lock`` File
+#' Read and Parse an `renv.lock` File
 #'
 #' Reads `renv.lock` if it exists and can be parsed as json.
 #'

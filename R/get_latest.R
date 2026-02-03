@@ -1,4 +1,4 @@
-#' Get the latest R version and packages
+#' Get the Latest R Version and Packages
 #' @param r_version Character. R version to look for, for example, "4.2.0". If a
 #' nixpkgs revision is provided instead, this gets returned.
 #' @return A character. The commit hash of the latest nixpkgs-unstable revision
@@ -106,9 +106,9 @@ get_right_commit <- function(r_version) {
 }
 
 
-#' Fetch contents from an URL into memory
+#' Fetch Contents from a URL into Memory
 #'
-#' Fetch if available and stop with propagating the curl error. Also show URL
+#' Fetch If Available and Stop with Propagating the Curl Error. Also Show URL
 #' for context
 #' @noRd
 try_get_request <- function(url, handle, extra_diagnostics = NULL) {

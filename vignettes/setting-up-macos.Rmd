@@ -1,5 +1,5 @@
 ---
-title: "Setting up and using Nix and rix on macOS"
+title: "Setting Up and Using Nix and Rix on macOS"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Setting up and using Nix and rix on macOS}

@@ -1,4 +1,4 @@
-#' Run a targets Pipeline on GitHub Actions
+#' Run a Targets Pipeline on GitHub Actions
 #' @details This function puts a `.yaml` file inside the `.github/workflows/`
 #' folders on the root of your project. This workflow file will use the
 #' projects `default.nix` file to generate the development environment on

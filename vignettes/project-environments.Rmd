@@ -1,5 +1,5 @@
 ---
-title: "Using rix to build project specific environments"
+title: "Using Rix to Build Project Specific Environments"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Using rix to build project specific environments}

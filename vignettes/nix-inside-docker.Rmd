@@ -1,5 +1,5 @@
 ---
-title: "Using Nix inside Docker"
+title: "Using Nix Inside Docker"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Using Nix inside Docker}

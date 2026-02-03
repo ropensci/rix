@@ -1,5 +1,5 @@
 ---
-title: "Using an IDE with Nix shells"
+title: "Using an IDE with Nix Shells"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Using an IDE with Nix shells}

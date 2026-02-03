@@ -1,4 +1,4 @@
-#' Invoke Shell Command `nix-build` From an R Session
+#' Invoke Shell Command `nix-build` from an R Session
 #' @param project_path Path to the folder where the `default.nix` file resides.
 #' @param message_type Character vector with messaging type. Either `"simple"`
 #' (default), `"quiet"` for no messaging, or `"verbose"`.

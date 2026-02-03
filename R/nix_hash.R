@@ -1,4 +1,4 @@
-#' Return the sri hash of a path using `nix hash path --sri path` if Nix is
+#' Return the SRI Hash of a Path Using `nix hash path --sri path` if Nix Is
 #' available locally
 #' @param repo_url URL to Git repository
 #' @param commit Commit hash (SHA-1)
@@ -22,7 +22,7 @@ nix_hash <- function(repo_url, commit, ...) {
   }
 }
 
-#' Generate regex patterns for Git hosting platforms
+#' Generate Regex Patterns for Git Hosting Platforms
 #'
 #' @param platform Either "github", "gitlab", or "git" for custom Git hosting
 #' platforms
@@ -104,7 +104,7 @@ get_git_regex <- function(platform, url = NULL) {
   )
 }
 
-#' Return the SRI hash of an URL with .tar.gz
+#' Return the SRI Hash of a URL with .tar.gz
 #' @param url String with URL ending with `.tar.gz`
 #' @param repo_url URL to GitHub repository, NULL if CRAN archive
 #' @param commit Commit hash, NULL if CRAN archive
@@ -311,7 +311,7 @@ hash_url <- function(
   )
 }
 
-#' Obtain Nix SHA-256 hash of a directory in SRI format (base64)
+#' Obtain Nix SHA-256 Hash of a Directory in SRI Format (base64)
 #'
 #' @param path Path to directory to hash
 #' @return string with SRI hash specification
@@ -377,7 +377,7 @@ nix_sri_hash <- function(path) {
 }
 
 
-#' Return the SRI hash of a CRAN package source using `nix hash path --sri path`
+#' Return the SRI Hash of a CRAN Package Source Using `nix hash path --sri path`
 #' @param repo_url URL to CRAN package source
 #' @noRd
 hash_cran <- function(repo_url) {
@@ -387,7 +387,7 @@ hash_cran <- function(repo_url) {
   return(list_sri_hash_deps)
 }
 
-#' Return the SRI hash of a GitHub repository at a given unique commmit ID
+#' Return the SRI Hash of a GitHub Repository at a Given Unique Commit ID
 #'
 #' @details `hash_git` will retrieve an archive of the repository URL
 #' <https://github.com/<user>/<repo> at a given commit ID. It will fetch
@@ -427,9 +427,9 @@ hash_git <- function(repo_url, commit, ...) {
 }
 
 
-#' Try download contents of an URL onto file on disk
+#' Try Download Contents of a URL onto File on Disk
 #'
-#' Fetch if available and stop with propagating the curl error. Also show URL
+#' Fetch if Available and Stop with Propagating the Curl Error. Also Show URL
 #' for context
 #' @noRd
 try_download <- function(
@@ -453,7 +453,7 @@ try_download <- function(
   )
 }
 
-#' Finds dependencies of a Python package from pyproject.toml
+#' Finds Dependencies of a Python Package from pyproject.toml
 #' @param path path to pyproject.toml
 #' @return List with imports
 #' @noRd

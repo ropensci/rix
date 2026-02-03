@@ -1,5 +1,5 @@
 ---
-title: "Developing packages with rix"
+title: "Developing Packages with Rix"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Developing packages with rix}

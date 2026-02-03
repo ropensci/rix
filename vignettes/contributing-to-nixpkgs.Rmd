@@ -1,5 +1,5 @@
 ---
-title: "Contributing to nixpkgs"
+title: "Contributing to Nixpkgs"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Contributing to nixpkgs}

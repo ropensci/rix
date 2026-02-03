@@ -1,5 +1,5 @@
 ---
-title: "Handling packages with remote dependencies"
+title: "Handling Packages with Remote Dependencies"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Handling packages with remote dependencies}

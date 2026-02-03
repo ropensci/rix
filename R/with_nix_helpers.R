@@ -1,4 +1,4 @@
-#' Stop with descriptive error how to solve when `nix-shell` cannot be found
+#' Stop with Descriptive Error How to Solve When `nix-shell` Cannot Be Found
 #' in current shell environment or R session
 #' @noRd
 stop_no_nix_shell <- function(msg = no_nix_shell_msg()) {
@@ -28,7 +28,7 @@ no_nix_shell_msg <- function() {
 }
 
 
-#' Serialize a list of R expressions as `.Rds` to disk
+#' Serialize a List of R Expressions as `.Rds` to Disk
 #'
 #' This helper is currently only called from the wrapper `serialize_globals()`,
 #' where all recursively found global R objects of `expr` need to be saved
@@ -58,7 +58,7 @@ serialize_lobjs <- function(lobjs, temp_dir) {
   })
 }
 
-#' Get all function args of `expr` as R objects and save them into `.Rds` files.
+#' Get All Function Args of `expr` as R Objects and Save Them into `.Rds` Files.
 #'
 #' Save function arguments into a folder each with `<tag.Rds>` and `value`.
 #' This is used for the first serialization step in the source environment
@@ -87,13 +87,13 @@ serialize_args <- function(args, temp_dir) {
 }
 
 
-#' Check if the current environment is the empty environment
+#' Check If the Current Environment Is the Empty Environment
 #' @return logical vector of length one
 #' @noRd
 is_empty <- function(x) identical(x, emptyenv())
 
 
-#' Find the environment where R object is defined
+#' Find the Environment Where R Object Is Defined
 #'
 #' Is used by helper `classify_globals()`, to return the environment where
 #' the object called `name`. The environment stack is queried until the empty
@@ -113,7 +113,7 @@ where <- function(name, env = parent.frame()) {
   }
 }
 
-#' Finds and checks global functions and variables recursively for closure
+#' Finds and Checks Global Functions and Variables Recursively for Closure
 #' @param expr an **R** expression
 #' @param args_vec character vector with arguments
 #' @noRd
@@ -238,7 +238,7 @@ recurse_find_check_globals <- function(
   return(exports)
 }
 
-#' Classify global objects found when apply `codetools::findGlobals` on
+#' Classify Global Objects Found When Apply `codetools::findGlobals` on
 #' `expr`, and also on all global object found via recursion of the same
 #' function
 #' @param globals_expr character vector of object names assigned for each
@@ -349,7 +349,7 @@ classify_globals <- function(globals_expr, args_vec) {
 }
 
 
-#' Serialize expressions of all global objects found.
+#' Serialize Expressions of All Global Objects Found.
 #'
 #' Wrapper around `serialize_lobjs()`
 #'
@@ -438,7 +438,7 @@ serialize_globals <- function(
 }
 
 
-#' Save name of R packages as `_pkgs.Rds` file into temporary directory
+#' Save Name of R Packages as `_pkgs.Rds` File into Temporary Directory
 #'
 #' All R packages will be serialized from character vector element `pkgs`. If it
 #' is `NULL`, then `NULL` will be in `_pkgs.Rds` in the temporary directory
@@ -476,7 +476,7 @@ serialize_pkgs <- function(
   return(pkgs)
 }
 
-#' Quote language objects via partial substitution of expressions
+#' Quote Language Objects via Partial Substitution of Expressions
 #' reads like R code, and avoids code injection.
 #'
 #' This is used to boilerplate a custom R script that is evaluated by calling
@@ -632,7 +632,7 @@ with_assign_vecnames_call <- function(vec) {
 }
 
 
-#' Create call that combines character inputs arguments via `c()`
+#' Create Call That Combines Character Inputs Arguments via `c()`
 #'
 #' @examples
 #' with_assign_vec_call(c("a", "b"))
@@ -645,7 +645,7 @@ with_assign_vec_call <- function(vec) {
   return(cl)
 }
 
-#' Deparse expression into string (character vector of length 1)
+#' Deparse Expression into String (Character Vector of Length 1)
 #'
 #' This re-implements what `deparse1()` does, because the function has only been
 #' around since 4.0.0

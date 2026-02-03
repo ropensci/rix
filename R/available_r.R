@@ -1,4 +1,4 @@
-#' Return data frame with R, Bioc versions and supported platforms
+#' Return Data Frame with R, Bioc Versions and Supported Platforms
 #' @return A data frame with columns:
 #' - `year`: character
 #' - `R.version`: character; e.g., `"3.5.3"``
@@ -22,7 +22,7 @@ available_df <- function() {
   read.csv(available_df_url)
 }
 
-#' List available R versions from the rstats-on-nix fork of Nixpkgs
+#' List Available R Versions from the rstats-on-nix Fork of Nixpkgs
 #' @return A character vector containing the available R versions.
 #' @family available versions
 #' @export
@@ -42,7 +42,7 @@ available_r <- function() {
   )
 }
 
-#' List available dates for R and Bioconductor releases
+#' List Available Dates for R and Bioconductor Releases
 #' @return A character vector containing the available dates
 #' @family available versions
 #' @export
@@ -53,7 +53,7 @@ available_dates <- function() {
   unique(available_df()$date)
 }
 
-#' Get latest R version for given date
+#' Get Latest R Version for Given Date
 #' @param date Character, one of the available dates.
 #' @return A character vector showing the version for a given date
 #' @noRd
@@ -63,7 +63,7 @@ get_version_from_date <- function(date) {
   available_df$`R.version`[available_df$date == date]
 }
 
-#' Get latest most recent date for given R version
+#' Get Latest Most Recent Date for Given R Version
 #' @param date Character, one of the available r versions.
 #' @return A character vector showing the version for a given date
 #' @noRd

@@ -1,4 +1,4 @@
-#' detect_versions Detects if CRAN packages need to be downloaded from the
+#' detect_versions Detects If CRAN Packages Need to Be Downloaded from the
 #' archive.
 #' @param r_pkgs A list of packages, to get from CRAN (either current packages
 #'   or archived packages).

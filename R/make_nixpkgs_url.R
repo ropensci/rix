@@ -1,4 +1,4 @@
-#' make_nixpkgs_url Find the right Nix revision
+#' make_nixpkgs_url Find the Right Nix Revision
 #' @param r_version Character. R version to look for, for example, "4.2.0". If a
 #' nixpkgs revision is provided instead, this gets returned.
 #' @param date Character. Snapshot date to use for building env.

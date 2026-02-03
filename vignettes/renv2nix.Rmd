@@ -1,5 +1,5 @@
 ---
-title: "Converting renv projects to Nix projects"
+title: "Converting renv Projects to Nix Projects"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Converting renv projects to Nix projects}

@@ -154,7 +154,7 @@ fetchzip <- function(archive_pkg, sri_hash = NULL) {
 }
 
 
-#' Removes base packages from list of packages dependencies
+#' Removes Base Packages from List of Packages Dependencies
 #' @param list_imports Atomic vector of packages
 #' @importFrom stats na.omit
 #' @return Atomic vector of packages without base packages
@@ -174,7 +174,7 @@ remove_base <- function(list_imports) {
 }
 
 
-#' Finds dependencies of a package from the DESCRIPTION file
+#' Finds Dependencies of a Package from the DESCRIPTION File
 #' @param path path to package
 #' @param commit_date date of commit
 #' @param ... Further arguments passed down to methods.
@@ -575,7 +575,7 @@ fetchpkgs <- function(git_pkgs, archive_pkgs, ...) {
 }
 
 
-#' get_commit_date Retrieves the date of a commit from a Git repository
+#' Fetch a Package from a Git Repository
 #' @param repo The repository (e.g. "r-lib/usethis" or "owner/repo")
 #' @param commit_sha The commit hash of interest
 #' @param platform Platform type: "github", "gitlab", or "git" (Forgejo/Gitea)
@@ -872,7 +872,7 @@ resolve_package_commit <- function(
   return(commit)
 }
 
-#' Get shared cache file path
+#' Get Shared Cache File Path
 #' @return Path to shared cache file
 #' @noRd
 get_cache_file <- function() {

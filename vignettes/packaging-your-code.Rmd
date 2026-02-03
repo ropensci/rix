@@ -1,5 +1,5 @@
 ---
-title: "Packaging Your Code in R and Python with rix"
+title: "Packaging Your Code in R and Python with Rix"
 author: "Bruno Rodrigues"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette

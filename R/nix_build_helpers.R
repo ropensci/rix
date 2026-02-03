@@ -1,4 +1,4 @@
-#' Avoid impure R library paths in the Nix runtime caused by default
+#' Avoid Impure R Library Paths in the Nix Runtime Caused by Default
 #' `.libPaths()` mechanism in Nix.
 #'
 #' Remove the global library tree of the default user library location
@@ -89,7 +89,7 @@ poll_sys_proc_blocking <- function(
   # return(invisible(status))
 }
 
-#' Poll running non-blocking process started previously via.
+#' Poll Running Non-Blocking Process Started Previously Via.
 #' `sys::exec_background()`
 #'
 #' Typically, it is used for a `nix-build` process launched via `nix_build()`

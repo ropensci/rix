@@ -1,5 +1,5 @@
 ---
-title: "Installing R and Python packages in a Nix environment"
+title: "Installing R and Python Packages in a Nix Environment"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Installing R and Python packages in a Nix environment}

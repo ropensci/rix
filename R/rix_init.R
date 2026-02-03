@@ -1,4 +1,4 @@
-#' Initiate and maintain an isolated, project-specific, and runtime-pure R
+#' Initiate and Maintain an Isolated, Project-Specific, and Runtime-Pure R
 #' setup via Nix.
 #'
 #' Creates an isolated project folder for a Nix-R configuration.
@@ -274,7 +274,7 @@ rix_init <- function(
   }
 }
 
-#' Get character vector of length two with comment and code write `.Rprofile`
+#' Get Character Vector of Length Two with Comment and Code Write `.Rprofile`
 #' to evaluate R expressions in a pure R library runtime and also RStudio IDE
 #' on macOS
 #'
@@ -296,7 +296,7 @@ get_rprofile_text <- function(rprofile_deparsed) {
   )
 }
 
-#' Print message for `.Rprofile` addition
+#' Print Message for `.Rprofile` Addition
 #' @param action_string string
 #' @param project_path string with project path
 #' @noRd
@@ -316,7 +316,7 @@ message_rprofile <- function(action_string = "Added", project_path = ".") {
   }
 }
 
-#' Get current `PATH` entries, report and modify to include default Nix profile
+#' Get Current `PATH` Entries, Report and Modify to Include Default Nix Profile
 #' path
 #'
 #' Print `PATH` environent variable, and modfiy it as as side effect so that ``
@@ -351,7 +351,7 @@ set_message_session_PATH <- function(
 }
 # nolint end: object_name_linter
 
-#' Report whether the current R session is running in Nix and RStudio, or not.
+#' Report Whether the Current R Session Is Running in Nix and RStudio, or Not.
 #' @param is_nix_r logical scalar. `TRUE` means in a Nix R environment
 #' @param is_rstudio `TRUE` means source R session is inside RStudio
 #' @param message_type character vector of lenght one. Either `"simple"`
@@ -396,7 +396,7 @@ message_r_session_nix_rstudio <- function(
 }
 
 
-#' Is the current R session running in a Nix software environment or not?
+#' Is the Current R Session Running in a Nix Software Environment or Not?
 #'
 #' Query `NIX_STORE` environmental variable in current R session. Only nonzero
 #' if inside a Nix R.
@@ -409,7 +409,7 @@ is_nix_r_session <- function() {
 }
 
 
-#' Has the current R session been launched from RStudio or not?
+#' Has the Current R Session Been Launched from RStudio or Not?
 #'
 #' Query `RSTUDIO` environmental variable in current R session. Value is `"1"`
 #' if inside RStudio R session.
@@ -419,7 +419,7 @@ is_rstudio_session <- function(message_type = c("simple", "quiet", "verbose")) {
   return(is_rstudio)
 }
 
-#' If not yet present, add the Nix default path of the system-wide profile to
+#' If Not Yet Present, Add the Nix Default Path of the System-Wide Profile to
 #' `PATH` environment variable inside R session.
 #'
 #' The default profile for the system is typically located at

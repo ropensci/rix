@@ -1,5 +1,5 @@
 ---
-title: "Building an environment for literate programming"
+title: "Building an Environment for Literate Programming"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Building an environment for literate programming}

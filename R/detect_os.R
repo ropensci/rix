@@ -1,4 +1,4 @@
-#' detect_os Detects the current OS
+#' detect_os Detects the Current OS
 #' @return A character. One of Linux or Darwin (Windows is also Linux)
 #'
 #' @examples

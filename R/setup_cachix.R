@@ -169,7 +169,7 @@ is_cachix_configured <- function(nix_conf_content) {
   any((grepl("rstats-on-nix", nix_conf_content[substituter_line])))
 }
 
-#' Check if running on NixOS
+#' Check If Running on NixOS
 #' @noRd
 #' @return Logical, TRUE if on NixOS
 is_nixos <- function() {
@@ -187,7 +187,7 @@ is_nixos <- function() {
   FALSE
 }
 
-#' Check if rstats-on-nix cache is configured anywhere
+#' Check If rstats-on-nix Cache Is Configured Anywhere
 #' @noRd
 #' @return Logical, TRUE if cachix is configured in any known location
 is_cachix_configured_anywhere <- function() {
