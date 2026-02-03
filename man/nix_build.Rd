@@ -2,7 +2,7 @@
 % Please edit documentation in R/nix_build.R
 \name{nix_build}
 \alias{nix_build}
-\title{Invoke shell command \code{nix-build} from an R session}
+\title{Invoke Shell Command \code{nix-build} From an R Session}
 \usage{
 nix_build(
   project_path = getwd(),
@@ -26,7 +26,7 @@ launched, if the \code{nix_build()} call is assigned to an R object.
 Otherwise, it will be returned invisibly.
 }
 \description{
-Invoke shell command \code{nix-build} from an R session
+Invoke Shell Command \code{nix-build} From an R Session
 }
 \details{
 This function is a wrapper for the \code{nix-build} command-line interface.

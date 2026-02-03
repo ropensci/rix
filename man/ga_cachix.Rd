@@ -2,7 +2,7 @@
 % Please edit documentation in R/ga_cachix.R
 \name{ga_cachix}
 \alias{ga_cachix}
-\title{Build an Environment on GitHub Actions and Cache it on Cachix}
+\title{Build an Environment on GitHub Actions and Cache It on Cachix}
 \usage{
 ga_cachix(cache_name, path_default)
 }
@@ -16,7 +16,7 @@ to the \code{default.nix} to build.}
 Nothing, copies file to a directory.
 }
 \description{
-Build an Environment on GitHub Actions and Cache it on Cachix
+Build an Environment on GitHub Actions and Cache It on Cachix
 }
 \details{
 This function puts a \code{.yaml} file inside the \verb{.github/workflows/}

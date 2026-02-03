@@ -2,7 +2,7 @@
 % Please edit documentation in R/available_r.R
 \name{available_df}
 \alias{available_df}
-\title{Return Data Frame With R, Bioc Versions and Supported Platforms}
+\title{Return data frame with R, Bioc versions and supported platforms}
 \usage{
 available_df()
 }

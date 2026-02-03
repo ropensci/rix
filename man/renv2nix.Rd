@@ -68,12 +68,14 @@ packages, the user will be warned that they may want to add it. When
 \code{py_conf} packages are requested, the \code{RETICULATE_PYTHON} environment
 variable is set to ensure the Nix environment does not use a system-wide
 Python installation. If you are developing a Python package, set
-\code{py_src_dir} to the path of your package's source directory (e.g.,
 \code{"mypackage/src"} or just \code{"src"}). This adds \code{PYTHONPATH} to the shell
 hook so your package can be imported without installation. This is the Nix
 equivalent of \verb{pip install -e .} (editable install). Note: if \code{"uv"} is in
 \code{system_pkgs}, \code{LD_LIBRARY_PATH} is automatically configured for dynamic
-library loading (required by packages like numpy).}
+library loading (required by packages like numpy). You can also install packages
+from git or PyPI by adding \code{git_pkgs} (list of lists with \code{package_name}, \code{repo_url}, \code{commit})
+and \code{pypi_pkgs} (vector of package names, optionally with version \code{name@version}) to
+the \code{py_conf} list.}
     \item{\code{jl_conf}}{List. A list of two elements, \code{jl_version} and \code{jl_conf}.
 \code{jl_version} must be of the form \code{"1.10"} for Julia 1.10. Leave empty or
 use an empty string to use the latest version, or use \code{"lts"} for the long
