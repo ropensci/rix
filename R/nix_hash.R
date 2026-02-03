@@ -175,6 +175,16 @@ hash_url <- function(
     )
   }
 
+  # Add GITHUB_PAT authorization header for private GitHub repos
+  if (platform == "github") {
+    token <- Sys.getenv("GITHUB_PAT")
+    token_pattern <- "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$"
+
+    if (grepl(token_pattern, token)) {
+      handle_setheaders(h, Authorization = paste("token", token))
+    }
+  }
+
   # set the root URL for the download
   root_url <- url
 

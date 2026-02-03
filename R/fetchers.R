@@ -10,7 +10,19 @@ fetchgit <- function(git_pkg, ...) {
   package_name <- git_pkg$package_name
   repo_url <- git_pkg$repo_url
   commit <- git_pkg$commit
-  output <- nix_hash(repo_url, commit, ...)
+  private <- if (is.null(git_pkg$private)) FALSE else git_pkg$private
+  
+  # For private repos with SSH URLs, convert to HTTPS for hash calculation
+  # but keep original SSH URL for Nix expression generation
+  if (isTRUE(private) && grepl("^git@", repo_url)) {
+    # Convert git@github.com:user/repo.git to https://github.com/user/repo
+    hash_url <- sub("^git@([^:]+):(.*)$", "https://\\1/\\2", repo_url)
+    hash_url <- sub("\\.git$", "", hash_url)
+  } else {
+    hash_url <- repo_url
+  }
+  
+  output <- nix_hash(hash_url, commit, ...)
   sri_hash <- output$sri_hash
 
   # If package has no remote dependencies
@@ -25,7 +37,8 @@ fetchgit <- function(git_pkg, ...) {
     commit,
     sri_hash,
     imports,
-    remotes
+    remotes,
+    private
   )
 
   if (is.list(remotes) && length(remotes) == 0) {
@@ -54,6 +67,8 @@ fetchgit <- function(git_pkg, ...) {
 #' @param sri_hash A character, hash of Git repo.
 #' @param imports A list of pcakages, can be empty list
 #' @param remotes A list of remotes dependencies, can be empty list
+#' @param private Logical, if TRUE use builtins.fetchGit for private repos (uses SSH).
+#'   When TRUE, converts HTTPS URLs to SSH and skips sha256 hash requirement.
 #' @return A character. Part of the Nix definition to download and build the R package
 #' from the CRAN archives.
 #' @noRd
@@ -63,7 +78,8 @@ generate_git_nix_expression <- function(
   commit,
   sri_hash,
   imports,
-  remotes = NULL
+  remotes = NULL,
+  private = FALSE
 ) {
   # If there are remote dependencies, pass this string
   flag_remote_deps <- if (is.list(remotes) && length(remotes) == 0) {
@@ -78,28 +94,76 @@ generate_git_nix_expression <- function(
     paste0(" ++ [ ", paste0(remote_pkgs_names, collapse = " "), " ]")
   }
 
-  sprintf(
-    '
+  # Generate Nix expression based on whether it's a private repo
+  if (isTRUE(private)) {
+    # For private repos, use builtins.fetchGit with SSH URL
+    # Validate that SSH URL is provided
+    if (grepl("^https://", repo_url)) {
+      stop(
+        "Private repositories require SSH URLs.\n",
+        "Please provide the repository URL in SSH format (e.g., 'git@github.com:user/repo.git') ",
+        "instead of HTTPS ('", repo_url, "').",
+        call. = FALSE
+      )
+    }
+    
+    # Display warning about tradeoffs
+    warning(
+      "Package '", package_name, "' is configured as private and will use builtins.fetchGit.\n",
+      "Tradeoffs:\n",
+      "  - PRO: Works seamlessly with your SSH keys for private repositories\n",
+      "  - CON: Cannot be cached in Nix binary caches (less reproducible)\n",
+      "  - CON: Requires SSH keys to be available during evaluation\n",
+      "  - CON: May not work in pure Nix evaluation mode or some CI/CD environments\n",
+      "Consider making the repository public if you need reproducible builds in CI/CD.",
+      call. = FALSE
+    )
+    
+    sprintf(
+      '
     %s = (pkgs.rPackages.buildRPackage {
-      name = \"%s\";
-      src = pkgs.fetchgit {
-        url = \"%s\";
-        rev = \"%s\";
-        sha256 = \"%s\";
+      name = "%s";
+      src = builtins.fetchGit {
+        url = "%s";
+        rev = "%s";
       };
       propagatedBuildInputs = builtins.attrValues {
         inherit (pkgs.rPackages) %s;
       }%s;
     });
 ',
-    package_name,
-    package_name,
-    repo_url,
-    commit,
-    sri_hash,
-    imports,
-    flag_remote_deps
-  )
+      package_name,
+      package_name,
+      repo_url,
+      commit,
+      imports,
+      flag_remote_deps
+    )
+  } else {
+    # For public repos, use pkgs.fetchgit with sha256
+    sprintf(
+      '
+    %s = (pkgs.rPackages.buildRPackage {
+      name = "%s";
+      src = pkgs.fetchgit {
+        url = "%s";
+        rev = "%s";
+        sha256 = "%s";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages) %s;
+      }%s;
+    });
+',
+      package_name,
+      package_name,
+      repo_url,
+      commit,
+      sri_hash,
+      imports,
+      flag_remote_deps
+    )
+  }
 }
 
 
@@ -897,7 +961,19 @@ fetch_py_git <- function(git_pkg, py_ver_attr, ...) {
   package_name <- git_pkg$package_name
   repo_url <- git_pkg$repo_url
   commit <- git_pkg$commit
-  output <- nix_hash(repo_url, commit, is_python = TRUE, ...)
+  private <- if (is.null(git_pkg$private)) FALSE else git_pkg$private
+  
+  # For private repos with SSH URLs, convert to HTTPS for hash calculation
+  # but keep original SSH URL for Nix expression generation
+  if (isTRUE(private) && grepl("^git@", repo_url)) {
+    # Convert git@github.com:user/repo.git to https://github.com/user/repo
+    hash_url <- sub("^git@([^:]+):(.*)$", "https://\\1/\\2", repo_url)
+    hash_url <- sub("\\.git$", "", hash_url)
+  } else {
+    hash_url <- repo_url
+  }
+  
+  output <- nix_hash(hash_url, commit, is_python = TRUE, ...)
   sri_hash <- output$sri_hash
 
   # Python packages from git usually don't need 'imports' derived from DESCRIPTION
@@ -915,8 +991,59 @@ fetch_py_git <- function(git_pkg, py_ver_attr, ...) {
 
   pkg_attr <- gsub("[^a-zA-Z0-9]", "_", package_name)
 
-  sprintf(
-    '
+  # Generate Nix expression based on whether it's a private repo
+  if (isTRUE(private)) {
+    # For private repos, use builtins.fetchGit with SSH URL
+    # Validate that SSH URL is provided
+    if (grepl("^https://", repo_url)) {
+      stop(
+        "Private repositories require SSH URLs.\n",
+        "Please provide the repository URL in SSH format (e.g., 'git@github.com:user/repo.git') ",
+        "instead of HTTPS ('", repo_url, "').",
+        call. = FALSE
+      )
+    }
+    
+    # Display warning about tradeoffs
+    warning(
+      "Python package '", package_name, "' is configured as private and will use builtins.fetchGit.\n",
+      "Tradeoffs:\n",
+      "  - PRO: Works seamlessly with your SSH keys for private repositories\n",
+      "  - CON: Cannot be cached in Nix binary caches (less reproducible)\n",
+      "  - CON: Requires SSH keys to be available during evaluation\n",
+      "  - CON: May not work in pure Nix evaluation mode or some CI/CD environments\n",
+      "Consider making the repository public if you need reproducible builds in CI/CD.",
+      call. = FALSE
+    )
+    
+    sprintf(
+      '
+    %s = (pkgs.%s.buildPythonPackage {
+      pname = "%s";
+      version = "%s-git";
+      src = builtins.fetchGit {
+        url = "%s";
+        rev = "%s";
+      };
+      pyproject = true;
+      build-system = [ pkgs.%s.setuptools ];
+      doCheck = false;
+      %s
+    });
+',
+      pkg_attr,
+      py_ver_attr,
+      package_name,
+      substring(commit, 1, 7),
+      repo_url,
+      commit,
+      py_ver_attr,
+      sprintf(propagated_inputs, py_ver_attr)
+    )
+  } else {
+    # For public repos, use pkgs.fetchgit with sha256
+    sprintf(
+      '
     %s = (pkgs.%s.buildPythonPackage {
       pname = "%s";
       version = "%s-git";
@@ -931,16 +1058,17 @@ fetch_py_git <- function(git_pkg, py_ver_attr, ...) {
       %s
     });
 ',
-    pkg_attr,
-    py_ver_attr,
-    package_name,
-    substring(commit, 1, 7),
-    repo_url,
-    commit,
-    sri_hash,
-    py_ver_attr,
-    sprintf(propagated_inputs, py_ver_attr)
-  )
+      pkg_attr,
+      py_ver_attr,
+      package_name,
+      substring(commit, 1, 7),
+      repo_url,
+      commit,
+      sri_hash,
+      py_ver_attr,
+      sprintf(propagated_inputs, py_ver_attr)
+    )
+  }
 }
 
 #' fetch_py_gits
