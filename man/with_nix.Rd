@@ -2,7 +2,7 @@
 % Please edit documentation in R/with_nix.R
 \name{with_nix}
 \alias{with_nix}
-\title{Evaluate function in R or shell command via \code{nix-shell} environment}
+\title{Evaluate Function in R or Shell Command via \code{nix-shell} Environment}
 \usage{
 with_nix(
   expr,

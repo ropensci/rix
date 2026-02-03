@@ -2,7 +2,7 @@
 % Please edit documentation in R/rix_init.R
 \name{rix_init}
 \alias{rix_init}
-\title{Initiate and Maintain an Isolated, Project-Specific, and Runtime-Pure R
+\title{Initiate and maintain an isolated, project-specific, and runtime-pure R
 setup via Nix.}
 \usage{
 rix_init(
@@ -114,6 +114,7 @@ rix_init(
 \code{\link[=with_nix]{with_nix()}}
 
 Other core functions: 
+\code{\link{flake}()},
 \code{\link{rix}()}
 }
 \concept{core functions}
