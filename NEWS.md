@@ -1,5 +1,18 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix (development version)
+
+## New features
+
+- `rix()`: Added support for private Git repositories via new `private` parameter
+  in `git_pkgs`. When `private = TRUE`, packages are fetched using SSH
+  authentication with `builtins.fetchGit`. Requires SSH URLs (e.g., 
+  `git@github.com:org/repo.git`). See `vignette("installing-r-packages")` for
+  details. Note that this has tradeoffs (works with SSH keys but not cacheable
+  in binary caches).
+- Added GITHUB_PAT authentication support for downloading private repository
+  archives during hash calculation.
+
 # rix 0.18.1 (2026-01-25)
 
 - `rix()`: It is now possible to install Python packages from PyPI and Git (e.g. GitHub).
