@@ -8,13 +8,13 @@ create_git_repo <- function(path) {
 }
 
 test_that("all templates are accessible", {
-  templates <- list_templates()
+  templates <- flake_templates()
   expect_equal(length(templates), 6)
   expect_setequal(templates, c("minimal", "radian", "rstudio", "vscode", "positron", "docker"))
 })
 
 test_that("all templates contain required placeholder patterns", {
-  templates <- list_templates()
+  templates <- flake_templates()
 
   for (template in templates) {
     template_file <- system.file(
@@ -144,7 +144,7 @@ test_that("generated flakes are valid Nix syntax", {
   skip_if_not(nix_shell_available())
   skip_on_cran()
 
-  templates <- list_templates()
+  templates <- flake_templates()
 
   for (template in templates) {
     tmpdir <- tempdir()
@@ -154,7 +154,7 @@ test_that("generated flakes are valid Nix syntax", {
 
     # Generate flake with this template
     suppressMessages(
-      init_flake(
+      flake(
         r_ver = "4.3.1",
         r_pkgs = "dplyr",
         template = template,
@@ -196,7 +196,7 @@ test_that("generated .rixpackages.nix are valid Nix syntax", {
   on.exit(unlink(test_dir, recursive = TRUE, force = TRUE), add = TRUE)
 
   suppressMessages(
-    init_flake(
+    flake(
       r_ver = "4.3.1",
       r_pkgs = c("dplyr", "ggplot2", "quarto"),
       system_pkgs = c("pandoc", "nix"),
@@ -234,7 +234,7 @@ test_that("docker template generates buildable container", {
   on.exit(unlink(test_dir, recursive = TRUE, force = TRUE), add = TRUE)
 
   suppressMessages(
-    init_flake(
+    flake(
       r_ver = "4.3.1",
       r_pkgs = c("dplyr"),
       template = "docker",
@@ -267,7 +267,7 @@ test_that("templates handle wrapped packages correctly", {
   on.exit(unlink(test_dir, recursive = TRUE, force = TRUE), add = TRUE)
 
   suppressMessages(
-    init_flake(
+    flake(
       r_ver = "4.3.1",
       r_pkgs = c("dplyr", "ggplot2"),
       template = "radian",
@@ -300,7 +300,7 @@ test_that("templates handle empty package lists gracefully", {
 
   # Create with no R packages
   suppressMessages(
-    init_flake(
+    flake(
       r_ver = "4.3.1",
       template = "minimal",
       project_path = test_dir,
@@ -320,7 +320,7 @@ test_that("templates handle empty package lists gracefully", {
 })
 
 test_that("templates are consistent in structure", {
-  templates <- list_templates()
+  templates <- flake_templates()
 
   for (template in templates) {
     template_file <- system.file("flake_templates", template, "flake.nix", package = "rix")
