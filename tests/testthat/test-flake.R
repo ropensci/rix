@@ -74,34 +74,6 @@ test_that("flake minimal template snapshot", {
   )
 })
 
-test_that("flake radian template snapshot", {
-  skip_if_not(nix_shell_available())
-  skip_on_cran()
-
-  tmpdir <- tempdir()
-  test_dir <- file.path(tmpdir, "radian_test")
-  dir.create(test_dir)
-  create_git_repo(test_dir)
-
-  on.exit(unlink(test_dir, recursive = TRUE, force = TRUE), add = TRUE)
-
-  suppressMessages(
-    flake(
-      r_ver = "4.3.1",
-      r_pkgs = c("data.table", "janitor"),
-      template = "radian",
-      project_path = test_dir,
-      message_type = "quiet",
-      git_tracking = FALSE
-    )
-  )
-
-  expect_snapshot_file(
-    file.path(test_dir, "flake.nix"),
-    name = "radian_flake.nix"
-  )
-})
-
 test_that("flake docker template snapshot", {
   skip_if_not(nix_shell_available())
   skip_on_cran()
@@ -127,90 +99,6 @@ test_that("flake docker template snapshot", {
   expect_snapshot_file(
     file.path(test_dir, "flake.nix"),
     name = "docker_flake.nix"
-  )
-})
-
-test_that("flake rstudio template snapshot", {
-  skip_if_not(nix_shell_available())
-  skip_on_cran()
-
-  tmpdir <- tempdir()
-  test_dir <- file.path(tmpdir, "rstudio_test")
-  dir.create(test_dir)
-  create_git_repo(test_dir)
-
-  on.exit(unlink(test_dir, recursive = TRUE, force = TRUE), add = TRUE)
-
-  suppressMessages(
-    flake(
-      r_ver = "4.3.1",
-      r_pkgs = c("dplyr", "shiny"),
-      template = "rstudio",
-      project_path = test_dir,
-      message_type = "quiet",
-      git_tracking = FALSE
-    )
-  )
-
-  expect_snapshot_file(
-    file.path(test_dir, "flake.nix"),
-    name = "rstudio_flake.nix"
-  )
-})
-
-test_that("flake vscode template snapshot", {
-  skip_if_not(nix_shell_available())
-  skip_on_cran()
-
-  tmpdir <- tempdir()
-  test_dir <- file.path(tmpdir, "vscode_test")
-  dir.create(test_dir)
-  create_git_repo(test_dir)
-
-  on.exit(unlink(test_dir, recursive = TRUE, force = TRUE), add = TRUE)
-
-  suppressMessages(
-    flake(
-      r_ver = "4.3.1",
-      r_pkgs = c("dplyr", "devtools"),
-      template = "vscode",
-      project_path = test_dir,
-      message_type = "quiet",
-      git_tracking = FALSE
-    )
-  )
-
-  expect_snapshot_file(
-    file.path(test_dir, "flake.nix"),
-    name = "vscode_flake.nix"
-  )
-})
-
-test_that("flake positron template snapshot", {
-  skip_if_not(nix_shell_available())
-  skip_on_cran()
-
-  tmpdir <- tempdir()
-  test_dir <- file.path(tmpdir, "positron_test")
-  dir.create(test_dir)
-  create_git_repo(test_dir)
-
-  on.exit(unlink(test_dir, recursive = TRUE, force = TRUE), add = TRUE)
-
-  suppressMessages(
-    flake(
-      r_ver = "4.3.1",
-      r_pkgs = c("dplyr", "tidyverse"),
-      template = "positron",
-      project_path = test_dir,
-      message_type = "quiet",
-      git_tracking = FALSE
-    )
-  )
-
-  expect_snapshot_file(
-    file.path(test_dir, "flake.nix"),
-    name = "positron_flake.nix"
   )
 })
 

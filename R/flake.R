@@ -13,13 +13,12 @@
 #' integration with the modern Nix ecosystem.
 #'
 #' @inheritParams rix
-#' @param template Character, the flake template to use. One of:
-#'   - `"minimal"`: Basic R environment (default)
-#'   - `"radian"`: Interactive REPL with radian
-#'   - `"rstudio"`: RStudio IDE integration
-#'   - `"vscode"`: VS Code/Codium with language server
-#'   - `"positron"`: Positron IDE
-#'   - `"docker"`: Includes OCI container generation
+  #' @param template Character, the flake template to use. One of:
+  #'   - `"minimal"`: Basic R environment (default)
+  #'   - `"docker"`: OCI container generation
+  #' 
+  #' Additional templates (radian, rstudio, vscode, positron) are planned for
+  #' future releases.
 #' @param git_tracking Logical, defaults to `TRUE`. If `TRUE`, warn if
 #'   the generated `.rixpackages.nix` is not tracked by git (required for flakes).
 #' @return Invisibly returns the path to the generated `flake.nix` file.
@@ -33,15 +32,6 @@
 #' flake(
 #'   r_ver = "4.3.1",
 #'   r_pkgs = c("dplyr", "ggplot2"),
-#'   project_path = "."
-#' )
-#'
-#' # Initialize a flake with radian for interactive use
-#' flake(
-#'   r_ver = "4.3.1",
-#'   r_pkgs = c("dplyr", "ggplot2"),
-#'   system_pkgs = c("pandoc"),
-#'   template = "radian",
 #'   project_path = "."
 #' )
 #'
@@ -75,7 +65,7 @@ flake <- function(
   message_type <- match.arg(message_type, choices = c("quiet", "simple", "verbose"))
 
   # Validate template
-  valid_templates <- c("minimal", "radian", "rstudio", "vscode", "positron", "docker")
+  valid_templates <- c("minimal", "docker")
   if (!(template %in% valid_templates)) {
     stop(
       "Invalid template '", template, "'. Choose one of: ",

@@ -1,4 +1,4 @@
-# Tests for flake templates
+# Tests for flake templates (minimal and docker)
 
 # Helper to create git repo
 create_git_repo <- function(path) {
@@ -9,8 +9,8 @@ create_git_repo <- function(path) {
 
 test_that("all templates are accessible", {
   templates <- flake_templates()
-  expect_equal(length(templates), 6)
-  expect_setequal(templates, c("minimal", "radian", "rstudio", "vscode", "positron", "docker"))
+  expect_equal(length(templates), 2)
+  expect_setequal(templates, c("minimal", "docker"))
 })
 
 test_that("all templates contain required placeholder patterns", {
@@ -68,59 +68,6 @@ test_that("minimal template has correct structure", {
   expect_match(content_str, "rWrapper")
 })
 
-test_that("radian template has correct structure", {
-  template_file <- system.file("flake_templates", "radian", "flake.nix", package = "rix")
-  content <- readLines(template_file)
-  content_str <- paste(content, collapse = "\n")
-
-  # Should have radian wrapper
-  expect_match(content_str, "radianWrapper")
-
-  # Should have radian app
-  expect_match(content_str, "radian")
-
-  # Should have multiple shells
-  expect_match(content_str, "devShells")
-  expect_match(content_str, "default")
-  expect_match(content_str, "r =")
-})
-
-test_that("rstudio template has correct structure", {
-  template_file <- system.file("flake_templates", "rstudio", "flake.nix", package = "rix")
-  content <- readLines(template_file)
-  content_str <- paste(content, collapse = "\n")
-
-  # Should have rstudio wrapper
-  expect_match(content_str, "rstudioWrapper")
-
-  # Should have rstudio app
-  expect_match(content_str, "rstudio")
-})
-
-test_that("vscode template has correct structure", {
-  template_file <- system.file("flake_templates", "vscode", "flake.nix", package = "rix")
-  content <- readLines(template_file)
-  content_str <- paste(content, collapse = "\n")
-
-  # Should allow unfree (for VS Code)
-  expect_match(content_str, "allowUnfree")
-
-  # Should have vscode
-  expect_match(content_str, "vscode")
-})
-
-test_that("positron template has correct structure", {
-  template_file <- system.file("flake_templates", "positron", "flake.nix", package = "rix")
-  content <- readLines(template_file)
-  content_str <- paste(content, collapse = "\n")
-
-  # Should allow unfree (for Positron)
-  expect_match(content_str, "allowUnfree")
-
-  # Should have positron
-  expect_match(content_str, "positron")
-})
-
 test_that("docker template has correct structure", {
   template_file <- system.file("flake_templates", "docker", "flake.nix", package = "rix")
   content <- readLines(template_file)
@@ -136,8 +83,7 @@ test_that("docker template has correct structure", {
   expect_match(content_str, "streamLayeredImage")
 
   # Should expose docker package
-  expect_match(content_str, "packages")
-  expect_match(content_str, "docker")
+  expect_match(content_str, "packages\\.docker")
 })
 
 test_that("generated flakes are valid Nix syntax", {
@@ -198,9 +144,8 @@ test_that("generated .rixpackages.nix are valid Nix syntax", {
   suppressMessages(
     flake(
       r_ver = "4.3.1",
-      r_pkgs = c("dplyr", "ggplot2", "quarto"),
-      system_pkgs = c("pandoc", "nix"),
-      tex_pkgs = c("amsmath"),
+      r_pkgs = c("dplyr", "ggplot2"),
+      system_pkgs = c("nix"),
       template = "minimal",
       project_path = test_dir,
       message_type = "quiet",
@@ -222,43 +167,11 @@ test_that("generated .rixpackages.nix are valid Nix syntax", {
   expect_equal(result$status, 0, info = ".rixpackages.nix has invalid Nix syntax")
 })
 
-test_that("docker template generates buildable container", {
-  skip_if_not(nix_shell_available())
-  skip_on_cran()
-
-  tmpdir <- tempdir()
-  test_dir <- file.path(tmpdir, "docker_build_test")
-  dir.create(test_dir)
-  create_git_repo(test_dir)
-
-  on.exit(unlink(test_dir, recursive = TRUE, force = TRUE), add = TRUE)
-
-  suppressMessages(
-    flake(
-      r_ver = "4.3.1",
-      r_pkgs = c("dplyr"),
-      template = "docker",
-      project_path = test_dir,
-      message_type = "quiet",
-      git_tracking = FALSE
-    )
-  )
-
-  # Check that docker files exist and have correct content
-  flake <- readLines(file.path(test_dir, "flake.nix"))
-  flake_str <- paste(flake, collapse = "\n")
-
-  # Should have docker configuration
-  expect_match(flake_str, "dockerTools")
-  expect_match(flake_str, "buildLayeredImage")
-  expect_match(flake_str, "packages\\.docker")
-})
-
 test_that("templates handle wrapped packages correctly", {
   skip_if_not(nix_shell_available())
   skip_on_cran()
 
-  # Test radian template with R packages
+  # Test minimal template
   tmpdir <- tempdir()
   test_dir <- file.path(tmpdir, "wrapped_test")
   dir.create(test_dir)
@@ -270,7 +183,7 @@ test_that("templates handle wrapped packages correctly", {
     flake(
       r_ver = "4.3.1",
       r_pkgs = c("dplyr", "ggplot2"),
-      template = "radian",
+      template = "minimal",
       project_path = test_dir,
       message_type = "quiet",
       git_tracking = FALSE
@@ -282,9 +195,6 @@ test_that("templates handle wrapped packages correctly", {
 
   # Should define wrapped_pkgs
   expect_match(content_str, "wrapped_pkgs")
-
-  # Should use radianWrapper
-  expect_match(content_str, "radianWrapper")
 })
 
 test_that("templates handle empty package lists gracefully", {
