@@ -361,59 +361,37 @@ for more details."
 
   rix_call <- match.call()
 
-  # Get the two lists. One list is current CRAN packages
-  # the other is archived CRAN packages.
-  cran_pkgs <- get_rpkgs(r_pkgs, ide)
+  # Generate structured package data (refactored for reusability)
+  pkg_data <- generate_packages_data(
+    r_ver = r_ver,
+    date = date,
+    r_pkgs = r_pkgs,
+    system_pkgs = system_pkgs,
+    git_pkgs = git_pkgs,
+    local_r_pkgs = local_r_pkgs,
+    tex_pkgs = tex_pkgs,
+    py_conf = py_conf,
+    jl_conf = jl_conf,
+    ide = ide,
+    ignore_remotes_cache = ignore_remotes_cache
+  )
 
-  # If there are R packages, passes the string "rpkgs" to buildInputs
-  flag_rpkgs <- if (is.null(cran_pkgs$rPackages) || cran_pkgs$rPackages == "") {
-    ""
-  } else {
-    "rpkgs"
-  }
+  # For backward compatibility, extract the flags from pkg_data
+  flag_rpkgs <- pkg_data$flags$rpkgs
+  flag_tex_pkgs <- pkg_data$flags$tex
+  flag_git_archive <- pkg_data$flags$git_archive
+  flag_local_r_pkgs <- pkg_data$flags$local
+  flag_py_conf <- pkg_data$flags$py
+  flag_jl_conf <- pkg_data$flags$jl
+  flag_wrapper <- pkg_data$flags$wrapper
 
-  # If there are LaTeX packages, passes the string "tex" to buildInputs
-  flag_tex_pkgs <- if (is.null(tex_pkgs)) {
-    ""
-  } else {
-    "tex"
-  }
+  # Get the CRAN packages list for reticulate warning
+  cran_pkgs <- list(
+    rPackages = pkg_data$cran_pkgs$rPackages,
+    archive_pkgs = pkg_data$cran_pkgs$archive_pkgs
+  )
 
-  # If there are R packages from Git, passes the string "git_archive_pkgs" to buildInputs
-  flag_git_archive <- if (
-    !is.null(git_pkgs) || !is.null(cran_pkgs$archive_pkgs)
-  ) {
-    # If git_pkgs is a list of lists, then vapply will succeed
-    # if not, then we can access "package_name" directly
-    git_pkgs_names <- if (!is.null(git_pkgs)) {
-      tryCatch(
-        vapply(git_pkgs, function(x) x$package_name, character(1)),
-        error = function(e) git_pkgs$package_name
-      )
-    }
-    # CRAN archive pkgs are written as "AER@123"
-    # so we need to split at the '@' character and then
-    # walk through the list to grab the first element
-    # which will be the name of the package
-    cran_archive_names <- if (!is.null(cran_pkgs$archive_pkgs)) {
-      pkgs <- strsplit(cran_pkgs$archive_pkgs, split = "@")
-      vapply(pkgs, function(x) x[[1]], character(1))
-    }
-
-    paste0(c(git_pkgs_names, cran_archive_names), collapse = " ")
-  } else {
-    ""
-  }
-
-  # If there are local R packages, passes the string "local_r_pkgs" to buildInputs
-  flag_local_r_pkgs <- if (is.null(local_r_pkgs)) {
-    ""
-  } else {
-    "local_r_pkgs"
-  }
-
-  # If there are Python packages, passes the string "pyconf" to buildInputs
-
+  # Check for reticulate warning
   if (!is.null(py_conf)) {
     if (
       !any(grepl("reticulate", c(cran_pkgs$rPackages, cran_pkgs$archive_pkgs)))
@@ -423,27 +401,10 @@ for more details."
         "If you want to handle Python objects from your R session, consider adding 'reticulate' to the list of R packages."
       )
     }
-    flag_py_conf <- "pyconf"
-  } else {
-    flag_py_conf <- ""
-  }
-
-  if (!is.null(jl_conf)) {
-    flag_jl_conf <- "jlconf"
-  } else {
-    flag_jl_conf <- ""
-  }
-
-  # If there are wrapped packages (for example for RStudio), passes the "wrapped_pkgs"
-  # to buildInputs
-  flag_wrapper <- if (ide %in% names(attrib) && flag_rpkgs != "") {
-    "wrapped_pkgs"
-  } else {
-    ""
   }
 
   # shell_hook is now processed in generate_shell along with Python-specific hooks
-  shell_hook <- if (!is.null(shell_hook) && nzchar(shell_hook)) {
+  shell_hook_str <- if (!is.null(shell_hook) && nzchar(shell_hook)) {
     shell_hook
   } else {
     ""
@@ -451,15 +412,15 @@ for more details."
 
   default.nix <- paste(
     generate_header(
-      nix_repo,
-      r_ver,
+      pkg_data$nix_repo,
+      pkg_data$r_ver,
       rix_call,
       ide
     ),
-    generate_rpkgs(cran_pkgs$rPackages, flag_rpkgs),
+    generate_rpkgs(pkg_data$cran_pkgs$rPackages, flag_rpkgs),
     generate_git_archived_pkgs(
-      git_pkgs,
-      cran_pkgs$archive_pkgs,
+      pkg_data$git_pkgs,
+      pkg_data$cran_pkgs$archive_pkgs,
       flag_git_archive,
       ignore_remotes_cache = ignore_remotes_cache
     ),
@@ -484,7 +445,7 @@ for more details."
       flag_jl_conf,
       flag_local_r_pkgs,
       flag_wrapper,
-      shell_hook,
+      shell_hook_str,
       system_pkgs
     ),
     generate_inherit(),
