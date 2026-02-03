@@ -1,0 +1,391 @@
+---
+title: "Using Nix Flakes with rix"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using Nix Flakes with rix}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r, include=FALSE}
+library(rix)
+```
+
+## Introduction
+
+**This vignette explains an experimental feature.** While the `rix()` function
+generates a `default.nix` file that works with traditional Nix workflows, the
+new `flake()` function generates a modern **Nix flake** configuration.
+Flakes provide additional features like lock files for exact reproducibility,
+multiple development shells, and better integration with CI/CD pipelines.
+
+**Important:** Flakes are still considered experimental by the Nix community.
+The traditional `rix()` workflow remains the recommended approach for most
+users. Use flakes if you need their specific advantages or want to explore
+modern Nix tooling.
+
+## What are Nix Flakes and why use them?
+
+Nix flakes are a modern way to define Nix configurations. They solve several
+problems that the traditional approach doesn't address:
+
+- **Exact reproducibility**: Flakes generate a `flake.lock` file that pins
+every dependency (including transitive dependencies) to exact versions. This
+ensures that the same environment is reproduced bit-for-bit across different
+machines and time.
+
+- **Multiple shells**: A single flake can define multiple development
+environments. For example, you can have separate shells for development,
+testing, and production deployment.
+
+- **Better composability**: Flakes can easily import and compose other flakes,
+making it simpler to share common configurations across projects.
+
+- **Modern commands**: Use `nix develop` instead of `nix-shell`, and `nix build`
+instead of `nix-build`.
+
+- **CI/CD friendly**: Flakes work seamlessly with GitHub Actions and other CI
+systems.
+
+## Your first flake with rix
+
+Creating a flake with rix is similar to using `rix()`. The main difference is
+that you call `flake()` instead:
+
+```{r, eval = FALSE}
+flake(
+  r_ver = "4.3.1",
+  r_pkgs = c("dplyr", "ggplot2"),
+  template = "minimal",
+  project_path = "."
+)
+```
+
+This creates three files:
+
+1. **flake.nix**: The main flake configuration that defines inputs (like
+   nixpkgs) and outputs (development shells, packages, etc.)
+
+2. **.rixpackages.nix**: A separate file containing your package definitions.
+   This separation allows the flake to import your packages while keeping the
+   main flake configuration clean.
+
+3. **flake.lock**: A lock file that pins all dependencies to exact versions.
+   This file should be committed to version control.
+
+**Important:** Flakes require a git repository. If your project isn't
+initialized with git yet, you'll see a warning. Initialize git first:
+
+```sh
+git init
+git add flake.nix .rixpackages.nix flake.lock
+git commit -m "Add Nix flake"
+```
+
+## Available templates
+
+`flake()` supports the following templates for different use cases:
+
+| Template | Use case | Key features |
+|----------|----------|--------------|
+| `minimal` | Basic R development | Clean, simple setup |
+| `docker` | Containerization | Build OCI containers |
+
+Additional templates for specific IDEs and editors (radian, rstudio, vscode) are
+planned for future releases.
+
+## Working with templates
+
+### Minimal template
+
+The minimal template is perfect for most use cases:
+
+```{r, eval = FALSE}
+flake(
+  r_ver = "4.3.1",
+  r_pkgs = c("dplyr", "ggplot2"),
+  template = "minimal",
+  project_path = "."
+)
+```
+
+After generating the flake, enter the environment:
+
+```sh
+nix develop
+```
+
+This drops you into a shell with R and your packages available.
+
+### Docker template
+
+To build container images for deployment:
+
+```{r, eval = FALSE}
+flake(
+  r_ver = "4.3.1",
+  r_pkgs = c("plumber", "dplyr"),
+  template = "docker",
+  project_path = "."
+)
+```
+
+Build the container:
+
+```sh
+nix build .#docker
+# Creates result directory with container tarball
+```
+
+## Flakes vs traditional default.nix
+
+Both approaches have their place. Here's a comparison:
+
+```{=html}
+<table border="1">
+  <thead>
+    <tr>
+      <th>Feature</th>
+      <th>rix() (default.nix)</th>
+      <th>flake() (flake.nix)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Lock file</td>
+      <td>❌ No</td>
+      <td>✅ Yes (flake.lock)</td>
+    </tr>
+    <tr>
+      <td>Multiple shells</td>
+      <td>❌ Single</td>
+      <td>✅ Multiple dev shells</td>
+    </tr>
+    <tr>
+      <td>Git requirement</td>
+      <td>❌ Optional</td>
+      <td>✅ Required (files must be tracked)</td>
+    </tr>
+    <tr>
+      <td>Nix command</td>
+      <td>❌ nix-shell</td>
+      <td>✅ nix develop</td>
+    </tr>
+    <tr>
+      <td>Build command</td>
+      <td>❌ nix-build</td>
+      <td>✅ nix build</td>
+    </tr>
+    <tr>
+      <td>Stability</td>
+      <td>✅ Stable, well-tested</td>
+      <td>⚠️ Experimental in Nix ecosystem</td>
+    </tr>
+    <tr>
+      <td>Learning curve</td>
+      <td>⭐ Easier</td>
+      <td>⭐⭐ More concepts to learn</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+**Recommendation:**
+
+- Use `rix()` (default.nix) if you're new to Nix, working alone, or want the
+  most stable workflow.
+
+- Use `flake()` (flake.nix) if you need exact reproducibility with lock
+  files, want multiple development shells, or are working in a team with
+  sophisticated CI/CD needs.
+
+## Updating and maintaining flakes
+
+### Updating dependencies
+
+To update all flake inputs (including nixpkgs) to their latest versions:
+
+```r
+flake_update()
+```
+
+Or from the command line:
+
+```sh
+nix flake update
+```
+
+This updates `flake.lock` with new versions. Review the changes and commit the
+updated lock file.
+
+### Validating the flake
+
+Check that your flake is valid:
+
+```r
+flake_check()
+```
+
+This validates the Nix syntax and ensures all dependencies can be resolved.
+
+### Viewing flake metadata
+
+See information about your flake:
+
+```r
+flake_metadata()
+```
+
+## Important: Flakes and git
+
+**Flakes require git.** The Nix flake system only sees files that are tracked
+by git. This is a security feature but can be confusing at first.
+
+If you see errors like "path ... is not in the Nix store" or files aren't being
+found, ensure:
+
+1. Git is initialized: `git init`
+2. Files are added: `git add flake.nix .rixpackages.nix`
+3. Changes are committed: `git commit -m "Add flake"`
+
+**The .rixpackages.nix file:** This file is separate from `flake.nix` because
+flakes import it. This separation allows you to:
+- Keep package definitions clean and reusable
+- Regenerate packages without changing the flake structure
+- Share package lists between different flake configurations
+
+## Advanced usage
+
+### Shell hooks
+
+Add custom commands that run when entering the shell:
+
+```{r, eval = FALSE}
+flake(
+  r_ver = "4.3.1",
+  r_pkgs = "dplyr",
+  template = "minimal",
+  shell_hook = "echo 'Welcome to your R environment!'",
+  project_path = "."
+)
+```
+
+### System packages
+
+Just like with `rix()`, add system tools:
+
+```{r, eval = FALSE}
+flake(
+  r_ver = "4.3.1",
+  r_pkgs = "quarto",
+  system_pkgs = c("quarto", "pandoc", "git"),
+  template = "minimal",
+  project_path = "."
+)
+```
+
+See `vignette("installing-system-tools")` for more on available system packages.
+
+### Python and Julia
+
+Flakes support the same Python and Julia configurations as `rix()`:
+
+```{r, eval = FALSE}
+flake(
+  r_ver = "4.3.1",
+  r_pkgs = "reticulate",
+  py_conf = list(
+    py_version = "3.12",
+    py_pkgs = c("numpy", "pandas")
+  ),
+  template = "minimal",
+  project_path = "."
+)
+```
+
+## Using both approaches
+
+You can use both `rix()` and `flake()` in the same project during
+transition or for different purposes:
+
+```sh
+# Traditional approach
+rix(r_ver = "4.3.1", r_pkgs = "dplyr")
+nix-shell  # Enters traditional shell
+
+# Modern approach
+flake(r_ver = "4.3.1", r_pkgs = "dplyr")
+nix develop  # Enters flake shell
+```
+
+Both files (`default.nix` and `flake.nix`) can coexist. This allows you to:
+- Try flakes while maintaining your working default.nix setup
+- Use different approaches for local development vs CI/CD
+- Gradually migrate team members to the new workflow
+
+## Common issues
+
+### "error: getting status of ...: No such file or directory"
+
+The file isn't tracked by git. Run:
+
+```sh
+git add flake.nix .rixpackages.nix
+git commit -m "Track flake files"
+```
+
+### "error: cannot write flake.lock"
+
+Ensure you're in a git repository with commits:
+
+```sh
+git init
+git add .
+git commit -m "Initial commit"
+```
+
+### Lock file merge conflicts
+
+`flake.lock` can have merge conflicts like `package-lock.json`. Resolve by:
+
+```sh
+# Accept theirs
+nix flake update
+
+# Or regenerate
+rm flake.lock
+nix flake update
+```
+
+## Summary
+
+Nix flakes provide a modern, powerful way to define reproducible environments
+with exact dependency pinning through lock files. The `flake()` function
+brings these capabilities to rix while maintaining a familiar interface.
+
+**When to use flakes:**
+- You need exact reproducibility with lock files
+- You want multiple development shells
+- You're working in a team with CI/CD needs
+- You want to explore modern Nix features
+
+**When to stick with default.nix:**
+- You're new to Nix
+- You want maximum stability
+- You have simple, single-user workflows
+
+Both approaches are fully supported by rix, and you can migrate gradually or
+use both side-by-side as needed.
+
+For more information on specific topics:
+- `vignette("getting-started")` - Introduction to rix
+- `vignette("bleeding-edge")` - Using bleeding-edge packages
+- `vignette("installing-system-tools")` - Adding system packages
+- `vignette("developing-packages")` - Package development workflows

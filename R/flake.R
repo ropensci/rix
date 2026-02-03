@@ -16,9 +16,8 @@
   #' @param template Character, the flake template to use. One of:
   #'   - `"minimal"`: Basic R environment (default)
   #'   - `"docker"`: OCI container generation
-  #' 
-  #' Additional templates (radian, rstudio, vscode, positron) are planned for
-  #' future releases.
+  #'   - Additional templates (radian, rstudio, vscode) are planned for
+  #'     future releases.
 #' @param git_tracking Logical, defaults to `TRUE`. If `TRUE`, warn if
 #'   the generated `.rixpackages.nix` is not tracked by git (required for flakes).
 #' @return Invisibly returns the path to the generated `flake.nix` file.
@@ -171,7 +170,7 @@ flake <- function(
     tracked <- is_file_tracked(packages_path, project_path)
     if (!tracked && message_type != "quiet") {
       message(
-        "\n⚠ .rixpackages.nix is not tracked by git.\n",
+        "\nNOTE: .rixpackages.nix is not tracked by git.\n",
         "Flakes require all files to be tracked. Run:\n",
         "  git add .rixpackages.nix flake.nix\n",
         "  git commit -m 'Add Nix flake'"
@@ -197,7 +196,7 @@ flake <- function(
 
     if (result$status != 0 && message_type != "quiet") {
       message(
-        "\n⚠ Failed to generate flake.lock. Run manually:\n",
+        "\nWARNING: Failed to generate flake.lock. Run manually:\n",
         "  nix flake update"
       )
     }
@@ -206,7 +205,7 @@ flake <- function(
   # Success message
   if (message_type != "quiet") {
     message(
-      "\n✓ Successfully generated flake.nix in ", project_path, "\n",
+      "\nSuccessfully generated flake.nix in ", project_path, "\n",
       "\nNext steps:\n",
       "  1. Review flake.nix and customize if needed\n",
       "  2. Run: git add .rixpackages.nix flake.nix flake.lock\n",
@@ -326,8 +325,9 @@ customize_flake_template <- function(template_lines, pkg_data, template) {
 #' @description
 #' Lists all available flake templates that can be used with `flake()`.
 #'
-#' @return Character vector of available template names.
+  #' @return Character vector of available template names.
 #' @export
+#' @family flake helpers
 #' @examples
 #' flake_templates()
 flake_templates <- function() {
@@ -404,9 +404,9 @@ flake_update <- function(
 
   if (message_type != "quiet") {
     if (result$status == 0) {
-      message("✓ Flake lock file updated successfully")
+      message("SUCCESS: Flake lock file updated successfully")
     } else {
-      message("✗ Failed to update flake lock file")
+      message("ERROR: Failed to update flake lock file")
       if (!is.null(result$stderr)) {
         message("Error: ", rawToChar(result$stderr))
       }
@@ -480,9 +480,9 @@ flake_check <- function(
 
   if (message_type != "quiet") {
     if (success) {
-      message("✓ Flake check passed")
+      message("PASS: Flake check passed")
     } else {
-      message("✗ Flake check failed")
+      message("FAIL: Flake check failed")
       if (!is.null(result$stderr)) {
         stderr_text <- rawToChar(result$stderr)
         message("Error output:\n", stderr_text)
