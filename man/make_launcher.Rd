@@ -2,7 +2,7 @@
 % Please edit documentation in R/make_launcher.R
 \name{make_launcher}
 \alias{make_launcher}
-\title{Create a startup script to launch an editor inside of a Nix shell}
+\title{Create a Startup Script to Launch an Editor Inside a Nix Shell}
 \usage{
 make_launcher(editor, project_path)
 }
@@ -18,7 +18,7 @@ be created.}
 Nothing, writes a script.
 }
 \description{
-Create a startup script to launch an editor inside of a Nix shell
+Create a Startup Script to Launch an Editor Inside a Nix Shell
 }
 \details{
 This function will write a launcher to start an IDE inside of a

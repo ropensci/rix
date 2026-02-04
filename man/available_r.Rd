@@ -2,7 +2,7 @@
 % Please edit documentation in R/available_r.R
 \name{available_r}
 \alias{available_r}
-\title{List available R versions from the rstats-on-nix fork of Nixpkgs}
+\title{List Available R Versions from the rstats-on-nix Fork of Nixpkgs}
 \usage{
 available_r()
 }
@@ -10,7 +10,7 @@ available_r()
 A character vector containing the available R versions.
 }
 \description{
-List available R versions from the rstats-on-nix fork of Nixpkgs
+List Available R Versions from the rstats-on-nix Fork of Nixpkgs
 }
 \examples{
 available_r()

@@ -2,7 +2,7 @@
 % Please edit documentation in R/available_r.R
 \name{available_df}
 \alias{available_df}
-\title{Return Data Frame With R, Bioc Versions and Supported Platforms}
+\title{Return Data Frame with R, Bioc Versions and Supported Platforms}
 \usage{
 available_df()
 }
@@ -20,7 +20,7 @@ or \code{"supported (Rstudio broken)"}
 }
 }
 \description{
-Return data frame with R, Bioc versions and supported platforms
+Return Data Frame with R, Bioc Versions and Supported Platforms
 }
 \examples{
 available_dates()
