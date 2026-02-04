@@ -28,7 +28,6 @@ let
   
   system_packages = builtins.attrValues {
     inherit (pkgs) 
-      aider-chat
       air-formatter
       glibcLocales
       glibcLocalesUtf8
