@@ -143,7 +143,7 @@
   #'   install packages from GitHub, GitLab, or other Git hosts, or from the CRAN
   #'   archives must provide a security hash for each package. `{rix}`
   #'   automatically precomputes this hash for the source directory of R packages
-  #'   from Git hosts or or from the CRAN archives, to make sure the expected trusted
+  #'   from Git hosts or from the CRAN archives, to make sure the expected trusted
   #'   sources that match the precomputed hashes in the `default.nix` are
   #'   downloaded, but only if Nix is installed. If you need to generate an
   #'   expression with such packages, but are working on a system where you can't
