@@ -351,6 +351,41 @@ developing, make sure to first build it using `devtools::build()` to build the
 `.tar.gz` archive, but if you can, consider uploading the source code to your
 package on GitHub and installing it from GitHub instead.
 
+## Installing packages from private repositories
+
+If you need to install a package from a private Git repository, you can use the
+`private` parameter in the `git_pkgs` list. When `private = TRUE`, the package
+will be fetched using `builtins.fetchGit` with SSH authentication instead of
+`pkgs.fetchgit`. This requires:
+
+1. An SSH URL (e.g., `git@github.com:user/repo.git`)
+2. SSH keys configured and available in your SSH agent
+3. The `private = TRUE` flag set explicitly
+
+Note that this approach has some tradeoffs compared to public repositories:
+
+- ✅ Works seamlessly with your SSH keys for private repositories
+- ❌ Cannot be cached in Nix binary caches (less reproducible)
+- ❌ Requires SSH keys to be available during evaluation
+- ❌ May not work in pure Nix evaluation mode or some CI/CD environments
+
+Here is an example:
+
+```{r, eval = F}
+rix(
+  r_ver = "4.4.1",
+  git_pkgs = list(
+    package_name = "myPrivatePkg",
+    repo_url = "git@github.com:myorg/private-repo.git",
+    commit = "abc123def456",
+    private = TRUE
+  ),
+  overwrite = TRUE
+)
+```
+
+A warning will be displayed explaining these tradeoffs when you run this code.
+
 ## Installing Python packages
 
 It is also possible to add Python packages to an environment, by passing a list
