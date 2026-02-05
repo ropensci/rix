@@ -65,7 +65,7 @@ fetchgit <- function(git_pkg, ...) {
 #' @param repo_url A character, Git repo url.
 #' @param commit A character, Git commit.
 #' @param sri_hash A character, hash of Git repo.
-#' @param imports A list of pcakages, can be empty list
+#' @param imports A list of packages, can be empty list
 #' @param remotes A list of remotes dependencies, can be empty list
 #' @param private Logical, if TRUE use builtins.fetchGit for private repos (uses SSH).
 #'   When TRUE, converts HTTPS URLs to SSH and skips sha256 hash requirement.
