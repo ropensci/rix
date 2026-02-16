@@ -68,7 +68,9 @@ fetchgit <- function(git_pkg, ...) {
 #' @param imports A list of packages, can be empty list
 #' @param remotes A list of remotes dependencies, can be empty list
 #' @param private Logical, if TRUE use builtins.fetchGit for private repos (uses SSH).
-#'   When TRUE, converts HTTPS URLs to SSH and skips sha256 hash requirement.
+#'   When TRUE, requires SSH repo URLs and uses them with builtins.fetchGit; SSH URLs
+#'   are temporarily converted to HTTPS only for hash calculation, while the Nix
+#'   expression continues to use the original SSH URL and skips the sha256 requirement.
 #' @return A character. Part of the Nix definition to download and build the R package
 #' from the CRAN archives.
 #' @noRd
