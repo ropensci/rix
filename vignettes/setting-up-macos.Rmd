@@ -28,30 +28,55 @@ instead.*
 When it comes to Nix, there are really only two supported operating systems:
 macOS and Linux distributions. Windows is "supported" because it is actually
 running Linux thanks to WSL2. In practice this means that Linux distributions
-and Windows can be considered one system, and macOS another, separate, system,
+and Windows can be considered one system, and macOS another, separate system,
 with its own idiosyncrasies. This vignette details these.
 
 Nix on macOS does not have full feature parity with Linux. Because macOS relies
 on proprietary system frameworks and Xcode’s SDKs, reproducibility cannot always
-be guaranteed. For example, many builds implicitly depend on the macOS SDK from
-Xcode; when Apple updates Xcode or the system frameworks, a pinned nixpkgs
-revision that used to build may stop working. This kind of “SDK drift” is not an
-issue on Linux, where Nix controls the full dependency graph.
+be guaranteed in the same way as on Linux. On Linux, nixpkgs controls the full
+toolchain stack (C library, compilers, linker, and most system dependencies).
+As a result, historical nixpkgs snapshots often continue to build successfully
+years later.
 
-In practice, this means an environment that worked on macOS may stop building
-after a system update or when using older pinned snapshots. We recommend
-committing the generated `default.nix` to version control and updating the
-pinned date if you encounter build failures.
+On macOS, however, many builds implicitly depend on the macOS SDK from Xcode
+as well as Apple’s dynamic loader (`dyld`). These components are provided by the
+operating system and change across macOS and Xcode updates. When Apple updates
+Xcode or system frameworks, a pinned nixpkgs revision that used to build may
+stop working — even if nothing in your project has changed. This kind of “SDK
+drift” is not an issue on Linux, where Nix controls the full dependency graph.
 
-As a mitigation, consider setting up your own private binary cache (e.g. with
-Cachix, using `ga_cachix()`). This allows you to reuse builds you know work on
-your system, avoiding repeated recompilation and insulating you somewhat from
-upstream cache gaps.
+In practice, this means:
+
+- An environment that worked on macOS may stop building after a system or
+  Xcode update.
+- Older pinned nixpkgs snapshots are more likely to fail on newer macOS
+  versions.
+- The same snapshot will often continue to work without issue on Linux.
+
+This is not a `{rix}` problem, nor something the nixpkgs maintainers can fully
+prevent. It is a structural limitation of the macOS platform and its reliance
+on proprietary system components.
+
+We recommend committing the generated `default.nix` to version control and, if
+you encounter build failures on macOS, first trying a more recent pinned date.
+As a mitigation, you may also consider setting up your own private binary cache
+(e.g. with Cachix, using `ga_cachix()`). This allows you to reuse builds you know
+work on your system, avoiding repeated recompilation and insulating you somewhat
+from upstream cache gaps.
+
+If you require long-term archival reproducibility across time (for example, to
+rebuild environments from several years ago and compare outputs), we strongly
+recommend building those historical nixpkgs snapshots on Linux — ideally inside
+a Docker container or a Linux virtual machine — rather than directly on macOS.
+Linux environments are significantly more stable over time because nixpkgs
+controls the entire toolchain and C library stack. Running inside Docker also
+isolates the environment from host system updates, providing much more reliable
+reproducibility when comparing results across time.
 
 These problems are less common with recent snapshots, as macOS support in Nix
 continues to improve. Still, if you need to work with older versions of R (or
 other software sensitive to system SDK changes), you should be aware of this
-limitation.
+limitation when working on macOS.
 
 ## Why rix *and* Nix?
 
