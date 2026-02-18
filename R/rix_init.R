@@ -1,5 +1,5 @@
 #' Initiate and Maintain an Isolated, Project-Specific, and Runtime-Pure R
-#' setup via Nix.
+#' Setup via Nix.
 #'
 #' Creates an isolated project folder for a Nix-R configuration.
 #' `rix::rix_init()` also adds, appends, or updates with or without backup a
