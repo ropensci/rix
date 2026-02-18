@@ -114,6 +114,7 @@ get_git_regex <- function(platform, url = NULL) {
 #' - `sri_hash`: string with SRI hash of the NAR serialization of a GitHub repo
 #'      at a given deterministic git commit ID (SHA-1)
 #' - `deps`: list with three elements: 'package', its 'imports' and its 'remotes'
+#' @importFrom curl new_handle handle_setheaders curl_fetch_disk
 #' @noRd
 hash_url <- function(
   url,
