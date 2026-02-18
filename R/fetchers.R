@@ -1063,7 +1063,11 @@ parse_pkg_name_version <- function(pkg_string) {
 #' @param repo A character, the repository name
 #' @param context A character, the context for the message
 #' @noRd
-check_github_pat <- function(h, repo, context = "fetching the commit date from GitHub") {
+check_github_pat <- function(
+  h,
+  repo,
+  context = "fetching the commit date from GitHub"
+) {
   token <- Sys.getenv("GITHUB_PAT")
   token_pattern <- "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$"
 
