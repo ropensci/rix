@@ -412,3 +412,18 @@ testthat::test_that("resolve_package_commit works with different input cases", {
   )
   testthat::expect_equal(result, "HEAD")
 })
+
+testthat::test_that("Private repos with HTTPS URL throw error", {
+  testthat::expect_error(
+    generate_git_nix_expression(
+      package_name = "testpkg",
+      repo_url = "https://github.com/user/repo",
+      commit = "abc123",
+      sri_hash = "sha256-test",
+      imports = "dplyr",
+      remotes = list(),
+      private = TRUE
+    ),
+    "Private repositories require SSH URLs"
+  )
+})
