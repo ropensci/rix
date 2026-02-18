@@ -7,7 +7,7 @@
   "codeRepository": "https://github.com/ropensci/rix",
   "issueTracker": "https://github.com/ropensci/rix/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.18.1",
+  "version": "0.18.2",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
@@ -182,7 +182,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "2187.654KB",
+  "fileSize": "2196.836KB",
   "relatedLink": ["https://docs.ropensci.org/rix/", "https://CRAN.R-project.org/package=rix"],
   "releaseNotes": "https://github.com/ropensci/rix/blob/main/NEWS.md",
   "readme": "https://github.com/ropensci/rix/blob/main/README.md",
