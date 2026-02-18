@@ -1,6 +1,6 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
-# rix (development version)
+# rix 0.18.2 (2026-02-18)
 
 ## New features
 
@@ -9,7 +9,8 @@
   authentication with `builtins.fetchGit`. Requires SSH URLs (e.g., 
   `git@github.com:org/repo.git`). See `vignette("installing-r-packages")` for
   details. Note that this has tradeoffs (works with SSH keys but not cacheable
-  in binary caches).
+  in binary caches). See https://github.com/ropensci/rix/pull/585 for more details.
+  Contribution by @brancengregory
 - Added GITHUB_PAT authentication support for downloading private repository
   archives during hash calculation.
 
