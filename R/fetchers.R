@@ -246,18 +246,7 @@ get_imports <- function(path, commit_date, ...) {
     # Process remotes - handle both short format (username/repo) and full URLs
     urls <- vapply(
       remotes,
-      function(remote) {
-        # Check if this is already a full URL
-        if (grepl("^https://", remote)) {
-          # Extract the URL without the @commit part
-          url_parts <- strsplit(remote, "@")[[1]]
-          return(url_parts[1])
-        } else {
-          # Short format like "username/repo" - assume GitHub
-          parts <- strsplit(remote, "@")[[1]]
-          return(paste0("https://github.com/", parts[1]))
-        }
-      },
+      normalize_git_url,
       character(1)
     )
 
@@ -620,20 +609,7 @@ get_commit_date <- function(
 
   # Only use GitHub token for GitHub
   if (platform == "github") {
-    token <- Sys.getenv("GITHUB_PAT")
-    token_pattern <- "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$"
-
-    if (grepl(token_pattern, token)) {
-      handle_setheaders(h, Authorization = paste("token", token))
-    } else {
-      message(
-        paste0(
-          "When fetching the commit date from GitHub from <<< ",
-          repo,
-          " >>>, no GitHub Personal Access Token found.\nPlease set GITHUB_PAT in your environment.\nFalling back to unauthenticated API request.\n"
-        )
-      )
-    }
+    check_github_pat(h, repo)
   }
 
   tryCatch(
@@ -694,20 +670,7 @@ download_all_commits <- function(repo, date) {
   base_url <- paste0("https://api.github.com/repos/", repo, "/commits")
   h <- new_handle()
 
-  token <- Sys.getenv("GITHUB_PAT")
-  token_pattern <- "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$"
-
-  if (grepl(token_pattern, token)) {
-    handle_setheaders(h, Authorization = paste("token", token))
-  } else {
-    message(
-      paste0(
-        "When downloading commits from <<< ",
-        repo,
-        " >>>, no GitHub Personal Access Token found.\nPlease set GITHUB_PAT in your environment.\nFalling back to unauthenticated API request.\n"
-      )
-    )
-  }
+  check_github_pat(h, repo, context = "downloading commits")
   # Limit to 10 pages of 100 commits each, so 1000 commits in total
   per_page <- 100
   max_pages <- 30
@@ -900,18 +863,10 @@ fetch_py_git <- function(git_pkg, py_ver_attr, ...) {
   output <- nix_hash(repo_url, commit, is_python = TRUE, ...)
   sri_hash <- output$sri_hash
 
-  # Python packages from git usually don't need 'imports' derived from DESCRIPTION
-  # We assume dependencies are handled by other means or propagatedBuildInputs manually added
-  imports <- output$deps$imports
-  if (!is.null(imports) && length(imports) > 0 && imports != "") {
-    imports_string <- paste(imports, collapse = " ")
-    propagated_inputs <- sprintf(
-      "propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.%%s) %s;\n      };",
-      imports_string
-    )
-  } else {
-    propagated_inputs <- "propagatedBuildInputs = [ ];"
-  }
+  propagated_inputs <- generate_py_propagated_inputs(
+    output$deps$imports,
+    py_ver_attr
+  )
 
   pkg_attr <- gsub("[^a-zA-Z0-9]", "_", package_name)
 
@@ -965,9 +920,9 @@ fetch_py_gits <- function(git_pkgs, py_ver_attr, ...) {
 #' @noRd
 fetch_pypi <- function(pkg_descriptor, py_ver_attr, ...) {
   # Parse pkg_descriptor "name" or "name@version"
-  parts <- strsplit(pkg_descriptor, "@")[[1]]
-  pname <- parts[1]
-  version <- if (length(parts) > 1) parts[2] else "latest"
+  pkg_parts <- parse_pkg_name_version(pkg_descriptor)
+  pname <- pkg_parts$name
+  version <- pkg_parts$version
 
   # Get metadata from PyPI
   meta <- get_pypi_meta(pname, version)
@@ -979,16 +934,10 @@ fetch_pypi <- function(pkg_descriptor, py_ver_attr, ...) {
   output <- hash_url(url, is_python = TRUE)
   sri_hash <- output$sri_hash
 
-  imports <- output$deps$imports
-  if (!is.null(imports) && length(imports) > 0 && imports != "") {
-    imports_string <- paste(imports, collapse = " ")
-    propagated_inputs <- sprintf(
-      "propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.%%s) %s;\n      };",
-      imports_string
-    )
-  } else {
-    propagated_inputs <- "propagatedBuildInputs = [ ];"
-  }
+  propagated_inputs <- generate_py_propagated_inputs(
+    output$deps$imports,
+    py_ver_attr
+  )
 
   pkg_attr <- gsub("[^a-zA-Z0-9]", "_", pname)
 
@@ -1078,4 +1027,77 @@ get_pypi_meta <- function(pname, version) {
   }
 
   list(version = version, url = url)
+}
+
+#' Normalize Git URL
+#' @param remote A character, short format "username/repo" or full URL
+#' @return A character, full URL
+#' @noRd
+normalize_git_url <- function(remote) {
+  # Check if this is already a full URL
+  if (grepl("^https://", remote)) {
+    # Extract the URL without the @commit part
+    url_parts <- strsplit(remote, "@")[[1]]
+    return(url_parts[1])
+  } else {
+    # Short format like "username/repo" - assume GitHub
+    parts <- strsplit(remote, "@")[[1]]
+    return(paste0("https://github.com/", parts[1]))
+  }
+}
+
+#' Parse Package Name and Version
+#' @param pkg_string A character, "name" or "name@version"
+#' @return A list with "name" and "version"
+#' @noRd
+parse_pkg_name_version <- function(pkg_string) {
+  parts <- strsplit(pkg_string, "@")[[1]]
+  list(
+    name = parts[1],
+    version = if (length(parts) > 1) parts[2] else "latest"
+  )
+}
+
+#' Check for GitHub PAT and set header if available
+#' @param h A curl handle
+#' @param repo A character, the repository name
+#' @param context A character, the context for the message
+#' @noRd
+check_github_pat <- function(h, repo, context = "fetching the commit date from GitHub") {
+  token <- Sys.getenv("GITHUB_PAT")
+  token_pattern <- "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$"
+
+  if (grepl(token_pattern, token)) {
+    curl::handle_setheaders(h, Authorization = paste("token", token))
+  } else {
+    message(
+      paste0(
+        "When ",
+        context,
+        " from <<< ",
+        repo,
+        " >>>, no GitHub Personal Access Token found.\nPlease set GITHUB_PAT in your environment.\nFalling back to unauthenticated API request.\n"
+      )
+    )
+  }
+}
+
+#' Generate propagatedBuildInputs for Python packages
+#' @param imports A character vector of imports
+#' @param py_ver_attr A character, the Python version attribute
+#' @return A character, the Nix expression for propagatedBuildInputs
+#' @noRd
+generate_py_propagated_inputs <- function(imports, py_ver_attr) {
+  if (!is.null(imports) && length(imports) > 0 && any(imports != "")) {
+    # filter out empty strings
+    imports <- imports[imports != ""]
+    imports_string <- paste(imports, collapse = " ")
+    sprintf(
+      "propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.%s) %s;\n      };",
+      py_ver_attr,
+      imports_string
+    )
+  } else {
+    "propagatedBuildInputs = [ ];"
+  }
 }
