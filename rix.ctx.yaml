@@ -5,7 +5,7 @@ llm_instructions: This is an LLM-optimized API specification for the R package '
 kind: package
 schema_version: '1.1'
 name: rix
-version: 0.18.1
+version: 0.18.2
 language: R
 description: Reproducible Data Science Environments with 'Nix'
 ---
