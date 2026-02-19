@@ -2,7 +2,7 @@
 title: "A Complete End-to-End Walkthrough to Set Up a Project"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{A complete end-to-end walkthrough to set up a project}
+  %\VignetteIndexEntry{A Complete End-to-End Walkthrough to Set Up a Project}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
