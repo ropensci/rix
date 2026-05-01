@@ -11,7 +11,7 @@ fetchgit <- function(git_pkg, ...) {
   repo_url <- git_pkg$repo_url
   commit <- git_pkg$commit
   private <- if (is.null(git_pkg$private)) FALSE else git_pkg$private
-  
+
   # For private repos with SSH URLs, convert to HTTPS for hash calculation
   # but keep original SSH URL for Nix expression generation
   if (isTRUE(private) && grepl("^git@", repo_url)) {
@@ -21,7 +21,7 @@ fetchgit <- function(git_pkg, ...) {
   } else {
     hash_url <- repo_url
   }
-  
+
   output <- nix_hash(hash_url, commit, ...)
   sri_hash <- output$sri_hash
 
@@ -104,14 +104,18 @@ generate_git_nix_expression <- function(
       stop(
         "Private repositories require SSH URLs.\n",
         "Please provide the repository URL in SSH format (e.g., 'git@github.com:user/repo.git') ",
-        "instead of HTTPS ('", repo_url, "').",
+        "instead of HTTPS ('",
+        repo_url,
+        "').",
         call. = FALSE
       )
     }
-    
+
     # Display warning about tradeoffs
     warning(
-      "Package '", package_name, "' is configured as private and will use builtins.fetchGit.\n",
+      "Package '",
+      package_name,
+      "' is configured as private and will use builtins.fetchGit.\n",
       "Tradeoffs:\n",
       "  - PRO: Works seamlessly with your SSH keys for private repositories\n",
       "  - CON: Cannot be cached in Nix binary caches (less reproducible)\n",
@@ -120,7 +124,7 @@ generate_git_nix_expression <- function(
       "Consider making the repository public if you need reproducible builds in CI/CD.",
       call. = FALSE
     )
-    
+
     sprintf(
       '
     %s = (pkgs.rPackages.buildRPackage {
@@ -927,7 +931,7 @@ fetch_py_git <- function(git_pkg, py_ver_attr, ...) {
   repo_url <- git_pkg$repo_url
   commit <- git_pkg$commit
   private <- if (is.null(git_pkg$private)) FALSE else git_pkg$private
-  
+
   # For private repos with SSH URLs, convert to HTTPS for hash calculation
   # but keep original SSH URL for Nix expression generation
   if (isTRUE(private) && grepl("^git@", repo_url)) {
@@ -937,7 +941,7 @@ fetch_py_git <- function(git_pkg, py_ver_attr, ...) {
   } else {
     hash_url <- repo_url
   }
-  
+
   output <- nix_hash(hash_url, commit, is_python = TRUE, ...)
   sri_hash <- output$sri_hash
 
@@ -956,14 +960,18 @@ fetch_py_git <- function(git_pkg, py_ver_attr, ...) {
       stop(
         "Private repositories require SSH URLs.\n",
         "Please provide the repository URL in SSH format (e.g., 'git@github.com:user/repo.git') ",
-        "instead of HTTPS ('", repo_url, "').",
+        "instead of HTTPS ('",
+        repo_url,
+        "').",
         call. = FALSE
       )
     }
-    
+
     # Display warning about tradeoffs
     warning(
-      "Python package '", package_name, "' is configured as private and will use builtins.fetchGit.\n",
+      "Python package '",
+      package_name,
+      "' is configured as private and will use builtins.fetchGit.\n",
       "Tradeoffs:\n",
       "  - PRO: Works seamlessly with your SSH keys for private repositories\n",
       "  - CON: Cannot be cached in Nix binary caches (less reproducible)\n",
@@ -972,7 +980,7 @@ fetch_py_git <- function(git_pkg, py_ver_attr, ...) {
       "Consider making the repository public if you need reproducible builds in CI/CD.",
       call. = FALSE
     )
-    
+
     sprintf(
       '
     %s = (pkgs.%s.buildPythonPackage {
