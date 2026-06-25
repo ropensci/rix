@@ -35,13 +35,12 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
-
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
 
-      - uses: cachix/cachix-action@v15
+      - uses: cachix/cachix-action@v17
         with:
           name: rstats-on-nix
 
@@ -65,7 +64,7 @@ jobs:
 
       - name: Checkout previous run
         if: steps.runs-exist.outcome == 'success'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
         with:
           ref: targets-runs
           fetch-depth: 1
