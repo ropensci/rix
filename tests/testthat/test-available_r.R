@@ -59,5 +59,3 @@ testthat::test_that("available_df() caches results across calls", {
   testthat::expect_s3_class(result_second, "data.frame")
   testthat::expect_equal(result_first, result_second)
 })
-
-
