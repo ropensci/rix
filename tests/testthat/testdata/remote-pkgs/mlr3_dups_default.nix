@@ -407,7 +407,7 @@ let
     mlr3extralearners = (pkgs.rPackages.buildRPackage {
       name = "mlr3extralearners";
       src = pkgs.fetchgit {
-        url = "https://github.com/mlr-org/mlr3extralearners/";
+        url = "https://github.com/mlr-org/mlr3extralearners";
         rev = "6e2af9ef9ecd420d2be44e9aa2488772bb9f7080";
         sha256 = "sha256-zdoZUSdL90uZcUF/5nxrNhZ9JdVRb6arstW1SjAACX8=";
       };
