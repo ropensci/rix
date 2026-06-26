@@ -1,5 +1,7 @@
 let
- pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2026-06-09.tar.gz") {};
+  pkgs = import (fetchTarball {
+  url = "https://github.com/rstats-on-nix/nixpkgs/archive/refs/heads/2026-06-22.tar.gz";
+ }) {};
  
   rpkgs = builtins.attrValues {
     inherit (pkgs.rPackages) 
