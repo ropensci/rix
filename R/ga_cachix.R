@@ -43,43 +43,18 @@ ga_cachix <- function(cache_name, path_default) {
     mustWork = TRUE
   )
 
-  file.copy(source, path, overwrite = TRUE)
+  content <- readLines(source, warn = FALSE)
+  content <- gsub("CACHE_NAME", cache_name, content, fixed = TRUE)
+  content <- gsub("PATH_TO_DEFAULT_NIX", path_default, content, fixed = TRUE)
+
+  dest <- file.path(path, "cachix_dev_env.yaml")
+  writeLines(content, dest)
 
   if (identical(Sys.getenv("TESTTHAT"), "false")) {
     message("GitHub Actions workflow file saved to: ", path)
   }
 
-  # The sed command for Darwin is of the form "sed -i '' s/foo/bar"
-  # while on Linux it's "sed -i s/foo/bar"
-  darwin_specific_quotes <- if (Sys.info()["sysname"] == "Darwin") {
-    "'' "
-  } else {
-    ""
-  }
-
-  system(
-    paste0(
-      "sed -i ",
-      darwin_specific_quotes,
-      "'s/CACHE_NAME/",
-      cache_name,
-      "/g' ",
-      paste0(path, "/cachix_dev_env.yaml")
-    )
-  )
-
-  system(
-    paste0(
-      "sed -i ",
-      darwin_specific_quotes,
-      "'s/PATH_TO_DEFAULT_NIX/",
-      path_default,
-      "/g' ",
-      file.path(path, "cachix_dev_env.yaml")
-    )
-  )
-
   if (identical(Sys.getenv("TESTTHAT"), "true")) {
-    file.path(path, "cachix_dev_env.yaml")
+    dest
   }
 }

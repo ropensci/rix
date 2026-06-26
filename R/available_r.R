@@ -15,11 +15,36 @@
 #' @examples
 #' available_dates()
 available_df <- function() {
-  # nolint start: line_length_linter
-  available_df_url <- "https://raw.githubusercontent.com/ropensci/rix/refs/heads/main/inst/extdata/available_df.csv"
-  # nolint end
+  cached <- getOption("rix.available_df_cache")
+  if (!is.null(cached)) {
+    return(cached)
+  }
 
-  read.csv(available_df_url)
+  tryCatch(
+    {
+      # nolint start: line_length_linter
+      available_df_url <- "https://raw.githubusercontent.com/ropensci/rix/refs/heads/main/inst/extdata/available_df.csv"
+      # nolint end
+
+      result <- read.csv(available_df_url)
+      options(rix.available_df_cache = result)
+      result
+    },
+    error = function(e) {
+      local_path <- system.file("extdata", "available_df.csv", package = "rix")
+      if (nzchar(local_path) && file.exists(local_path)) {
+        result <- read.csv(local_path)
+        options(rix.available_df_cache = result)
+        result
+      } else {
+        stop(
+          "Could not fetch available_df.csv from the rOpenSci GitHub ",
+          "repository, and no local copy was found.\n",
+          "Please check your internet connection and try again."
+        )
+      }
+    }
+  )
 }
 
 #' List Available R Versions from the rstats-on-nix Fork of Nixpkgs

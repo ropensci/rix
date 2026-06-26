@@ -1,7 +1,8 @@
 testthat::test_that("Snapshot test of make_launcher()", {
   skip_if(Sys.info()["sysname"] != "Linux")
 
-  tmpdir <- tempdir()
+  tmpdir <- tempfile("rix-test-launcher-")
+  dir.create(tmpdir)
 
   on.exit(
     unlink(tmpdir, recursive = TRUE, force = TRUE),
@@ -17,4 +18,20 @@ testthat::test_that("Snapshot test of make_launcher()", {
     path = make_launcher(editor = "positron", project_path = tmpdir),
     name = "start-positron.sh"
   )
+})
+
+testthat::test_that("make_launcher() creates an executable script", {
+  skip_if(Sys.info()["sysname"] != "Linux")
+
+  tmpdir <- tempfile("rix-test-launcher-")
+  dir.create(tmpdir)
+
+  on.exit(
+    unlink(tmpdir, recursive = TRUE, force = TRUE),
+    add = TRUE
+  )
+
+  path <- make_launcher(editor = "rstudio", project_path = tmpdir)
+
+  testthat::expect_true(file.access(path, mode = 1) == 0)
 })

@@ -8,10 +8,7 @@
 #' @details This function will write a launcher to start an IDE inside of a
 #'   Nix shell. With a launcher, you only need to execute it instead of first
 #'   having to drop into the shell using `nix-shell` and then type the command
-#'   to run the IDE. For security reasons, this script is not executable upon
-#'   creation, so you need to make it executable first by running
-#'   `chmod +x start-editor.sh` (replace `editor` with whichever editor you use).
-#'   You don’t need this launcher if you use `direnv`;
+#'   to run the IDE. You don’t need this launcher if you use `direnv`;
 #'   see `vignette("configuring-ide")` for more details.
 #'
 #' @return Nothing, writes a script.
@@ -37,6 +34,7 @@ make_launcher <- function(editor, project_path) {
   )
   script_path <- file.path(project_path, paste0("start-", editor, ".sh"))
   writeLines(script_text, script_path)
+  Sys.chmod(script_path, mode = "0755")
 
   # Hide messages when testing
   if (identical(Sys.getenv("TESTTHAT"), "false")) {

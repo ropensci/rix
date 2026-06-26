@@ -1,5 +1,29 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.18.3 (2026-06-26)
+
+## New features
+
+- `available_df()`: results are now cached per session to avoid repeated network
+  requests. Falls back to the shipped local copy when offline.
+- `make_launcher()`: generated scripts are now executable upon creation
+  (`chmod 0755`), no manual `chmod +x` needed.
+- `renv2nix()`: warning for unsupported remote hosts now lists which hosts are
+  supported (`api.github.com`, `gitlab.com`).
+
+## Maintenance
+
+- `ga_cachix()`: replaced `system("sed ...")` calls with pure R `gsub()` for
+  cross-platform string replacement. No more Darwin/Linux workaround needed.
+- `set_nix_path()`: the Nix bin path is now configurable via
+  `options(rix.nix_bin = "...")`, defaulting to
+  `/nix/var/nix/profiles/default/bin`.
+- `get_right_commit()`: now uses `GITHUB_PAT` authorization when available to
+  avoid GitHub API rate limiting.
+- Added `GITHUB_PAT` authentication for the `frozen-edge` test.
+- Test for custom Git hosts (Forgejo/Gitea) now gracefully skips when the remote
+  server blocks automated requests (HTTP 403).
+
 # rix 0.18.2 (2026-02-18)
 
 ## New features
