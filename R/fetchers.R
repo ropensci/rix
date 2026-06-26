@@ -837,7 +837,9 @@ resolve_package_commit <- function(
 
   # Check session-level in-memory commit cache
   mem_cache <- getOption("rix.commit_cache")
-  if (!is.null(mem_cache) && !is.null(pkg_name) && pkg_name %in% names(mem_cache)) {
+  if (
+    !is.null(mem_cache) && !is.null(pkg_name) && pkg_name %in% names(mem_cache)
+  ) {
     return(unname(mem_cache[pkg_name]))
   }
 
