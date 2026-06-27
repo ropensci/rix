@@ -122,6 +122,7 @@ testthat::test_that("Test fetchgits", {
     expected_output
   )
   on.exit(unlink(cache_file))
+  on.exit(options(rix.commit_cache = character(0)))
 })
 
 testthat::test_that("Test fetchgits works when PR is provided in a remote package, but does not use it", {
@@ -169,6 +170,7 @@ testthat::test_that("Test fetchgits works when PR is provided in a remote packag
     expected_output
   )
   on.exit(unlink(cache_file))
+  on.exit(options(rix.commit_cache = character(0)))
 })
 
 testthat::test_that("Test fetchgits works when tag is provided in a remote package, but does not use it", {
@@ -193,6 +195,7 @@ testthat::test_that("Test fetchgits works when tag is provided in a remote packa
     expected_output
   )
   on.exit(unlink(cache_file))
+  on.exit(options(rix.commit_cache = character(0)))
 })
 
 testthat::test_that("Test fetchzips works", {
