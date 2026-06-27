@@ -1,5 +1,49 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.18.3 (2026-06-26)
+
+## New features
+
+- `available_df()`: results are now cached per session to avoid repeated network
+  requests. Falls back to the shipped local copy when offline.
+- `make_launcher()`: generated scripts are now executable upon creation
+  (`chmod 0755`), no manual `chmod +x` needed.
+- `renv2nix()`: warning for unsupported remote hosts now lists which hosts are
+  supported (`api.github.com`, `gitlab.com`).
+
+## Maintenance
+
+- `ga_cachix()`: replaced `system("sed ...")` calls with pure R `gsub()` for
+  cross-platform string replacement. No more Darwin/Linux workaround needed.
+- `set_nix_path()`: the Nix bin path is now configurable via
+  `options(rix.nix_bin = "...")`, defaulting to
+  `/nix/var/nix/profiles/default/bin`.
+- `get_right_commit()`: now uses `GITHUB_PAT` authorization when available to
+  avoid GitHub API rate limiting.
+- Added `GITHUB_PAT` authentication for the `frozen-edge` test.
+- Test for custom Git hosts (Forgejo/Gitea) now gracefully skips when the remote
+  server blocks automated requests (HTTP 403).
+
+## Bug fixes
+
+- `rix()`: `fetchTarball` calls in generated `default.nix` now include a
+  `sha256` attribute with a precomputed NAR hash for date-based nixpkgs
+  snapshots. This prevents Nix from re-downloading nixpkgs every hour (tarball
+  TTL expiry). For dynamic revisions (commit SHAs) the hash is computed at
+  runtime via `nix-prefetch-url --unpack`. Branch refs remain hashless. The
+  `sha256` column was added to `available_df.csv` with precomputed hashes for
+  110 dates. The `update_available_dates` CI workflow also computes the hash
+  when adding new dates.
+- `rix()`: fixed evaluation warning `'system' has been renamed to/replaced by
+  'stdenv.hostPlatform.system'` by switching from
+  `pkgs.stdenv.hostPlatform.system == "x86_64-linux"` to
+  `pkgs.stdenv.isx86_64 && pkgs.stdenv.isLinux`.
+- `rix()`: `available_df()` now prefers the shipped local CSV file over the
+  GitHub-hosted version, ensuring the `sha256` column is always available with
+  the installed package.
+- `available_df.csv`: removed broken date `2020-06-22` which has no
+  corresponding tag in the `rstats-on-nix` fork.
+
 # rix 0.18.2 (2026-02-18)
 
 ## New features

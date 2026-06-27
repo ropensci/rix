@@ -207,7 +207,9 @@ renv2nix <- function(
           " has the unsupported remote host ",
           renv_lock$Packages[[i]]$RemoteHost,
           " and will not be included in the Nix expression.",
-          "\n Consider manually specifying the git remote or a local package install."
+          "\nSupported hosts are: ",
+          paste0(c("api.github.com", "gitlab.com"), collapse = ", "),
+          "\nConsider manually specifying the git remote or a local package install."
         )
       }
     }

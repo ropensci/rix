@@ -30,9 +30,11 @@ jobs:
     - name: Access Payload Data
       run: echo "${{ env.branch_date }}"
 
-    - name: Update available_df.csv
+    - name: Compute tarball hash and update available_df.csv
       run: |
-          echo "\"${{ env.year_date }}\",\"4.6.0\",\"3.23\",\"${{ env.branch_date }}\",\"supported\",\"supported\",\"might work\"" >> inst/extdata/available_df.csv
+          url="https://github.com/rstats-on-nix/nixpkgs/archive/${{ env.branch_date }}.tar.gz"
+          sha256=$(nix-prefetch-url --unpack "$url" 2>/dev/null | tail -1)
+          echo "\"${{ env.year_date }}\",\"4.6.0\",\"3.23\",\"${{ env.branch_date }}\",\"supported\",\"supported\",\"might work\",\"$sha256\"" >> inst/extdata/available_df.csv
 
     - name: Push changes to update_default.nix branch
       run: |

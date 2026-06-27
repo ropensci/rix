@@ -430,11 +430,14 @@ is_rstudio_session <- function(message_type = c("simple", "quiet", "verbose")) {
 #' @noRd
 set_nix_path <- function() {
   old_path <- Sys.getenv("PATH")
-  nix_path <- "/nix/var/nix/profiles/default/bin"
+  nix_path <- getOption(
+    "rix.nix_bin",
+    "/nix/var/nix/profiles/default/bin"
+  )
   has_nix_path <- any(grepl(nix_path, old_path))
   if (isFALSE(has_nix_path)) {
     Sys.setenv(
-      PATH = paste(old_path, "/nix/var/nix/profiles/default/bin", sep = ":")
+      PATH = paste(old_path, nix_path, sep = ":")
     )
   }
   invisible(Sys.getenv("PATH"))
@@ -459,7 +462,10 @@ nix_rprofile <- function() {
       # in an RStudio session
       cat("{rix} detected RStudio R session")
       old_path <- Sys.getenv("PATH")
-      nix_path <- "/nix/var/nix/profiles/default/bin"
+      nix_path <- getOption(
+        "rix.nix_bin",
+        "/nix/var/nix/profiles/default/bin"
+      )
       has_nix_path <- any(grepl(nix_path, old_path))
       if (isFALSE(has_nix_path)) {
         Sys.setenv(

@@ -154,7 +154,7 @@ testthat::test_that("testing renv_helpers", {
           message_type = "quiet"
         )
       },
-      "has the unsupported remote host"
+      "Supported hosts are:"
     )
     testthat::expect_equal(call, test_call)
 
@@ -168,7 +168,7 @@ testthat::test_that("testing renv_helpers", {
           ide = "rstudio"
         )
       },
-      "has the unsupported remote host"
+      "Supported hosts are:"
     )
     test_call$ide <- "rstudio"
     testthat::expect_equal(call, test_call)

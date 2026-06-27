@@ -13,14 +13,33 @@ generate_header <- function(nix_repo, r_version, rix_call, ide) {
   } else {
     allow_unfree <- ""
   }
+
+  has_sha256 <- !is.null(nix_repo$sha256) &&
+    !is.na(nix_repo$sha256) &&
+    nzchar(nix_repo$sha256)
+
+  if (has_sha256) {
+    fetch_tarball_expr <- sprintf(
+      'pkgs = import (fetchTarball {\n    url = "%s";\n    sha256 = "%s";\n  }) {%s};',
+      nix_repo$url,
+      nix_repo$sha256,
+      allow_unfree
+    )
+  } else {
+    fetch_tarball_expr <- sprintf(
+      'pkgs = import (fetchTarball "%s") {%s};',
+      nix_repo$url,
+      allow_unfree
+    )
+  }
+
   if (identical(Sys.getenv("TESTTHAT"), "true")) {
     sprintf(
       '
 let
-  pkgs = import (fetchTarball "%s") {%s};
+  %s
 ',
-      nix_repo$url,
-      allow_unfree
+      fetch_tarball_expr
     )
   } else {
     # Generate the correct text for the header depending on wether
@@ -51,15 +70,14 @@ let
 # which will install R %s.
 # Report any issues to https://github.com/ropensci/rix
 let
- pkgs = import (fetchTarball "%s") {%s};
+  %s
 ',
         rix_version,
         Sys.Date(),
         generate_rix_call(rix_call, nix_repo),
         nix_revision,
         r_ver_text,
-        nix_url,
-        allow_unfree
+        fetch_tarball_expr
       )
     } else {
       # if we're using rstats-on-nix
@@ -72,13 +90,12 @@ let
 # Apple Silicon computers.
 # Report any issues to https://github.com/ropensci/rix
 let
- pkgs = import (fetchTarball "%s") {%s};
+  %s
 ',
         rix_version,
         Sys.Date(),
         generate_rix_call(rix_call, nix_repo),
-        nix_url,
-        allow_unfree
+        fetch_tarball_expr
       )
     }
   }

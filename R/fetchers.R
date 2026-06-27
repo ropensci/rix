@@ -835,6 +835,14 @@ resolve_package_commit <- function(
 ) {
   pkg_name <- remote_pkg_name_and_ref[[1]]
 
+  # Check session-level in-memory commit cache
+  mem_cache <- getOption("rix.commit_cache")
+  if (
+    !is.null(mem_cache) && !is.null(pkg_name) && pkg_name %in% names(mem_cache)
+  ) {
+    return(unname(mem_cache[pkg_name]))
+  }
+
   # Check if ignore_remotes_cache was passed, otherwise set to FALSE
   args <- list(...)
   ignore_remotes_cache <- if (!is.null(args$ignore_remotes_cache)) {
@@ -843,15 +851,18 @@ resolve_package_commit <- function(
     FALSE
   }
 
-  # Check if package is already in cache
+  # Check if package is already in file-based cache
   if (!ignore_remotes_cache) {
     cache_file <- get_cache_file()
     cache <- readRDS(cache_file)
     pkg_matches <- grep(paste0("^", pkg_name, "@"), cache$commit_cache)
 
-    # Return commit from cache if found
+    # Return commit from file cache if found, and populate in-memory cache
     if (length(pkg_matches) > 0) {
-      return(cache$commit_cache[pkg_matches[1]])
+      mem_commit <- unname(cache$commit_cache[pkg_matches[1]])
+      mem_cache <- getOption("rix.commit_cache", character(0))
+      options(rix.commit_cache = c(mem_cache, setNames(mem_commit, pkg_name)))
+      return(mem_commit)
     }
   }
   # Store package name and ref in cache key if ref (commit-sha) is provided
@@ -900,6 +911,12 @@ resolve_package_commit <- function(
   if (!ignore_remotes_cache) {
     cache$commit_cache <- c(cache$commit_cache, cache_key)
     saveRDS(cache, cache_file)
+  }
+
+  # Update session-level in-memory cache
+  if (!is.null(commit) && nzchar(commit)) {
+    mem_cache <- getOption("rix.commit_cache", character(0))
+    options(rix.commit_cache = c(mem_cache, setNames(commit, pkg_name)))
   }
 
   return(commit)
@@ -1207,9 +1224,8 @@ check_github_pat <- function(
   context = "fetching the commit date from GitHub"
 ) {
   token <- Sys.getenv("GITHUB_PAT")
-  token_pattern <- "^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})$"
 
-  if (grepl(token_pattern, token)) {
+  if (nzchar(token)) {
     curl::handle_setheaders(h, Authorization = paste("token", token))
   } else {
     message(

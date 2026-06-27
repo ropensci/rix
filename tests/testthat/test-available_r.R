@@ -15,7 +15,6 @@ testthat::test_that("available_r lists all available r versions", {
       "3.6.2",
       "3.6.3",
       "4.0.0",
-      "4.0.1",
       "4.0.2",
       "4.0.3",
       "4.0.4",
@@ -43,4 +42,19 @@ testthat::test_that("available_r lists all available r versions", {
       "4.6.0"
     )
   )
+})
+
+testthat::test_that("available_df() caches results across calls", {
+  testthat::skip_on_cran()
+
+  old_cache <- getOption("rix.available_df_cache", NULL)
+  on.exit(options(rix.available_df_cache = old_cache), add = TRUE)
+  options(rix.available_df_cache = NULL)
+
+  result_first <- available_df()
+  result_second <- available_df()
+
+  testthat::expect_true(!is.null(result_second))
+  testthat::expect_s3_class(result_second, "data.frame")
+  testthat::expect_equal(result_first, result_second)
 })

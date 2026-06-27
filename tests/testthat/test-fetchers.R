@@ -45,7 +45,8 @@ testthat::test_that("Test fetchgit works with gitlab packages", {
 testthat::test_that("Test fetchgit works with custom Git hosts (Forgejo/Gitea)", {
   testthat::skip_on_cran()
   skip_if_not(nix_shell_available())
-  testthat::expect_equal(
+
+  result <- tryCatch(
     fetchgit(
       list(
         package_name = "opusreader2",
@@ -53,6 +54,16 @@ testthat::test_that("Test fetchgit works with custom Git hosts (Forgejo/Gitea)",
         commit = "36a9b82835d42c039dc5e202337beb290bba7f85"
       )
     ),
+    error = function(e) {
+      if (grepl("403|forbidden", e$message, ignore.case = TRUE)) {
+        testthat::skip("Forgejo/Gitea server returned 403 (request blocked)")
+      }
+      stop(e)
+    }
+  )
+
+  testthat::expect_equal(
+    result,
     "\n    opusreader2 = (pkgs.rPackages.buildRPackage {\n      name = \"opusreader2\";\n      src = pkgs.fetchgit {\n        url = \"https://codefloe.com/spectral-cockpit/opusreader2\";\n        rev = \"36a9b82835d42c039dc5e202337beb290bba7f85\";\n        sha256 = \"sha256-XGfHKhxeoVC5nvkW0OF0PPNBat8RtWWmF5s8Oc3jtBY=\";\n      };\n      propagatedBuildInputs = builtins.attrValues {\n        inherit (pkgs.rPackages) ;\n      };\n    });\n"
   )
 })
@@ -110,7 +121,10 @@ testthat::test_that("Test fetchgits", {
     fetchgits(pkg_list),
     expected_output
   )
-  on.exit(unlink(cache_file))
+  on.exit({
+    unlink(cache_file)
+    options(rix.commit_cache = character(0))
+  })
 })
 
 testthat::test_that("Test fetchgits works when PR is provided in a remote package, but does not use it", {
@@ -157,7 +171,10 @@ testthat::test_that("Test fetchgits works when PR is provided in a remote packag
     fetchgits(pkg_list),
     expected_output
   )
-  on.exit(unlink(cache_file))
+  on.exit({
+    unlink(cache_file)
+    options(rix.commit_cache = character(0))
+  })
 })
 
 testthat::test_that("Test fetchgits works when tag is provided in a remote package, but does not use it", {
@@ -181,7 +198,10 @@ testthat::test_that("Test fetchgits works when tag is provided in a remote packa
     fetchgits(pkg_list),
     expected_output
   )
-  on.exit(unlink(cache_file))
+  on.exit({
+    unlink(cache_file)
+    options(rix.commit_cache = character(0))
+  })
 })
 
 testthat::test_that("Test fetchzips works", {

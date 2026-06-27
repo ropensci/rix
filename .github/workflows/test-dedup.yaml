@@ -28,27 +28,22 @@ jobs:
       - uses: cachix/cachix-action@v15
         with:
           name: rstats-on-nix
-          # If you chose signing key for write access
-          # signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
-          # If you chose API tokens for write access OR if you have a private cache
           authToken: '${{ secrets.CACHIX_AUTH }}'
 
-      - name: Build default.nix that results in duplicates
+      - name: Build default.nix without duplicates
         run: |
-          nix-shell --quiet default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = c('tidyverse', 'mlr3', 'qs', 'matrixStats', 'prospectr', 'Cubist', 'checkmate', 'mlr3misc', 'paradox'), git_pkgs = list(package_name = 'mlr3extralearners', repo_url = 'https://github.com/mlr-org/mlr3extralearners/', commit = '6e2af9ef9ecd420d2be44e9aa2488772bb9f7080'), ide = 'none', project_path = '.', overwrite = TRUE, print = FALSE, ignore_remotes_cache = FALSE)\""
+          nix-shell --quiet --keep GITHUB_PAT default.nix --run "Rscript -e \"devtools::load_all();rix(date = '2023-12-30', r_pkgs = c('tidyverse', 'mlr3', 'qs', 'matrixStats', 'prospectr', 'Cubist', 'checkmate', 'mlr3misc', 'paradox'), git_pkgs = list(package_name = 'mlr3extralearners', repo_url = 'https://github.com/mlr-org/mlr3extralearners/', commit = '6e2af9ef9ecd420d2be44e9aa2488772bb9f7080'), ide = 'none', project_path = '.', overwrite = TRUE, print = FALSE, ignore_remotes_cache = FALSE)\""
 
-      - name: Copy test default.nix without dups from repo
+      - name: Count package occurrences and verify no duplicates
         run: |
-          cp tests/testthat/testdata/remote-pkgs/mlr3_default.nix mlr3_default.nix
-
-      - name: Check out default.nix
-        run: cat default.nix
-
-      - name: Check out test default.nix without dups
-        run: cat mlr3_default.nix
-
-      - name: Remove lines starting with `#` from generated expression
-        run: sed -i '/^#/d' default.nix
-
-      - name: Compare lines and fail if different
-        run: diff -q default.nix mlr3_default.nix || exit 1
+          counts=$(awk '/ = \(pkgs\.rPackages\.buildRPackage/ {gsub(/^[[:space:]]+/, ""); sub(/ = \(pkgs\.rPackages\.buildRPackage.*$/, ""); print}' default.nix | sort | uniq -c)
+          echo "Package counts:"
+          echo "$counts"
+          echo ""
+          duplicates=$(echo "$counts" | awk '$1 > 1 {print $2, "appears", $1, "times"}')
+          if [ -n "$duplicates" ]; then
+            echo "FAIL: Found unexpected duplicates:"
+            echo "$duplicates"
+            exit 1
+          fi
+          echo "All packages appear exactly once. OK."

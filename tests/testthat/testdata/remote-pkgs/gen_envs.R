@@ -1,4 +1,5 @@
-# mlr3_default.nix
+# Script to manually inspect Nix expressions with/without deduplication.
+# No longer used by CI — CI now counts package occurrences instead of diffing.
 
 path <- 'tests/testthat/testdata/remote-pkgs/'
 

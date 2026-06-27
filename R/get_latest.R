@@ -95,6 +95,12 @@ get_right_commit <- function(r_version) {
   # handle to get error for status code 404
   h <- curl::new_handle(failonerror = TRUE)
 
+  # Add GITHUB_PAT authorization if available
+  token <- Sys.getenv("GITHUB_PAT")
+  if (nzchar(token)) {
+    curl::handle_setheaders(h, Authorization = paste("token", token))
+  }
+
   req <- try_get_request(url = api_url, handle = h)
 
   curl::handle_reset(h)
