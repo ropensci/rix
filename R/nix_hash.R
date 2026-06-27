@@ -403,16 +403,13 @@ try_get_nix_tarball_hash <- function(url) {
 
   if (isTRUE(needs_ld_fix)) {
     fix_ld_library_path()
+    on.exit(Sys.setenv(LD_LIBRARY_PATH = LD_LIBRARY_PATH_default), add = TRUE)
   }
 
   proc <- sys::exec_internal(
     cmd = "nix-prefetch-url",
     args = c("--unpack", url)
   )
-
-  if (isTRUE(needs_ld_fix)) {
-    on.exit(Sys.setenv(LD_LIBRARY_PATH = LD_LIBRARY_PATH_default), add = TRUE)
-  }
 
   if (proc$status != 0) {
     return(NULL)

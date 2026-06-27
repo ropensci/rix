@@ -30,7 +30,8 @@ make_nixpkgs_url <- function(r_ver = NULL, date = NULL) {
     } else if (grepl("^[0-9]{4}-[0-9]{2}-[0-9]{2}$", latest_commit)) {
       df <- available_df()
       if ("sha256" %in% names(df)) {
-        df$sha256[match(latest_commit, df$date)]
+        sha <- df$sha256[match(latest_commit, df$date)]
+        if (is.na(sha)) NULL else sha
       } else {
         NULL
       }
@@ -53,7 +54,8 @@ make_nixpkgs_url <- function(r_ver = NULL, date = NULL) {
 
     df <- available_df()
     sha256 <- if ("sha256" %in% names(df)) {
-      df$sha256[match(date, df$date)]
+      sha <- df$sha256[match(date, df$date)]
+      if (is.na(sha)) NULL else sha
     } else {
       NULL
     }

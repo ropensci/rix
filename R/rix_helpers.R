@@ -14,7 +14,7 @@ generate_header <- function(nix_repo, r_version, rix_call, ide) {
     allow_unfree <- ""
   }
 
-  has_sha256 <- !is.null(nix_repo$sha256) && nzchar(nix_repo$sha256)
+  has_sha256 <- !is.null(nix_repo$sha256) && !is.na(nix_repo$sha256) && nzchar(nix_repo$sha256)
 
   if (has_sha256) {
     fetch_tarball_expr <- sprintf(

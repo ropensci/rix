@@ -472,6 +472,9 @@ testthat::test_that("rix(), frozen-edge", {
     ".tar.gz"
   )
   frozen_edge_hash <- try_get_nix_tarball_hash(frozen_edge_url)
+  if (is.null(frozen_edge_hash) || !nzchar(frozen_edge_hash)) {
+    testthat::skip("nix-prefetch-url not available to compute nixpkgs tarball sha256")
+  }
 
   system(
     paste0(
