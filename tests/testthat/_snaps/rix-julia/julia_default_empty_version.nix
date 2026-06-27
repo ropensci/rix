@@ -1,6 +1,9 @@
 
 let
-  pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2025-09-04.tar.gz") {};
+  pkgs = import (fetchTarball {
+    url = "https://github.com/rstats-on-nix/nixpkgs/archive/2025-09-04.tar.gz";
+    sha256 = "0zm6spxqwbr54yin6b4pf3dwpivjjn0n9jv5ds8j0hx76284fxk5";
+  }) {};
  
   rpkgs = builtins.attrValues {
     inherit (pkgs.rPackages) 
@@ -28,7 +31,7 @@ let
   };
   
   shell = pkgs.mkShell {
-    LOCALE_ARCHIVE = if pkgs.stdenv.hostPlatform.system == "x86_64-linux" then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
+    LOCALE_ARCHIVE = if pkgs.stdenv.isx86_64 && pkgs.stdenv.isLinux then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
     LANG = "en_US.UTF-8";
     LC_ALL = "en_US.UTF-8";
     LC_TIME = "en_US.UTF-8";

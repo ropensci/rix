@@ -20,6 +20,15 @@ available_df <- function() {
     return(cached)
   }
 
+  # Prefer local copy (matches the installed package version)
+  local_path <- system.file("extdata", "available_df.csv", package = "rix")
+  if (nzchar(local_path) && file.exists(local_path)) {
+    result <- read.csv(local_path)
+    options(rix.available_df_cache = result)
+    return(result)
+  }
+
+  # Fall back to GitHub if no local copy
   tryCatch(
     {
       # nolint start: line_length_linter
@@ -31,18 +40,11 @@ available_df <- function() {
       result
     },
     error = function(e) {
-      local_path <- system.file("extdata", "available_df.csv", package = "rix")
-      if (nzchar(local_path) && file.exists(local_path)) {
-        result <- read.csv(local_path)
-        options(rix.available_df_cache = result)
-        result
-      } else {
-        stop(
-          "Could not fetch available_df.csv from the rOpenSci GitHub ",
-          "repository, and no local copy was found.\n",
-          "Please check your internet connection and try again."
-        )
-      }
+      stop(
+        "Could not fetch available_df.csv from the rOpenSci GitHub ",
+        "repository, and no local copy was found.\n",
+        "Please check your internet connection and try again."
+      )
     }
   )
 }

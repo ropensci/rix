@@ -386,6 +386,44 @@ nix_sri_hash <- function(path) {
 }
 
 
+#' Try to Get the Nix Base32 SHA256 Hash of a Tarball URL Using
+#' `nix-prefetch-url`
+#' @param url Character. URL to the tarball (e.g., a GitHub archive URL).
+#' @return Character string with the Nix base32 hash, or NULL if unavailable.
+#' @noRd
+try_get_nix_tarball_hash <- function(url) {
+  has_nix <- nzchar(Sys.which("nix-prefetch-url"))
+  if (isFALSE(has_nix)) {
+    return(NULL)
+  }
+
+  LD_LIBRARY_PATH_default <- Sys.getenv("LD_LIBRARY_PATH")
+  needs_ld_fix <- isFALSE(nzchar(Sys.getenv("NIX_STORE"))) &&
+    nzchar(LD_LIBRARY_PATH_default)
+
+  if (isTRUE(needs_ld_fix)) {
+    fix_ld_library_path()
+    on.exit(Sys.setenv(LD_LIBRARY_PATH = LD_LIBRARY_PATH_default), add = TRUE)
+  }
+
+  proc <- sys::exec_internal(
+    cmd = "nix-prefetch-url",
+    args = c("--unpack", url)
+  )
+
+  if (proc$status != 0) {
+    return(NULL)
+  }
+
+  hash <- sys::as_text(proc$stdout)
+  hash <- trimws(hash)
+  if (!nzchar(hash)) {
+    return(NULL)
+  }
+  hash
+}
+
+
 #' Return the SRI Hash of a CRAN Package Source Using `nix hash path --sri path`
 #' @param repo_url URL to CRAN package source
 #' @noRd
