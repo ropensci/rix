@@ -48,6 +48,7 @@ pkgs.mkShell {
    LC_MONETARY = "en_US.UTF-8";
    LC_PAPER = "en_US.UTF-8";
    LC_MEASUREMENT = "en_US.UTF-8";
+  GITHUB_PAT = builtins.getEnv "GITHUB_PAT";
 
   buildInputs = [  rpkgs tex system_packages   ];
   
