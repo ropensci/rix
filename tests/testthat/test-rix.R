@@ -466,6 +466,21 @@ testthat::test_that("rix(), frozen-edge", {
     )
   )
 
+  frozen_edge_url <- paste0(
+    "https://github.com/rstats-on-nix/nixpkgs/archive/",
+    frozen_edge_commit,
+    ".tar.gz"
+  )
+  frozen_edge_hash <- try_get_nix_tarball_hash(frozen_edge_url)
+
+  system(
+    paste0(
+      "sed -i 's/SHA256HASH/",
+      frozen_edge_hash,
+      "/' _snaps/rix/frozen-edge_default.nix"
+    )
+  )
+
   testthat::expect_snapshot_file(
     path = save_default_nix_test(ide = "none", path_default_nix),
     name = "frozen-edge_default.nix",
@@ -478,6 +493,13 @@ testthat::test_that("rix(), frozen-edge", {
           "sed -i 's/",
           frozen_edge_commit,
           "/REVISION/' _snaps/rix/frozen-edge_default.nix"
+        )
+      )
+      system(
+        paste0(
+          "sed -i 's/",
+          frozen_edge_hash,
+          "/SHA256HASH/' _snaps/rix/frozen-edge_default.nix"
         )
       )
       unlink(path_default_nix, recursive = TRUE, force = FALSE)

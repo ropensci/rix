@@ -1,6 +1,9 @@
 
 let
-  pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2023-10-30.tar.gz") { config.allowUnfree = true; };
+  pkgs = import (fetchTarball {
+    url = "https://github.com/rstats-on-nix/nixpkgs/archive/2023-10-30.tar.gz";
+    sha256 = "02d1dg4fziiilkibw17bkajl9rw567wdpb946g9j910bqm7jzp49";
+  }) { config.allowUnfree = true; };
  
   rpkgs = builtins.attrValues {
     inherit (pkgs.rPackages) 

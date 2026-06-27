@@ -1,6 +1,9 @@
 
 let
-  pkgs = import (fetchTarball "https://github.com/rstats-on-nix/nixpkgs/archive/2025-02-24.tar.gz") {};
+  pkgs = import (fetchTarball {
+    url = "https://github.com/rstats-on-nix/nixpkgs/archive/2025-02-24.tar.gz";
+    sha256 = "0qw8ch6hk4savxi6qzc4h93h0y0q9fk72xm0n66rp8zjka3302hv";
+  }) {};
   
     fifo = (pkgs.rPackages.buildRPackage {
       name = "fifo";
