@@ -101,7 +101,7 @@ the same thing: the difference is that not only will you have a project-specific
 library of R packages, you will also have a project-specific R version. So if
 you start a project now, you'd have R version 4.2.3 installed (the latest
 version available in `nixpkgs` but not the latest version available, more on
-this later), with the accompagnying versions of R packages, for as long as the
+this later), with the accompanying versions of R packages, for as long as the
 project lives (which can be a long time). If you start a project next year, then
 that project will have its own R, maybe R version 4.4.2 or something like that,
 and the set of required R packages that would be current at that time. This is
@@ -236,7 +236,7 @@ rix(
 Providing a specific R version or a date will not use the upstream/official
 `nixpkgs` package repository, but our `rstats-on-nix` fork. We decided to use a
 fork instead of the official `nixpkgs` for older releases, because it allows us
-to backport fixes and improve package compatibility, which is espcially
+to backport fixes and improve package compatibility, which is especially
 important for Apple Silicon. It also allows us to provide newer releases of R
 more quickly than through the official channels. For example, as of writing
 (December 18th 2024), R version 4.4.2 is not yet included in upstream `nixpkgs` but
