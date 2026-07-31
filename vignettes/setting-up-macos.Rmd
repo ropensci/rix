@@ -18,82 +18,76 @@ knitr::opts_chunk$set(
 library(rix)
 ```
 
-*This vignette will discuss macOS-specific topics. If you're not using macOS,
-you can ignore this vignette, and read the
-`vignette("setting-up-linux-windows")` vignette
-instead.*
+*This vignette covers macOS-specific topics. If you're using Linux or
+Windows instead, read the `vignette("setting-up-linux-windows")` vignette.*
 
 ## Introduction
 
-When it comes to Nix, there are really only two supported operating systems:
-macOS and Linux distributions. Windows is "supported" because it is actually
-running Linux thanks to WSL2. In practice this means that Linux distributions
-and Windows can be considered one system, and macOS another, separate system,
-with its own idiosyncrasies. This vignette details these.
+Nix officially supports only two operating systems: macOS and Linux. Windows
+support comes via WSL2, which runs a real Linux distribution under the hood
+— so Linux and Windows can be treated as one case, with macOS as its own,
+separate case with its own quirks. This vignette walks through them.
 
-Nix on macOS does not have full feature parity with Linux. Because macOS relies
-on proprietary system frameworks and Xcode’s SDKs, reproducibility cannot always
-be guaranteed in the same way as on Linux. On Linux, nixpkgs controls the full
-toolchain stack (C library, compilers, linker, and most system dependencies).
-As a result, historical nixpkgs snapshots often continue to build successfully
-years later.
+Nix on macOS doesn't have full feature parity with Linux. Because macOS
+relies on proprietary system frameworks and Xcode's SDKs, reproducibility
+can't always be guaranteed the way it can on Linux. On Linux, nixpkgs
+controls the entire toolchain — C library, compilers, linker, and most
+system dependencies — which is why historical nixpkgs snapshots often keep
+building successfully years later.
 
-On macOS, however, many builds implicitly depend on the macOS SDK from Xcode
-as well as Apple’s dynamic loader (`dyld`). These components are provided by the
-operating system and change across macOS and Xcode updates. When Apple updates
-Xcode or system frameworks, a pinned nixpkgs revision that used to build may
-stop working — even if nothing in your project has changed. This kind of “SDK
-drift” is not an issue on Linux, where Nix controls the full dependency graph.
+On macOS, many builds implicitly depend on the macOS SDK from Xcode and on
+Apple's dynamic loader (`dyld`). Both are provided by the operating system
+and change across macOS and Xcode updates. When Apple updates Xcode or
+system frameworks, a pinned nixpkgs revision that used to build can stop
+working — even if nothing in your project changed. This "SDK drift" isn't a
+problem on Linux, where Nix controls the full dependency graph.
 
 In practice, this means:
 
-- An environment that worked on macOS may stop building after a system or
-  Xcode update.
-- Older pinned nixpkgs snapshots are more likely to fail on newer macOS
-  versions.
-- The same snapshot will often continue to work without issue on Linux.
+- an environment that worked on macOS may stop building after a system or
+  Xcode update;
+- older pinned nixpkgs snapshots are more likely to fail on newer macOS
+  versions;
+- the same snapshot will often keep working without issue on Linux.
 
-This is not a `{rix}` problem, nor something the nixpkgs maintainers can fully
-prevent. It is a structural limitation of the macOS platform and its reliance
-on proprietary system components.
+This isn't a `{rix}` problem, nor something the nixpkgs maintainers can
+fully prevent — it's a structural limitation of the macOS platform and its
+reliance on proprietary system components.
 
-We recommend committing the generated `default.nix` to version control and, if
-you encounter build failures on macOS, first trying a more recent pinned date.
-As a mitigation, you may also consider setting up your own private binary cache
-(e.g. with Cachix, using `ga_cachix()`). This allows you to reuse builds you know
-work on your system, avoiding repeated recompilation and insulating you somewhat
-from upstream cache gaps.
+Given this, we recommend committing the generated `default.nix` to version
+control, and if you run into build failures on macOS, trying a more recent
+pinned date first. As a further mitigation, consider setting up your own
+private binary cache (for example with Cachix, via `ga_cachix()`): this lets
+you reuse builds you know work on your system, avoiding repeated
+recompilation and cushioning you somewhat against upstream cache gaps.
 
-If you require long-term archival reproducibility across time (for example, to
-rebuild environments from several years ago and compare outputs), we strongly
-recommend building those historical nixpkgs snapshots on Linux — ideally inside
-a Docker container or a Linux virtual machine — rather than directly on macOS.
-Linux environments are significantly more stable over time because nixpkgs
-controls the entire toolchain and C library stack. Running inside Docker also
-isolates the environment from host system updates, providing much more reliable
-reproducibility when comparing results across time.
+If you need long-term archival reproducibility — rebuilding environments
+from several years ago to compare outputs, say — we strongly recommend
+building those historical nixpkgs snapshots on Linux rather than directly on
+macOS, ideally inside a Docker container or a Linux virtual machine. Linux
+environments stay far more stable over time, since nixpkgs controls the
+entire toolchain and C library stack, and running inside Docker further
+isolates the environment from host system updates.
 
-These problems are less common with recent snapshots, as macOS support in Nix
-continues to improve. Still, if you need to work with older versions of R (or
-other software sensitive to system SDK changes), you should be aware of this
-limitation when working on macOS.
+These issues are becoming less common as macOS support in Nix improves. But
+if you need to work with older versions of R, or other software sensitive
+to system SDK changes, it's worth keeping this limitation in mind on macOS.
 
 ## Why rix *and* Nix?
 
-You don't have to install Nix to use `{rix}`: you can generate valid Nix
-expressions using `{rix}` even on a system where Nix isn't present. However,
-this means that you won't be able to build these expressions on that system.
+You don't have to install Nix to use `{rix}`: the package can generate
+valid Nix expressions on any system, even one without Nix installed. The
+catch is that you won't be able to build those expressions until Nix is
+actually present.
 
 ## Installing Nix
 
-You can use `{rix}` to generate Nix expressions even if you don't have Nix
-installed on your system, but obviously, you need to install Nix if you actually
-want to build the defined development environment and use them. Installing (and
-uninstalling) Nix is quite simple, thanks to the installer from [Determinate
-Systems](https://determinate.systems/posts/determinate-nix-installer), a company
-that provides services and tools built on Nix. Simply open a terminal and run
-the following line:
-
+Since you don't need Nix installed to generate expressions, but you do need
+it to build them, let's get Nix set up. Installing (and uninstalling) Nix
+on macOS is straightforward thanks to the installer from [Determinate
+Systems](https://determinate.systems/posts/determinate-nix-installer), a
+company that builds services and tools on top of Nix. Open a terminal and
+run:
 
 ```{sh parsermd-chunk-1, eval = FALSE}
 curl --proto '=https' --tlsv1.2 -sSf \
@@ -101,12 +95,12 @@ curl --proto '=https' --tlsv1.2 -sSf \
      sh -s -- install
 ```
 
-Then, configure the `rstats-on-nix` binary cache. This will download pre-built
-binaries of many R packages, significantly speeding up the building process.
-Many thanks to [Cachix](https://www.cachix.org/) for sponsoring the
-`rstats-on-nix` cache!
+Next, configure the `rstats-on-nix` binary cache. This downloads pre-built
+binaries for many R packages, which significantly speeds up building
+environments. Many thanks to [Cachix](https://www.cachix.org/) for
+sponsoring the `rstats-on-nix` cache!
 
-### Recommended: Using setup_cachix()
+### Recommended: `setup_cachix()`
 
 The simplest approach is to use `{rix}`'s `setup_cachix()` function from R.
 First, start R from a Nix shell:
@@ -115,64 +109,74 @@ First, start R from a Nix shell:
 nix-shell -p R rPackages.rix
 ```
 
-On first use, this may take a few minutes (up to 5 minutes) as Nix downloads R
-and required packages. Be patient! Subsequent runs will be instant.
+On first use, this may take a few minutes as Nix downloads R and the
+required packages — be patient, subsequent runs will be instant.
 
 Then run:
 
 ```r
 rix::setup_cachix()
 ```
- 
+
 This configures the cache in `~/.config/nix/nix.conf`. You also need to add
-yourself as a trusted user so Nix allows you to use the cache. Run the
-following one-liner:
+yourself as a trusted user so Nix allows you to use the cache:
 
 ```bash
-echo "trusted-users = root $USER" | sudo tee -a /etc/nix/nix.custom.conf && sudo launchctl kickstart -k system/org.nixos.nix-daemon
+echo "trusted-users = root $USER" | sudo tee -a /etc/nix/nix.conf && sudo launchctl kickstart -k system/org.nixos.nix-daemon
 ```
 
-This works for both standard Nix installations and Determinate Nix
-installations. If you see warnings like `ignoring untrusted substituter`, this
-means the trusted-users configuration is not in place.
+(Note: if you installed Nix via the Determinate Systems installer, you may
+see `/etc/nix/nix.custom.conf` mentioned elsewhere — that's a
+Determinate-specific file, included by their managed `nix.conf` so your
+customizations survive installer updates. Either file works for a
+Determinate install, but editing `/etc/nix/nix.conf` directly, as above, is
+the one that also works for a standard, non-Determinate Nix installation.)
 
-### Alternative: Using the cachix client
+If you later see warnings like `ignoring untrusted substituter`, it usually
+means this trusted-users step was skipped.
 
-Alternatively, you can use the `cachix` command-line client:
+### Alternative: the `cachix` client
+
+Alternatively, you can configure the cache manually with the `cachix`
+command-line client:
 
 ```bash
 nix-env -iA cachix -f https://cachix.org/api/v1/install
 cachix use rstats-on-nix
 ```
 
-Note: If you installed Nix using the Determinate Systems installer, this
-approach will not work because `/etc/nix/nix.conf` is protected and restored
-on restart. Use `setup_cachix()` instead.
+Note that if you installed Nix using the Determinate Systems installer,
+this approach won't work, since Determinate's `/etc/nix/nix.conf` is
+protected and restored on restart — use `setup_cachix()` instead.
 
-Once you have Nix installed and the cache configured, you can build the
-expressions you generate with `{rix}`!
+Once Nix is installed and the cache is configured, you're ready to build
+the expressions `{rix}` generates.
 
-## What if you don't have R already installed?
+## Installing rix
 
-If you have successfully installed Nix, but don't have yet R installed on your
-system, you could install R as you would usually do on your operating system,
-and then install the `{rix}` package, and from there, generated project-specific
-expressions and build them. But you could also install R using Nix. Running the
-following line in a terminal will drop you in an interactive R session that you
-can use to start generating expressions:
+With Nix set up, the last step is getting R and `{rix}` onto your system.
+How you do that depends on whether R is already installed:
+
+### Case 1: you don't have R installed and want to install it via Nix
+
+If you have Nix installed but not R, you have two options. You could
+install R the usual way for macOS and then install `{rix}` on top of it —
+from there, generate project-specific expressions and build them. Or you
+could install R through Nix directly. Running the following in a terminal
+drops you into an interactive R session you can use right away:
 
 ```bash
 nix-shell -p R rPackages.rix
 ```
 
-or if you prefer the development version of `{rix}`:
+Or, if you'd prefer the development version of `{rix}`:
 
 ```bash
 nix-shell --expr "$(curl -sl https://raw.githubusercontent.com/ropensci/rix/main/inst/extdata/default.nix)"
 ```
 
-After downloading some package, an R session will start inside your terminal.
-You can now run something like this:
+After downloading the required packages, this drops you into an R session
+directly in your terminal. From there you can run something like:
 
 ```r
 rix(date = "2025-02-03",
@@ -184,22 +188,21 @@ rix(date = "2025-02-03",
     overwrite = TRUE)
 ```
 
-to generate a `default.nix`, and then use that file to generate an environment
-with R, `{dplyr}` and `{ggplot2}`. If you need to add packages for your project,
-rerun the command above, but add the needed packages to `r_pkgs`. This is
-detailed in the vignettes
-`vignette("installing-r-packages")` and
-`vignette("installing-system-tools")`.
+This generates a `default.nix`, which you can then use to build an
+environment with R, `{dplyr}`, and `{ggplot2}`. To add more packages later,
+rerun the command with the additional packages listed in `r_pkgs`. For more
+on managing project-specific `default.nix` files, see the
+`vignette("installing-r-packages")` and `vignette("installing-system-tools")`
+vignettes.
 
-## Generating expressions
+### Case 2: you already have R installed
 
-Once you have R installed, either through the usual installer for your operating
-system, or through Nix as explained previously, you can now start building
-project-specific development environments.
-
-On macOS, generating expressions works just like on Linux and Windows. Start an
-R session, and install `{rix}` if that's not already done. Because `{rix}` is
-not yet on CRAN, the easiest way is to install it from its r-universe:
+If R is already installed on your system — either through the usual macOS
+installer or through Nix as described above — you're ready to start
+building project-specific development environments. Generating expressions
+on macOS works just like on Linux and Windows: start an R session and
+install `{rix}` if you haven't already. Since `{rix}` isn't yet on CRAN,
+the easiest way is to install it from its r-universe:
 
 ```{r parsermd-chunk-2, eval = FALSE}
 install.packages("rix", repos = c(
@@ -208,106 +211,100 @@ install.packages("rix", repos = c(
 ))
 ```
 
-You can then use the `{rix}` package to generate expressions. Consult the
-next vignette `vignette("project-environments")`
-to learn more.
+From there, use `{rix}` to generate expressions as described in the next
+vignette, `vignette("project-environments")`.
 
 ## More macOS specificities
 
-### R Support for Apple Silicon in Nixpkgs
+### R support for Apple Silicon in nixpkgs
 
-The Apple Silicon architecture wasn't well supported before 2021 on Nix. Our
-`rstats-on-nix` fork of `nixpkgs` provides improved compatibility by backporting
-fixes to R and R packages, but only from 2021 onwards. If you need to use an
-older R version, it is quite unlikely that it is going to work.
+Apple Silicon wasn't well supported in Nix before 2021. Our `rstats-on-nix`
+fork of `nixpkgs` improves compatibility by backporting fixes to R and R
+packages, but only from 2021 onwards. If you need an older R version, it's
+quite unlikely to work.
 
 ### Shared libraries issue
 
-When using environments built with Nix on macOS, you might get crashes
-(segmentation faults) refering to "shared libraries". These indicate that your
-user library of R packages is interfering with the project-specific Nix
-environment. The system's user library that Nix packaged R by default includes
-appears in the search paths (check `libPaths()`). For macOS, the user library is
-at
+When using environments built with Nix on macOS, you might see crashes
+(segmentation faults) referencing "shared libraries." This usually means
+your system's user library of R packages is interfering with the
+project-specific Nix environment — the system's default R user library
+appears on the search path (check `libPaths()`). On macOS, that user
+library lives at
 `/Library/Frameworks/R.framework/Versions/<major>.<minor>-<arch>/Resources/library`;
-we have observed crashes with R packages that depend on system libraries, such
-as `{data.table}` or `{dplyr}`, and their (reverse) dependencies. Because user
-libraries from the system would also appear on the search path in R from
-`nixpkgs` for Linux, running `rix()` also runs `rix_init()` which creates a
-custom `.Rprofile` in your project's path. This custom `.Rprofile` ensures that
-only packages declaratively defined in your `default.nix` and built to be part
-of the Nix store (one R package is one separate derivation listed in a unique
-Nix path) appear on the R library path.
+we've seen crashes with R packages that depend on system libraries, such as
+`{data.table}` or `{dplyr}`, and their (reverse) dependencies.
+
+Because this same kind of interference can occur on Linux too, running
+`rix()` also runs `rix_init()`, which creates a custom `.Rprofile` in your
+project's path. This `.Rprofile` ensures that only packages declaratively
+defined in your `default.nix` and built into the Nix store — each R package
+as its own derivation at a unique Nix path — appear on the R library path.
 
 ### RStudio and other development interfaces on macOS
 
-RStudio installed via traditional means cannot be used with Nix shells. To use
-RStudio, you must install it through Nix. As of now, RStudio in `nixpkgs` for
-macOS is only available for R 4.4.3 or later, or for dates on or after
-2025-02-28. Using RStudio with a Nix environment for older R versions or dates
-is not possible, you will need to choose a different IDE, or no IDE. If you
-attempt to generate an expression with `ide = "rstudio"` on macOS for R versions
-older than 4.4.3 or dates before 2025-02-28, a warning will be raised. Your
-options are:
+RStudio installed through the usual means can't be used with Nix shells —
+to use RStudio with Nix, you need to install it through Nix itself. As of
+now, RStudio in `nixpkgs` for macOS is only available for R 4.4.3 or later,
+or for dates on or after 2025-02-28; using RStudio with a Nix environment
+for older R versions or dates isn't possible. If you try to generate an
+expression with `ide = "rstudio"` on macOS for an R version or date older
+than that, a warning will be raised. Your options are:
 
-- set `r_ver = 4.4.3` or pick a date on or after the 2025-02-28 if you don't need
-  to run an older version of R;
-- ignore the warning, because the environment will be built on a Linux
-  distribution (even though you generated the expression on macOS) and used on a
-  Linux distribution;
-- change the `ide =` argument to either `"none"` or `"code"` or `"positron"`.
-  Use `"code"` if you want to use VS Code and `"other"` for any other editor,
-  like Vim or Emacs. These other editors don't need to be installed through
-  `nixpkgs` to use Nix environments, unlike RStudio. See the
-  `vignette("configuring-ide")` for more details;
-- if you're working on a pipeline with the `{targets}` package, you could run it
-  on GitHub Actions. This means you could work on the code on RStudio outside
-  of the Nix environment, as the code will only be executed on GitHub Actions
-  runners. See this vignette
-  `vignette("reproducible-pipelines")` for
-  further details;
-- work on your project as usual, using your usual installation of R and RStudio,
-  but generate a `default.nix` at the end with `ide = "none"` with the right
-  version of R for reproducibility purposes;
-- use *subshells* to execute only the code you need to run in a specific
-  environment. See this vignette
-  `vignette("running-code-in-nix")`;
+- set `r_ver = 4.4.3` or pick a date on or after 2025-02-28, if you don't
+  need an older version of R;
+- ignore the warning — the environment will actually be built on a Linux
+  distribution (even though you generated the expression on macOS) and used
+  on that Linux distribution;
+- change the `ide =` argument to `"none"`, `"code"`, or `"positron"`. Use
+  `"code"` for VS Code, or `"other"` for any other editor like Vim or
+  Emacs — unlike RStudio, these don't need to be installed through
+  `nixpkgs` to use Nix environments. See `vignette("configuring-ide")` for
+  details;
+- if you're working on a `{targets}` pipeline, run it on GitHub Actions —
+  you can then work on the code in RStudio outside the Nix environment,
+  since the code only executes on GitHub Actions runners. See
+  `vignette("reproducible-pipelines")` for details;
+- work on your project as usual with your normal R and RStudio installation,
+  but generate a `default.nix` at the end with `ide = "none"` and the right
+  R version, purely for reproducibility purposes;
+- use *subshells* to run only the code you need inside a specific
+  environment — see `vignette("running-code-in-nix")`.
 
-We recommend you continue with the next vignette before tackling the more
-advanced topics listed above: `vignette("project-environments")`.
+We recommend continuing with `vignette("project-environments")` before
+tackling the more advanced topics above.
 
 ## Why do we need all these special tweaks?
 
-### Path of Nix installation not in `PATH`
+### Path of the Nix installation not in `PATH`
 
 When using RStudio Desktop on macOS, you typically launch it from the
-Applications folder. However, RStudio currently lacks an option to start an
+Applications folder. But RStudio currently has no option to start an
 integrated R session via a shell startup on macOS (see this
-[issue](https://github.com/rstudio/rstudio/issues/13341). On RStudio for Linux
-flavors, `PATH` is properly inherited in R sessions. As a result, key
-environmental variables for UNIX systems, like PATH, are not be properly loaded
-from your default shell (e.g., `zsh`, via `~/.zshrc`). Also, RStudio overwrites
-a `PATH` variable set via `.Rprofile` or `.Renviron` with its own defaults,
-which makes it impossible to find Nix and standard Nix tools like `nix-build`.
-It's worth noting that this doesn't impact `rix::rix()`, which generates Nix
-expressions and doesn't require a Nix installation. As a workaround, we have
-added mechanisms in `nix_build()` and `with_nix()` that append the path of the
-Nix store to the `PATH` variable in an active session automatically (via
-`Sys.setenv()`, when you use RStudio on macOS. You don't have to do anything. We
-have you covered, and you get a friendly message that informs you.
+[issue](https://github.com/rstudio/rstudio/issues/13341)) the way it does
+on Linux, where `PATH` is properly inherited in R sessions. As a result,
+key environment variables like `PATH` aren't properly loaded from your
+default shell (e.g., `zsh`, via `~/.zshrc`) — and RStudio further overwrites
+any `PATH` you set via `.Rprofile` or `.Renviron` with its own defaults,
+making it impossible to find Nix and tools like `nix-build`.
+
+This doesn't affect `rix::rix()`, which only generates Nix expressions and
+doesn't require a Nix installation. As a workaround, `nix_build()` and
+`with_nix()` automatically append the Nix store path to `PATH` in an active
+RStudio session on macOS (via `Sys.setenv()`) — you don't have to do
+anything yourself, and you'll get a friendly message letting you know it
+happened.
 
 ## Configuring an IDE
 
-We recommend you continue with the next vignettes vignette
-`vignette("installing-r-packages")` and
-`vignette("installing-system-tools")`,
-and also `vignette("configuring-ide")` which will guide you through setting
-you your editor to use Nix shells effectively.
+Next, we recommend continuing with `vignette("installing-r-packages")` and
+`vignette("installing-system-tools")`, followed by
+`vignette("configuring-ide")`, which walks through setting up your editor
+to work with Nix shells effectively.
 
 ## Other "Nix"es
 
-There are several implementations of the Nix package manager that you might want
-to try if you're feeling adventurous... for now, we recommend to stick with Nix.
-
-You can give [Lix](https://lix.systems/install/) a try, or
-[Tvix](https://tvix.dev/).
+Several other implementations of the Nix package manager exist, if you're
+feeling adventurous — but for now, we recommend sticking with Nix itself.
+If you're curious, [Lix](https://lix.systems/install/) and
+[Tvix](https://tvix.dev/) are both worth a look.
