@@ -10,15 +10,37 @@ language: R
 description: Reproducible Data Science Environments with 'Nix'
 ---
 kind: function
-name: make_launcher
+name: setup_cachix
 exported: true
-signature: make_launcher(editor, project_path)
+signature: setup_cachix(nix_conf_path = "~/.config/nix")
 arguments:
-  editor: Character, the command to launch the editor. See the "Details" section below for more information.
-  project_path: Character, where to write the launcher, for example "/home/path/to/project". The file will thus be written to the file "/home/path/to/project/start-editor.sh". If the folder does not exist, it will be created.
-returns: Nothing, writes a script.
+  nix_conf_path: Character, path to folder containing 'nix.conf' file. Defaults to "~/.config/nix".
+returns: Nothing; changes a file in the user's home directory.
 examples:
-- code: available_dates()
+- code: setup_cachix()
+---
+kind: function
+name: with_nix
+exported: true
+signature: with_nix(expr,program = c("R", "shell"),project_path = ".",message_type = c("simple", "quiet", "verbose"))
+arguments:
+  expr: Single R function or call, or character vector of length one with shell command and possibly options (flags) of the command to be invoked. For program = R, you can both use a named or an anonymous function. The function provided in expr should not evaluate when you pass arguments, hence you need to wrap your function call like function() your_fun(arg_a = "a", arg_b = "b"), to avoid evaluation and make sure expr is a function (see details and examples).
+  message_type: String how detailed output is. Currently, there is either "simple" (default), "quiet or "verbose", which shows the script that runs via nix-shell.
+  program: String stating where to evaluate the expression. Either "R", the default, or "shell". where = "R" will evaluate the expression via RScript and where = "shell" will run the system command in nix-shell.
+  project_path: Path to the folder where the default.nix file resides. The default is ".", which is the working directory in the current R session. This approach also useful when you have different subfolders with separate software environments defined in different default.nix files.
+returns: 'if program = "R", R object returned by function given in expr when evaluated via the R environment in nix-shell defined by Nix expression. if program = "shell", list with the following elements: status: exit code stdout: character vector with standard output stderr: character vector with standard error of expr command sent to a command line interface provided by a Nix package.'
+examples:
+- code: project_path <- "./sub_shell"
+- code: |-
+    rix_init(
+    project_path = project_path,
+    rprofile_action = "create_missing"
+    )
+- code: |-
+    rix(
+    r_ver = "4.2.0",
+    project_path = project_path
+    )
 ---
 kind: function
 name: tar_nix_ga
@@ -29,17 +51,28 @@ examples:
 - code: tar_nix_ga()
 ---
 kind: function
-name: nix_build
+name: available_df
 exported: true
-signature: nix_build(project_path = getwd(),message_type = c("simple", "quiet", "verbose"),args = NULL)
-arguments:
-  args: A character vector of additional arguments to be passed directly to the nix-build command. If the project directory (i.e. project_path) is not included in args, it will be appended automatically.
-  message_type: Character vector with messaging type. Either "simple" (default), "quiet" for no messaging, or "verbose".
-  project_path: Path to the folder where the default.nix file resides.
-returns: Integer of the process ID (PID) of the nix-build shell command launched, if the nix_build() call is assigned to an R object. Otherwise, it will be returned invisibly.
+signature: available_df()
+returns: 'A data frame with columns: year: character R.version: character; e.g., `"3.5.3"`` bioc_version: character; Bioconducotr version, e.g., "3.22" date: character; in format <yyyy>-<mm>-<dd> Linux/wsl: character; "supported", "unsupported", or `"might work"`` Apple Silicon: character; "supported", "unsupported", "might work", or "supported (Rstudio broken)" Intel Mac: character; "supported", "unsupported", or `"might work"``'
 examples:
-- code: nix_build()
-- code: nix_build(args = c("--max-jobs", "2", "--quiet"))
+- code: available_dates()
+---
+kind: function
+name: available_r
+exported: true
+signature: available_r()
+returns: A character vector containing the available R versions.
+examples:
+- code: available_r()
+---
+kind: function
+name: available_dates
+exported: true
+signature: available_dates()
+returns: A character vector containing the available dates
+examples:
+- code: available_dates()
 ---
 kind: function
 name: rix
@@ -81,49 +114,6 @@ examples:
     )
 ---
 kind: function
-name: with_nix
-exported: true
-signature: with_nix(expr,program = c("R", "shell"),project_path = ".",message_type = c("simple", "quiet", "verbose"))
-arguments:
-  expr: Single R function or call, or character vector of length one with shell command and possibly options (flags) of the command to be invoked. For program = R, you can both use a named or an anonymous function. The function provided in expr should not evaluate when you pass arguments, hence you need to wrap your function call like function() your_fun(arg_a = "a", arg_b = "b"), to avoid evaluation and make sure expr is a function (see details and examples).
-  message_type: String how detailed output is. Currently, there is either "simple" (default), "quiet or "verbose", which shows the script that runs via nix-shell.
-  program: String stating where to evaluate the expression. Either "R", the default, or "shell". where = "R" will evaluate the expression via RScript and where = "shell" will run the system command in nix-shell.
-  project_path: Path to the folder where the default.nix file resides. The default is ".", which is the working directory in the current R session. This approach also useful when you have different subfolders with separate software environments defined in different default.nix files.
-returns: 'if program = "R", R object returned by function given in expr when evaluated via the R environment in nix-shell defined by Nix expression. if program = "shell", list with the following elements: status: exit code stdout: character vector with standard output stderr: character vector with standard error of expr command sent to a command line interface provided by a Nix package.'
-examples:
-- code: project_path <- "./sub_shell"
-- code: |-
-    rix_init(
-    project_path = project_path,
-    rprofile_action = "create_missing"
-    )
-- code: |-
-    rix(
-    r_ver = "4.2.0",
-    project_path = project_path
-    )
----
-kind: function
-name: rix_init
-exported: true
-signature: rix_init(project_path,rprofile_action = c("create_missing","create_backup","overwrite","append"),message_type = c("simple", "quiet", "verbose")) {message_type <- match.arg(message_type,choices = c("simple", "quiet", "verbose"))is_quiet <- message_type == "quiet"rprofile_action <- match.arg(rprofile_action,choices = c("create_missing", "create_backup", "overwrite", "append"))stopifnot("`project_path` needs to be character of length 1" = is.character(project_path) &&length(project_path) == 1L)if (isFALSE(is_quiet) && identical(Sys.getenv("TESTTHAT"), "false"))
-purpose: Initiate and Maintain an Isolated, Project-Specific, and Runtime-Pure R setup via Nix.
-arguments:
-  message_type: Character. Message type, defaults to "simple", which gives minimal but sufficient feedback. Other values are currently "quiet, which writes .Rprofile without message, and "verbose", which displays the mechanisms implemented to achieve fully controlled R project environments in Nix.
-  project_path: Character with the folder path to the isolated nix-R project. If the folder does not exist yet, it will be created.
-  rprofile_action: Character. Action to take with .Rprofile file destined for project_path folder. Possible values include "create_missing", which only writes .Rprofile if it does not yet exist (otherwise does nothing) - this is the action set when using rix() - ; "create_backup", which copies the existing .Rprofile to a new backup file, generating names with POSIXct-derived strings that include the time zone information. A new .Rprofile file will be written with default code from rix::rix_init(); "overwrite" overwrites the .Rprofile file if it does exist; "append" appends the existing file with code that is tailored to an isolated Nix-R project setup.
-returns: Nothing, this function only has the side-effect of writing a file called ".Rprofile" to the specified path.
-examples:
-- code: project_path <- "./sub_shell"
-- code: if (!dir.exists(project_path)) dir.create(project_path)
-- code: |-
-    rix_init(
-    project_path = project_path,
-    rprofile_action = "create_missing",
-    message_type = c("simple")
-    )
----
-kind: function
 name: renv2nix
 exported: true
 signature: renv2nix(renv_lock_path = "renv.lock",project_path,return_rix_call = FALSE,method = c("fast", "accurate"),override_r_ver = NULL,...)
@@ -148,6 +138,26 @@ examples:
     )
 ---
 kind: function
+name: rix_init
+exported: true
+signature: rix_init(project_path,rprofile_action = c("create_missing","create_backup","overwrite","append"),message_type = c("simple", "quiet", "verbose")) {message_type <- match.arg(message_type,choices = c("simple", "quiet", "verbose"))is_quiet <- message_type == "quiet"rprofile_action <- match.arg(rprofile_action,choices = c("create_missing", "create_backup", "overwrite", "append"))stopifnot("`project_path` needs to be character of length 1" = is.character(project_path) &&length(project_path) == 1L)if (isFALSE(is_quiet) && identical(Sys.getenv("TESTTHAT"), "false"))
+purpose: Initiate and Maintain an Isolated, Project-Specific, and Runtime-Pure R setup via Nix.
+arguments:
+  message_type: Character. Message type, defaults to "simple", which gives minimal but sufficient feedback. Other values are currently "quiet, which writes .Rprofile without message, and "verbose", which displays the mechanisms implemented to achieve fully controlled R project environments in Nix.
+  project_path: Character with the folder path to the isolated nix-R project. If the folder does not exist yet, it will be created.
+  rprofile_action: Character. Action to take with .Rprofile file destined for project_path folder. Possible values include "create_missing", which only writes .Rprofile if it does not yet exist (otherwise does nothing) - this is the action set when using rix() - ; "create_backup", which copies the existing .Rprofile to a new backup file, generating names with POSIXct-derived strings that include the time zone information. A new .Rprofile file will be written with default code from rix::rix_init(); "overwrite" overwrites the .Rprofile file if it does exist; "append" appends the existing file with code that is tailored to an isolated Nix-R project setup.
+returns: Nothing, this function only has the side-effect of writing a file called ".Rprofile" to the specified path.
+examples:
+- code: project_path <- "./sub_shell"
+- code: if (!dir.exists(project_path)) dir.create(project_path)
+- code: |-
+    rix_init(
+    project_path = project_path,
+    rprofile_action = "create_missing",
+    message_type = c("simple")
+    )
+---
+kind: function
 name: ga_cachix
 exported: true
 signature: ga_cachix(cache_name, path_default)
@@ -159,35 +169,25 @@ examples:
 - code: ga_cachix("my-cachix", path_default = "default.nix")
 ---
 kind: function
-name: setup_cachix
+name: nix_build
 exported: true
-signature: setup_cachix(nix_conf_path = "~/.config/nix")
+signature: nix_build(project_path = getwd(),message_type = c("simple", "quiet", "verbose"),args = NULL)
 arguments:
-  nix_conf_path: Character, path to folder containing 'nix.conf' file. Defaults to "~/.config/nix".
-returns: Nothing; changes a file in the user's home directory.
+  args: A character vector of additional arguments to be passed directly to the nix-build command. If the project directory (i.e. project_path) is not included in args, it will be appended automatically.
+  message_type: Character vector with messaging type. Either "simple" (default), "quiet" for no messaging, or "verbose".
+  project_path: Path to the folder where the default.nix file resides.
+returns: Integer of the process ID (PID) of the nix-build shell command launched, if the nix_build() call is assigned to an R object. Otherwise, it will be returned invisibly.
 examples:
-- code: setup_cachix()
+- code: nix_build()
+- code: nix_build(args = c("--max-jobs", "2", "--quiet"))
 ---
 kind: function
-name: available_df
+name: make_launcher
 exported: true
-signature: available_df()
-returns: 'A data frame with columns: year: character R.version: character; e.g., `"3.5.3"`` bioc_version: character; Bioconducotr version, e.g., "3.22" date: character; in format <yyyy>-<mm>-<dd> Linux/wsl: character; "supported", "unsupported", or `"might work"`` Apple Silicon: character; "supported", "unsupported", "might work", or "supported (Rstudio broken)" Intel Mac: character; "supported", "unsupported", or `"might work"``'
-examples:
-- code: available_dates()
----
-kind: function
-name: available_r
-exported: true
-signature: available_r()
-returns: A character vector containing the available R versions.
-examples:
-- code: available_r()
----
-kind: function
-name: available_dates
-exported: true
-signature: available_dates()
-returns: A character vector containing the available dates
+signature: make_launcher(editor, project_path)
+arguments:
+  editor: Character, the command to launch the editor. See the "Details" section below for more information.
+  project_path: Character, where to write the launcher, for example "/home/path/to/project". The file will thus be written to the file "/home/path/to/project/start-editor.sh". If the folder does not exist, it will be created.
+returns: Nothing, writes a script.
 examples:
 - code: available_dates()
