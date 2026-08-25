@@ -1,5 +1,13 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.18.4 (2026-08-25)
+
+## Maintenance
+
+- `rix()`: generated `buildInputs` and IDE wrapper `packages` lists are now
+  wrapped in `pkgs.lib.flatten`, avoiding the nixpkgs 26.05 nested-list
+  deprecation warning.
+
 # rix 0.18.3 (2026-06-26)
 
 ## New features
