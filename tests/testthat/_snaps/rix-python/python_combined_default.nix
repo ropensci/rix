@@ -23,7 +23,7 @@ let
   };
   
   shell = pkgs.mkShell {
-    LOCALE_ARCHIVE = if pkgs.stdenv.isx86_64 && pkgs.stdenv.isLinux then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
+    LOCALE_ARCHIVE = if pkgs.stdenv.hostPlatform.isx86_64 && pkgs.stdenv.isLinux then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
     LANG = "en_US.UTF-8";
     LC_ALL = "en_US.UTF-8";
     LC_TIME = "en_US.UTF-8";
@@ -32,7 +32,7 @@ let
     LC_MEASUREMENT = "en_US.UTF-8";
     RETICULATE_PYTHON = "${pkgs.python312}/bin/python";
 
-    buildInputs = [ pyconf system_packages ];
+    buildInputs = pkgs.lib.flatten [ pyconf system_packages ];
     shellHook = ''
     export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath (with pkgs; [ zlib gcc.cc glibc stdenv.cc.cc ])}":$LD_LIBRARY_PATH;
     export PYTHONPATH=$PWD/src:$PYTHONPATH;
