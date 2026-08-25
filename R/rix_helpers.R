@@ -486,7 +486,7 @@ generate_wrapped_pkgs <- function(
     sprintf(
       "
   wrapped_pkgs = pkgs.%s.override {
-    packages = [ %s %s %s ];
+    packages = pkgs.lib.flatten [ %s %s %s ];
   };
 ",
       attrib[ide],
@@ -549,7 +549,7 @@ generate_shell <- function(
     %s
     %s
     %s
-    buildInputs = [ %s %s %s %s %s system_packages %s %s ];
+    buildInputs = pkgs.lib.flatten [ %s %s %s %s %s system_packages %s %s ];
     %s
   };",
       generate_locale_archive(detect_os()),
