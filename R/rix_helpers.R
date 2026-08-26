@@ -203,15 +203,14 @@ generate_local_r_pkgs <- function(local_r_pkgs, flag_local_r_pkgs) {
 #' @noRd
 generate_tex_pkgs <- function(tex_pkgs) {
   if (!is.null(tex_pkgs)) {
-    tex_pkgs <- unique(c("scheme-small", sort(tex_pkgs)))
+    tex_pkgs <- setdiff(sort(unique(tex_pkgs)), "scheme-small")
 
     tex_pkgs <- paste(c("", tex_pkgs), collapse = "\n      ")
 
     sprintf(
       "
-  tex = (pkgs.texlive.combine {
-    inherit (pkgs.texlive) %s;
-  });
+  tex = (pkgs.texliveSmall.withPackages (ps: with ps; [%s
+  ]));
 ",
       tex_pkgs
     )

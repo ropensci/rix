@@ -12,11 +12,9 @@ let
       reticulate;
   };
   
-  tex = (pkgs.texlive.combine {
-    inherit (pkgs.texlive) 
-      scheme-small
-      amsmath;
-  });
+  tex = (pkgs.texliveSmall.withPackages (ps: with ps; [
+      amsmath
+  ]));
  
  
   pyconf = builtins.attrValues {
@@ -37,7 +35,7 @@ let
   };
   
   shell = pkgs.mkShell {
-    LOCALE_ARCHIVE = if pkgs.stdenv.isx86_64 && pkgs.stdenv.isLinux then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
+    LOCALE_ARCHIVE = if pkgs.stdenv.hostPlatform.isx86_64 && pkgs.stdenv.isLinux then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
     LANG = "en_US.UTF-8";
     LC_ALL = "en_US.UTF-8";
     LC_TIME = "en_US.UTF-8";
@@ -46,7 +44,7 @@ let
     LC_MEASUREMENT = "en_US.UTF-8";
     RETICULATE_PYTHON = "${pkgs.python312}/bin/python";
 
-    buildInputs = [ rpkgs tex pyconf system_packages ];
+    buildInputs = pkgs.lib.flatten [ rpkgs tex pyconf system_packages ];
     
   }; 
 in

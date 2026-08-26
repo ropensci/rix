@@ -155,7 +155,7 @@ out <- with_nix(
 }
 }
 \seealso{
-Other Nix execution: 
-\code{\link{nix_build}()}
+Other Nix execution:
+\code{\link[=nix_build]{nix_build()}}
 }
 \concept{Nix execution}

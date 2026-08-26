@@ -236,4 +236,6 @@ pyclean = pkgs.python313Packages.buildPythonPackage rec {
 };
 ```
 
-Then add `pyclean` to the `buildInputs` list alongside your other Python packages.
+Then add `pyclean` to the `buildInputs` list alongside your other Python packages. 
+To avoid manual edits, consider updating `gen-env.R` to generate these lines automatically
+(for example, by using an LLM to help write the necessary R code).

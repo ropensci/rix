@@ -25,7 +25,7 @@ tar_nix_ga()
 }
 }
 \seealso{
-Other CI/CD: 
-\code{\link{ga_cachix}()}
+Other CI/CD:
+\code{\link[=ga_cachix]{ga_cachix()}}
 }
 \concept{CI/CD}

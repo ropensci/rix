@@ -826,6 +826,7 @@ get_closest_commit <- function(commits_df, target_date) {
 #' @param ... Further arguments passed down to methods.
 #' @return A character. The commit SHA of the closest commit to the target date
 #'   or "HEAD" if API fails
+#' @importFrom stats setNames
 #' @noRd
 resolve_package_commit <- function(
   remote_pkg_name_and_ref,

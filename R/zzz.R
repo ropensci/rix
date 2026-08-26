@@ -1,7 +1,12 @@
 #' zzz Global Imports
 #' @noRd
 #' @importFrom utils data
-utils::globalVariables(c("sysdata", "is_internet_down", "type", "package"))
+utils::globalVariables(c(
+  "sysdata",
+  "is_internet_down",
+  "type",
+  "package"
+))
 
 #' @noRd
 .onAttach <- function(libname, pkgname) {

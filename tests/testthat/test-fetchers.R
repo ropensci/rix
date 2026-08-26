@@ -45,6 +45,10 @@ testthat::test_that("Test fetchgit works with gitlab packages", {
 testthat::test_that("Test fetchgit works with custom Git hosts (Forgejo/Gitea)", {
   testthat::skip_on_cran()
   skip_if_not(nix_shell_available())
+  testthat::skip_if_not(
+    nzchar(Sys.which("git")),
+    "git command line tool is required"
+  )
 
   result <- tryCatch(
     fetchgit(
@@ -55,8 +59,14 @@ testthat::test_that("Test fetchgit works with custom Git hosts (Forgejo/Gitea)",
       )
     ),
     error = function(e) {
-      if (grepl("403|forbidden", e$message, ignore.case = TRUE)) {
-        testthat::skip("Forgejo/Gitea server returned 403 (request blocked)")
+      if (
+        grepl(
+          "403|forbidden|Failed to clone|Failed to checkout|HTML page",
+          e$message,
+          ignore.case = TRUE
+        )
+      ) {
+        testthat::skip("Forgejo/Gitea server returned error or is unreachable")
       }
       stop(e)
     }
@@ -354,11 +364,11 @@ testthat::test_that("get_commit_date works with Forgejo/Gitea platforms", {
   testthat::skip_on_cran()
   date <- get_commit_date(
     repo = "spectral-cockpit/opusreader2",
-    commit_sha = "36a9b82835d42c039dc5e202337beb290bba7f85",
+    commit_sha = "0885e740ccd70b1f6a03ef006b6ffa7409422426",
     platform = "git",
     base_url = "https://codefloe.com"
   )
-  testthat::expect_match(date, "2026-01-21T08:42:18Z")
+  testthat::expect_match(date, "2026-08-25T23:18:42Z")
 })
 
 testthat::test_that("Test download_all_commits works with valid repo", {

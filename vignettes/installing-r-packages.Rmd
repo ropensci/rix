@@ -428,20 +428,20 @@ to install packages. This is also useful if you work on a project with colleague
 use `uv` and that don’t want (yet) to use Nix. `uv`, is 10-100x faster than `pip` and
 also generates a lock file for improved reproducibility.
 
-The idea is to install `uv` in your shell (but not any Python nor Python packages):
+The idea is to install `uv` and let it install the project Python and Python packages:
 
 ```{r, eval = F}
 rix(
-  ...
+  ...,
   system_pkgs = c("uv"),
   ...
 )
 ```
 
 And then use `uv` from your shell as you would usually. We recommend specifying Python packages
-in a `requirements.txt` file, and specifying explicit versions (e.g., `scanpy==1.11.4`).
+in `pyproject.toml`, and specifying explicit versions (e.g., `scanpy==1.11.4`).
 Finally, we also recommend setting a shell hook to set up the virtual environment and install
-the packages from the `requirements.txt` when entering the shell (mind the quotes):
+the packages from the `pyproject.toml` when entering the shell (mind the quotes):
 
 ```r
 rix(
@@ -449,18 +449,18 @@ rix(
   system_pkgs = c("uv"),
   shell_hook = "
       if [ ! -f pyproject.toml ]; then
-        uv init --python 3.13.5 # or whichever Python version you need
+        uv init
       fi
-        uv add --requirements requirements.txt
-      # Create alias so python uses uvs environment
+      uv sync
+      # Create alias so python uses uv's environment
       alias python='uv run python'
   ",
 )
 ```
 
-After running `nix-shell`, `uv` should initalize a Python project with the specified Python version
-and install the packages listed in `requirements.txt` within the nix environment. 
-This will take place each time `nix-shell` is called, however this will be cached and not installed each time.
+After running `nix-shell`, `uv` should initialize a project using the Python version available in
+the Nix environment and install the dependencies declared in `pyproject.toml`. Synchronization
+runs each time `nix-shell` is called, but downloaded packages and builds are cached.
 
 To make sure everything works fine, you could simply start a Python interpreter and try to load
 `numpy`. This should work fine, but if it doesn’t, the following error could be raised:

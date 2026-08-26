@@ -76,11 +76,9 @@ let
       };
     });
  
-  tex = (pkgs.texlive.combine {
-    inherit (pkgs.texlive) 
-      scheme-small
-      amsmath;
-  });
+  tex = (pkgs.texliveSmall.withPackages (ps: with ps; [
+      amsmath
+  ]));
     
   system_packages = builtins.attrValues {
     inherit (pkgs) 
@@ -93,11 +91,11 @@ let
   };
  
   wrapped_pkgs = pkgs.rstudioWrapper.override {
-    packages = [ housing fusen AER rpkgs  ];
+    packages = pkgs.lib.flatten [ housing fusen AER rpkgs  ];
   };
  
   shell = pkgs.mkShell {
-    LOCALE_ARCHIVE = if pkgs.stdenv.isx86_64 && pkgs.stdenv.isLinux then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
+    LOCALE_ARCHIVE = if pkgs.stdenv.hostPlatform.isx86_64 && pkgs.stdenv.isLinux then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
     LANG = "en_US.UTF-8";
     LC_ALL = "en_US.UTF-8";
     LC_TIME = "en_US.UTF-8";
@@ -105,7 +103,7 @@ let
     LC_PAPER = "en_US.UTF-8";
     LC_MEASUREMENT = "en_US.UTF-8";
     
-    buildInputs = [ housing fusen AER rpkgs tex system_packages wrapped_pkgs ];
+    buildInputs = pkgs.lib.flatten [ housing fusen AER rpkgs tex system_packages wrapped_pkgs ];
     
   }; 
 in
