@@ -16,8 +16,8 @@ List Available Dates for R and Bioconductor Releases
 available_dates()
 }
 \seealso{
-Other available versions: 
-\code{\link{available_df}()},
-\code{\link{available_r}()}
+Other available versions:
+\code{\link[=available_df]{available_df()}},
+\code{\link[=available_r]{available_r()}}
 }
 \concept{available versions}

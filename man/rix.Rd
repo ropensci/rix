@@ -196,6 +196,16 @@ expression with such packages, but are working on a system where you can't
 install Nix, consider generating the expression using a continuous
 integration service, such as GitHub Actions.
 
+For \strong{private repositories}, an optional fourth element \code{"private"} can be
+set to \code{TRUE}. When \code{private = TRUE}, you must provide an SSH URL
+(e.g., \code{git@github.com:org/repo.git}) instead of an HTTPS URL. The package
+will be fetched using \code{builtins.fetchGit} which uses your SSH keys for
+authentication. Note that this has tradeoffs: it works seamlessly with SSH
+keys, but cannot be cached in Nix binary caches and may not work in pure
+Nix evaluation mode or some CI/CD environments. See the
+\code{vignette("installing-r-packages")} for more details on installing from
+private repositories.
+
 Note that installing packages from Git or old versions using the \code{"@"}
 notation or local packages, does not leverage Nix's capabilities for
 dependency solving. As such, you might have trouble installing these
@@ -257,7 +267,7 @@ rix(
 }
 }
 \seealso{
-Other core functions: 
-\code{\link{rix_init}()}
+Other core functions:
+\code{\link[=rix_init]{rix_init()}}
 }
 \concept{core functions}

@@ -33,7 +33,7 @@ ga_cachix("my-cachix", path_default = "default.nix")
 }
 }
 \seealso{
-Other CI/CD: 
-\code{\link{tar_nix_ga}()}
+Other CI/CD:
+\code{\link[=tar_nix_ga]{tar_nix_ga()}}
 }
 \concept{CI/CD}

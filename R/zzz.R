@@ -5,8 +5,7 @@ utils::globalVariables(c(
   "sysdata",
   "is_internet_down",
   "type",
-  "package",
-  "setNames"
+  "package"
 ))
 
 #' @noRd

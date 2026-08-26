@@ -44,7 +44,7 @@ compared to the package versions. Can also be a date, check
 \code{available_dates()}.}
 
 \item{...}{
-  Arguments passed on to \code{\link[=rix]{rix}}
+  Arguments passed on to \code{\link{rix}}
   \describe{
     \item{\code{system_pkgs}}{Vector of characters. List further software you wish to
 install that are not R packages such as command line applications for

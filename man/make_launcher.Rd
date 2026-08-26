@@ -24,10 +24,7 @@ Create a Startup Script to Launch an Editor Inside a Nix Shell
 This function will write a launcher to start an IDE inside of a
 Nix shell. With a launcher, you only need to execute it instead of first
 having to drop into the shell using \code{nix-shell} and then type the command
-to run the IDE. For security reasons, this script is not executable upon
-creation, so you need to make it executable first by running
-\verb{chmod +x start-editor.sh} (replace \code{editor} with whichever editor you use).
-You don’t need this launcher if you use \code{direnv};
+to run the IDE. You don’t need this launcher if you use \code{direnv};
 see \code{vignette("configuring-ide")} for more details.
 }
 \examples{

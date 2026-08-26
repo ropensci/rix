@@ -43,7 +43,7 @@ If no custom arguments are provided, only the project directory is passed.
 }
 }
 \seealso{
-Other Nix execution: 
-\code{\link{with_nix}()}
+Other Nix execution:
+\code{\link[=with_nix]{with_nix()}}
 }
 \concept{Nix execution}
