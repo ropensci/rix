@@ -1,5 +1,27 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# rix 0.18.5 (2026-08-26)
+
+## New features
+
+- `fetchgit()`: added an automated `git clone` fallback when computing SRI hashes
+  and dependencies for Git packages. If downloading the archive tarball fails
+  or is blocked by anti-bot/login restrictions (e.g. on Forgejo/Gitea instances),
+  `{rix}` falls back to a fast shallow git clone (`git fetch --depth 1`) to
+  retrieve the source, calculate the NAR hash, and extract the commit date.
+
+## Bug fixes
+
+- `nix_hash()`: added gzip magic byte verification to detect HTML challenge/error
+  pages early when downloading archives instead of attempting a broken `untar()`.
+- `nix_sri_hash()`: added safety checks against empty path vectors (`character(0)`)
+  to prevent unhandled `argument is of length zero` crashes.
+
+## Maintenance
+
+- Updated test snapshots for `frozen-edge`, `darwin_rstudio`, and `available_r`.
+- Updated commit SHAs and expected dates in fetcher test suites.
+
 # rix 0.18.4 (2026-08-25)
 
 ## Maintenance
