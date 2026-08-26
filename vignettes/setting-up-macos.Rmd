@@ -306,5 +306,4 @@ to work with Nix shells effectively.
 
 Several other implementations of the Nix package manager exist, if you're
 feeling adventurous — but for now, we recommend sticking with Nix itself.
-If you're curious, [Lix](https://lix.systems/install/) and
-[Tvix](https://tvix.dev/) are both worth a look.
+If you're curious, check out [Lix](https://lix.systems/install/)!
