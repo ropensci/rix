@@ -521,19 +521,28 @@ hash_git_clone <- function(
 
   shallow_success <- tryCatch(
     {
-      sys::exec_internal("git", c("init", tmpdir))
-      sys::exec_internal(
+      init_proc <- sys::exec_internal("git", c("init", tmpdir), error = FALSE)
+      if (init_proc$status != 0) {
+        return(FALSE)
+      }
+      remote_proc <- sys::exec_internal(
         "git",
-        c("-C", tmpdir, "remote", "add", "origin", clone_url)
+        c("-C", tmpdir, "remote", "add", "origin", clone_url),
+        error = FALSE
       )
+      if (remote_proc$status != 0) {
+        return(FALSE)
+      }
       fetch_proc <- sys::exec_internal(
         "git",
-        c("-C", tmpdir, "fetch", "--depth", "1", "origin", commit)
+        c("-C", tmpdir, "fetch", "--depth", "1", "origin", commit),
+        error = FALSE
       )
       if (fetch_proc$status == 0) {
         co_proc <- sys::exec_internal(
           "git",
-          c("-C", tmpdir, "checkout", "FETCH_HEAD")
+          c("-C", tmpdir, "checkout", "FETCH_HEAD"),
+          error = FALSE
         )
         co_proc$status == 0
       } else {
@@ -546,14 +555,26 @@ hash_git_clone <- function(
   if (!isTRUE(shallow_success)) {
     unlink(tmpdir, recursive = TRUE, force = TRUE)
     dir.create(tmpdir, recursive = TRUE)
-    clone_proc <- sys::exec_internal("git", c("clone", clone_url, tmpdir))
+    clone_proc <- sys::exec_internal(
+      "git",
+      c("clone", clone_url, tmpdir),
+      error = FALSE
+    )
     if (clone_proc$status != 0) {
-      clone_proc <- sys::exec_internal("git", c("clone", repo_url, tmpdir))
+      clone_proc <- sys::exec_internal(
+        "git",
+        c("clone", repo_url, tmpdir),
+        error = FALSE
+      )
       if (clone_proc$status != 0) {
         stop("Failed to clone git repository from ", repo_url, call. = FALSE)
       }
     }
-    co_proc <- sys::exec_internal("git", c("-C", tmpdir, "checkout", commit))
+    co_proc <- sys::exec_internal(
+      "git",
+      c("-C", tmpdir, "checkout", commit),
+      error = FALSE
+    )
     if (co_proc$status != 0) {
       stop(
         "Failed to checkout commit ",
@@ -569,7 +590,8 @@ hash_git_clone <- function(
     {
       date_proc <- sys::exec_internal(
         "git",
-        c("-C", tmpdir, "log", "-1", "--format=%cI", "HEAD")
+        c("-C", tmpdir, "log", "-1", "--format=%cI", "HEAD"),
+        error = FALSE
       )
       if (date_proc$status == 0) {
         trimws(sys::as_text(date_proc$stdout))
@@ -665,7 +687,13 @@ hash_git <- function(repo_url, commit, ...) {
     hash_url(url, repo_url, commit, ...),
     error = function(e) {
       if (nzchar(Sys.which("git"))) {
-        hash_git_clone(repo_url, commit, ...)
+        tryCatch(
+          hash_git_clone(repo_url, commit, ...),
+          error = function(clone_err) {
+            # If git clone also fails, re-throw the original error with its diagnostics
+            stop(e)
+          }
+        )
       } else {
         stop(e)
       }
