@@ -45,6 +45,7 @@ testthat::test_that("Test fetchgit works with gitlab packages", {
 testthat::test_that("Test fetchgit works with custom Git hosts (Forgejo/Gitea)", {
   testthat::skip_on_cran()
   skip_if_not(nix_shell_available())
+  testthat::skip_if_not(nzchar(Sys.which("git")), "git command line tool is required")
 
   result <- tryCatch(
     fetchgit(
@@ -55,8 +56,8 @@ testthat::test_that("Test fetchgit works with custom Git hosts (Forgejo/Gitea)",
       )
     ),
     error = function(e) {
-      if (grepl("403|forbidden", e$message, ignore.case = TRUE)) {
-        testthat::skip("Forgejo/Gitea server returned 403 (request blocked)")
+      if (grepl("403|forbidden|Failed to clone|Failed to checkout|HTML page", e$message, ignore.case = TRUE)) {
+        testthat::skip("Forgejo/Gitea server returned error or is unreachable")
       }
       stop(e)
     }

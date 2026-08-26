@@ -224,7 +224,38 @@ hash_url <- function(
     extra_diagnostics = extra_diagnostics
   )
 
-  untar(tar_file, exdir = path_to_src)
+  # Check if downloaded file is a gzip archive (magic bytes 1f 8b)
+  magic_bytes <- tryCatch(
+    readBin(tar_file, what = "raw", n = 2),
+    error = function(e) raw(0)
+  )
+  is_gzip <- length(magic_bytes) == 2 && identical(magic_bytes, as.raw(c(0x1f, 0x8b)))
+
+  if (!is_gzip) {
+    first_lines <- tryCatch(
+      readLines(tar_file, n = 5, warn = FALSE, encoding = "UTF-8"),
+      error = function(e) character(0)
+    )
+    if (any(grepl("<!DOCTYPE html|<html|<title>Sign in|<title>One moment", first_lines, ignore.case = TRUE))) {
+      stop(
+        "Downloaded file from ", root_url, " is an HTML page rather than a tar.gz archive. ",
+        "The server may require authentication or have anti-bot protections enabled.",
+        call. = FALSE
+      )
+    } else {
+      stop(
+        "Downloaded file from ", root_url, " is not a valid gzip archive.",
+        call. = FALSE
+      )
+    }
+  }
+
+  suppressWarnings(untar(tar_file, exdir = path_to_src))
+
+  extracted_files <- list.files(path_to_src)
+  if (length(extracted_files) == 0) {
+    stop("Failed to extract archive from ", root_url, call. = FALSE)
+  }
 
   # when fetching from GitHub archive; e.g.,
   # https://github.com/rap4all/housing/archive/1c860959310b80e67c41f7bbdc3e84cef00df18e.tar.gz")
@@ -232,7 +263,7 @@ hash_url <- function(
   # subfolder "housing-1c860959310b80e67c41f7bbdc3e84cef00df18e"
   path_to_source_root <- file.path(
     path_to_src,
-    list.files(path_to_src)
+    extracted_files[1]
   )
 
   sri_hash <- nix_sri_hash(path = path_to_source_root)
@@ -326,8 +357,8 @@ hash_url <- function(
 #' @return string with SRI hash specification
 #' @noRd
 nix_sri_hash <- function(path) {
-  if (!dir.exists(path)) {
-    stop("Directory", path, "does not exist", call. = FALSE)
+  if (length(path) == 0 || !dir.exists(path)) {
+    stop("Directory ", path, " does not exist", call. = FALSE)
   }
   has_nix_shell <- nix_shell_available()
   if (isFALSE(has_nix_shell)) {
@@ -444,6 +475,125 @@ hash_cran <- function(repo_url) {
 #' directory, it will run `nix-hash`
 #' (NAR) hash
 #' NAR
+#' Fallback: Clone Git Repository and Return SRI Hash and Dependencies
+#'
+#' @param repo_url URL to Git repository
+#' @param commit Commit hash
+#' @param is_python Logical, if TRUE, we look for a pyproject.toml file
+#' @param ... Further arguments passed down to methods.
+#' @return list with sri_hash and deps elements
+#' @noRd
+hash_git_clone <- function(
+  repo_url,
+  commit,
+  is_python = FALSE,
+  ...
+) {
+  if (!nzchar(Sys.which("git"))) {
+    stop("`git` command line tool is not available.", call. = FALSE)
+  }
+
+  tdir <- tempdir()
+  tmpdir <- paste0(
+    tdir,
+    "_repo_hash_clone_",
+    paste0(sample(letters, 5), collapse = "")
+  )
+  dir.create(tmpdir, recursive = TRUE)
+  on.exit(unlink(tmpdir, recursive = TRUE, force = TRUE), add = TRUE)
+
+  clone_url <- if (grepl("\\.git$", repo_url)) repo_url else paste0(repo_url, ".git")
+
+  shallow_success <- tryCatch(
+    {
+      sys::exec_internal("git", c("init", tmpdir))
+      sys::exec_internal("git", c("-C", tmpdir, "remote", "add", "origin", clone_url))
+      fetch_proc <- sys::exec_internal("git", c("-C", tmpdir, "fetch", "--depth", "1", "origin", commit))
+      if (fetch_proc$status == 0) {
+        co_proc <- sys::exec_internal("git", c("-C", tmpdir, "checkout", "FETCH_HEAD"))
+        co_proc$status == 0
+      } else {
+        FALSE
+      }
+    },
+    error = function(e) FALSE
+  )
+
+  if (!isTRUE(shallow_success)) {
+    unlink(tmpdir, recursive = TRUE, force = TRUE)
+    dir.create(tmpdir, recursive = TRUE)
+    clone_proc <- sys::exec_internal("git", c("clone", clone_url, tmpdir))
+    if (clone_proc$status != 0) {
+      clone_proc <- sys::exec_internal("git", c("clone", repo_url, tmpdir))
+      if (clone_proc$status != 0) {
+        stop("Failed to clone git repository from ", repo_url, call. = FALSE)
+      }
+    }
+    co_proc <- sys::exec_internal("git", c("-C", tmpdir, "checkout", commit))
+    if (co_proc$status != 0) {
+      stop("Failed to checkout commit ", commit, " in repository ", repo_url, call. = FALSE)
+    }
+  }
+
+  commit_date <- tryCatch(
+    {
+      date_proc <- sys::exec_internal("git", c("-C", tmpdir, "log", "-1", "--format=%cI", "HEAD"))
+      if (date_proc$status == 0) {
+        trimws(sys::as_text(date_proc$stdout))
+      } else {
+        Sys.Date()
+      }
+    },
+    error = function(e) Sys.Date()
+  )
+
+  # Remove .git folder before hashing so hash matches working tree
+  unlink(file.path(tmpdir, ".git"), recursive = TRUE, force = TRUE)
+
+  sri_hash <- nix_sri_hash(path = tmpdir)
+
+  paths <- list.files(tmpdir, full.names = TRUE, recursive = TRUE)
+
+  if (isTRUE(is_python)) {
+    desc_path <- NULL
+    pyproject_path <- grep(file.path(tmpdir, "pyproject.toml"), paths, value = TRUE)
+    if (length(pyproject_path) > 0) {
+      pyproject_path <- pyproject_path[which.min(nchar(pyproject_path))]
+    } else {
+      stop("Python packages from Git are only available if they use pyproject.toml", call. = FALSE)
+    }
+  } else {
+    pyproject_path <- NULL
+    desc_path <- grep(file.path(tmpdir, "DESCRIPTION"), paths, value = TRUE)
+    if (length(desc_path) == 0) {
+      desc_path <- NULL
+    }
+  }
+
+  if (!is.null(desc_path)) {
+    deps <- get_imports(desc_path, commit_date, ...)
+  } else if (!is.null(pyproject_path) && length(pyproject_path) > 0) {
+    deps <- get_py_imports(pyproject_path)
+  } else {
+    deps <- list(package = NULL, imports = NULL, remotes = NULL)
+  }
+
+  list(
+    sri_hash = sri_hash,
+    deps = deps
+  )
+}
+
+#' Return the SRI Hash of a GitHub Repository at a Given Unique Commit ID
+#'
+#' @details `hash_git` will retrieve an archive of the repository URL
+#' <https://github.com/<user>/<repo> at a given commit ID. It will fetch
+#' a .tar.gz file from
+#' <https://github.com/<user>/<repo>/archive/<commit-id>.tar.gz. Then, it will
+#' ungzip and unarchive the downloaded `tar.gz` file. Then, on the extracted
+#' directory, it will run `nix-hash`
+#' (NAR) hash
+#' NAR
 #' @param repo_url URL to GitHub repository
 #' @param commit Commit hash
 #' @param ... Further arguments passed down to methods.
@@ -469,8 +619,20 @@ hash_git <- function(repo_url, commit, ...) {
     # as it's the most common pattern
     url <- paste0(repo_url, slash, "archive/", commit, ".tar.gz")
   }
-  # list contains `sri_hash` and `deps` elements
-  hash_url(url, repo_url, commit, ...)
+
+  # Attempt fast archive download first; if that fails, fallback to git clone
+  out <- tryCatch(
+    hash_url(url, repo_url, commit, ...),
+    error = function(e) {
+      if (nzchar(Sys.which("git"))) {
+        hash_git_clone(repo_url, commit, ...)
+      } else {
+        stop(e)
+      }
+    }
+  )
+
+  out
 }
 
 
