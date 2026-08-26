@@ -428,16 +428,11 @@ to install packages. This is also useful if you work on a project with colleague
 use `uv` and that don’t want (yet) to use Nix. `uv`, is 10-100x faster than `pip` and
 also generates a lock file for improved reproducibility.
 
-The idea is to install `uv` alongside the Python version specified in `py_conf`,
-but let `uv` install the project dependencies:
+The idea is to install `uv` and let it install the project Python and Python packages:
 
 ```{r, eval = F}
 rix(
-  ...
-  py_conf = list(
-    py_version = "3.13",
-    py_pkgs = character(0)
-  ),
+  ...,
   system_pkgs = c("uv"),
   ...
 )
