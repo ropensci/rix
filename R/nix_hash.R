@@ -229,22 +229,33 @@ hash_url <- function(
     readBin(tar_file, what = "raw", n = 2),
     error = function(e) raw(0)
   )
-  is_gzip <- length(magic_bytes) == 2 && identical(magic_bytes, as.raw(c(0x1f, 0x8b)))
+  is_gzip <- length(magic_bytes) == 2 &&
+    identical(magic_bytes, as.raw(c(0x1f, 0x8b)))
 
   if (!is_gzip) {
     first_lines <- tryCatch(
       readLines(tar_file, n = 5, warn = FALSE, encoding = "UTF-8"),
       error = function(e) character(0)
     )
-    if (any(grepl("<!DOCTYPE html|<html|<title>Sign in|<title>One moment", first_lines, ignore.case = TRUE))) {
+    if (
+      any(grepl(
+        "<!DOCTYPE html|<html|<title>Sign in|<title>One moment",
+        first_lines,
+        ignore.case = TRUE
+      ))
+    ) {
       stop(
-        "Downloaded file from ", root_url, " is an HTML page rather than a tar.gz archive. ",
+        "Downloaded file from ",
+        root_url,
+        " is an HTML page rather than a tar.gz archive. ",
         "The server may require authentication or have anti-bot protections enabled.",
         call. = FALSE
       )
     } else {
       stop(
-        "Downloaded file from ", root_url, " is not a valid gzip archive.",
+        "Downloaded file from ",
+        root_url,
+        " is not a valid gzip archive.",
         call. = FALSE
       )
     }
@@ -502,15 +513,28 @@ hash_git_clone <- function(
   dir.create(tmpdir, recursive = TRUE)
   on.exit(unlink(tmpdir, recursive = TRUE, force = TRUE), add = TRUE)
 
-  clone_url <- if (grepl("\\.git$", repo_url)) repo_url else paste0(repo_url, ".git")
+  clone_url <- if (grepl("\\.git$", repo_url)) {
+    repo_url
+  } else {
+    paste0(repo_url, ".git")
+  }
 
   shallow_success <- tryCatch(
     {
       sys::exec_internal("git", c("init", tmpdir))
-      sys::exec_internal("git", c("-C", tmpdir, "remote", "add", "origin", clone_url))
-      fetch_proc <- sys::exec_internal("git", c("-C", tmpdir, "fetch", "--depth", "1", "origin", commit))
+      sys::exec_internal(
+        "git",
+        c("-C", tmpdir, "remote", "add", "origin", clone_url)
+      )
+      fetch_proc <- sys::exec_internal(
+        "git",
+        c("-C", tmpdir, "fetch", "--depth", "1", "origin", commit)
+      )
       if (fetch_proc$status == 0) {
-        co_proc <- sys::exec_internal("git", c("-C", tmpdir, "checkout", "FETCH_HEAD"))
+        co_proc <- sys::exec_internal(
+          "git",
+          c("-C", tmpdir, "checkout", "FETCH_HEAD")
+        )
         co_proc$status == 0
       } else {
         FALSE
@@ -531,13 +555,22 @@ hash_git_clone <- function(
     }
     co_proc <- sys::exec_internal("git", c("-C", tmpdir, "checkout", commit))
     if (co_proc$status != 0) {
-      stop("Failed to checkout commit ", commit, " in repository ", repo_url, call. = FALSE)
+      stop(
+        "Failed to checkout commit ",
+        commit,
+        " in repository ",
+        repo_url,
+        call. = FALSE
+      )
     }
   }
 
   commit_date <- tryCatch(
     {
-      date_proc <- sys::exec_internal("git", c("-C", tmpdir, "log", "-1", "--format=%cI", "HEAD"))
+      date_proc <- sys::exec_internal(
+        "git",
+        c("-C", tmpdir, "log", "-1", "--format=%cI", "HEAD")
+      )
       if (date_proc$status == 0) {
         trimws(sys::as_text(date_proc$stdout))
       } else {
@@ -556,11 +589,18 @@ hash_git_clone <- function(
 
   if (isTRUE(is_python)) {
     desc_path <- NULL
-    pyproject_path <- grep(file.path(tmpdir, "pyproject.toml"), paths, value = TRUE)
+    pyproject_path <- grep(
+      file.path(tmpdir, "pyproject.toml"),
+      paths,
+      value = TRUE
+    )
     if (length(pyproject_path) > 0) {
       pyproject_path <- pyproject_path[which.min(nchar(pyproject_path))]
     } else {
-      stop("Python packages from Git are only available if they use pyproject.toml", call. = FALSE)
+      stop(
+        "Python packages from Git are only available if they use pyproject.toml",
+        call. = FALSE
+      )
     }
   } else {
     pyproject_path <- NULL
