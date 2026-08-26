@@ -354,7 +354,7 @@ testthat::test_that("get_commit_date works with Forgejo/Gitea platforms", {
   testthat::skip_on_cran()
   date <- get_commit_date(
     repo = "spectral-cockpit/opusreader2",
-    commit_sha = "36a9b82835d42c039dc5e202337beb290bba7f85",
+    commit_sha = "0885e740ccd70b1f6a03ef006b6ffa7409422426",
     platform = "git",
     base_url = "https://codefloe.com"
   )
