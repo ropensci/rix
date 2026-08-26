@@ -208,7 +208,7 @@ switch` for Home Manager).
 ## Using Mischko Heming's binary cache
 
 To use the [binary cache](https://github.com/mihem/attic) by [Mischko
-Heming](https://mheming.com), add this to `~/.config/nix/nix.conf`:
+Heming](https://www.mheming.com), add this to `~/.config/nix/nix.conf`:
 
 ```text
 extra-substituters = https://osmzhlab.uni-muenster.de:4949/r-packages
