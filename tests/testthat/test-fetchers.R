@@ -358,7 +358,7 @@ testthat::test_that("get_commit_date works with Forgejo/Gitea platforms", {
     platform = "git",
     base_url = "https://codefloe.com"
   )
-  testthat::expect_match(date, "2026-01-21T08:42:18Z")
+  testthat::expect_match(date, "2026-08-25T23:18:42Z")
 })
 
 testthat::test_that("Test download_all_commits works with valid repo", {
