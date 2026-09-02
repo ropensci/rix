@@ -1,4 +1,5 @@
-<!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
+# rix 0.18.6 (2026-xx-xx) 
+
 
 # rix 0.18.5 (2026-08-26)
 
