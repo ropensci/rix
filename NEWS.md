@@ -1,5 +1,11 @@
 # rix 0.18.6 (2026-xx-xx) 
 
+## Bug fixes
+
+- `get_imports()`: R listed in `Depends` is now removed regardless of spacing
+  (e.g., `Depends: R(>= 3.4)`), and packages with names ending in "R" are no
+  longer accidentally dropped.
+
 
 # rix 0.18.5 (2026-08-26)
 
