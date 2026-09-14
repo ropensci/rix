@@ -457,3 +457,59 @@ testthat::test_that("Private repos with HTTPS URL throw error", {
     "Private repositories require SSH URLs"
   )
 })
+
+# builds a minimal package fixture with the given 'Depends' field and no
+# NAMESPACE imports, so get_imports() output comes from 'Depends' alone.
+make_fixture <- function(depends) {
+  dir <- tempfile("depends_fixture")
+  dir.create(dir)
+  writeLines(
+    c("Package: fakepkg", "Version: 1.0.0", paste("Depends:", depends)),
+    file.path(dir, "DESCRIPTION")
+  )
+  writeLines('exportPattern("^[[:alpha:]]+")', file.path(dir, "NAMESPACE"))
+  file.path(dir, "DESCRIPTION")
+}
+
+testthat::test_that("get_imports drops R from Depends with spaced version", {
+  result <- get_imports(
+    make_fixture("R (>= 3.4), MASS"),
+    commit_date = "2026-08-01"
+  )
+  testthat::expect_identical(result$imports, "MASS")
+})
+
+testthat::test_that("get_imports drops R from Depends with unspaced version", {
+  # e.g. lavaan declares 'Depends: R(>= 3.4)', which used to leak a
+  # bare 'R' into the generated dependency list
+  result <- get_imports(
+    make_fixture("R(>= 3.4), MASS"),
+    commit_date = "2026-08-01"
+  )
+  testthat::expect_identical(result$imports, "MASS")
+})
+
+testthat::test_that("get_imports drops R from Depends without version", {
+  result <- get_imports(
+    make_fixture("R, MASS"),
+    commit_date = "2026-08-01"
+  )
+  testthat::expect_identical(result$imports, "MASS")
+})
+
+testthat::test_that("get_imports keeps packages whose name ends in R", {
+  # 'AER' ends in 'R' and must not be mistaken for the R dependency
+  result <- get_imports(
+    make_fixture("R (>= 3.4), AER (>= 3.4), MASS"),
+    commit_date = "2026-08-01"
+  )
+  testthat::expect_identical(result$imports, c("AER", "MASS"))
+})
+
+testthat::test_that("get_imports keeps ends-in-R packages with unspaced version", {
+  result <- get_imports(
+    make_fixture("R(>= 3.4), AER(>= 3.4)"),
+    commit_date = "2026-08-01"
+  )
+  testthat::expect_identical(result$imports, "AER")
+})

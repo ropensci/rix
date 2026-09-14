@@ -393,11 +393,9 @@ get_imports <- function(path, commit_date, ...) {
     output <- character(0)
   }
 
-  # Remove version of R that may be listed in 'Depends'
-  output <- Filter(function(x) !grepl("R \\(.*\\)", x), output)
-
-  # Remove minimum package version for example 'packagename ( > 1.0.0)'
-  output <- trimws(gsub("\\(.*?\\)", "", output))
+  # Remove minimum package versions, e.g. 'pkg (>= 1.0.0)', and drop R itself,
+  # which may be listed in 'Depends' with or without a version spec
+  output <- Filter(function(x) x != "R", trimws(gsub("\\(.*?\\)", "", output)))
 
   # Get imports from NAMESPACE
   namespace_path <- gsub("DESCRIPTION", "NAMESPACE", desc_path)
