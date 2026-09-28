@@ -261,32 +261,15 @@ installer](https://determinate.systems/posts/determinate-nix-installer):
 instructions](https://docs.ropensci.org/rix/articles/setting-up-linux-windows.html#windows-pre-requisites)
 though):
 
-``` bash
-curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+```bash
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | \
+  sh -s -- install --no-confirm --extra-conf "
+trusted-users = root $USER
+substituters = https://cache.nixos.org https://rstats-on-nix.cachix.org
+trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= rstats-on-nix.cachix.org-1:vdiiVgocg6WeJrODIqdprZRUrhi1JzhBnXv7aWI6+F0="
 ```
 
-Then, configure the `rstats-on-nix` binary cache to speed up builds. The
-recommended approach is to use `rix::setup_cachix()` from R:
-
-``` bash
-nix-shell -p R rPackages.rix  # Start R with rix (may take a few minutes on first use)
-```
-
-``` r
-rix::setup_cachix()
-```
-
-Then add yourself as a trusted user:
-
-``` bash
-# Linux:
-echo "trusted-users = root $USER" | sudo tee -a /etc/nix/nix.custom.conf && sudo systemctl restart nix-daemon
-
-# macOS:
-echo "trusted-users = root $USER" | sudo tee -a /etc/nix/nix.custom.conf && sudo launchctl kickstart -k system/org.nixos.nix-daemon
-```
-
-Many thanks to [Cachix](https://www.cachix.org/) for sponsoring the
+This install Nix and configure the `rstats-on-nix` cache for quick installation of R and its packages! Many thanks to [Cachix](https://www.cachix.org/) for sponsoring the
 `rstats-on-nix` cache! See
 [`vignette("setting-up-linux-windows")`](https://docs.ropensci.org/rix/articles/setting-up-linux-windows.html)
 or
