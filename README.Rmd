@@ -68,7 +68,7 @@ Julia (and many of their respective packages) as well as many, many other tools
 `{rix}` point to our fork of Nixpkgs which provides improved compatibility for
 older versions of R and R packages, especially for Apple Silicon computers.
 
-If you have R installed, you can start straight away from your R session by
+If you have R and Nix installed, you can start straight away from your R session by
 first installing `{rix}` from CRAN:
 
 ```{r, eval=FALSE}
