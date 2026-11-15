@@ -17,7 +17,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: DeterminateSystems/nix-installer-action@main
-    - uses: DeterminateSystems/magic-nix-cache-action@main
 
     - name: Set branch_date as today
       id: set_date
@@ -34,7 +33,7 @@ jobs:
       run: |
           url="https://github.com/rstats-on-nix/nixpkgs/archive/${{ env.branch_date }}.tar.gz"
           sha256=$(nix-prefetch-url --unpack "$url" 2>/dev/null | tail -1)
-          echo "\"${{ env.year_date }}\",\"4.6.1\",\"3.23\",\"${{ env.branch_date }}\",\"supported\",\"supported\",\"unsupported\",\"$sha256\"" >> inst/extdata/available_df.csv
+          echo "\"${{ env.year_date }}\",\"4.6.\2",\"3.23\",\"${{ env.branch_date }}\",\"supported\",\"supported\",\"unsupported\",\"$sha256\"" >> inst/extdata/available_df.csv
 
     - name: Push changes to update_default.nix branch
       run: |
