@@ -20,33 +20,34 @@ available_df <- function() {
     return(cached)
   }
 
-  # Prefer local copy (matches the installed package version)
-  local_path <- system.file("extdata", "available_df.csv", package = "rix")
-  if (nzchar(local_path) && file.exists(local_path)) {
-    result <- read.csv(local_path)
-    options(rix.available_df_cache = result)
-    return(result)
-  }
-
-  # Fall back to GitHub if no local copy
-  tryCatch(
-    {
-      # nolint start: line_length_linter
-      available_df_url <- "https://raw.githubusercontent.com/ropensci/rix/refs/heads/main/inst/extdata/available_df.csv"
-      # nolint end
-
-      result <- read.csv(available_df_url)
-      options(rix.available_df_cache = result)
-      result
-    },
+  # Prefer the list on GitHub: it gains a date every week, while the copy
+  # shipped with the package stops at its release
+  result <- tryCatch(
+    suppressWarnings(read.csv(available_df_url())),
     error = function(e) {
-      stop(
-        "Could not fetch available_df.csv from the rOpenSci GitHub ",
-        "repository, and no local copy was found.\n",
-        "Please check your internet connection and try again."
-      )
+      # Fall back to the shipped copy when offline
+      local_path <- system.file("extdata", "available_df.csv", package = "rix")
+      if (!nzchar(local_path)) {
+        stop(
+          "Could not fetch available_df.csv from the rOpenSci GitHub ",
+          "repository, and no local copy was found.\n",
+          "Please check your internet connection and try again."
+        )
+      }
+      read.csv(local_path)
     }
   )
+  options(rix.available_df_cache = result)
+  result
+}
+
+#' URL of the Up-to-Date List of Available Dates
+#' @return A character string.
+#' @noRd
+available_df_url <- function() {
+  # nolint start: line_length_linter
+  "https://raw.githubusercontent.com/ropensci/rix/refs/heads/main/inst/extdata/available_df.csv"
+  # nolint end
 }
 
 #' List Available R Versions from the rstats-on-nix Fork of Nixpkgs

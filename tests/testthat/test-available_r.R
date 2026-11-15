@@ -59,3 +59,35 @@ testthat::test_that("available_df() caches results across calls", {
   testthat::expect_s3_class(result_second, "data.frame")
   testthat::expect_equal(result_first, result_second)
 })
+
+testthat::test_that("available_df() prefers the list on GitHub over the shipped copy", {
+  old_cache <- getOption("rix.available_df_cache", NULL)
+  on.exit(options(rix.available_df_cache = old_cache), add = TRUE)
+  options(rix.available_df_cache = NULL)
+
+  shipped <- utils::read.csv(
+    system.file("extdata", "available_df.csv", package = "rix")
+  )
+  newer <- shipped[nrow(shipped), ]
+  newer$date <- "2999-01-01"
+  remote <- tempfile(fileext = ".csv")
+  utils::write.csv(rbind(shipped, newer), remote, row.names = FALSE)
+  testthat::local_mocked_bindings(available_df_url = function() remote)
+
+  testthat::expect_true("2999-01-01" %in% available_dates())
+})
+
+testthat::test_that("available_df() falls back to the shipped copy when offline", {
+  old_cache <- getOption("rix.available_df_cache", NULL)
+  on.exit(options(rix.available_df_cache = old_cache), add = TRUE)
+  options(rix.available_df_cache = NULL)
+
+  testthat::local_mocked_bindings(
+    available_df_url = function() tempfile(fileext = ".csv")
+  )
+
+  testthat::expect_equal(
+    available_df(),
+    utils::read.csv(system.file("extdata", "available_df.csv", package = "rix"))
+  )
+})
