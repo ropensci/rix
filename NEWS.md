@@ -9,6 +9,14 @@
   with the package is only used when offline, as intended in 0.18.3. Since then
   the shipped copy was read first, so `rix()` rejected every date added after
   the release (in 0.18.5, any date after 2026-08-24).
+- `available_df.csv`: corrected the `sha256` of the `2026-10-13` snapshot.
+
+## Documentation
+
+- Revised the Nix installation instructions in `README.Rmd`/`README.md` to
+  configure the `rstats-on-nix` binary cache at install time, and clarified
+  that both R and Nix are required.
+- Fixed a typo in `vignette("nix-inside-docker")`.
 
 
 # rix 0.18.5 (2026-08-26)

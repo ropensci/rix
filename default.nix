@@ -1,6 +1,6 @@
 let
   pkgs = import (fetchTarball {
-  url = "https://github.com/rstats-on-nix/nixpkgs/archive/refs/heads/2026-08-24.tar.gz";
+  url = "https://github.com/rstats-on-nix/nixpkgs/archive/refs/heads/2026-11-15.tar.gz";
  }) {};
  
   rpkgs = builtins.attrValues {
