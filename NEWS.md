@@ -5,6 +5,10 @@
 - `get_imports()`: R listed in `Depends` is now removed regardless of spacing
   (e.g., `Depends: R(>= 3.4)`), and packages with names ending in "R" are no
   longer accidentally dropped. By @felipelfv, see #642. 
+- `available_df()`: the list on GitHub is read first again, and the copy shipped
+  with the package is only used when offline, as intended in 0.18.3. Since then
+  the shipped copy was read first, so `rix()` rejected every date added after
+  the release (in 0.18.5, any date after 2026-08-24).
 
 
 # rix 0.18.5 (2026-08-26)
