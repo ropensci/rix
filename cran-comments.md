@@ -1,3 +1,13 @@
+## 15-11-2026 Submission, version 0.18.6
+
+R CMD check using R-devel and release on win-builder:
+
+```
+OK
+```
+
+
+
 ## 18-02-2026 Submission, version 0.18.2
 
 R CMD check using R-devel and release on win-builder:
