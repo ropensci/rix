@@ -1,0 +1,84 @@
+# Checks that the sha256 values in inst/extdata/available_df.csv match the
+# rstats-on-nix snapshot tarballs. rix writes these hashes into the
+# fetchTarball() call of every generated default.nix, so a wrong hash breaks
+# every environment built for that date with a "NAR hash mismatch".
+#
+# - pull_request / push: checks the rows added or changed by the change.
+# - schedule: re-checks the newest rows on main, because a snapshot branch can
+#   receive commits after its hash was recorded.
+# - workflow_dispatch: checks every row with a hash (slow, downloads them all).
+name: check-available-hashes
+
+on:
+  pull_request:
+    paths:
+      - "inst/extdata/available_df.csv"
+  push:
+    branches: [main]
+    paths:
+      - "inst/extdata/available_df.csv"
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Check for duplicate dates
+        run: |
+          dups=$(cut -d, -f4 inst/extdata/available_df.csv | tail -n +2 | sort | uniq -d)
+          if [ -n "$dups" ]; then
+            echo "::error::dates listed more than once in available_df.csv (rix only reads the first row): $dups"
+            exit 1
+          fi
+
+      - name: Select rows to check
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          csv=inst/extdata/available_df.csv
+          case "$EVENT" in
+            pull_request|push)
+              if git cat-file -e "$BASE" 2>/dev/null; then
+                git diff -U0 "$BASE" HEAD -- "$csv" | grep '^+"' | sed 's/^+//' > rows.csv || true
+              else
+                tail -n 3 "$csv" > rows.csv
+              fi
+              ;;
+            schedule) tail -n 3 "$csv" > rows.csv ;;
+            *) tail -n +2 "$csv" > rows.csv ;;
+          esac
+          cat rows.csv
+
+      - name: Compare hashes with the snapshot tarballs
+        run: |
+          status=0
+          while IFS=, read -r _ _ _ date _ _ _ sha256; do
+            date=${date//\"/}
+            sha256=${sha256//\"/}
+            [ -z "$sha256" ] && continue
+            url="https://github.com/rstats-on-nix/nixpkgs/archive/$date.tar.gz"
+            actual=$(nix-prefetch-url --unpack "$url" 2>/dev/null | tail -1) || actual=""
+            if [ -z "$actual" ]; then
+              echo "::error::$date: could not download $url"
+              status=1
+            elif [ "$actual" != "$sha256" ]; then
+              echo "::error::$date: available_df.csv has $sha256 but the tarball hashes to $actual"
+              status=1
+            else
+              echo "$date: ok"
+            fi
+          done < rows.csv
+          exit $status
