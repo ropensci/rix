@@ -31,8 +31,19 @@ jobs:
 
     - name: Compute tarball hash and update available_df.csv
       run: |
+          set -euo pipefail
           url="https://github.com/rstats-on-nix/nixpkgs/archive/${{ env.branch_date }}.tar.gz"
-          sha256=$(nix-prefetch-url --unpack "$url" 2>/dev/null | tail -1)
+          sha256=$(nix-prefetch-url --unpack "$url" | tail -1)
+          if [ -z "$sha256" ]; then
+            echo "::error::could not compute the hash of $url"
+            exit 1
+          fi
+          # The workflow can run more than once for the same date (the
+          # snapshot branch may get further commits after the first run).
+          # Replace that date's row instead of appending a duplicate: rix
+          # uses the first row that matches a date, so a second row with the
+          # new hash would never be read.
+          sed -i '/,"${{ env.branch_date }}",/d' inst/extdata/available_df.csv
           echo "\"${{ env.year_date }}\",\"4.6.2\",\"3.23\",\"${{ env.branch_date }}\",\"supported\",\"supported\",\"unsupported\",\"$sha256\"" >> inst/extdata/available_df.csv
 
     - name: Push changes to update_default.nix branch
