@@ -193,11 +193,15 @@ renv2nix <- function(
     # unsupported_pkgs <- list()
     renv_lock_pkg_names <- names(renv_lock$Packages)
     for (i in seq_along(renv_lock$Packages)) {
-      if (renv_lock$Packages[[i]]$Source %in% c("Repository", "Bioconductor")) {
+      remote_host <- renv_lock$Packages[[i]]$RemoteHost
+      if (
+        isTRUE(
+          renv_lock$Packages[[i]]$Source %in% c("Repository", "Bioconductor")
+        )
+      ) {
         repo_pkgs[[renv_lock_pkg_names[i]]] <- renv_lock$Packages[[i]]
       } else if (
-        renv_lock$Packages[[i]]$RemoteHost %in%
-          c("api.github.com", "gitlab.com")
+        isTRUE(remote_host %in% c("api.github.com", "gitlab.com"))
       ) {
         remote_pkgs[[renv_lock_pkg_names[i]]] <- renv_lock$Packages[[i]]
       } else {
@@ -205,7 +209,7 @@ renv2nix <- function(
         warning(
           renv_lock$Packages[[i]]$Package,
           " has the unsupported remote host ",
-          renv_lock$Packages[[i]]$RemoteHost,
+          if (is.null(remote_host)) "(none)" else remote_host,
           " and will not be included in the Nix expression.",
           "\nSupported hosts are: ",
           paste0(c("api.github.com", "gitlab.com"), collapse = ", "),
